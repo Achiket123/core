@@ -9,6 +9,7 @@ import (
 // add the key and the valid mime types to the map
 var validMimeTypes = map[string][]string{
 	"avatarFile": {"image/jpeg", "image/png"},
+	"input":      {"text/plain", "text/csv", "application/csv"},
 }
 
 // MimeTypeValidator returns a validation function for the given key
