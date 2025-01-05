@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "DCH-01.2 - Sensitive / Regulated Data Protection",
+        "title": "",
+        "summary": "Mechanisms exist to protect sensitive/regulated data wherever it is stored."
+    }
+}

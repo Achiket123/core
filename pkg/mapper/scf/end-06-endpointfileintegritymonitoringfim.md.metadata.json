@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "END-06 - Endpoint File Integrity Monitoring (FIM)",
+        "title": "",
+        "summary": "Mechanisms exist to utilize File Integrity Monitor (FIM), or similar technologies, to detect and report on unauthorized changes to selected files and configuration settings."
+    }
+}

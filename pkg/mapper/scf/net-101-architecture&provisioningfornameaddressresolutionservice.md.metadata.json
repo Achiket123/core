@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "NET-10.1 - Architecture \u0026 Provisioning for Name / Address Resolution Service",
+        "title": "",
+        "summary": "Mechanisms exist to ensure systems that collectively provide Domain Name Service (DNS) resolution service are fault-tolerant and implement internal/external role separation. "
+    }
+}

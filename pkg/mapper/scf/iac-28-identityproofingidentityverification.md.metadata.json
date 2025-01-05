@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "IAC-28 - Identity Proofing (Identity Verification)",
+        "title": "",
+        "summary": "Mechanisms exist to verify the identity of a user before issuing authenticators or modifying access permissions."
+    }
+}

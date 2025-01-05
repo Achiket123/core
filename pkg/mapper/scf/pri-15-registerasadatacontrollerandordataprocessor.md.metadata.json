@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "PRI-15 - Register As A Data Controller and/or Data Processor",
+        "title": "",
+        "summary": "Mechanisms exist to register as a data controller and/or data processor, including registering databases containing Personal Data (PD) with the appropriate Data Authority, when necessary."
+    }
+}

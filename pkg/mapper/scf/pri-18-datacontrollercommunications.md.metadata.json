@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "PRI-18 - Data Controller Communications",
+        "title": "",
+        "summary": "Mechanisms exist to receive and process data controller communications pertaining to:\n - Receiving and responding to data subject requests;\n - Updating/correcting Personal Data (PD); \n - Accounting for disclosures of PD; and\n - Accounting for PD that is stored, processed and/or transmitted on behalf of the data controller. "
+    }
+}

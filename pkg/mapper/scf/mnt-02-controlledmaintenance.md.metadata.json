@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "MNT-02 - Controlled Maintenance",
+        "title": "",
+        "summary": "Mechanisms exist to conduct controlled maintenance activities throughout the lifecycle of the system, application or service."
+    }
+}

@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "RSK-02.1 - Impact-Level Prioritization",
+        "title": "",
+        "summary": "Mechanisms exist to prioritize the impact level for systems, applications and/or services to prevent potential disruptions."
+    }
+}

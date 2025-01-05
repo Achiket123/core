@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "NET-07 - Network Connection Termination",
+        "title": "",
+        "summary": "Mechanisms exist to terminate network connections at the end of a session or after an organization-defined time period of inactivity. "
+    }
+}

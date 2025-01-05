@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "IAC-10.8 - Default Authenticators",
+        "title": "",
+        "summary": "Mechanisms exist to ensure default authenticators are changed as part of account creation or system installation."
+    }
+}

@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "END-06.2 - Endpoint Detection \u0026 Response (EDR)",
+        "title": "",
+        "summary": "Mechanisms exist to detect and respond to unauthorized configuration changes as cybersecurity incidents."
+    }
+}

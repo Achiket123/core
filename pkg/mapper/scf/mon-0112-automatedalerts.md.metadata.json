@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "MON-01.12 - Automated Alerts",
+        "title": "",
+        "summary": "Mechanisms exist to automatically alert incident response personnel to inappropriate or anomalous activities that have potential security incident implications."
+    }
+}

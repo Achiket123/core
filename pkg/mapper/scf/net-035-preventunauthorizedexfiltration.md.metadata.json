@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "NET-03.5 - Prevent Unauthorized Exfiltration",
+        "title": "",
+        "summary": "Automated mechanisms exist to prevent the unauthorized exfiltration of sensitive/regulated data across managed interfaces. "
+    }
+}

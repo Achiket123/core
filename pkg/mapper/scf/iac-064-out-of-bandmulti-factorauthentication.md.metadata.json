@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "IAC-06.4 - Out-of-Band Multi-Factor Authentication",
+        "title": "",
+        "summary": "Mechanisms exist to implement Multi-Factor Authentication (MFA) for access to privileged and non-privileged accounts such that one of the factors is independently provided by a device separate from the system being accessed. "
+    }
+}

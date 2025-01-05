@@ -1,0 +1,39 @@
+# SCF - AST-03.2 - Provenance
+Mechanisms exist to track the origin, development, ownership, location and changes to systems, system components and associated data.
+## Mapped framework controls
+### ISO 27002
+- [A.5.21](../iso27002/a-5.md#a521)
+
+## Evidence request list
+E-AST-22
+
+## Control questions
+Does the organization track the origin, development, ownership, location and changes to systems, system components and associated data?
+
+## Compliance methods
+
+
+## Control maturity
+### Not performed
+There is no evidence of a capability to track the origin, development, ownership, location and changes to systems, system components and associated data.
+
+### Performed internally
+SP-CMM1 is N/A, since a structured process is required to track the origin, development, ownership, location and changes to systems, system components and associated data.
+
+### Planned and tracked
+SP-CMM2 is N/A, since a well-defined process is required to track the origin, development, ownership, location and changes to systems, system components and associated data.
+
+### Well defined
+Asset Management (AST) efforts are standardized across the organization and centrally managed, where technically feasible, to ensure consistency. CMM Level 3 control maturity would reasonably expect all, or at least most, the following criteria to exist:
+- An IT Asset Management (ITAM) function, or similar function, governs asset management to help ensure compliance with requirements for asset management.
+- An ITAM function, or similar function, maintains an inventory of IT assets, covering both physical and virtual assets, as well as centrally managed asset ownership assignments.
+- Technology assets and data are categorized according to data classification and business criticality criteria.
+- A Cybersecurity Supply Chain Risk Management (C-SCRM) function oversees supply chain risks including the removal and prevention of certain technology services and/ or equipment designated as supply chain threats by a statutory or regulatory body.
+- Data/process owners document where sensitive/regulated data is stored, transmitted and processed, generating Data Flow Diagrams (DFDs) and network diagrams to document the flow of data.
+- ITAM tracks the origin, development, ownership, location and changes to a system, system components and associated data.
+
+### Quantitatively controlled
+See SP-CMM3. SP-CMM4 is N/A, since a quantitatively-controlled process is not necessary to track the origin, development, ownership, location and changes to systems, system components and associated data.
+
+### Continuously improving
+See SP-CMM4. SP-CMM5 is N/A, since a continuously-improving process is not necessary to track the origin, development, ownership, location and changes to systems, system components and associated data.

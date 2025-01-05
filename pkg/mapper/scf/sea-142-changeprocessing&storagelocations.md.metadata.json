@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "SEA-14.2 - Change Processing \u0026 Storage Locations",
+        "title": "",
+        "summary": "Automated mechanisms exist to change the location of processing and/or storage at random time intervals."
+    }
+}

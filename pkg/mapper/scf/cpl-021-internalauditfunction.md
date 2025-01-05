@@ -1,0 +1,70 @@
+# SCF - CPL-02.1 - Internal Audit Function
+Mechanisms exist to implement an internal audit function that is capable of providing senior organization management with insights into the appropriateness of the organization's technology and information governance processes.
+## Mapped framework controls
+### ISO 27001
+- [9.2.1.a.1](../iso27001/9.md#921a1)
+- [9.2.1.a.2](../iso27001/9.md#921a2)
+- [9.2.1.b](../iso27001/9.md#921b)
+- [9.2.1](../iso27001/9.md#921)
+- [9.2.2.a](../iso27001/9.md#922a)
+- [9.2.2.b](../iso27001/9.md#922b)
+- [9.2.2.c](../iso27001/9.md#922c)
+- [9.2.2](../iso27001/9.md#922)
+- [9.2](../iso27001/9.md#92)
+
+### ISO 27002
+- [A.5.35](../iso27002/a-5.md#a535)
+- [A.8.34](../iso27002/a-8.md#a834)
+
+### SOC 2
+- [CC4.1-POF1](../soc2/cc41-pof1.md)
+- [CC4.1-POF2](../soc2/cc41-pof2.md)
+- [CC4.1-POF3](../soc2/cc41-pof3.md)
+- [CC4.1-POF4](../soc2/cc41-pof4.md)
+- [CC4.1-POF5](../soc2/cc41-pof5.md)
+- [CC4.1-POF6](../soc2/cc41-pof6.md)
+- [CC4.1-POF7](../soc2/cc41-pof7.md)
+- [CC4.1-POF8](../soc2/cc41-pof8.md)
+
+## Evidence request list
+E-CPL-04
+E-CPL-07
+
+## Control questions
+Does the organization implement an internal audit function that is capable of providing senior organization management with insights into the appropriateness of the organization's technology and information governance processes?
+
+## Compliance methods
+
+
+## Control maturity
+### Not performed
+There is no evidence of a capability to implement an internal audit function that is capable of providing senior organization management with insights into the appropriateness of the organization's technology and information governance processes.
+
+### Performed internally
+SP-CMM1 is N/A, since a structured process is required to implement an internal audit function that is capable of providing senior organization management with insights into the appropriateness of the organization's technology and information governance processes.
+
+### Planned and tracked
+SP-CMM2 is N/A, since a well-defined process is required to implement an internal audit function that is capable of providing senior organization management with insights into the appropriateness of the organization's technology and information governance processes.
+
+### Well defined
+Compliance (CPL) efforts are standardized across the organization and centrally managed, where technically feasible, to ensure consistency. CMM Level 3 control maturity would reasonably expect all, or at least most, the following criteria to exist:
+- A Governance, Risk & Compliance (GRC) function, or similar function, provides governance oversight for the implementation of applicable statutory, regulatory and contractual cybersecurity & data privacy controls to ensure compliance requirements are identified and documented.
+- The GRC function, or similar function:
+o	Ensures data/process owners understand their requirements to manage applicable cybersecurity & data privacy controls through oversight and written guidance.
+o	Provides applicable stakeholders with status reports on control execution to enable security controls oversight.
+o	Works with data/process owners and asset custodians to document and validate the scope of cybersecurity & data privacy controls to ensure statutory, regulatory and/ or contractual compliance obligations are met.
+o	Conducts cybersecurity & data privacy control assessments, on a regular cadence that is defined by the applicable statutory, regulatory and contractual requirements.
+- Cybersecurity and data privacy controls are centrally managed through a technology solution (e.g., GRC solution) to assign controls, track control activities and report on compliance efforts.
+- An assessor from within a GRC function, or similar function, is selected or a third-party assessor is contracted to perform an independent assessment of cybersecurity & data privacy controls.
+
+### Quantitatively controlled
+Compliance (CPL) efforts are metrics driven and provide sufficient management insight (based on a quantitative understanding of process capabilities) to predict optimal performance, ensure continued operations and identify areas for improvement. In addition to CMM Level 3 criteria, CMM Level 4 control maturity would reasonably expect all, or at least most, the following criteria to exist:
+- Metrics reporting includes quantitative analysis of Key Performance Indicators (KPIs).
+- Metrics reporting includes quantitative analysis of Key Risk Indicators (KRIs).
+- Scope of metrics, KPIs and KRIs covers organization-wide cybersecurity & data privacy controls, including functions performed by third-parties.
+- Organizational leadership maintains a formal process to objectively review and respond to metrics, KPIs and KRIs (e.g., monthly or quarterly review).
+- Based on metrics analysis, process improvement recommendations are submitted for review and are handled in accordance with change control processes.
+- Both business and technical stakeholders are involved in reviewing and approving proposed changes.
+
+### Continuously improving
+See SP-CMM4. SP-CMM5 is N/A, since a continuously-improving process is not necessary to implement an internal audit function that is capable of providing senior organization management with insights into the appropriateness of the organization's technology and information governance processes.

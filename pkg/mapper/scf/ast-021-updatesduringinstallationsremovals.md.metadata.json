@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "AST-02.1 - Updates During Installations / Removals",
+        "title": "",
+        "summary": "Mechanisms exist to update asset inventories as part of component installations, removals and asset upgrades. "
+    }
+}

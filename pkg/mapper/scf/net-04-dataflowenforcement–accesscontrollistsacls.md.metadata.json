@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "NET-04 - Data Flow Enforcement – Access Control Lists (ACLs)",
+        "title": "",
+        "summary": "Mechanisms exist to implement and govern Access Control Lists (ACLs) to provide data flow enforcement that explicitly restrict network traffic to only what is authorized."
+    }
+}

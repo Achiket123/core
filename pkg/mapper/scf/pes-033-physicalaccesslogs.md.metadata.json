@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "PES-03.3 - Physical Access Logs",
+        "title": "",
+        "summary": "Physical access control mechanisms generate a log entry for each access attempt through controlled ingress and egress points."
+    }
+}

@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "DCH-18.1 - Minimize Sensitive \u0026 Regulated Data",
+        "title": "",
+        "summary": "Mechanisms exist to minimize sensitive/regulated data that is processed, stored and/or transmitted throughout the information lifecycle to only those elements necessary to support necessary business processes."
+    }
+}

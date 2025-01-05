@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "CHG-04.4 - Permissions To Implement Changes",
+        "title": "",
+        "summary": "Mechanisms exist to limit operational privileges for implementing changes."
+    }
+}

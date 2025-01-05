@@ -1,0 +1,83 @@
+# SCF - SEA-02.1 - Standardized Terminology
+Mechanisms exist to standardize technology and process terminology to reduce confusion amongst groups and departments.
+## Mapped framework controls
+### GDPR
+- [Art 4.10](../gdpr/art4.md#Article-410)
+- [Art 4.11](../gdpr/art4.md#Article-411)
+- [Art 4.12](../gdpr/art4.md#Article-412)
+- [Art 4.13](../gdpr/art4.md#Article-413)
+- [Art 4.14](../gdpr/art4.md#Article-414)
+- [Art 4.15](../gdpr/art4.md#Article-415)
+- [Art 4.16](../gdpr/art4.md#Article-416)
+- [Art 4.17](../gdpr/art4.md#Article-417)
+- [Art 4.18](../gdpr/art4.md#Article-418)
+- [Art 4.19](../gdpr/art4.md#Article-419)
+- [Art 4.1](../gdpr/art4.md#Article-41)
+- [Art 4.20](../gdpr/art4.md#Article-420)
+- [Art 4.21](../gdpr/art4.md#Article-421)
+- [Art 4.22](../gdpr/art4.md#Article-422)
+- [Art 4.23](../gdpr/art4.md#Article-423)
+- [Art 4.24](../gdpr/art4.md#Article-424)
+- [Art 4.25](../gdpr/art4.md#Article-425)
+- [Art 4.26](../gdpr/art4.md#Article-426)
+- [Art 4.2](../gdpr/art4.md#Article-42)
+- [Art 4.3](../gdpr/art4.md#Article-43)
+- [Art 4.4](../gdpr/art4.md#Article-44)
+- [Art 4.5](../gdpr/art4.md#Article-45)
+- [Art 4.6](../gdpr/art4.md#Article-46)
+- [Art 4.7](../gdpr/art4.md#Article-47)
+- [Art 4.8](../gdpr/art4.md#Article-48)
+- [Art 4.9](../gdpr/art4.md#Article-49)
+
+### ISO 27001
+- [3.0](../iso27001/3.md#30)
+
+### ISO 27002
+- [A.3.0](../iso27002/a-3.md#a30)
+- [A.3.1](../iso27002/a-3.md#a31)
+- [A.3.2](../iso27002/a-3.md#a32)
+
+### SOC 2
+- [CC2.2](../soc2/cc22.md)
+
+## Evidence request list
+
+
+## Control questions
+Does the organization standardize technology and process terminology to reduce confusion amongst groups and departments?
+
+## Compliance methods
+
+
+## Control maturity
+### Not performed
+There is no evidence of a capability to standardize technology and process terminology to reduce confusion amongst groups and departments.
+
+### Performed internally
+SP-CMM1 is N/A, since a structured process is required to standardize technology and process terminology to reduce confusion amongst groups and departments.
+
+### Planned and tracked
+Secure Engineering & Architecture (SEA) efforts are requirements-driven and formally governed at a local/regional level, but are not consistent across the organization. CMM Level 2 control maturity would reasonably expect all, or at least most, the following criteria to exist:
+- Architecture/engineering management is decentralized (e.g., a localized/regionalized function) and uses non-standardized methods to implement secure and compliant practices.
+- A Change Advisory Board (CAB), or similar function, exists to govern changes to systems, applications and services, ensuring their stability, reliability and predictability.
+- Administrative processes and technologies focus on protecting High Value Assets (HVAs), including environments where sensitive/regulated data is stored, transmitted and processed.
+- IT/cybersecurity personnel identify cybersecurity & data privacy controls to address applicable statutory, regulatory and contractual requirements for architecture/engineering management.
+- IT personnel implement secure engineering practices to protect the confidentiality, integrity, availability and safety of the organization's technology assets, data and network(s).
+- Technologies are configured to protect data with the strength and integrity commensurate with the classification or sensitivity of the information and mostly conform to industry-recognized standards for hardening (e.g., DISA STIGs, CIS Benchmarks or OEM security guides), including cryptographic protections for sensitive/regulated data.
+
+### Well defined
+Secure Engineering & Architecture (SEA) efforts are standardized across the organization and centrally managed, where technically feasible, to ensure consistency. CMM Level 3 control maturity would reasonably expect all, or at least most, the following criteria to exist:
+- IT/cybersecurity architects, or a similar function, enable the implementation a “layered defense” network architecture that enables a resilient defense-in-depth approach through the use of industry-recognized cybersecurity & data privacy practices in the specification, design, development, implementation and modification of systems and services (e.g., DISA STIGs, CIS Benchmarks or OEM security guides).
+- IT/cybersecurity engineers, or a similar function, operationalize enterprise architecture, aligned with industry-recognized leading practices, with consideration for cybersecurity & data privacy principles, including resiliency expectations, that addresses risk to organizational operations, assets, individuals, other organizations.
+- A Validated Architecture Design Review (VADR), or similar process, is used to evaluate design criteria for secure practices and conformance with requirements for applicable statutory, regulatory and contractual controls to determine if the system/application/service is designed, built and operated in a secure and resilient manner.
+- A Change Advisory Board (CAB), or similar function, governs changes to systems, applications and services to ensure their stability, reliability and predictability.
+- A formal Change Management (CM) program helps to ensure that no unauthorized changes are made, all changes are documented, services are not disrupted and resources are used efficiently.
+- An Identity & Access Management (IAM) function, or similar function, enables the implementation of identification and access management controls for “least privileges” practices, allowing for the management of user, group and system accounts, including privileged accounts.
+- An IT Asset Management (ITAM) function, or similar function, categorizes assets according to the data the asset stores, transmits and/ or processes and applies the appropriate technology controls to protect the asset and data.
+- A Governance, Risk & Compliance (GRC) function, or similar function, enables the use of standardized technology and process terminology to reduce confusion amongst groups and departments.
+
+### Quantitatively controlled
+See SP-CMM3. SP-CMM4 is N/A, since a quantitatively-controlled process is not necessary to standardize technology and process terminology to reduce confusion amongst groups and departments.
+
+### Continuously improving
+See SP-CMM4. SP-CMM5 is N/A, since a continuously-improving process is not necessary to standardize technology and process terminology to reduce confusion amongst groups and departments.

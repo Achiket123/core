@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "NET-01.1 - Zero Trust Architecture (ZTA)",
+        "title": "",
+        "summary": "Mechanisms exist to treat all users and devices as potential threats and prevent access to data and resources until the users can be properly authenticated and their access authorized."
+    }
+}

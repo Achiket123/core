@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "CAP-04 - Performance Monitoring",
+        "title": "",
+        "summary": "Automated mechanisms exist to centrally-monitor and alert on the operating state and health status of critical systems, applications and services."
+    }
+}

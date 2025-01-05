@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "NET-14.2 - Protection of Confidentiality / Integrity Using Encryption",
+        "title": "",
+        "summary": "Cryptographic mechanisms exist to protect the confidentiality and integrity of remote access sessions (e.g., VPN). "
+    }
+}

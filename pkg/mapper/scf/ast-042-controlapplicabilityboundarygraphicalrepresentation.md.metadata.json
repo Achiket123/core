@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "AST-04.2 - Control Applicability Boundary Graphical Representation",
+        "title": "",
+        "summary": "Mechanisms exist to ensure control applicability is appropriately-determined for systems, applications, services and third parties by graphically representing applicable boundaries."
+    }
+}

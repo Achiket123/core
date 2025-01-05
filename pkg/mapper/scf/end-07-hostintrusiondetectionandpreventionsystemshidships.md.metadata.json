@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "END-07 - Host Intrusion Detection and Prevention Systems (HIDS / HIPS)",
+        "title": "",
+        "summary": "Mechanisms exist to utilize Host-based Intrusion Detection / Prevention Systems (HIDS / HIPS), or similar technologies, to monitor for and protect against anomalous host activity, including lateral movement across the network."
+    }
+}

@@ -10,7 +10,7 @@ The competent supervisory authority shall approve binding corporate rules in acc
 
 ### Mapped SCF controls
 - [DCH-24 - Information Location](../scf/dch-24-informationlocation.md)
-- [DCH-25 - Transfer of Sensitive and/or Regulated Data](../scf/dch-25-transferofsensitiveand/orregulateddata.md)
+- [DCH-25 - Transfer of Sensitive and/or Regulated Data](../scf/dch-25-transferofsensitiveandorregulateddata.md)
 - [PRI-07 - Information Sharing With Third Parties](../scf/pri-07-informationsharingwiththirdparties.md)
 - [SEA-15 - Distributed Processing & Storage](../scf/sea-15-distributedprocessing&storage.md)
 - [TPM-04.4 - Third-Party Processing, Storage and Service Locations](../scf/tpm-044-third-partyprocessing,storageandservicelocations.md)
@@ -34,7 +34,7 @@ The binding corporate rules referred to in paragraph 1 shall specify at least:
 
 ### Mapped SCF controls
 - [DCH-24 - Information Location](../scf/dch-24-informationlocation.md)
-- [DCH-25 - Transfer of Sensitive and/or Regulated Data](../scf/dch-25-transferofsensitiveand/orregulateddata.md)
+- [DCH-25 - Transfer of Sensitive and/or Regulated Data](../scf/dch-25-transferofsensitiveandorregulateddata.md)
 - [PRI-07 - Information Sharing With Third Parties](../scf/pri-07-informationsharingwiththirdparties.md)
 - [SEA-15 - Distributed Processing & Storage](../scf/sea-15-distributedprocessing&storage.md)
 - [TPM-04.4 - Third-Party Processing, Storage and Service Locations](../scf/tpm-044-third-partyprocessing,storageandservicelocations.md)

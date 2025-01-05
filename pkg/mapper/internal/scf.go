@@ -37,6 +37,7 @@ func (c ControlMapping) MapsToControls() bool {
 			return true
 		}
 	}
+
 	return false
 }
 
@@ -147,6 +148,7 @@ func ReturnSCFControls(url string, getFile bool) (SCFControls, error) {
 	}
 
 	headers := []ControlHeader{}
+
 	for idx, row := range rows {
 		if idx == 0 {
 			for _, header := range row {
@@ -159,6 +161,7 @@ func ReturnSCFControls(url string, getFile bool) (SCFControls, error) {
 			for idx, val := range row {
 				control[headers[idx]] = ControlValue(strings.ReplaceAll(val, "▪", "-"))
 			}
+
 			controls[SCFControlID(scfControlID)] = control
 		}
 	}
@@ -178,6 +181,7 @@ func ReturnSCFControls(url string, getFile bool) (SCFControls, error) {
 
 func ParseEvidenceRequest() (map[EvidenceRequestID]EvidenceRequest, error) {
 	evidenceRequests := map[EvidenceRequestID]EvidenceRequest{}
+
 	f, err := excelize.OpenFile("pkg/mapper/scf2.xlsx")
 	if err != nil {
 		return nil, err
@@ -204,9 +208,11 @@ func ParseEvidenceRequest() (map[EvidenceRequestID]EvidenceRequest, error) {
 		} else {
 			evidenceRequestID := EvidenceRequestID(row[0])
 			evidenceRequest := EvidenceRequest{}
+
 			for idx, val := range row {
 				evidenceRequest[headers[idx]] = EvidenceRequestValue(val)
 			}
+
 			evidenceRequests[evidenceRequestID] = evidenceRequest
 		}
 	}
@@ -216,15 +222,16 @@ func ParseEvidenceRequest() (map[EvidenceRequestID]EvidenceRequest, error) {
 		return evidenceRequests, err
 	}
 
-	err = os.WriteFile("pkg/mapper/evidence.json", file, 0644)
+	err = os.WriteFile("pkg/mapper/evidence.json", file, 0600) // nolint:mnd
 	if err != nil {
 		return evidenceRequests, err
 	}
+
 	return evidenceRequests, nil
 }
 
 func GenerateSCFMarkdown(scfControl Control, scfControlID SCFControlID, controlMapping ControlMapping) error {
-	filename := fmt.Sprintf("scf/%s.md", safeFileName(string(scfControlID)))
+	filename := fmt.Sprintf("pkg/mapper/scf/%s.md", safeFileName(string(scfControlID)))
 	f, err := os.Create(filename)
 
 	if err != nil {
@@ -277,6 +284,7 @@ func GenerateSCFMarkdown(scfControl Control, scfControlID SCFControlID, controlM
 			}
 
 			found := false
+
 			for _, fcid := range fcids {
 				if fcid == link {
 					found = true
@@ -330,6 +338,7 @@ func GenerateSCFMarkdown(scfControl Control, scfControlID SCFControlID, controlM
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -380,11 +389,14 @@ func GenerateSCFIndex(scfControlMappings SCFControlMappings, scfControls SCFCont
 	}
 
 	slices.Sort(controlIDs)
+
 	controlLinks := []string{}
+
 	lastControlFamily := ""
 
 	for _, controlID := range controlIDs {
 		family := ""
+
 		for fam := range SCFControlFamilyMapping {
 			if strings.HasPrefix(controlID, fam) {
 				family = fam

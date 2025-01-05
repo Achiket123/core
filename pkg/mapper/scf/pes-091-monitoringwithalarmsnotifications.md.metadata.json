@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "PES-09.1 - Monitoring with Alarms / Notifications",
+        "title": "",
+        "summary": "Facility security mechanisms exist to trigger an alarm or notification of temperature and humidity changes that be potentially harmful to personnel or equipment. "
+    }
+}

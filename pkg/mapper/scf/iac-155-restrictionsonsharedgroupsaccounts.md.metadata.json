@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "IAC-15.5 - Restrictions on Shared Groups / Accounts",
+        "title": "",
+        "summary": "Mechanisms exist to authorize the use of shared/group accounts only under certain organization-defined conditions."
+    }
+}

@@ -1,0 +1,82 @@
+# SCF - RSK-06 - Risk Remediation
+Mechanisms exist to remediate risks to an acceptable level.
+## Mapped framework controls
+### ISO 27001
+- [6.1.3.a](../iso27001/6.md#613a)
+- [6.1.3.b](../iso27001/6.md#613b)
+- [6.1.3.c](../iso27001/6.md#613c)
+- [6.1.3.d](../iso27001/6.md#613d)
+- [6.1.3.e](../iso27001/6.md#613e)
+- [6.1.3.f](../iso27001/6.md#613f)
+- [6.1.3](../iso27001/6.md#613)
+- [8.3](../iso27001/8.md#83)
+
+### ISO 27002
+- [A.5.8](../iso27002/a-5.md#a58)
+
+### SOC 2
+- [CC1.1-POF4](../soc2/cc11-pof4.md)
+- [CC4.2](../soc2/cc42.md)
+- [CC5.3-POF4](../soc2/cc53-pof4.md)
+- [CC7.4-POF8](../soc2/cc74-pof8.md)
+- [CC7.4](../soc2/cc74.md)
+
+## Evidence request list
+
+
+## Control questions
+Does the organization remediate risks to an acceptable level?
+
+## Compliance methods
+
+
+## Control maturity
+### Not performed
+There is no evidence of a capability to remediate risks to an acceptable level.
+
+### Performed internally
+Risk Management efforts are ad hoc and inconsistent. CMM Level 1 control maturity would reasonably expect all, or at least most, the following criteria to exist:
+- IT personnel use an informal process to identify, assess, remediate and report on risk.
+- Data/process owners are expected to self-manage risks associated with their systems, applications, services and data, based on the organization's published policies and standards, including the identification, remediation and reporting of risks.
+- Risk management processes (e.g., risk assessments) focus on protecting High Value Assets (HVAs), including environments where sensitive/regulated data is stored, transmitted and processed.
+
+### Planned and tracked
+Risk Management efforts are requirements-driven and formally governed at a local/regional level, but are not consistent across the organization. CMM Level 2 control maturity would reasonably expect all, or at least most, the following criteria to exist:
+- Risk management is decentralized (e.g., a localized/regionalized function) and uses non-standardized methods to implement secure and compliant practices.
+- Data/process owners are expected to self-manage risks associated with their systems, applications, services and data, based on the organization's published policies and standards, including the identification, remediation and reporting of risks.
+- Data/process owners work with IT/cybersecurity personnel and Data Protection Officers (DPOs) to ensure applicable statutory, regulatory and contractual obligations are properly addressed, including the storage, transmission and processing of sensitive/regulated data.
+- IT/cybersecurity personnel:
+o	Identify cybersecurity & data privacy controls to address applicable statutory, regulatory and contractual requirements for risk management.
+o	Implement and maintain a form of Risk Management Program (RMP) that provides operational guidance on how risk is identified, assessed, remediated and reported.
+- Risk management processes (e.g., risk assessments) and technologies focus on protecting High Value Assets (HVAs), including environments where sensitive/regulated data is stored, transmitted and processed.
+
+### Well defined
+Risk Management efforts are standardized across the organization and centrally managed, where technically feasible, to ensure consistency. CMM Level 3 control maturity would reasonably expect all, or at least most, the following criteria to exist:
+- A formal Risk Management Program (RMP) provides enterprise-wide guidance on how risk is to be identified, framed (e.g., risk appetite, risk tolerance, risk thresholds, etc.) assessed, mitigated/remediated and reported.
+- Criteria to define materiality for risk management decisions is defined.
+- A steering committee is formally established to provide executive oversight of the cybersecurity & data privacy program, including appropriately resourcing risk management operations.
+- A formally-documented Cybersecurity Supply Chain Risk Management (C-SCRM) plan exists to identify, assess and mitigate supply chain-related risks and threats;
+- The Chief Information Security Officer (CISO), or similar function with technical competence to address cybersecurity concerns,
+o	Analyzes the organization's business strategy to determine prioritized and authoritative guidance for Risk Management (RM) practices.
+o	Develops a security-focused Concept of Operations (CONOPS) that documents management, operational and technical measures to apply defense-in-depth techniques across the enterprise for RM.
+- A Governance, Risk & Compliance (GRC) function, or similar function:
+o	Provides governance oversight for the implementation of applicable statutory, regulatory and contractual cybersecurity & data privacy controls to protect the confidentiality, integrity, availability and safety of the organization's applications, systems, services and data with regards to RM.
+o	Maintains a common taxonomy of risk-relevant terminology to minimize assumptions and misunderstandings.
+o	Enables data/process owners to conduct annual risk assessment of their operations that includes the likelihood and magnitude of harm, from unauthorized access, use, disclosure, disruption, modification or destruction of the organization's systems and data.
+o	Assists users in making informed risk decisions to ensure data and processes are appropriately protected.
+o	Enables the documentation of risk assessments, risk response and risk monitoring to support statutory, regulatory and contractual obligations for risk management practices.
+o	Maintains a centralized risk register to reflect an active recording and disposition of identified risks. The risk register identifies and assigns a risk ranking to vulnerabilities and risks that is based on industry-recognized practices and facilitates monitoring and reporting of those risks.
+o	Governs supply chain risks associated with the development, acquisition, maintenance and disposal of systems, system components and services.
+- An IT Asset Management (ITAM) function, or similar function, categorizes assets according to the data the asset stores, transmits and/ or processes, applying the appropriate technology controls to protect the asset and data.
+
+### Quantitatively controlled
+Risk Management efforts are metrics driven and provide sufficient management insight (based on a quantitative understanding of process capabilities) to predict optimal performance, ensure continued operations and identify areas for improvement. In addition to CMM Level 3 criteria, CMM Level 4 control maturity would reasonably expect all, or at least most, the following criteria to exist:
+- Metrics reporting includes quantitative analysis of Key Performance Indicators (KPIs).
+- Metrics reporting includes quantitative analysis of Key Risk Indicators (KRIs).
+- Scope of metrics, KPIs and KRIs covers organization-wide cybersecurity & data privacy controls, including functions performed by third-parties.
+- Organizational leadership maintains a formal process to objectively review and respond to metrics, KPIs and KRIs (e.g., monthly or quarterly review).
+- Based on metrics analysis, process improvement recommendations are submitted for review and are handled in accordance with change control processes.
+- Both business and technical stakeholders are involved in reviewing and approving proposed changes.
+
+### Continuously improving
+See SP-CMM4. SP-CMM5 is N/A, since a continuously-improving process is not necessary to remediate risks to an acceptable level.

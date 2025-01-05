@@ -7,7 +7,7 @@ In the absence of a decision pursuant to Article 45(3), a controller or processo
 
 ### Mapped SCF controls
 - [DCH-24 - Information Location](../scf/dch-24-informationlocation.md)
-- [DCH-25 - Transfer of Sensitive and/or Regulated Data](../scf/dch-25-transferofsensitiveand/orregulateddata.md)
+- [DCH-25 - Transfer of Sensitive and/or Regulated Data](../scf/dch-25-transferofsensitiveandorregulateddata.md)
 - [PRI-07 - Information Sharing With Third Parties](../scf/pri-07-informationsharingwiththirdparties.md)
 - [SEA-15 - Distributed Processing & Storage](../scf/sea-15-distributedprocessing&storage.md)
 - [TPM-04.4 - Third-Party Processing, Storage and Service Locations](../scf/tpm-044-third-partyprocessing,storageandservicelocations.md)
@@ -23,7 +23,7 @@ The appropriate safeguards referred to in paragraph 1 may be provided for, witho
 
 ### Mapped SCF controls
 - [DCH-24 - Information Location](../scf/dch-24-informationlocation.md)
-- [DCH-25 - Transfer of Sensitive and/or Regulated Data](../scf/dch-25-transferofsensitiveand/orregulateddata.md)
+- [DCH-25 - Transfer of Sensitive and/or Regulated Data](../scf/dch-25-transferofsensitiveandorregulateddata.md)
 - [PRI-07 - Information Sharing With Third Parties](../scf/pri-07-informationsharingwiththirdparties.md)
 - [SEA-15 - Distributed Processing & Storage](../scf/sea-15-distributedprocessing&storage.md)
 - [TPM-04.4 - Third-Party Processing, Storage and Service Locations](../scf/tpm-044-third-partyprocessing,storageandservicelocations.md)
@@ -35,7 +35,7 @@ Subject to the authorisation from the competent supervisory authority, the appro
 
 ### Mapped SCF controls
 - [DCH-24 - Information Location](../scf/dch-24-informationlocation.md)
-- [DCH-25 - Transfer of Sensitive and/or Regulated Data](../scf/dch-25-transferofsensitiveand/orregulateddata.md)
+- [DCH-25 - Transfer of Sensitive and/or Regulated Data](../scf/dch-25-transferofsensitiveandorregulateddata.md)
 - [PRI-07 - Information Sharing With Third Parties](../scf/pri-07-informationsharingwiththirdparties.md)
 - [SEA-15 - Distributed Processing & Storage](../scf/sea-15-distributedprocessing&storage.md)
 - [TPM-04.4 - Third-Party Processing, Storage and Service Locations](../scf/tpm-044-third-partyprocessing,storageandservicelocations.md)

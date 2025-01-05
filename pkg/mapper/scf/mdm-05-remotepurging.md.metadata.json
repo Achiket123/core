@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "MDM-05 - Remote Purging",
+        "title": "",
+        "summary": "Mechanisms exist to remotely purge selected information from mobile devices. "
+    }
+}

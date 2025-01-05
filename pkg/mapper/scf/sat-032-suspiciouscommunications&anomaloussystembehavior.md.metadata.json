@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "SAT-03.2 - Suspicious Communications \u0026 Anomalous System Behavior",
+        "title": "",
+        "summary": "Mechanisms exist to provide training to personnel on organization-defined indicators of malware to recognize suspicious communications and anomalous behavior."
+    }
+}

@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "PRI-06.7 - Personal Data Exportability",
+        "title": "",
+        "summary": "Mechanisms exist to digitally export Personal Data (PD) in a secure manner upon request by the data subject."
+    }
+}

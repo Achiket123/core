@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "CRY-05 - Encrypting Data At Rest",
+        "title": "",
+        "summary": "Cryptographic mechanisms exist to prevent unauthorized disclosure of data at rest. "
+    }
+}

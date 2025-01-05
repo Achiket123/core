@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "CFG-05.2 - Restrict Roles Permitted To Install Software",
+        "title": "",
+        "summary": "Mechanisms exist to configure systems to prevent the installation of software, unless the action is performed by a privileged user or service."
+    }
+}

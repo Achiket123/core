@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "PRI-07.4 - Reject Unauthorized Disclosure Requests",
+        "title": "",
+        "summary": "Mechanisms exist to reject unauthorized disclosure requests."
+    }
+}

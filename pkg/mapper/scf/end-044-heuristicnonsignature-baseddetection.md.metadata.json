@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "END-04.4 - Heuristic / Nonsignature-Based Detection",
+        "title": "",
+        "summary": "Mechanisms exist to utilize heuristic / nonsignature-based antimalware detection capabilities."
+    }
+}

@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "BCD-11.5 - Test Restoration Using Sampling",
+        "title": "",
+        "summary": "Mechanisms exist to utilize sampling of available backups to test recovery capabilities as part of business continuity plan testing. "
+    }
+}

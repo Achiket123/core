@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "TPM-05.7 - Break Clauses",
+        "title": "",
+        "summary": "Mechanisms exist to include \"break clauses\" within contracts for failure to meet contract criteria for cybersecurity and/or data privacy controls."
+    }
+}

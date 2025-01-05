@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "NET-18.1 - Route Internal Traffic to Proxy Servers",
+        "title": "",
+        "summary": "Mechanisms exist to route internal communications traffic to external networks through organization-approved proxy servers at managed interfaces. "
+    }
+}

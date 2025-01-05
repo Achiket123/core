@@ -8,7 +8,7 @@ System entry and exit points include firewalls, remote access servers, workstati
 ## Mapped SCF controls
 - [END-04 - Malicious Code Protection (Anti-Malware)](../scf/end-04-maliciouscodeprotectionanti-malware.md)
 - [END-04.1 - Automatic Antimalware Signature Updates](../scf/end-041-automaticantimalwaresignatureupdates.md)
-- [END-04.4 - Heuristic / Nonsignature-Based Detection](../scf/end-044-heuristic/nonsignature-baseddetection.md)
+- [END-04.4 - Heuristic / Nonsignature-Based Detection](../scf/end-044-heuristicnonsignature-baseddetection.md)
 - [NET-12 - Safeguarding Data Over Open Networks](../scf/net-12-safeguardingdataoveropennetworks.md)
 - [TDA-18 - Input Data Validation](../scf/tda-18-inputdatavalidation.md)
 - [VPM-01 - Vulnerability & Patch Management Program (VPMP)](../scf/vpm-01-vulnerability&patchmanagementprogramvpmp.md)

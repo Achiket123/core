@@ -1,0 +1,81 @@
+# SCF - END-01 - Endpoint Security
+Mechanisms exist to facilitate the implementation of endpoint security controls.
+## Mapped framework controls
+### GDPR
+- [Art 32.1](../gdpr/art32.md#Article-321)
+- [Art 32.2](../gdpr/art32.md#Article-322)
+
+### ISO 27002
+- [A.7.7](../iso27002/a-7.md#a77)
+- [A.8.1](../iso27002/a-8.md#a81)
+- [A.8.5](../iso27002/a-8.md#a85)
+
+### NIST 800-53
+- [MP-2](../nist80053/mp-2.md)
+
+### SOC 2
+- [CC6.7-POF4](../soc2/cc67-pof4.md)
+
+## Evidence request list
+
+
+## Control questions
+Does the organization facilitate the implementation of endpoint security controls?
+
+## Compliance methods
+
+
+## Control maturity
+### Not performed
+There is no evidence of a capability to facilitate the implementation of endpoint security controls.
+
+### Performed internally
+Endpoint Security (END) efforts are ad hoc and inconsistent. CMM Level 1 control maturity would reasonably expect all, or at least most, the following criteria to exist:
+- Asset management is informally assigned as an additional duty to existing IT/cybersecurity personnel.
+- IT/cybersecurity personnel use an informal process to design, build and maintain secure configurations for test, development, staging and production environments, including the implementation of appropriate cybersecurity & data privacy controls.
+- Anti-malware technologies are decentralized but are deployed on all technology assets that can run Anti-malware software.
+- Data management is decentralized.
+
+### Planned and tracked
+Endpoint Security (END) efforts are requirements-driven and formally governed at a local/regional level, but are not consistent across the organization. CMM Level 2 control maturity would reasonably expect all, or at least most, the following criteria to exist:
+- Endpoint security management is decentralized (e.g., a localized/regionalized function) and uses non-standardized methods to implement secure and compliant practices.
+- IT/cybersecurity personnel identify cybersecurity & data privacy controls that are appropriate to address applicable statutory, regulatory and contractual requirements for endpoint security management.
+- Anti-malware technologies are decentralized but are deployed on all technology assets that can run anti-malware software.
+- Physical controls, administrative processes and technologies focus on protecting High Value Assets (HVAs), including environments where sensitive/regulated data is stored, transmitted and processed.
+- Technologies are configured to protect data with the strength and integrity commensurate with the classification or sensitivity of the information and mostly conform to industry-recognized standards for hardening (e.g., DISA STIGs, CIS Benchmarks or OEM security guides), including cryptographic protections for sensitive/regulated data.
+- Data/process owners are expected to take the initiative to work with Data Protection Officers (DPOs) to ensure applicable statutory, regulatory and contractual obligations are properly addressed, including the storage, transmission and processing of sensitive/regulated data.
+- Data protection controls are primarily administrative in nature (e.g., policies & standards) to manage endpoint devices.
+IT personnel implement and maintain an asset management capability, including endpoint devices.
+
+### Well defined
+Endpoint Security (END) efforts are standardized across the organization and centrally managed, where technically feasible, to ensure consistency. CMM Level 3 control maturity would reasonably expect all, or at least most, the following criteria to exist:
+- The Chief Information Security Officer (CISO), or similar function with technical competence to address cybersecurity concerns, analyzes the organization's business strategy to determine prioritized and authoritative guidance for endpoint security practices.
+- The CISO, or similar function, develops a security-focused Concept of Operations (CONOPS) that documents management, operational and technical measures to apply defense-in-depth techniques across the enterprise with regards to endpoint security.
+- A Governance, Risk & Compliance (GRC) function, or similar function, provides governance oversight for the implementation of applicable statutory, regulatory and contractual cybersecurity & data privacy controls to protect the confidentiality, integrity, availability and safety of the organization's applications, systems, services and data with regards to endpoint security.
+- A steering committee is formally established to provide executive oversight of the cybersecurity & data privacy program, including endpoint security.
+- An Identity & Access Management (IAM) function, or similar function, centrally manages permissions and implements “least privileges” practices for the management of user, group and system accounts, including privileged accounts.
+- Configuration management is centralized for all operating systems, applications, servers and other configurable technologies.
+- Technologies are configured to protect data with the strength and integrity commensurate with the classification or sensitivity of the information and conform to industry-recognized standards for hardening (e.g., DISA STIGs, CIS Benchmarks or OEM security guides), including test, development, staging and production environments.
+- Configurations conform to industry-recognized standards for hardening (e.g., DISA STIGs, CIS Benchmarks or OEM security guides) for test, development, staging and production environments.
+- An IT Asset Management (ITAM) function, or similar function, categorizes endpoint devices according to the data the asset stores, transmits and/ or processes and applies the appropriate technology controls to protect the asset and data that conform to industry-recognized standards for hardening (e.g., DISA STIGs, CIS Benchmarks or OEM security guides).
+- An ITAM function, or similar function, uses a Configuration Management Database (CMDB), or similar tool, as the authoritative source of IT assets that is configured to perform integrity checking and alert on unauthorized configuration changes.
+- A Security Operations Center (SOC), or similar function, centrally manages anti-malware and anti-phishing technologies, in accordance with industry-recognized practices for Prevention, Detection & Response (PDR) activities.
+- A Security Incident Event Manager (SIEM), or similar automated tool, is tuned to detect and respond to anomalous behavior that could indicate account compromise or other malicious activities.
+- The Human Resources (HR) department ensures that every user accessing a system that processes, stores, or transmits sensitive/regulated data is cleared and regularly trained in proper data handling practices.
+- Unauthorized configuration changes are responded to in accordance with an Incident Response Plan (IRP) to determine if the any unauthorized configuration is malicious in nature.
+- A Data Protection Impact Assessment (DPIA) is used to help ensure the protection of Personal Data (PD) processed, stored or transmitted on endpoint devices, so that cybersecurity & data privacy controls are implemented in accordance with applicable statutory, regulatory and contractual obligations.
+- Administrative processes exist and technologies are configured to notify individuals that Personal Data (PD) is collected by sensors.
+- File Integrity monitor (FIM) technology is deployed to all HVAs to detect and report unauthorized changes to business-critical system files and configurations.
+- Host-based Intrusion Detection/Prevention Systems (HIDS/HIPS) technology is deployed to all HVAs to detect and report unauthorized changes to business-critical system files and configurations.
+
+### Quantitatively controlled
+Endpoint Security (END) efforts are metrics driven and provide sufficient management insight (based on a quantitative understanding of process capabilities) to predict optimal performance, ensure continued operations and identify areas for improvement. In addition to CMM Level 3 criteria, CMM Level 4 control maturity would reasonably expect all, or at least most, the following criteria to exist:
+- Metrics reporting includes quantitative analysis of Key Performance Indicators (KPIs).
+- Metrics reporting includes quantitative analysis of Key Risk Indicators (KRIs).
+- Scope of metrics, KPIs and KRIs covers organization-wide cybersecurity & data privacy controls, including functions performed by third-parties.
+- Organizational leadership maintains a formal process to objectively review and respond to metrics, KPIs and KRIs (e.g., monthly or quarterly review).
+- Based on metrics analysis, process improvement recommendations are submitted for review and are handled in accordance with change control processes.
+- Both business and technical stakeholders are involved in reviewing and approving proposed changes.
+
+### Continuously improving
+See SP-CMM4. SP-CMM5 is N/A, since a continuously-improving process is not necessary to facilitate the implementation of endpoint security controls.

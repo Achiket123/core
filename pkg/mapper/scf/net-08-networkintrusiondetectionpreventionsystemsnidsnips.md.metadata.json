@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "NET-08 - Network Intrusion Detection / Prevention Systems (NIDS / NIPS)",
+        "title": "",
+        "summary": "Mechanisms exist to employ Network Intrusion Detection / Prevention Systems (NIDS/NIPS) to detect and/or prevent intrusions into the network. "
+    }
+}

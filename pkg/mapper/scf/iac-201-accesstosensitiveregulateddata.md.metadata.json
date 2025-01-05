@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "IAC-20.1 - Access To Sensitive / Regulated Data",
+        "title": "",
+        "summary": "Mechanisms exist to limit access to sensitive/regulated data to only those individuals whose job requires such access. "
+    }
+}

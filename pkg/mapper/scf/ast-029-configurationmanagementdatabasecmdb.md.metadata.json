@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "AST-02.9 - Configuration Management Database (CMDB)",
+        "title": "",
+        "summary": "Mechanisms exist to implement and manage a Configuration Management Database (CMDB), or similar technology, to monitor and govern technology asset-specific information."
+    }
+}

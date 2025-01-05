@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "BCD-02.4 - Data Storage Location Reviews",
+        "title": "",
+        "summary": "Mechanisms exist to perform periodic security reviews of storage locations that contain sensitive / regulated data."
+    }
+}

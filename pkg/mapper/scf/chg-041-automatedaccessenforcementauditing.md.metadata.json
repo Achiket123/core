@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "CHG-04.1 - Automated Access Enforcement / Auditing",
+        "title": "",
+        "summary": "Mechanisms exist to perform after-the-fact reviews of configuration change logs to discover any unauthorized changes."
+    }
+}

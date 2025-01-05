@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "SAT-03.3 - Sensitive Information Storage, Handling \u0026 Processing",
+        "title": "",
+        "summary": "Mechanisms exist to ensure that every user accessing a system processing, storing or transmitting sensitive information is formally trained in data handling requirements."
+    }
+}

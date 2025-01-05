@@ -48,7 +48,7 @@ The controller or the processor and, where applicable, the controller's or the p
 - [PRI-09 - Personal Data Lineage](../scf/pri-09-personaldatalineage.md)
 - [PRI-13 - Data Management Board](../scf/pri-13-datamanagementboard.md)
 - [PRI-14.1 - Accounting of Disclosures](../scf/pri-141-accountingofdisclosures.md)
-- [PRI-15 - Register As A Data Controller and/or Data Processor](../scf/pri-15-registerasadatacontrollerand/ordataprocessor.md)
+- [PRI-15 - Register As A Data Controller and/or Data Processor](../scf/pri-15-registerasadatacontrollerandordataprocessor.md)
 
 ## Article 30.5
 The obligations referred to in paragraphs 1 and 2 shall not apply to an enterprise or an organisation employing fewer than 250 persons unless the processing it carries out is likely to result in a risk to the rights and freedoms of data subjects, the processing is not occasional, or the processing includes special categories of data as referred to in Article 9(1) or personal data relating to criminal convictions and offences referred to in Article 10.

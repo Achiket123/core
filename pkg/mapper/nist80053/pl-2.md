@@ -9,4 +9,4 @@ System security and privacy plans are scoped to the system and system components
 ## Mapped SCF controls
 - [AST-04 - Network Diagrams & Data Flow Diagrams (DFDs)](../scf/ast-04-networkdiagrams&dataflowdiagramsdfds.md)
 - [IAO-03 - System Security & Privacy Plan (SSPP)](../scf/iao-03-systemsecurity&privacyplansspp.md)
-- [IAO-03.1 - Plan / Coordinate with Other Organizational Entities](../scf/iao-031-plan/coordinatewithotherorganizationalentities.md)
+- [IAO-03.1 - Plan / Coordinate with Other Organizational Entities](../scf/iao-031-plancoordinatewithotherorganizationalentities.md)

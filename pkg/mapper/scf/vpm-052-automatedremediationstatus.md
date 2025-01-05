@@ -1,0 +1,47 @@
+# SCF - VPM-05.2 - Automated Remediation Status
+Automated mechanisms exist to determine the state of system components with regard to flaw remediation.
+## Mapped framework controls
+### NIST 800-53
+- [SI-2(2)](../nist80053/si-2-2.md)
+
+## Evidence request list
+
+
+## Control questions
+Does the organization use automated mechanisms to determine the state of system components with regard to flaw remediation?
+
+## Compliance methods
+
+
+## Control maturity
+### Not performed
+There is no evidence of a capability to determine the state of system components with regard to flaw remediation.
+
+### Performed internally
+SP-CMM1 is N/A, since a structured process is required to determine the state of system components with regard to flaw remediation.
+
+### Planned and tracked
+Vulnerability & Patch Management (VPM) efforts are requirements-driven and formally governed at a local/regional level, but are not consistent across the organization. CMM Level 2 control maturity would reasonably expect all, or at least most, the following criteria to exist:
+- Attack Surface Management (ASM) is decentralized (e.g., a localized/regionalized function) and uses non-standardized methods to implement secure and compliant practices.
+- IT/cybersecurity personnel:
+o	Identify cybersecurity & data privacy controls to address applicable statutory, regulatory and contractual requirements for ASM.
+o	Apply software patches and other vulnerability remediation efforts.
+- Administrative processes and technologies focus on protecting High Value Assets (HVAs), including environments where sensitive/regulated data is stored, transmitted and processed.
+
+### Well defined
+Vulnerability & Patch Management (VPM) efforts are standardized across the organization and centrally managed, where technically feasible, to ensure consistency. CMM Level 3 control maturity would reasonably expect all, or at least most, the following criteria to exist:
+- An IT Asset Management (ITAM) function, or similar function, categorizes devices according to the data the asset stores, transmits and/ or processes and applies the appropriate technology controls to protect the asset and data.
+- A Governance, Risk & Compliance (GRC) function, or similar function:
+o	Defines the scope of ASM activities.
+o	Provides governance oversight for the implementation of applicable statutory, regulatory and contractual cybersecurity & data privacy controls to protect the confidentiality, integrity, availability and safety of the organization's applications, systems, services and data with regards to ASM.
+o	Provides oversight of ASM activities to centrally manage the flaw remediation process as part of the organization's overall Patch& Vulnerability & Patch Management Program (VPMP).
+- A Security Operations Center (SOC), or similar function:
+o	Manages the identification, tracking and remediation of vulnerabilities.
+o	Utilizes a Security Incident Event monitor (SIEM), or similar automated tool, to monitor for unauthorized activities, accounts, connections, devices and software according to organization-specific Indicators of Compromise (IoC), including feeds from applications, hosts, network devices and vulnerability scanners.
+- Asset custodians install the latest stable version of security-related updates on all systems within the organization-defined time requirements.
+
+### Quantitatively controlled
+See SP-CMM3. SP-CMM4 is N/A, since a quantitatively-controlled process is not necessary to determine the state of system components with regard to flaw remediation.
+
+### Continuously improving
+See SP-CMM4. SP-CMM5 is N/A, since a continuously-improving process is not necessary to determine the state of system components with regard to flaw remediation.

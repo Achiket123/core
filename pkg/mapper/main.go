@@ -24,7 +24,10 @@ func main() {
 		}
 	}
 
-	internal.GenerateSCFIndex(scfControlMappings, scfControls)
+	if err := internal.GenerateSCFIndex(scfControlMappings, scfControls); err != nil {
+		log.Fatal(err)
+	}
+
 	_, err = internal.ParseEvidenceRequest()
 	if err != nil {
 		log.Fatal(err)
@@ -66,6 +69,7 @@ func main() {
 	iso27002 := internal.Framework("ISO 27002")
 
 	iso27001Link := "https://raw.githubusercontent.com/JupiterOne/security-policy-templates/main/templates/standards/iso-iec-27001-2022.json"
+
 	iso27001Framework, err := internal.GetISOControls(iso27001, iso27001Link, getFile)
 	if err != nil {
 		log.Fatal(err)

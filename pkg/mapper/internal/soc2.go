@@ -40,13 +40,13 @@ func GetSOC2Controls(url string, getFile bool) (FrameworkSummary, error) {
 	frameworkSummary := FrameworkSummary{}
 
 	if getFile {
-		err := fetchFile(url, "soc2.json")
+		err := fetchFile(url, "pkg/mapper/soc2.json")
 		if err != nil {
 			return frameworkSummary, err
 		}
 	}
 
-	soc2File, err := os.Open("soc2.json")
+	soc2File, err := os.Open("pkg/mapper/soc2.json")
 	if err != nil {
 		return frameworkSummary, err
 	}

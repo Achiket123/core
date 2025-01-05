@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "IAC-15.2 - Removal of Temporary / Emergency Accounts",
+        "title": "",
+        "summary": "Automated mechanisms exist to disable or remove temporary and emergency accounts after an organization-defined time period for each type of account. "
+    }
+}

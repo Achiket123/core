@@ -15,7 +15,7 @@ Where a transfer could not be based on a provision in Article 45 or 46, includin
 
 ### Mapped SCF controls
 - [DCH-24 - Information Location](../scf/dch-24-informationlocation.md)
-- [DCH-25 - Transfer of Sensitive and/or Regulated Data](../scf/dch-25-transferofsensitiveand/orregulateddata.md)
+- [DCH-25 - Transfer of Sensitive and/or Regulated Data](../scf/dch-25-transferofsensitiveandorregulateddata.md)
 - [PRI-07 - Information Sharing With Third Parties](../scf/pri-07-informationsharingwiththirdparties.md)
 - [SEA-15 - Distributed Processing & Storage](../scf/sea-15-distributedprocessing&storage.md)
 - [TPM-04.4 - Third-Party Processing, Storage and Service Locations](../scf/tpm-044-third-partyprocessing,storageandservicelocations.md)
@@ -25,7 +25,7 @@ A transfer pursuant to point (g)  of the first subparagraph of paragraph 1 shall
 
 ### Mapped SCF controls
 - [DCH-24 - Information Location](../scf/dch-24-informationlocation.md)
-- [DCH-25 - Transfer of Sensitive and/or Regulated Data](../scf/dch-25-transferofsensitiveand/orregulateddata.md)
+- [DCH-25 - Transfer of Sensitive and/or Regulated Data](../scf/dch-25-transferofsensitiveandorregulateddata.md)
 - [PRI-07 - Information Sharing With Third Parties](../scf/pri-07-informationsharingwiththirdparties.md)
 - [SEA-15 - Distributed Processing & Storage](../scf/sea-15-distributedprocessing&storage.md)
 - [TPM-04.4 - Third-Party Processing, Storage and Service Locations](../scf/tpm-044-third-partyprocessing,storageandservicelocations.md)
@@ -44,7 +44,7 @@ The controller or processor shall document the assessment as well as the suitabl
 
 ### Mapped SCF controls
 - [DCH-24 - Information Location](../scf/dch-24-informationlocation.md)
-- [DCH-25 - Transfer of Sensitive and/or Regulated Data](../scf/dch-25-transferofsensitiveand/orregulateddata.md)
+- [DCH-25 - Transfer of Sensitive and/or Regulated Data](../scf/dch-25-transferofsensitiveandorregulateddata.md)
 - [PRI-07 - Information Sharing With Third Parties](../scf/pri-07-informationsharingwiththirdparties.md)
 - [SEA-15 - Distributed Processing & Storage](../scf/sea-15-distributedprocessing&storage.md)
 - [TPM-04.4 - Third-Party Processing, Storage and Service Locations](../scf/tpm-044-third-partyprocessing,storageandservicelocations.md)

@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "END-03.1 - Software Installation Alerts",
+        "title": "",
+        "summary": "Mechanisms exist to generate an alert when new software is detected. "
+    }
+}

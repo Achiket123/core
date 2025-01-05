@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "CRY-05.1 - Storage Media",
+        "title": "",
+        "summary": "Cryptographic mechanisms exist to protect the confidentiality and integrity of sensitive/regulated data residing on storage media."
+    }
+}

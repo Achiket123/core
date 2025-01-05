@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "THR-03.1 - Threat Intelligence Reporting",
+        "title": "",
+        "summary": "Mechanisms exist to utilize external threat intelligence feeds to generate and disseminate organization-specific security alerts, advisories and/or directives."
+    }
+}

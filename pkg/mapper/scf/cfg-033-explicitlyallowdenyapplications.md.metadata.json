@@ -1,0 +1,8 @@
+{
+    "metadataAttributes": {
+        "framework": "SCF",
+        "id": "CFG-03.3 - Explicitly Allow / Deny Applications",
+        "title": "",
+        "summary": "Mechanisms exist to explicitly allow (allowlist / whitelist) and/or block (denylist / blacklist) applications that are authorized to execute on systems."
+    }
+}

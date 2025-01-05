@@ -13,7 +13,7 @@ import (
 
 func safeFileName(input string) string {
 	output := input
-	removeCharacters := []string{".", "_", " ", "(", ")"}
+	removeCharacters := []string{".", "_", " ", "(", ")", "/"}
 
 	for _, c := range removeCharacters {
 		output = strings.ReplaceAll(output, c, "")

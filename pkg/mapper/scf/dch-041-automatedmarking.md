@@ -1,0 +1,56 @@
+# SCF - DCH-04.1 - Automated Marking
+Automated mechanisms exist to mark physical media and digital files to indicate the distribution limitations, handling requirements and applicable security markings (if any) of the information to aid Data Loss Prevention (DLP) technologies.
+## Mapped framework controls
+### NIST 800-53
+- [MP-3](../nist80053/mp-3.md)
+
+## Evidence request list
+
+
+## Control questions
+Does the organization use automated mechanisms to mark physical media and digital files to indicate the distribution limitations, handling requirements and applicable security markings (if any) of the information to aid Data Loss Prevention (DLP) technologies?
+
+## Compliance methods
+
+
+## Control maturity
+### Not performed
+There is no evidence of a capability to mark physical media and digital files to indicate the distribution limitations, handling requirements and applicable security markings (if any) of the information to aid Data Loss Prevention (DLP) technologies.
+
+### Performed internally
+SP-CMM1 is N/A, since a structured process is required to mark physical media and digital files to indicate the distribution limitations, handling requirements and applicable security markings (if any) of the information to aid Data Loss Prevention (DLP) technologies.
+
+### Planned and tracked
+SP-CMM2 is N/A, since a well-defined process is required to mark physical media and digital files to indicate the distribution limitations, handling requirements and applicable security markings (if any) of the information to aid Data Loss Prevention (DLP) technologies.
+
+### Well defined
+Data Classification & Handling (DCH) efforts are standardized across the organization and centrally managed, where technically feasible, to ensure consistency. CMM Level 3 control maturity would reasonably expect all, or at least most, the following criteria to exist:
+- A Governance, Risk & Compliance (GRC) function, or similar function, assists users in making information sharing decisions to ensure data is appropriately protected, regardless of where or how it is stored, processed and/ or transmitted.
+- A data classification process exists to identify categories of data and specific protection requirements.
+- A data retention process exists to protect archived data in accordance with applicable statutory, regulatory and contractual obligations.
+- Data/process owners:
+o	Are expected to take the initiative to work with Data Protection Officers (DPOs) to ensure applicable statutory, regulatory and contractual obligations are properly addressed, including the storage, transmission and processing of sensitive/regulated data.
+o	Maintain decentralized inventory logs of all sensitive/regulated media and update sensitive/regulated media inventories at least annually.
+o	Create and maintain Data Flow Diagrams (DFDs) and network diagrams.
+o	Document where sensitive/regulated data is stored, transmitted and processed in order to document data repositories and data flows.
+- A Data Protection Impact Assessment (DPIA) is used to help ensure the protection of sensitive/regulated data processed, stored or transmitted on internal or external systems, in order to implement cybersecurity & data privacy controls in accordance with applicable statutory, regulatory and contractual obligations.
+- Human Resources (HR), documents formal “rules of behavior” as an employment requirement that stipulates acceptable and unacceptable practices pertaining to sensitive/regulated data handling.
+- Data Loss Prevention (DLP), or similar content filtering capabilities, blocks users from performing ad hoc file transfers through unapproved file transfer services (e.g., Box, Dropbox, Google Drive, etc.).
+- Mobile Device Management (MDM) software is used to restrict and protect the data that resides on mobile devices.
+- Administrative processes and technologies:
+o	Identify data classification types to ensure adequate cybersecurity & data privacy controls are in place to protect organizational information and individual data privacy.
+o	Identify and document the location of information on which the information resides.
+o	Restrict and govern the transfer of data to third-countries or international organizations.
+o	Limit the disclosure of data to authorized parties.
+o	Mark media in accordance with data protection requirements so that personnel are alerted to distribution limitations, handling caveats and applicable security requirements.
+o	Prohibit “rogue instances” where unapproved third parties are engaged to store, process or transmit data, including budget reviews and firewall connection authorizations.
+o	Protect and control digital and non-digital media during transport outside of controlled areas using appropriate security measures.
+o	Govern the use of personal devices (e.g., Bring Your Own Device (BYOD)) as part of acceptable and unacceptable behaviors.
+o	Dictate requirements for minimizing data collection to what is necessary for business purposes.
+o	Dictate requirements for limiting the use of sensitive/regulated data in testing, training and research.
+
+### Quantitatively controlled
+See SP-CMM3. SP-CMM4 is N/A, since a quantitatively-controlled process is not necessary to mark physical media and digital files to indicate the distribution limitations, handling requirements and applicable security markings (if any) of the information to aid Data Loss Prevention (DLP) technologies.
+
+### Continuously improving
+See SP-CMM4. SP-CMM5 is N/A, since a continuously-improving process is not necessary to mark physical media and digital files to indicate the distribution limitations, handling requirements and applicable security markings (if any) of the information to aid Data Loss Prevention (DLP) technologies.

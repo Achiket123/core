@@ -27,7 +27,7 @@ type NIST80053Framework struct {
 }
 
 func GetNIST80053Controls(nisturl string, getFile bool) (NIST80053Framework, error) {
-	fileName := "nist80053-v5.json"
+	fileName := "pkg/mapper/nist80053-v5.json"
 	framework := NIST80053Framework{}
 
 	if getFile {
