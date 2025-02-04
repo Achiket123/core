@@ -6,6 +6,7 @@ package graphapi
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/rs/zerolog/log"
@@ -13,6 +14,7 @@ import (
 	entgroup "github.com/theopenlane/core/internal/ent/generated/group"
 	"github.com/theopenlane/core/internal/ent/generated/groupmembership"
 	"github.com/theopenlane/core/internal/graphapi/model"
+	"github.com/theopenlane/utils/rout"
 )
 
 // CreateGroupWithMembers is the resolver for the createGroupWithMembers field.
@@ -40,6 +42,228 @@ func (r *mutationResolver) CreateGroupWithMembers(ctx context.Context, group gen
 		Query().
 		WithMembers().
 		Where(entgroup.IDEQ(res.Group.ID)).Only(ctx)
+	if err != nil {
+		return nil, parseRequestError(err, action{action: ActionCreate, object: "group"})
+	}
+
+	return &model.GroupCreatePayload{
+		Group: finalResult,
+	}, nil
+}
+
+// CreateGroupByClone is the resolver for the createGroupByClone field.
+func (r *mutationResolver) CreateGroupByClone(ctx context.Context, group generated.CreateGroupInput, members []*model.GroupMembersInput, inheritGroupPermissions *string, cloneGroupMembers *string) (*model.GroupCreatePayload, error) {
+	// set the organization in the auth context if its not done for us
+	if err := setOrganizationInAuthContext(ctx, group.OwnerID); err != nil {
+		log.Error().Err(err).Msg("failed to set organization in auth context")
+
+		return nil, rout.NewMissingRequiredFieldError("owner_id")
+	}
+
+	if inheritGroupPermissions != nil {
+		groupWithPermissions, err := withTransactionalMutation(ctx).Group.
+			Query().
+			Where(entgroup.IDEQ(*inheritGroupPermissions)).
+			// Control permissions
+			WithControlEditors().
+			WithControlViewers().
+			WithControlBlockedGroups().
+			WithControlCreators().
+
+			// Control Objective permissions
+			WithControlObjectiveEditors().
+			WithControlObjectiveViewers().
+			WithControlObjectiveBlockedGroups().
+			WithControlObjectiveCreators().
+
+			// Program permissions
+			WithProgramViewers().
+			WithProgramEditors().
+			WithProgramBlockedGroups().
+			WithProgramCreators().
+
+			// Risk permissions
+			WithRiskViewers().
+			WithRiskEditors().
+			WithRiskBlockedGroups().
+			WithRiskCreators().
+
+			// Internal Policy permissions
+			WithInternalPolicyEditors().
+			WithInternalPolicyBlockedGroups().
+			WithInternalPolicyCreators().
+
+			// Procedure permissions
+			WithProcedureEditors().
+			WithProcedureBlockedGroups().
+			WithProcedureCreators().
+
+			// Narrative permissions
+			WithNarrativeViewers().
+			WithNarrativeEditors().
+			WithNarrativeBlockedGroups().
+			WithNarrativeCreators().
+
+			// Group permissions
+			WithGroupCreators().
+			Only(ctx)
+		if err != nil {
+			return nil, parseRequestError(err, action{action: ActionCreate, object: "group"})
+		}
+
+		for _, controlEditor := range groupWithPermissions.Edges.ControlEditors {
+			group.ControlEditorIDs = append(group.ControlEditorIDs, controlEditor.ID)
+		}
+
+		for _, controlViewer := range groupWithPermissions.Edges.ControlViewers {
+			group.ControlViewerIDs = append(group.ControlViewerIDs, controlViewer.ID)
+		}
+
+		for _, controlBlockedGroup := range groupWithPermissions.Edges.ControlBlockedGroups {
+			group.ControlBlockedGroupIDs = append(group.ControlBlockedGroupIDs, controlBlockedGroup.ID)
+		}
+
+		for _, controlCreator := range groupWithPermissions.Edges.ControlCreators {
+			group.ControlCreatorIDs = append(group.ControlCreatorIDs, controlCreator.ID)
+		}
+
+		for _, controlObjectiveEditor := range groupWithPermissions.Edges.ControlObjectiveEditors {
+			group.ControlObjectiveEditorIDs = append(group.ControlObjectiveEditorIDs, controlObjectiveEditor.ID)
+		}
+
+		for _, controlObjectiveViewer := range groupWithPermissions.Edges.ControlObjectiveViewers {
+			group.ControlObjectiveViewerIDs = append(group.ControlObjectiveViewerIDs, controlObjectiveViewer.ID)
+		}
+
+		for _, controlObjectiveBlockedGroup := range groupWithPermissions.Edges.ControlObjectiveBlockedGroups {
+			group.ControlObjectiveBlockedGroupIDs = append(group.ControlObjectiveBlockedGroupIDs, controlObjectiveBlockedGroup.ID)
+		}
+
+		for _, controlObjectiveCreator := range groupWithPermissions.Edges.ControlObjectiveCreators {
+			group.ControlObjectiveCreatorIDs = append(group.ControlObjectiveCreatorIDs, controlObjectiveCreator.ID)
+		}
+
+		for _, programViewer := range groupWithPermissions.Edges.ProgramViewers {
+			group.ProgramViewerIDs = append(group.ProgramViewerIDs, programViewer.ID)
+		}
+
+		for _, programEditor := range groupWithPermissions.Edges.ProgramEditors {
+			group.ProgramEditorIDs = append(group.ProgramEditorIDs, programEditor.ID)
+		}
+
+		for _, programBlockedGroup := range groupWithPermissions.Edges.ProgramBlockedGroups {
+			group.ProgramBlockedGroupIDs = append(group.ProgramBlockedGroupIDs, programBlockedGroup.ID)
+		}
+
+		for _, programCreator := range groupWithPermissions.Edges.ProgramCreators {
+			group.ProgramCreatorIDs = append(group.ProgramCreatorIDs, programCreator.ID)
+		}
+
+		for _, riskViewer := range groupWithPermissions.Edges.RiskViewers {
+			group.RiskViewerIDs = append(group.RiskViewerIDs, riskViewer.ID)
+		}
+
+		for _, riskEditor := range groupWithPermissions.Edges.RiskEditors {
+			group.RiskEditorIDs = append(group.RiskEditorIDs, riskEditor.ID)
+		}
+
+		for _, riskBlockedGroup := range groupWithPermissions.Edges.RiskBlockedGroups {
+			group.RiskBlockedGroupIDs = append(group.RiskBlockedGroupIDs, riskBlockedGroup.ID)
+		}
+
+		for _, riskCreator := range groupWithPermissions.Edges.RiskCreators {
+			group.RiskCreatorIDs = append(group.RiskCreatorIDs, riskCreator.ID)
+		}
+
+		for _, internalPolicyEditor := range groupWithPermissions.Edges.InternalPolicyEditors {
+			group.InternalPolicyEditorIDs = append(group.InternalPolicyEditorIDs, internalPolicyEditor.ID)
+		}
+
+		for _, internalPolicyBlockedGroup := range groupWithPermissions.Edges.InternalPolicyBlockedGroups {
+			group.InternalPolicyBlockedGroupIDs = append(group.InternalPolicyBlockedGroupIDs, internalPolicyBlockedGroup.ID)
+		}
+
+		for _, internalPolicyCreator := range groupWithPermissions.Edges.InternalPolicyCreators {
+			group.InternalPolicyCreatorIDs = append(group.InternalPolicyCreatorIDs, internalPolicyCreator.ID)
+		}
+
+		for _, procedureEditor := range groupWithPermissions.Edges.ProcedureEditors {
+			group.ProcedureEditorIDs = append(group.ProcedureEditorIDs, procedureEditor.ID)
+		}
+
+		for _, procedureBlockedGroup := range groupWithPermissions.Edges.ProcedureBlockedGroups {
+			group.ProcedureBlockedGroupIDs = append(group.ProcedureBlockedGroupIDs, procedureBlockedGroup.ID)
+		}
+
+		for _, procedureCreator := range groupWithPermissions.Edges.ProcedureCreators {
+			group.ProcedureCreatorIDs = append(group.ProcedureCreatorIDs, procedureCreator.ID)
+		}
+
+		for _, narrativeViewer := range groupWithPermissions.Edges.NarrativeViewers {
+			group.NarrativeViewerIDs = append(group.NarrativeViewerIDs, narrativeViewer.ID)
+		}
+
+		for _, narrativeEditor := range groupWithPermissions.Edges.NarrativeEditors {
+			group.NarrativeEditorIDs = append(group.NarrativeEditorIDs, narrativeEditor.ID)
+		}
+
+		for _, narrativeBlockedGroup := range groupWithPermissions.Edges.NarrativeBlockedGroups {
+			group.NarrativeBlockedGroupIDs = append(group.NarrativeBlockedGroupIDs, narrativeBlockedGroup.ID)
+		}
+
+		for _, narrativeCreator := range groupWithPermissions.Edges.NarrativeCreators {
+			group.NarrativeCreatorIDs = append(group.NarrativeCreatorIDs, narrativeCreator.ID)
+		}
+
+		for _, groupCreator := range groupWithPermissions.Edges.GroupCreators {
+			group.GroupCreatorIDs = append(group.GroupCreatorIDs, groupCreator.ID)
+		}
+	}
+
+	res, err := withTransactionalMutation(ctx).Group.Create().SetInput(group).Save(ctx)
+	if err != nil {
+		return nil, parseRequestError(err, action{action: ActionCreate, object: "group"})
+	}
+
+	if cloneGroupMembers != nil {
+		clonedGroupMembers, err := withTransactionalMutation(ctx).GroupMembership.Query().Where(groupmembership.GroupID(*cloneGroupMembers)).All(ctx)
+		if err != nil {
+			return nil, parseRequestError(err, action{action: ActionCreate, object: "group"})
+		}
+
+		var memberInput []*generated.CreateGroupMembershipInput
+
+		existingMembers, err := res.Members(ctx)
+		if err != nil {
+			return nil, parseRequestError(err, action{action: ActionCreate, object: "group"})
+		}
+
+		for _, member := range clonedGroupMembers {
+			memberExists := false
+			for _, existingMember := range existingMembers {
+				if member.UserID == existingMember.UserID {
+					memberExists = true
+				}
+			}
+
+			if !memberExists {
+				memberInput = append(memberInput, &generated.CreateGroupMembershipInput{
+					GroupID: res.ID,
+					UserID:  member.UserID,
+					Role:    &member.Role,
+				})
+			}
+		}
+
+		if _, err := r.CreateBulkGroupMembership(ctx, memberInput); err != nil {
+			return nil, err
+		}
+	}
+
+	finalResult, err := withTransactionalMutation(ctx).Group.
+		Query().
+		WithMembers().
+		Where(entgroup.IDEQ(res.ID)).Only(ctx)
 	if err != nil {
 		return nil, parseRequestError(err, action{action: ActionCreate, object: "group"})
 	}
@@ -148,4 +372,14 @@ func (r *updateGroupInputResolver) UpdateGroupSettings(ctx context.Context, obj 
 	}
 
 	return nil
+}
+
+// InheritGroupPermissions is the resolver for the inheritGroupPermissions field.
+func (r *updateGroupInputResolver) InheritGroupPermissions(ctx context.Context, obj *generated.UpdateGroupInput, data *string) error {
+	panic(fmt.Errorf("not implemented: InheritGroupPermissions - inheritGroupPermissions"))
+}
+
+// CloneGroupMembers is the resolver for the cloneGroupMembers field.
+func (r *updateGroupInputResolver) CloneGroupMembers(ctx context.Context, obj *generated.UpdateGroupInput, data *string) error {
+	panic(fmt.Errorf("not implemented: CloneGroupMembers - cloneGroupMembers"))
 }
