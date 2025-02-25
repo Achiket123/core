@@ -6,6 +6,8 @@ import (
 )
 
 func TestNewQueryBuilder(t *testing.T) {
+	t.Parallel()
+
 	qb := NewQueryBuilder()
 	if qb == nil {
 		t.Error("Expected NewQueryBuilder to return a non-nil QueryBuilder")
@@ -16,6 +18,8 @@ func TestNewQueryBuilder(t *testing.T) {
 }
 
 func TestWithOperator(t *testing.T) {
+	t.Parallel()
+
 	operator := " AND "
 	qb := NewQueryBuilder(WithOperator(operator))
 	if qb.operator != operator {
@@ -24,6 +28,8 @@ func TestWithOperator(t *testing.T) {
 }
 
 func TestWithKeys(t *testing.T) {
+	t.Parallel()
+
 	keys := map[string]string{"key1": "value1", "key2": "value2"}
 	qb := NewQueryBuilder(WithKeys(keys))
 	if !reflect.DeepEqual(qb.keys, keys) {
@@ -32,6 +38,8 @@ func TestWithKeys(t *testing.T) {
 }
 
 func TestBuildQuery(t *testing.T) {
+	t.Parallel()
+
 	keys := map[string]string{
 		"key1":  "value1",
 		"key2":  "value2",

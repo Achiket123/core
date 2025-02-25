@@ -23,6 +23,7 @@ env:
   TEST_DB_URL: "docker://postgres:17-alpine"
   TEST_DB_CONTAINER_EXPIRY: "5" # in minutes
   TEST_FGA_URL: "localhost:8080"
+  TESTCONTAINERS_REUSE_ENABLE: true
   ENV: config
   # go build
   GOFLAGS: -buildvcs=false
@@ -91,7 +92,7 @@ tasks:
     env:
       TEST_DB_URL: "docker://postgres:17-alpine"
     cmds:
-      - go test -v ./...
+      - go test -v ./... -parallel 10 --failfast
 
   go:test:cover:
     desc: runs and outputs results of created go tests with coverage

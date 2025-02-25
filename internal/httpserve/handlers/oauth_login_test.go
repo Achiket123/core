@@ -46,6 +46,8 @@ func TestParseName(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			got := parseName(tt.user)
 
 			assert.Equal(t, tt.want, got)

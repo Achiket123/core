@@ -56,6 +56,8 @@ func (suite *GraphTestSuite) TestQueryProgram() {
 
 	for _, tc := range testCases {
 		t.Run("Get "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp, err := tc.client.GetProgramByID(tc.ctx, tc.queryID)
 
 			if tc.errorMsg != "" {
@@ -131,6 +133,8 @@ func (suite *GraphTestSuite) TestQueryPrograms() {
 
 	for _, tc := range testCases {
 		t.Run("Get "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp, err := tc.client.GetAllPrograms(tc.ctx)
 
 			if tc.errorMsg != "" {
@@ -292,6 +296,8 @@ func (suite *GraphTestSuite) TestMutationCreateProgram() {
 
 	for _, tc := range testCases {
 		t.Run("Create "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			if tc.addGroupToOrg {
 				_, err := suite.client.api.UpdateOrganization(testUser1.UserCtx, testUser1.OrganizationID,
 					openlaneclient.UpdateOrganizationInput{

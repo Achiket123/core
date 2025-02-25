@@ -46,6 +46,8 @@ func (suite *GraphTestSuite) TestQueryApiToken() {
 
 	for _, tc := range testCases {
 		t.Run("Get "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp, err := suite.client.api.GetAPITokenByID(tc.ctx, tc.queryID)
 
 			if tc.errorMsg != "" {
@@ -154,6 +156,8 @@ func (suite *GraphTestSuite) TestMutationCreateAPIToken() {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp, err := suite.client.api.CreateAPIToken(testUser1.UserCtx, tc.input)
 
 			if tc.errorMsg != "" {

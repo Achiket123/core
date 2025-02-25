@@ -78,6 +78,8 @@ func (suite *GraphTestSuite) TestQuerySubscriber() {
 
 	for _, tc := range testCases {
 		t.Run("Get "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp, err := tc.client.GetSubscriberByEmail(tc.ctx, tc.email)
 
 			if tc.wantErr {
@@ -136,6 +138,8 @@ func (suite *GraphTestSuite) TestQuerySubscribers() {
 
 	for _, tc := range testCases {
 		t.Run("Get "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp, err := tc.client.GetAllSubscribers(tc.ctx)
 
 			require.NoError(t, err)
@@ -366,6 +370,8 @@ func (suite *GraphTestSuite) TestDeleteSubscriber() {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp, err := tc.client.DeleteSubscriber(tc.ctx, tc.email, &tc.organizationID)
 
 			if tc.wantErr {

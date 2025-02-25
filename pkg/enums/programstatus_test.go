@@ -10,6 +10,8 @@ import (
 )
 
 func TestToProgramStatus(t *testing.T) {
+	t.Parallel()
+
 	testCases := []struct {
 		input    string
 		expected enums.ProgramStatus

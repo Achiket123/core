@@ -42,6 +42,8 @@ func TestGetObjectIDFromEntValue(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			got, err := GetObjectIDFromEntValue(tt.input)
 			if tt.wantErr {
 				assert.Error(t, err)
@@ -141,6 +143,8 @@ func TestParseGraphqlInputForEdgeIDs(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			got, err := parseGraphqlInputForEdgeIDs(tt.ctx, tt.parentField)
 			if tt.wantErr {
 				assert.Error(t, err)
@@ -200,6 +204,8 @@ func TestCheckForEdge(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			got := checkForEdge(tt.parentField, tt.edgeField)
 			assert.Equal(t, tt.want, got)
 		})

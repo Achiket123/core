@@ -8,6 +8,8 @@ import (
 )
 
 func TestEmitEventWithPool(t *testing.T) {
+	t.Parallel()
+
 	soiree := NewEventPool(WithPool(NewPondPool(WithMaxWorkers(10))))
 
 	var processedEvents int32
@@ -56,6 +58,8 @@ func TestEmitEventWithPool(t *testing.T) {
 }
 
 func TestEmitMultipleEventsWithPool(t *testing.T) {
+	t.Parallel()
+
 	// Create a EventPool instance with a PondPool.
 	soiree := NewEventPool(WithPool(NewPondPool(WithMaxWorkers(10))))
 

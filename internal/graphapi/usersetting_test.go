@@ -68,6 +68,8 @@ func (suite *GraphTestSuite) TestQueryUserSetting() {
 
 	for _, tc := range testCases {
 		t.Run("Get "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp, err := tc.client.GetUserSettingByID(tc.ctx, tc.queryID)
 
 			if tc.errorMsg != "" {
@@ -102,6 +104,8 @@ func (suite *GraphTestSuite) TestQueryUserSettings() {
 	_ = (&UserBuilder{client: suite.client}).MustNew(reqCtx, t)
 
 	t.Run("Get User Settings", func(t *testing.T) {
+		t.Parallel()
+
 		resp, err := suite.client.api.GetAllUserSettings(reqCtx)
 
 		require.NoError(t, err)

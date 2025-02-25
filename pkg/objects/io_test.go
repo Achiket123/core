@@ -12,6 +12,8 @@ import (
 )
 
 func TestDetectContentType(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name        string
 		data        io.ReadSeeker
@@ -54,6 +56,8 @@ func TestDetectContentType(t *testing.T) {
 }
 
 func TestReaderToSeeker(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name        string
 		data        io.Reader
@@ -101,6 +105,8 @@ func TestReaderToSeeker(t *testing.T) {
 }
 
 func TestStreamToByte(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name        string
 		data        io.ReadSeeker
@@ -137,6 +143,8 @@ func TestStreamToByte(t *testing.T) {
 }
 
 func TestNewUploadFile(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name        string
 		fileContent []byte

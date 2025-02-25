@@ -18,6 +18,8 @@ func mockListener(id string, shouldError bool) Listener {
 }
 
 func TestNewTopic(t *testing.T) {
+	t.Parallel()
+
 	topic := NewTopic()
 	if topic == nil {
 		t.Error("NewTopic() should not return nil")
@@ -25,6 +27,8 @@ func TestNewTopic(t *testing.T) {
 }
 
 func TestAddRemoveListener(t *testing.T) {
+	t.Parallel()
+
 	topic := NewTopic()
 	listener1 := mockListener("1", false)
 	listener2 := mockListener("2", false)
@@ -61,6 +65,8 @@ func TestAddRemoveListener(t *testing.T) {
 }
 
 func TestTriggerListeners(t *testing.T) {
+	t.Parallel()
+
 	topic := NewTopic()
 
 	type Payload struct {

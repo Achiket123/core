@@ -6,6 +6,8 @@ import (
 )
 
 func TestNewBaseEvent(t *testing.T) {
+	t.Parallel()
+
 	payload := map[string]string{"key": "value"} // Payload is a map
 	event := NewBaseEvent("test_topic", payload)
 
@@ -24,6 +26,8 @@ func TestNewBaseEvent(t *testing.T) {
 }
 
 func TestBaseEventSetAbortedAndIsAborted(t *testing.T) {
+	t.Parallel()
+
 	type Payload struct {
 		Data string
 	}
@@ -48,6 +52,8 @@ func TestBaseEventSetAbortedAndIsAborted(t *testing.T) {
 }
 
 func TestPropertiesSimple(t *testing.T) {
+	t.Parallel()
+
 	text := "ABC"
 	number := 0.5
 
@@ -70,6 +76,8 @@ func TestPropertiesSimple(t *testing.T) {
 }
 
 func TestPropertiesMulti(t *testing.T) {
+	t.Parallel()
+
 	p0 := Properties{"title": "A", "value": 0.5}
 	p1 := NewProperties().Set("title", "A").Set("value", 0.5)
 
@@ -79,6 +87,8 @@ func TestPropertiesMulti(t *testing.T) {
 }
 
 func TestEventProperties(t *testing.T) {
+	t.Parallel()
+
 	event := NewTestEvent("test.event", "test payload")
 	event.Properties().Set("key", "value")
 
@@ -88,6 +98,8 @@ func TestEventProperties(t *testing.T) {
 }
 
 func TestEventPropertiesSet(t *testing.T) {
+	t.Parallel()
+
 	event := NewTestEvent("test.event", "test payload")
 	event.SetProperties(Properties{"key": "value"})
 
@@ -97,6 +109,8 @@ func TestEventPropertiesSet(t *testing.T) {
 }
 
 func TestEventPropertiesSetNil(t *testing.T) {
+	t.Parallel()
+
 	event := NewTestEvent("test.event", "test payload")
 	event.SetProperties(nil)
 
@@ -106,6 +120,8 @@ func TestEventPropertiesSetNil(t *testing.T) {
 }
 
 func TestEventPropertiesSetNilMap(t *testing.T) {
+	t.Parallel()
+
 	event := NewTestEvent("test.event", "test payload")
 	event.SetProperties(Properties(nil))
 

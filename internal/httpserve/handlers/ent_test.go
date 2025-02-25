@@ -104,6 +104,8 @@ func TestCreateUserInput(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.testName, func(t *testing.T) {
+			t.Parallel()
+
 			input := createUserInput(tc.name, tc.email, tc.provider, tc.image)
 			assert.Equal(t, tc.expected.FirstName, input.FirstName)
 			assert.Equal(t, tc.expected.LastName, input.LastName)

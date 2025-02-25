@@ -22,6 +22,7 @@ import (
 
 func (suite *HandlerTestSuite) TestVerifyHandler() {
 	t := suite.T()
+	t.Parallel()
 
 	// add handler
 	suite.e.GET("verify", suite.h.VerifyEmail)

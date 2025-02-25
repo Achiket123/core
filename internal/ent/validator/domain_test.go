@@ -22,6 +22,8 @@ func TestValidateDomains(t *testing.T) {
 
 	for _, d := range validDomains {
 		t.Run(fmt.Sprintf("valid domain: %s", d), func(t *testing.T) {
+			t.Parallel()
+
 			funcCheck := validator.ValidateDomains()
 			err := funcCheck([]string{d})
 			assert.Empty(t, err)
@@ -38,6 +40,8 @@ func TestValidateDomains(t *testing.T) {
 
 	for _, d := range invalidDomains {
 		t.Run(fmt.Sprintf("invalid domain: %s", d), func(t *testing.T) {
+			t.Parallel()
+
 			funcCheck := validator.ValidateDomains()
 			err := funcCheck([]string{d})
 			assert.NotEmpty(t, err)

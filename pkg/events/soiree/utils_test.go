@@ -5,6 +5,8 @@ import (
 )
 
 func TestMatchTopicPattern(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		pattern string
 		subject string

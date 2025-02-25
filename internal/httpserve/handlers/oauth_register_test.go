@@ -21,6 +21,7 @@ import (
 
 func (suite *HandlerTestSuite) TestOauthRegister() {
 	t := suite.T()
+	t.Parallel()
 
 	// add login handler
 	suite.e.POST("oauth/register", suite.h.OauthRegister)

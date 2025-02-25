@@ -24,6 +24,8 @@ import (
 )
 
 func TestFileUploadMiddleware(t *testing.T) {
+	t.Parallel()
+
 	tt := []struct {
 		name               string
 		maxFileSize        int64
@@ -203,6 +205,8 @@ func TestFileUploadMiddleware(t *testing.T) {
 }
 
 func TestCreateURI(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		scheme      string
 		destination string
@@ -238,6 +242,8 @@ func TestCreateURI(t *testing.T) {
 }
 
 func TestFormatFileSize(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		size         int64
 		expectedSize string

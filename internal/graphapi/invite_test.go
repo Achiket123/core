@@ -57,6 +57,8 @@ func (suite *GraphTestSuite) TestQueryInvite() {
 
 	for _, tc := range testCases {
 		t.Run("Get "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp, err := tc.client.GetInviteByID(tc.ctx, tc.queryID)
 
 			if tc.wantErr {
@@ -326,6 +328,8 @@ func (suite *GraphTestSuite) TestMutationDeleteInvite() {
 
 	for _, tc := range testCases {
 		t.Run("Delete "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp, err := tc.client.DeleteInvite(tc.ctx, tc.queryID)
 
 			if tc.wantErr {

@@ -69,6 +69,8 @@ func (suite *GraphTestSuite) TestQueryNarrative() {
 
 	for _, tc := range testCases {
 		t.Run("Get "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			// setup the narrative if it is not already created
 			if tc.queryID == "" {
 				resp, err := suite.client.api.CreateNarrative(testUser1.UserCtx,
@@ -154,6 +156,8 @@ func (suite *GraphTestSuite) TestQueryNarratives() {
 
 	for _, tc := range testCases {
 		t.Run("List "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp, err := tc.client.GetAllNarratives(tc.ctx)
 			require.NoError(t, err)
 			require.NotNil(t, resp)
@@ -296,6 +300,8 @@ func (suite *GraphTestSuite) TestMutationCreateNarrative() {
 
 	for _, tc := range testCases {
 		t.Run("Create "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			if tc.addGroupToOrg {
 				_, err := suite.client.api.UpdateOrganization(testUser1.UserCtx, testUser1.OrganizationID,
 					openlaneclient.UpdateOrganizationInput{
@@ -449,6 +455,8 @@ func (suite *GraphTestSuite) TestMutationUpdateNarrative() {
 
 	for _, tc := range testCases {
 		t.Run("Update "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp, err := tc.client.UpdateNarrative(tc.ctx, narrative.ID, tc.request)
 			if tc.expectedErr != "" {
 				require.Error(t, err)

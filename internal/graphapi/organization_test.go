@@ -66,6 +66,8 @@ func (suite *GraphTestSuite) TestQueryOrganization() {
 
 	for _, tc := range testCases {
 		t.Run("Get "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp, err := tc.client.GetOrganizationByID(tc.ctx, tc.queryID)
 
 			if tc.errorMsg != "" {
@@ -373,6 +375,8 @@ func (suite *GraphTestSuite) TestMutationCreateOrganization() {
 
 	for _, tc := range testCases {
 		t.Run("Create "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			if tc.avatarFile != nil {
 				if tc.errorMsg == "" {
 					expectUpload(t, suite.client.objectStore.Storage, []graphql.Upload{*tc.avatarFile})
@@ -874,6 +878,8 @@ func (suite *GraphTestSuite) TestMutationDeleteOrganization() {
 
 	for _, tc := range testCases {
 		t.Run("Delete "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp, err := suite.client.api.DeleteOrganization(tc.ctx, tc.orgID)
 
 			if tc.errorMsg != "" {

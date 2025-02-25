@@ -64,6 +64,8 @@ func (suite *HandlerTestSuite) TestAccountRolesHandler() {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			if tc.errMsg == "" {
 				if len(tc.request.Relations) == 0 {
 					tc.request.Relations = handlers.DefaultAllRelations

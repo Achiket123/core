@@ -66,7 +66,13 @@ func (suite *HookTestSuite) TearDownSuite() {
 func (suite *HookTestSuite) setupClient() *generated.Client {
 	t := suite.T()
 
-	suite.ofgaTF = fgatest.NewFGATestcontainer(context.Background(), fgatest.WithModelFile(fgaModelFile))
+	suite.ofgaTF = fgatest.NewFGATestcontainer(context.Background(),
+		fgatest.WithModelFile(fgaModelFile),
+		fgatest.WithReuse(true),
+		fgatest.WithMemory(1024*1024*2014*8), // 8GB
+		fgatest.WithCPU(20000),
+	)
+
 	ctx := context.Background()
 
 	fgaClient, err := suite.ofgaTF.NewFgaClient(ctx)

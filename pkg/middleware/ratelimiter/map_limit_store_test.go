@@ -8,6 +8,8 @@ import (
 )
 
 func TestNewMapLimitStore(t *testing.T) {
+	t.Parallel()
+
 	type args struct {
 		expirationTime time.Duration
 		flushInterval  time.Duration
@@ -33,6 +35,8 @@ func TestNewMapLimitStore(t *testing.T) {
 }
 
 func TestMapLimitStoreIncrement(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		key     string
@@ -58,6 +62,8 @@ func TestMapLimitStoreIncrement(t *testing.T) {
 }
 
 func TestMapLimitStoreGet(t *testing.T) {
+	t.Parallel()
+
 	type args struct {
 		key            string
 		previousWindow time.Time
@@ -97,6 +103,8 @@ func TestMapLimitStoreGet(t *testing.T) {
 }
 
 func TestMapLimitStoreSize(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name   string
 		key    string

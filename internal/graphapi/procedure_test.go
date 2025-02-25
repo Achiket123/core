@@ -63,6 +63,8 @@ func (suite *GraphTestSuite) TestQueryProcedure() {
 
 	for _, tc := range testCases {
 		t.Run("Get "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp, err := tc.client.GetProcedureByID(tc.ctx, tc.queryID)
 
 			if tc.errorMsg != "" {
@@ -131,6 +133,8 @@ func (suite *GraphTestSuite) TestQueryProcedures() {
 
 	for _, tc := range testCases {
 		t.Run("List "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp, err := tc.client.GetAllProcedures(tc.ctx)
 			require.NoError(t, err)
 			require.NotNil(t, resp)
@@ -250,6 +254,8 @@ func (suite *GraphTestSuite) TestMutationCreateProcedure() {
 
 	for _, tc := range testCases {
 		t.Run("Create "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			if tc.addGroupToOrg {
 				_, err := suite.client.api.UpdateOrganization(testUser1.UserCtx, testUser1.OrganizationID,
 					openlaneclient.UpdateOrganizationInput{

@@ -11,7 +11,6 @@ import (
 
 	echo "github.com/theopenlane/echox"
 	"github.com/theopenlane/emailtemplates"
-	"github.com/theopenlane/iam/fgax"
 	fgatest "github.com/theopenlane/iam/fgax/testutils"
 	"github.com/theopenlane/iam/sessions"
 	"github.com/theopenlane/iam/totp"
@@ -51,7 +50,6 @@ type HandlerTestSuite struct {
 	db          *ent.Client
 	api         *openlaneclient.OpenlaneClient
 	h           *handlers.Handler
-	fga         *fgax.Client
 	tf          *testutils.TestFixture
 	ofgaTF      *fgatest.OpenFGATestFixture
 	objectStore *objects.Objects
@@ -73,7 +71,13 @@ func (suite *HandlerTestSuite) SetupSuite() {
 	suite.tf = entdb.NewTestFixture()
 
 	// setup openFGA container
-	suite.ofgaTF = fgatest.NewFGATestcontainer(context.Background(), fgatest.WithModelFile(fgaModelFile))
+	suite.ofgaTF = fgatest.NewFGATestcontainer(context.Background(),
+		fgatest.WithModelFile(fgaModelFile),
+		fgatest.WithReuse(true),
+		fgatest.WithMemory(1024*1024*2014*8), // 8GB
+		fgatest.WithCPU(20000),
+	)
+
 }
 
 func (suite *HandlerTestSuite) SetupTest() {
@@ -154,10 +158,10 @@ func (suite *HandlerTestSuite) SetupTest() {
 }
 
 func (suite *HandlerTestSuite) TearDownTest() {
-	if suite.db != nil {
-		err := suite.db.CloseAll()
-		require.NoError(suite.T(), err)
-	}
+	// if suite.db != nil {
+	// 	err := suite.db.CloseAll()
+	// 	require.NoError(suite.T(), err)
+	// }
 }
 
 func (suite *HandlerTestSuite) ClearTestData() {
@@ -166,11 +170,16 @@ func (suite *HandlerTestSuite) ClearTestData() {
 }
 
 func (suite *HandlerTestSuite) TearDownSuite() {
-	testutils.TeardownFixture(suite.tf)
+	// testutils.TeardownFixture(suite.tf)
 
-	// terminate all fga containers
-	err := suite.ofgaTF.TeardownFixture()
-	require.NoError(suite.T(), err)
+	// // terminate all fga containers
+	// err := suite.ofgaTF.TeardownFixture()
+	// require.NoError(suite.T(), err)
+
+	// if suite.db != nil {
+	// 	err := suite.db.CloseAll()
+	// 	require.NoError(suite.T(), err)
+	// }
 }
 
 func setupEcho(dbClient *ent.Client) *echo.Echo {

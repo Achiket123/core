@@ -31,6 +31,8 @@ type Control struct {
 }
 
 func TestGetSchema(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		input    reflect.Type
@@ -69,6 +71,8 @@ func TestGetSchema(t *testing.T) {
 	}
 }
 func TestValidate(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		input   interface{}

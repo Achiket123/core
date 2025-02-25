@@ -9,6 +9,8 @@ import (
 )
 
 func TestPermissionValues(t *testing.T) {
+	t.Parallel()
+
 	expected := []string{"EDITOR", "VIEWER", "BLOCKED", "CREATOR"}
 	values := Permission("").Values()
 
@@ -20,6 +22,8 @@ func TestPermissionValues(t *testing.T) {
 }
 
 func TestPermissionString(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		permission Permission
 		expected   string
@@ -36,6 +40,8 @@ func TestPermissionString(t *testing.T) {
 }
 
 func TestToPermission(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		input    string
 		expected *Permission
@@ -54,6 +60,8 @@ func TestToPermission(t *testing.T) {
 }
 
 func TestPermissionMarshalGQL(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		permission Permission
 		expected   string
@@ -73,6 +81,8 @@ func TestPermissionMarshalGQL(t *testing.T) {
 }
 
 func TestPermissionUnmarshalGQL(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		input    interface{}
 		expected Permission

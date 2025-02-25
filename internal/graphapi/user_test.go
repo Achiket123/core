@@ -46,6 +46,8 @@ func (suite *GraphTestSuite) TestQueryUser() {
 
 	for _, tc := range testCases {
 		t.Run("Get "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp, err := suite.client.api.GetUserByID(testUser1.UserCtx, tc.queryID)
 
 			if tc.errorMsg != "" {
@@ -70,6 +72,7 @@ func (suite *GraphTestSuite) TestQueryUsers() {
 	t := suite.T()
 
 	t.Run("Get Users", func(t *testing.T) {
+		t.Parallel()
 		resp, err := suite.client.api.GetAllUsers(testUser1.UserCtx)
 
 		require.NoError(t, err)
@@ -136,6 +139,8 @@ func (suite *GraphTestSuite) TestMutationCreateUser() {
 
 	for _, tc := range testCases {
 		t.Run("Create "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp, err := suite.client.api.CreateUser(testUser1.UserCtx, tc.userInput, tc.avatarFile)
 
 			if tc.errorMsg != "" {
@@ -377,6 +382,8 @@ func (suite *GraphTestSuite) TestMutationDeleteUser() {
 
 	for _, tc := range testCases {
 		t.Run("Delete "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp, err := suite.client.api.DeleteUser(reqCtx, tc.userID)
 
 			if tc.errorMsg != "" {

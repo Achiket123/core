@@ -10,6 +10,8 @@ const errorMessage = "On() failed with error: %v"
 
 // TestWithErrorHandler tests that the custom error handler is called on error
 func TestWithErrorHandler(t *testing.T) {
+	t.Parallel()
+
 	// Define a variable to determine if the custom error handler was called
 	var handlerCalled bool
 
@@ -50,6 +52,8 @@ func TestWithErrorHandler(t *testing.T) {
 }
 
 func TestWithErrorHandlerAsync(t *testing.T) {
+	t.Parallel()
+
 	// Define a variable to determine if the custom error handler was called
 	var handlerCalled bool
 	// To safely update handlerCalled from different goroutines
@@ -106,6 +110,8 @@ func TestWithErrorHandlerAsync(t *testing.T) {
 }
 
 func TestWithPanicHandlerSync(t *testing.T) {
+	t.Parallel()
+
 	// Flag to indicate panic handler invocation
 	var panicHandlerInvoked bool
 
@@ -148,6 +154,8 @@ func TestWithPanicHandlerSync(t *testing.T) {
 }
 
 func TestWithPanicHandlerAsync(t *testing.T) {
+	t.Parallel()
+
 	// Flag to indicate panic handler invocation
 	var panicHandlerInvoked bool
 
@@ -196,6 +204,8 @@ func TestWithPanicHandlerAsync(t *testing.T) {
 }
 
 func TestWithIDGenerator(t *testing.T) {
+	t.Parallel()
+
 	// Custom ID to be returned by the custom ID generator
 	customID := "customID"
 

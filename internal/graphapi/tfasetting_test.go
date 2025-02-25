@@ -45,6 +45,8 @@ func (suite *GraphTestSuite) TestQueryTFASetting() {
 
 	for _, tc := range testCases {
 		t.Run("Get "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp, err := tc.client.GetTFASetting(tc.ctx)
 
 			if tc.errorMsg != "" {

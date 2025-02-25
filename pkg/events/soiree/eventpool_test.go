@@ -9,6 +9,8 @@ import (
 
 // TestNewEventPool tests the creation of a new EventPool
 func TestNewEventPool(t *testing.T) {
+	t.Parallel()
+
 	soiree := NewEventPool()
 	if soiree == nil {
 		t.Fatal("NewEventPool() should not return nil")
@@ -17,6 +19,8 @@ func TestNewEventPool(t *testing.T) {
 
 // TestOnOff tests subscribing to and unsubscribing from a topic
 func TestOnOff(t *testing.T) {
+	t.Parallel()
+
 	soiree := NewEventPool()
 
 	listener := func(e Event) error {
@@ -41,6 +45,8 @@ func TestOnOff(t *testing.T) {
 
 // TestEmitAsyncSuccess tests the asynchronous Emit method for successful event handling
 func TestEmitAsyncSuccess(t *testing.T) {
+	t.Parallel()
+
 	soiree := NewEventPool()
 
 	// Create a listener that does not return an error
@@ -86,6 +92,8 @@ func NewTestEvent(topic string, payload interface{}) *TestEvent {
 
 // TestEmitAsyncFailure tests the asynchronous Emit method for event handling that returns an error
 func TestEmitAsyncFailure(t *testing.T) {
+	t.Parallel()
+
 	soiree := NewEventPool()
 	event := NewTestEvent("testTopic", "test payload")
 
@@ -123,6 +131,8 @@ func TestEmitAsyncFailure(t *testing.T) {
 
 // TestEmitSyncSuccess tests emitting to a topic
 func TestEmitSyncSuccess(t *testing.T) {
+	t.Parallel()
+
 	soiree := NewEventPool()
 	received := make(chan string, 1) // Buffered channel to receive one message
 	event := NewTestEvent("testTopic", "testPayload")
@@ -151,6 +161,8 @@ func TestEmitSyncSuccess(t *testing.T) {
 
 // TestEmitSyncFailure tests the synchronous EmitSync method for event handling that returns an error
 func TestEmitSyncFailure(t *testing.T) {
+	t.Parallel()
+
 	soiree := NewEventPool()
 	event := NewTestEvent("testTopic", "testPayload")
 
@@ -175,6 +187,8 @@ func TestEmitSyncFailure(t *testing.T) {
 
 // TestGetTopic tests getting a topic
 func TestGetTopic(t *testing.T) {
+	t.Parallel()
+
 	soiree := NewEventPool()
 	event := NewTestEvent("testTopic", "testPayload")
 
@@ -197,6 +211,8 @@ func TestGetTopic(t *testing.T) {
 
 // TestEnsureTopic tests getting or creating a topic
 func TestEnsureTopic(t *testing.T) {
+	t.Parallel()
+
 	soiree := NewEventPool()
 
 	// Get or create a new topic
@@ -217,6 +233,8 @@ func TestEnsureTopic(t *testing.T) {
 }
 
 func TestWildcardSubscriptionAndEmitting(t *testing.T) {
+	t.Parallel()
+
 	soiree := NewEventPool()
 
 	topics := []string{
@@ -287,6 +305,8 @@ func TestWildcardSubscriptionAndEmitting(t *testing.T) {
 }
 
 func TestEventPoolClose(t *testing.T) {
+	t.Parallel()
+
 	soiree := NewEventPool()
 
 	// Set up topics and listeners

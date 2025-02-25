@@ -10,6 +10,8 @@ import (
 )
 
 func TestWriteFilesToContext(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name           string
 		initialFiles   Files
@@ -88,6 +90,8 @@ func TestWriteFilesToContext(t *testing.T) {
 	}
 }
 func TestFilesFromContext(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name           string
 		initialFiles   Files
@@ -127,6 +131,8 @@ func TestFilesFromContext(t *testing.T) {
 }
 
 func TestFilesFromContextWithKey(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name           string
 		ctxKey         FileContextKey
@@ -195,6 +201,8 @@ func TestFilesFromContextWithKey(t *testing.T) {
 	}
 }
 func TestGetFileIDsFromContext(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name           string
 		initialFiles   Files

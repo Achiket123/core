@@ -8,6 +8,8 @@ import (
 )
 
 func TestRateLimiter(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name            string
 		requestsLimit   int64
@@ -53,6 +55,8 @@ func TestRateLimiter(t *testing.T) {
 }
 
 func TestCalcDuration(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name               string
 		prevValue          int64
@@ -90,6 +94,8 @@ func TestCalcDuration(t *testing.T) {
 }
 
 func TestCalcRate(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name               string
 		requestsLimit      int64

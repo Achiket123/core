@@ -94,6 +94,8 @@ func (suite *HandlerTestSuite) TestRegisterHandler() {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			registerJSON := models.RegisterRequest{
 				FirstName: tc.firstName,
 				LastName:  tc.lastName,

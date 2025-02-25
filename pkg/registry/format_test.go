@@ -8,6 +8,8 @@ import (
 )
 
 func TestUrlName(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		input   interface{}
@@ -54,6 +56,8 @@ func TestUrlName(t *testing.T) {
 	}
 }
 func TestHttpMethod(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		input   interface{}
@@ -99,6 +103,8 @@ func TestHttpMethod(t *testing.T) {
 	}
 }
 func TestHttpMethodArray(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		input   interface{}
@@ -144,6 +150,8 @@ func TestHttpMethodArray(t *testing.T) {
 	}
 }
 func TestHttpCode(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		input   interface{}
@@ -194,6 +202,8 @@ func TestHttpCode(t *testing.T) {
 	}
 }
 func TestTimerfc3339(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		input   interface{}
@@ -239,6 +249,8 @@ func TestTimerfc3339(t *testing.T) {
 	}
 }
 func TestHttpCodeArray(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		input   interface{}
@@ -284,6 +296,8 @@ func TestHttpCodeArray(t *testing.T) {
 	}
 }
 func TestDuration(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		input   interface{}
@@ -328,7 +342,9 @@ func TestDuration(t *testing.T) {
 		})
 	}
 }
-func TestIpcidr(t *testing.T) {
+func TestIPCIDR(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		input   interface{}
@@ -383,7 +399,9 @@ func TestIpcidr(t *testing.T) {
 		})
 	}
 }
-func TestIpcidrArray(t *testing.T) {
+func TestIPCIDRArray(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		input   interface{}
@@ -433,7 +451,9 @@ func TestIpcidrArray(t *testing.T) {
 		})
 	}
 }
-func TestHostport(t *testing.T) {
+func TestHostPort(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		input   interface{}
@@ -484,6 +504,8 @@ func TestHostport(t *testing.T) {
 	}
 }
 func TestRegexp(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		input   interface{}
@@ -529,6 +551,8 @@ func TestRegexp(t *testing.T) {
 	}
 }
 func TestBase64(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		input   interface{}
@@ -574,6 +598,8 @@ func TestBase64(t *testing.T) {
 	}
 }
 func TestUrl(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		input   interface{}

@@ -7,6 +7,8 @@ import (
 )
 
 func TestIsStringEmpty(t *testing.T) {
+	t.Parallel()
+
 	tt := []struct {
 		s     string
 		empty bool

@@ -69,6 +69,8 @@ func (suite *GraphTestSuite) TestQueryControlObjective() {
 
 	for _, tc := range testCases {
 		t.Run("Get "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			// setup the control objective if it is not already created
 			if tc.queryID == "" {
 				resp, err := suite.client.api.CreateControlObjective(testUser1.UserCtx,
@@ -154,6 +156,8 @@ func (suite *GraphTestSuite) TestQueryControlObjectives() {
 
 	for _, tc := range testCases {
 		t.Run("List "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp, err := tc.client.GetAllControlObjectives(tc.ctx)
 			require.NoError(t, err)
 			require.NotNil(t, resp)

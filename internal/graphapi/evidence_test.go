@@ -94,6 +94,8 @@ func (suite *GraphTestSuite) TestQueryEvidence() {
 
 	for _, tc := range testCases {
 		t.Run("Get "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp, err := tc.client.GetEvidenceByID(tc.ctx, tc.queryID)
 
 			if tc.errorMsg != "" {
@@ -166,6 +168,8 @@ func (suite *GraphTestSuite) TestQueryEvidences() {
 
 	for _, tc := range testCases {
 		t.Run("List "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp, err := tc.client.GetAllEvidences(tc.ctx)
 			require.NoError(t, err)
 			require.NotNil(t, resp)
@@ -325,7 +329,7 @@ func (suite *GraphTestSuite) TestMutationCreateEvidence() {
 
 	for _, tc := range testCases {
 		t.Run("Create "+tc.name, func(t *testing.T) {
-			if tc.files != nil && len(tc.files) > 0 {
+			if len(tc.files) > 0 {
 				expectUploadNillable(t, suite.client.objectStore.Storage, tc.files)
 			}
 
@@ -371,9 +375,9 @@ func (suite *GraphTestSuite) TestMutationCreateEvidence() {
 			}
 
 			if tc.request.RenewalDate != nil {
-				assert.WithinDuration(t, *tc.request.RenewalDate, *resp.CreateEvidence.Evidence.RenewalDate, time.Minute)
+				assert.WithinDuration(t, *tc.request.RenewalDate, *resp.CreateEvidence.Evidence.RenewalDate, 5*time.Minute)
 			} else {
-				assert.WithinDuration(t, time.Now().Add(365*24*time.Hour), *resp.CreateEvidence.Evidence.RenewalDate, time.Minute)
+				assert.WithinDuration(t, time.Now().Add(365*24*time.Hour), *resp.CreateEvidence.Evidence.RenewalDate, 5*time.Minute)
 			}
 
 			if tc.request.IsAutomated != nil {
@@ -400,7 +404,7 @@ func (suite *GraphTestSuite) TestMutationCreateEvidence() {
 				assert.Empty(t, resp.CreateEvidence.Evidence.Tasks)
 			}
 
-			if tc.files != nil && len(tc.files) > 0 {
+			if len(tc.files) > 0 {
 				assert.Len(t, resp.CreateEvidence.Evidence.Files, len(tc.files))
 			} else {
 				assert.Empty(t, resp.CreateEvidence.Evidence.Files)
@@ -480,7 +484,7 @@ func (suite *GraphTestSuite) TestMutationUpdateEvidence() {
 
 	for _, tc := range testCases {
 		t.Run("Update "+tc.name, func(t *testing.T) {
-			if tc.files != nil && len(tc.files) > 0 {
+			if len(tc.files) > 0 {
 				expectUploadNillable(t, suite.client.objectStore.Storage, tc.files)
 			}
 

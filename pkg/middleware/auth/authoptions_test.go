@@ -14,6 +14,8 @@ import (
 )
 
 func TestDefaultAuthOptions(t *testing.T) {
+	t.Parallel()
+
 	// Should be able to create a default auth options with no extra input.
 	conf := auth.NewAuthOptions()
 	require.NotZero(t, conf, "a zero valued configuration was returned")
@@ -25,6 +27,8 @@ func TestDefaultAuthOptions(t *testing.T) {
 }
 
 func TestAuthOptions(t *testing.T) {
+	t.Parallel()
+
 	ctx, cancel := context.WithCancel(context.Background())
 	conf := auth.NewAuthOptions(
 		auth.WithJWKSEndpoint("http://localhost:8088/.well-known/jwks.json"),
@@ -44,6 +48,8 @@ func TestAuthOptions(t *testing.T) {
 }
 
 func TestAuthOptionsOverride(t *testing.T) {
+	t.Parallel()
+
 	ctx, cancel := context.WithCancel(context.Background())
 	opts := auth.AuthOptions{
 		KeysURL:            "http://localhost:8088/.well-known/jwks.json",
@@ -70,6 +76,8 @@ func TestAuthOptionsOverride(t *testing.T) {
 }
 
 func TestAuthOptionsValidator(t *testing.T) {
+	t.Parallel()
+
 	validator := &tokens.MockValidator{}
 	conf := auth.NewAuthOptions(auth.WithValidator(validator))
 	require.NotZero(t, conf, "a zero valued configuration was returned")

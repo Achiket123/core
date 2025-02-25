@@ -23,6 +23,8 @@ func TestValidateName(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := validator.SpecialCharValidator(tt.input)
 			if tt.expectErr {
 				require.Error(t, err)

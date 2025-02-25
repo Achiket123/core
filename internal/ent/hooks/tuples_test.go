@@ -54,6 +54,8 @@ func TestGetTupleKeyFromRole(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run("Get "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			req := fgax.TupleRequest{
 				SubjectID:   tc.subID,
 				SubjectType: tc.subType,
@@ -113,6 +115,8 @@ func TestRoleToRelation(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run("Get "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			res, err := roleToRelation(tc.roleInput)
 
 			if tc.expectedErr != nil {

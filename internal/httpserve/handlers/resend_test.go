@@ -22,6 +22,7 @@ import (
 
 func (suite *HandlerTestSuite) TestResendHandler() {
 	t := suite.T()
+	t.Parallel()
 
 	// add handler
 	suite.e.POST("resend", suite.h.ResendEmail)

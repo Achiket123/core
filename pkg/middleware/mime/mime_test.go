@@ -12,6 +12,8 @@ import (
 )
 
 func TestNewWithConfig(t *testing.T) {
+	t.Parallel()
+
 	// Create a new Echo instance
 	e := echo.New()
 

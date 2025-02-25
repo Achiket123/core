@@ -12,6 +12,8 @@ import (
 )
 
 func TesetRedirectWithConfig(t *testing.T) {
+	t.Parallel()
+
 	var testCases = []struct {
 		name           string
 		givenCode      int
@@ -80,6 +82,8 @@ func TesetRedirectWithConfig(t *testing.T) {
 }
 
 func TestNewWithConfig(t *testing.T) {
+	t.Parallel()
+
 	var testCases = []struct {
 		name           string
 		givenConfig    redirect.Config

@@ -7,6 +7,8 @@ import (
 
 // TestPriorityOrdering checks if the Soiree calls listeners in the correct order of their priorities
 func TestPriorityOrdering(t *testing.T) {
+	t.Parallel()
+
 	em := NewEventPool()
 
 	var mu sync.Mutex // Mutex to protect access to callOrder slice
@@ -66,6 +68,8 @@ func TestPriorityOrdering(t *testing.T) {
 
 // TestEmitSyncWithAbort tests the synchronous EmitSync method with a listener that aborts the event
 func TestEmitSyncWithAbort(t *testing.T) {
+	t.Parallel()
+
 	soiree := NewEventPool()
 
 	// Create three listeners with different priorities
@@ -109,6 +113,8 @@ func TestEmitSyncWithAbort(t *testing.T) {
 
 // TestEmitWithAbort tests the asynchronous Emit method with a listener that aborts the event
 func TestEmitWithAbort(t *testing.T) {
+	t.Parallel()
+
 	soiree := NewEventPool()
 
 	// Create three listeners with different priorities

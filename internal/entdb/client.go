@@ -323,7 +323,8 @@ func NewTestFixture() *testutils.TestFixture {
 
 	return testutils.GetTestURI(testutils.WithImage(testDBURI),
 		testutils.WithExpiryMinutes(expiry),
-		testutils.WithMaxConn(200)) // nolint:mnd
+		testutils.WithMaxConn(300), // nolint:mnd
+		testutils.WithReuseName("tc-postgres"))
 }
 
 // NewTestClient creates a entdb client that can be used for TEST purposes ONLY

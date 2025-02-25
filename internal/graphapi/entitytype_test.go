@@ -114,6 +114,8 @@ func (suite *GraphTestSuite) TestQueryEntityTypes() {
 
 	for _, tc := range testCases {
 		t.Run("List "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp, err := tc.client.GetAllEntityTypes(tc.ctx)
 			require.NoError(t, err)
 			require.NotNil(t, resp)
@@ -178,6 +180,8 @@ func (suite *GraphTestSuite) TestMutationCreateEntityType() {
 
 	for _, tc := range testCases {
 		t.Run("Create "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp, err := tc.client.CreateEntityType(tc.ctx, tc.request)
 			if tc.expectedErr != "" {
 				require.Error(t, err)

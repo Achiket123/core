@@ -109,6 +109,8 @@ func (suite *HandlerTestSuite) TestResetPasswordHandler() {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			// create user in the database
 			rt, _, err := suite.createUserWithResetToken(t, ec, tc.email, tc.ttl)
 			require.NoError(t, err)

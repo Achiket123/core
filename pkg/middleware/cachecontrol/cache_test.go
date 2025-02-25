@@ -15,6 +15,8 @@ import (
 var epoch = time.Unix(0, 0).Format(time.RFC1123)
 
 func TestNewWithConfig(t *testing.T) {
+	t.Parallel()
+
 	// Create a new Echo instance
 	e := echo.New()
 

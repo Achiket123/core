@@ -99,6 +99,8 @@ func (suite *HandlerTestSuite) TestRefreshHandler() {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			refreshJSON := models.RefreshRequest{
 				RefreshToken: tc.refresh,
 			}

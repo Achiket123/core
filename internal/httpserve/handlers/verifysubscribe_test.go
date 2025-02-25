@@ -29,6 +29,7 @@ import (
 
 func (suite *HandlerTestSuite) TestVerifySubscribeHandler() {
 	t := suite.T()
+	t.Parallel()
 
 	// add handler
 	suite.e.GET("subscribe/verify", suite.h.VerifySubscriptionHandler)

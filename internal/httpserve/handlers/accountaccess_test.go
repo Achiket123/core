@@ -74,6 +74,8 @@ func (suite *HandlerTestSuite) TestAccountAccessHandler() {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			target := "/account/access"
 
 			body, err := json.Marshal(tc.request)

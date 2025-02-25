@@ -74,6 +74,8 @@ func (suite *GraphTestSuite) TestQueryGroup() {
 
 	for _, tc := range testCases {
 		t.Run("Get "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp, err := tc.client.GetGroupByID(tc.ctx, tc.queryID)
 
 			if tc.errorMsg != "" {
@@ -108,6 +110,8 @@ func (suite *GraphTestSuite) TestQueryGroupsByOwner() {
 	group2 := (&GroupBuilder{client: suite.client, Owner: org2.ID}).MustNew(reqCtx2, t)
 
 	t.Run("Get Groups By Owner", func(t *testing.T) {
+		t.Parallel()
+
 		whereInput := &openlaneclient.GroupWhereInput{
 			HasOwnerWith: []*openlaneclient.OrganizationWhereInput{
 				{
@@ -179,6 +183,8 @@ func (suite *GraphTestSuite) TestQueryGroups() {
 	require.NoError(t, err)
 
 	t.Run("Get Groups", func(t *testing.T) {
+		t.Parallel()
+
 		resp, err := suite.client.api.GetAllGroups(testUser2.UserCtx)
 
 		require.NoError(t, err)

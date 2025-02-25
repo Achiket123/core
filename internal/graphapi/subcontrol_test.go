@@ -70,6 +70,8 @@ func (suite *GraphTestSuite) TestQuerySubcontrol() {
 
 	for _, tc := range testCases {
 		t.Run("Get "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			// setup the subcontrol if it is not already created
 			if tc.queryID == "" {
 				// create the control first
@@ -165,6 +167,8 @@ func (suite *GraphTestSuite) TestQuerySubcontrols() {
 
 	for _, tc := range testCases {
 		t.Run("List "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp, err := tc.client.GetAllSubcontrols(tc.ctx)
 			require.NoError(t, err)
 			require.NotNil(t, resp)
@@ -300,6 +304,8 @@ func (suite *GraphTestSuite) TestMutationCreateSubcontrol() {
 
 	for _, tc := range testCases {
 		t.Run("Create "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			if tc.createParentControl {
 				// create the control first
 				control, err := suite.client.api.CreateControl(testUser1.UserCtx,

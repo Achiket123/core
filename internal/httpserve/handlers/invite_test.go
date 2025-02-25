@@ -28,8 +28,7 @@ func (suite *HandlerTestSuite) TestOrgInviteAcceptHandler() {
 	suite.e.GET("invite", suite.h.OrganizationInviteAccept)
 
 	// bypass auth
-	ctx := context.Background()
-	ctx = privacy.DecisionContext(testUser1.UserCtx, privacy.Allow)
+	ctx := privacy.DecisionContext(testUser1.UserCtx, privacy.Allow)
 
 	var groot = "groot@theopenlane.io"
 

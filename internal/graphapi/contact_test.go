@@ -131,6 +131,8 @@ func (suite *GraphTestSuite) TestQueryContacts() {
 
 	for _, tc := range testCases {
 		t.Run("List "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp, err := tc.client.GetAllContacts(tc.ctx)
 			require.NoError(t, err)
 			require.NotNil(t, resp)
@@ -210,6 +212,8 @@ func (suite *GraphTestSuite) TestMutationCreateContact() {
 
 	for _, tc := range testCases {
 		t.Run("Create "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp, err := tc.client.CreateContact(tc.ctx, tc.request)
 			if tc.expectedErr != "" {
 				require.Error(t, err)

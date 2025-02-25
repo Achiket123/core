@@ -69,6 +69,8 @@ func (suite *GraphTestSuite) TestQueryRisk() {
 
 	for _, tc := range testCases {
 		t.Run("Get "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			// setup the risk if it is not already created
 			if tc.queryID == "" {
 				resp, err := suite.client.api.CreateRisk(testUser1.UserCtx,
@@ -154,6 +156,8 @@ func (suite *GraphTestSuite) TestQueryRisks() {
 
 	for _, tc := range testCases {
 		t.Run("List "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp, err := tc.client.GetAllRisks(tc.ctx)
 			require.NoError(t, err)
 			require.NotNil(t, resp)

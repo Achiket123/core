@@ -42,6 +42,8 @@ func (suite *HandlerTestSuite) TestAccountRolesOrganizationHandler() {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			req := httptest.NewRequest(http.MethodGet, tc.target, nil)
 
 			// Set writer for tests that write on the response

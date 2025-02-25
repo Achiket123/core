@@ -10,7 +10,9 @@ import (
 	"github.com/theopenlane/core/pkg/logx/consolelog"
 )
 
-func TestConsolelog(t *testing.T) {
+func TestConsoleLog(t *testing.T) {
+	t.Parallel()
+
 	t.Run("Defaults", func(t *testing.T) {
 		w := consolelog.NewConsoleWriter()
 
@@ -139,7 +141,7 @@ func TestConsolelog(t *testing.T) {
 	})
 }
 
-func BenchmarkConsolelog(b *testing.B) {
+func BenchmarkConsoleLog(b *testing.B) {
 	b.ResetTimer()
 	b.ReportAllocs()
 

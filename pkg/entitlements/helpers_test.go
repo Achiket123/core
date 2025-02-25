@@ -8,6 +8,8 @@ import (
 )
 
 func TestCheckForBillingUpdate(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name           string
 		props          map[string]interface{}

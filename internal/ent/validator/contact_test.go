@@ -22,6 +22,8 @@ func TestValidatePhoneNumber(t *testing.T) {
 
 	for _, number := range validNumbers {
 		t.Run(fmt.Sprintf("valid phone number: %s", number), func(t *testing.T) {
+			t.Parallel()
+
 			valid := validator.ValidatePhoneNumber(number)
 			assert.True(t, valid)
 		})
@@ -38,6 +40,8 @@ func TestValidatePhoneNumber(t *testing.T) {
 
 	for _, number := range invalidNumbers {
 		t.Run(fmt.Sprintf("invalid phone number: %s", number), func(t *testing.T) {
+			t.Parallel()
+
 			valid := validator.ValidatePhoneNumber(number)
 			assert.False(t, valid)
 		})
