@@ -63,6 +63,15 @@ extend type Query{
         query: String!
     ): DocumentDataSearchResult
     """
+    Search across DocumentRevision objects
+    """
+    documentRevisionSearch(
+        """
+        Search query
+        """
+        query: String!
+    ): DocumentRevisionSearchResult
+    """
     Search across Entity objects
     """
     entitySearch(
@@ -287,6 +296,7 @@ union SearchResult =
   | ControlImplementationSearchResult
   | ControlObjectiveSearchResult
   | DocumentDataSearchResult
+  | DocumentRevisionSearchResult
   | EntitySearchResult
   | EntityTypeSearchResult
   | EventSearchResult
@@ -374,6 +384,10 @@ type  ControlObjectiveSearchResult {
 
 type  DocumentDataSearchResult {
    documentData: [ DocumentData!]
+}
+
+type  DocumentRevisionSearchResult {
+   documentRevisions: [ DocumentRevision!]
 }
 
 type  EntitySearchResult {

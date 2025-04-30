@@ -45,6 +45,12 @@ type DocumentData func(*sql.Selector)
 // DocumentDataHistory is the predicate function for documentdatahistory builders.
 type DocumentDataHistory func(*sql.Selector)
 
+// DocumentRevision is the predicate function for documentrevision builders.
+type DocumentRevision func(*sql.Selector)
+
+// DocumentRevisionHistory is the predicate function for documentrevisionhistory builders.
+type DocumentRevisionHistory func(*sql.Selector)
+
 // EmailVerificationToken is the predicate function for emailverificationtoken builders.
 type EmailVerificationToken func(*sql.Selector)
 

@@ -18,6 +18,7 @@ import (
 	"github.com/theopenlane/core/internal/ent/generated/controlimplementationhistory"
 	"github.com/theopenlane/core/internal/ent/generated/controlobjectivehistory"
 	"github.com/theopenlane/core/internal/ent/generated/documentdatahistory"
+	"github.com/theopenlane/core/internal/ent/generated/documentrevisionhistory"
 	"github.com/theopenlane/core/internal/ent/generated/entityhistory"
 	"github.com/theopenlane/core/internal/ent/generated/entitytypehistory"
 	"github.com/theopenlane/core/internal/ent/generated/eventhistory"
@@ -105,9 +106,6 @@ func (aph *ActionPlanHistory) changes(new *ActionPlanHistory) []Change {
 	}
 	if !reflect.DeepEqual(aph.ActionPlanType, new.ActionPlanType) {
 		changes = append(changes, NewChange(actionplanhistory.FieldActionPlanType, aph.ActionPlanType, new.ActionPlanType))
-	}
-	if !reflect.DeepEqual(aph.Details, new.Details) {
-		changes = append(changes, NewChange(actionplanhistory.FieldDetails, aph.Details, new.Details))
 	}
 	if !reflect.DeepEqual(aph.ApprovalRequired, new.ApprovalRequired) {
 		changes = append(changes, NewChange(actionplanhistory.FieldApprovalRequired, aph.ApprovalRequired, new.ApprovalRequired))
@@ -546,6 +544,81 @@ func (ddh *DocumentDataHistory) Diff(history *DocumentDataHistory) (*HistoryDiff
 			Old:     history,
 			New:     ddh,
 			Changes: history.changes(ddh),
+		}, nil
+	}
+	return nil, IdenticalHistoryError
+}
+
+func (drh *DocumentRevisionHistory) changes(new *DocumentRevisionHistory) []Change {
+	var changes []Change
+	if !reflect.DeepEqual(drh.CreatedAt, new.CreatedAt) {
+		changes = append(changes, NewChange(documentrevisionhistory.FieldCreatedAt, drh.CreatedAt, new.CreatedAt))
+	}
+	if !reflect.DeepEqual(drh.UpdatedAt, new.UpdatedAt) {
+		changes = append(changes, NewChange(documentrevisionhistory.FieldUpdatedAt, drh.UpdatedAt, new.UpdatedAt))
+	}
+	if !reflect.DeepEqual(drh.CreatedBy, new.CreatedBy) {
+		changes = append(changes, NewChange(documentrevisionhistory.FieldCreatedBy, drh.CreatedBy, new.CreatedBy))
+	}
+	if !reflect.DeepEqual(drh.DeletedAt, new.DeletedAt) {
+		changes = append(changes, NewChange(documentrevisionhistory.FieldDeletedAt, drh.DeletedAt, new.DeletedAt))
+	}
+	if !reflect.DeepEqual(drh.DeletedBy, new.DeletedBy) {
+		changes = append(changes, NewChange(documentrevisionhistory.FieldDeletedBy, drh.DeletedBy, new.DeletedBy))
+	}
+	if !reflect.DeepEqual(drh.Tags, new.Tags) {
+		changes = append(changes, NewChange(documentrevisionhistory.FieldTags, drh.Tags, new.Tags))
+	}
+	if !reflect.DeepEqual(drh.Revision, new.Revision) {
+		changes = append(changes, NewChange(documentrevisionhistory.FieldRevision, drh.Revision, new.Revision))
+	}
+	if !reflect.DeepEqual(drh.Details, new.Details) {
+		changes = append(changes, NewChange(documentrevisionhistory.FieldDetails, drh.Details, new.Details))
+	}
+	if !reflect.DeepEqual(drh.Status, new.Status) {
+		changes = append(changes, NewChange(documentrevisionhistory.FieldStatus, drh.Status, new.Status))
+	}
+	if !reflect.DeepEqual(drh.ApprovalDate, new.ApprovalDate) {
+		changes = append(changes, NewChange(documentrevisionhistory.FieldApprovalDate, drh.ApprovalDate, new.ApprovalDate))
+	}
+	if !reflect.DeepEqual(drh.SubmittedByID, new.SubmittedByID) {
+		changes = append(changes, NewChange(documentrevisionhistory.FieldSubmittedByID, drh.SubmittedByID, new.SubmittedByID))
+	}
+	if !reflect.DeepEqual(drh.ApprovedByID, new.ApprovedByID) {
+		changes = append(changes, NewChange(documentrevisionhistory.FieldApprovedByID, drh.ApprovedByID, new.ApprovedByID))
+	}
+	if !reflect.DeepEqual(drh.InternalPolicyID, new.InternalPolicyID) {
+		changes = append(changes, NewChange(documentrevisionhistory.FieldInternalPolicyID, drh.InternalPolicyID, new.InternalPolicyID))
+	}
+	if !reflect.DeepEqual(drh.ProcedureID, new.ProcedureID) {
+		changes = append(changes, NewChange(documentrevisionhistory.FieldProcedureID, drh.ProcedureID, new.ProcedureID))
+	}
+	if !reflect.DeepEqual(drh.ActionPlanID, new.ActionPlanID) {
+		changes = append(changes, NewChange(documentrevisionhistory.FieldActionPlanID, drh.ActionPlanID, new.ActionPlanID))
+	}
+	return changes
+}
+
+func (drh *DocumentRevisionHistory) Diff(history *DocumentRevisionHistory) (*HistoryDiff[DocumentRevisionHistory], error) {
+	if drh.Ref != history.Ref {
+		return nil, MismatchedRefError
+	}
+
+	drhUnix, historyUnix := drh.HistoryTime.Unix(), history.HistoryTime.Unix()
+	drhOlder := drhUnix < historyUnix || (drhUnix == historyUnix && drh.ID < history.ID)
+	historyOlder := drhUnix > historyUnix || (drhUnix == historyUnix && drh.ID > history.ID)
+
+	if drhOlder {
+		return &HistoryDiff[DocumentRevisionHistory]{
+			Old:     drh,
+			New:     history,
+			Changes: drh.changes(history),
+		}, nil
+	} else if historyOlder {
+		return &HistoryDiff[DocumentRevisionHistory]{
+			Old:     history,
+			New:     drh,
+			Changes: history.changes(drh),
 		}, nil
 	}
 	return nil, IdenticalHistoryError
@@ -1246,9 +1319,6 @@ func (iph *InternalPolicyHistory) changes(new *InternalPolicyHistory) []Change {
 	if !reflect.DeepEqual(iph.PolicyType, new.PolicyType) {
 		changes = append(changes, NewChange(internalpolicyhistory.FieldPolicyType, iph.PolicyType, new.PolicyType))
 	}
-	if !reflect.DeepEqual(iph.Details, new.Details) {
-		changes = append(changes, NewChange(internalpolicyhistory.FieldDetails, iph.Details, new.Details))
-	}
 	if !reflect.DeepEqual(iph.ApprovalRequired, new.ApprovalRequired) {
 		changes = append(changes, NewChange(internalpolicyhistory.FieldApprovalRequired, iph.ApprovalRequired, new.ApprovalRequired))
 	}
@@ -1797,9 +1867,6 @@ func (ph *ProcedureHistory) changes(new *ProcedureHistory) []Change {
 	}
 	if !reflect.DeepEqual(ph.ProcedureType, new.ProcedureType) {
 		changes = append(changes, NewChange(procedurehistory.FieldProcedureType, ph.ProcedureType, new.ProcedureType))
-	}
-	if !reflect.DeepEqual(ph.Details, new.Details) {
-		changes = append(changes, NewChange(procedurehistory.FieldDetails, ph.Details, new.Details))
 	}
 	if !reflect.DeepEqual(ph.ApprovalRequired, new.ApprovalRequired) {
 		changes = append(changes, NewChange(procedurehistory.FieldApprovalRequired, ph.ApprovalRequired, new.ApprovalRequired))
@@ -2655,6 +2722,12 @@ func (c *Client) Audit(ctx context.Context) ([][]string, error) {
 	}
 	records = append(records, record...)
 
+	record, err = auditDocumentRevisionHistory(ctx, c.config)
+	if err != nil {
+		return nil, err
+	}
+	records = append(records, record...)
+
 	record, err = auditEntityHistory(ctx, c.config)
 	if err != nil {
 		return nil, err
@@ -2880,6 +2953,15 @@ func (c *Client) AuditWithFilter(ctx context.Context, tableName string) ([][]str
 
 	if tableName == "" || tableName == strings.TrimSuffix("DocumentDataHistory", "History") {
 		record, err = auditDocumentDataHistory(ctx, c.config)
+		if err != nil {
+			return nil, err
+		}
+
+		records = append(records, record...)
+	}
+
+	if tableName == "" || tableName == strings.TrimSuffix("DocumentRevisionHistory", "History") {
+		record, err = auditDocumentRevisionHistory(ctx, c.config)
 		if err != nil {
 			return nil, err
 		}
@@ -3479,6 +3561,59 @@ func auditDocumentDataHistory(ctx context.Context, config config) ([][]string, e
 			default:
 				if i == 0 {
 					record.Changes = (&DocumentDataHistory{}).changes(curr)
+				} else {
+					record.Changes = histories[i-1].changes(curr)
+				}
+			}
+			records = append(records, record.toRow())
+		}
+	}
+	return records, nil
+}
+
+type documentrevisionhistoryref struct {
+	Ref string
+}
+
+func auditDocumentRevisionHistory(ctx context.Context, config config) ([][]string, error) {
+	var records = [][]string{}
+	var refs []documentrevisionhistoryref
+	client := NewDocumentRevisionHistoryClient(config)
+	err := client.Query().
+		Unique(true).
+		Order(documentrevisionhistory.ByRef()).
+		Select(documentrevisionhistory.FieldRef).
+		Scan(ctx, &refs)
+
+	if err != nil {
+		return nil, err
+	}
+	for _, currRef := range refs {
+		histories, err := client.Query().
+			Where(documentrevisionhistory.Ref(currRef.Ref)).
+			Order(documentrevisionhistory.ByHistoryTime()).
+			All(ctx)
+		if err != nil {
+			return nil, err
+		}
+
+		for i := 0; i < len(histories); i++ {
+			curr := histories[i]
+			record := record{
+				Table:       "DocumentRevisionHistory",
+				RefId:       curr.Ref,
+				HistoryTime: curr.HistoryTime,
+				Operation:   curr.Operation,
+				UpdatedBy:   curr.UpdatedBy,
+			}
+			switch curr.Operation {
+			case history.OpTypeInsert:
+				record.Changes = (&DocumentRevisionHistory{}).changes(curr)
+			case history.OpTypeDelete:
+				record.Changes = curr.changes(&DocumentRevisionHistory{})
+			default:
+				if i == 0 {
+					record.Changes = (&DocumentRevisionHistory{}).changes(curr)
 				} else {
 					record.Changes = histories[i-1].changes(curr)
 				}

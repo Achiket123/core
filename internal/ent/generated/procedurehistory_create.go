@@ -214,20 +214,6 @@ func (phc *ProcedureHistoryCreate) SetNillableProcedureType(s *string) *Procedur
 	return phc
 }
 
-// SetDetails sets the "details" field.
-func (phc *ProcedureHistoryCreate) SetDetails(s string) *ProcedureHistoryCreate {
-	phc.mutation.SetDetails(s)
-	return phc
-}
-
-// SetNillableDetails sets the "details" field if the given value is not nil.
-func (phc *ProcedureHistoryCreate) SetNillableDetails(s *string) *ProcedureHistoryCreate {
-	if s != nil {
-		phc.SetDetails(*s)
-	}
-	return phc
-}
-
 // SetApprovalRequired sets the "approval_required" field.
 func (phc *ProcedureHistoryCreate) SetApprovalRequired(b bool) *ProcedureHistoryCreate {
 	phc.mutation.SetApprovalRequired(b)
@@ -517,10 +503,6 @@ func (phc *ProcedureHistoryCreate) createSpec() (*ProcedureHistory, *sqlgraph.Cr
 	if value, ok := phc.mutation.ProcedureType(); ok {
 		_spec.SetField(procedurehistory.FieldProcedureType, field.TypeString, value)
 		_node.ProcedureType = value
-	}
-	if value, ok := phc.mutation.Details(); ok {
-		_spec.SetField(procedurehistory.FieldDetails, field.TypeString, value)
-		_node.Details = value
 	}
 	if value, ok := phc.mutation.ApprovalRequired(); ok {
 		_spec.SetField(procedurehistory.FieldApprovalRequired, field.TypeBool, value)

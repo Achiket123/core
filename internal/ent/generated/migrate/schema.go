@@ -66,7 +66,6 @@ var (
 		{Name: "name", Type: field.TypeString},
 		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"PUBLISHED", "DRAFT", "NEEDS_APPROVAL", "APPROVED", "ARCHIVED"}, Default: "DRAFT"},
 		{Name: "action_plan_type", Type: field.TypeString, Nullable: true},
-		{Name: "details", Type: field.TypeString, Nullable: true, Size: 2147483647},
 		{Name: "approval_required", Type: field.TypeBool, Nullable: true, Default: true},
 		{Name: "review_due", Type: field.TypeTime, Nullable: true},
 		{Name: "review_frequency", Type: field.TypeEnum, Nullable: true, Enums: []string{"YEARLY", "QUARTERLY", "BIANNUALLY", "MONTHLY"}, Default: "YEARLY"},
@@ -86,25 +85,25 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "action_plans_groups_approver",
-				Columns:    []*schema.Column{ActionPlansColumns[19]},
+				Columns:    []*schema.Column{ActionPlansColumns[18]},
 				RefColumns: []*schema.Column{GroupsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "action_plans_groups_delegate",
-				Columns:    []*schema.Column{ActionPlansColumns[20]},
+				Columns:    []*schema.Column{ActionPlansColumns[19]},
 				RefColumns: []*schema.Column{GroupsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "action_plans_organizations_action_plans",
-				Columns:    []*schema.Column{ActionPlansColumns[21]},
+				Columns:    []*schema.Column{ActionPlansColumns[20]},
 				RefColumns: []*schema.Column{OrganizationsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "action_plans_subcontrols_action_plans",
-				Columns:    []*schema.Column{ActionPlansColumns[22]},
+				Columns:    []*schema.Column{ActionPlansColumns[21]},
 				RefColumns: []*schema.Column{SubcontrolsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -127,7 +126,6 @@ var (
 		{Name: "name", Type: field.TypeString},
 		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"PUBLISHED", "DRAFT", "NEEDS_APPROVAL", "APPROVED", "ARCHIVED"}, Default: "DRAFT"},
 		{Name: "action_plan_type", Type: field.TypeString, Nullable: true},
-		{Name: "details", Type: field.TypeString, Nullable: true, Size: 2147483647},
 		{Name: "approval_required", Type: field.TypeBool, Nullable: true, Default: true},
 		{Name: "review_due", Type: field.TypeTime, Nullable: true},
 		{Name: "review_frequency", Type: field.TypeEnum, Nullable: true, Enums: []string{"YEARLY", "QUARTERLY", "BIANNUALLY", "MONTHLY"}, Default: "YEARLY"},
@@ -559,6 +557,121 @@ var (
 				Name:    "documentdatahistory_history_time",
 				Unique:  false,
 				Columns: []*schema.Column{DocumentDataHistoryColumns[1]},
+			},
+		},
+	}
+	// DocumentRevisionsColumns holds the columns for the "document_revisions" table.
+	DocumentRevisionsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString},
+		{Name: "created_at", Type: field.TypeTime, Nullable: true},
+		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
+		{Name: "created_by", Type: field.TypeString, Nullable: true},
+		{Name: "updated_by", Type: field.TypeString, Nullable: true},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
+		{Name: "deleted_by", Type: field.TypeString, Nullable: true},
+		{Name: "tags", Type: field.TypeJSON, Nullable: true},
+		{Name: "revision", Type: field.TypeString, Nullable: true, Default: "v0.0.1"},
+		{Name: "details", Type: field.TypeString, Nullable: true, Size: 2147483647},
+		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"APPROVED", "PENDING", "REJECTED"}, Default: "PENDING"},
+		{Name: "approval_date", Type: field.TypeTime, Nullable: true},
+		{Name: "action_plan_document_revisions", Type: field.TypeString, Nullable: true},
+		{Name: "submitted_by_id", Type: field.TypeString, Nullable: true},
+		{Name: "approved_by_id", Type: field.TypeString, Nullable: true},
+		{Name: "internal_policy_id", Type: field.TypeString, Nullable: true},
+		{Name: "procedure_id", Type: field.TypeString, Nullable: true},
+		{Name: "action_plan_id", Type: field.TypeString, Nullable: true},
+		{Name: "internal_policy_document_revisions", Type: field.TypeString, Nullable: true},
+		{Name: "procedure_document_revisions", Type: field.TypeString, Nullable: true},
+	}
+	// DocumentRevisionsTable holds the schema information for the "document_revisions" table.
+	DocumentRevisionsTable = &schema.Table{
+		Name:       "document_revisions",
+		Columns:    DocumentRevisionsColumns,
+		PrimaryKey: []*schema.Column{DocumentRevisionsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "document_revisions_action_plans_document_revisions",
+				Columns:    []*schema.Column{DocumentRevisionsColumns[12]},
+				RefColumns: []*schema.Column{ActionPlansColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "document_revisions_users_submitted_by",
+				Columns:    []*schema.Column{DocumentRevisionsColumns[13]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "document_revisions_users_approved_by",
+				Columns:    []*schema.Column{DocumentRevisionsColumns[14]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "document_revisions_internal_policies_internal_policy",
+				Columns:    []*schema.Column{DocumentRevisionsColumns[15]},
+				RefColumns: []*schema.Column{InternalPoliciesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "document_revisions_procedures_procedure",
+				Columns:    []*schema.Column{DocumentRevisionsColumns[16]},
+				RefColumns: []*schema.Column{ProceduresColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "document_revisions_action_plans_action_plan",
+				Columns:    []*schema.Column{DocumentRevisionsColumns[17]},
+				RefColumns: []*schema.Column{ActionPlansColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "document_revisions_internal_policies_document_revisions",
+				Columns:    []*schema.Column{DocumentRevisionsColumns[18]},
+				RefColumns: []*schema.Column{InternalPoliciesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "document_revisions_procedures_document_revisions",
+				Columns:    []*schema.Column{DocumentRevisionsColumns[19]},
+				RefColumns: []*schema.Column{ProceduresColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// DocumentRevisionHistoryColumns holds the columns for the "document_revision_history" table.
+	DocumentRevisionHistoryColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString},
+		{Name: "history_time", Type: field.TypeTime},
+		{Name: "ref", Type: field.TypeString, Nullable: true},
+		{Name: "operation", Type: field.TypeEnum, Enums: []string{"INSERT", "UPDATE", "DELETE"}},
+		{Name: "created_at", Type: field.TypeTime, Nullable: true},
+		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
+		{Name: "created_by", Type: field.TypeString, Nullable: true},
+		{Name: "updated_by", Type: field.TypeString, Nullable: true},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
+		{Name: "deleted_by", Type: field.TypeString, Nullable: true},
+		{Name: "tags", Type: field.TypeJSON, Nullable: true},
+		{Name: "revision", Type: field.TypeString, Nullable: true, Default: "v0.0.1"},
+		{Name: "details", Type: field.TypeString, Nullable: true, Size: 2147483647},
+		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"APPROVED", "PENDING", "REJECTED"}, Default: "PENDING"},
+		{Name: "approval_date", Type: field.TypeTime, Nullable: true},
+		{Name: "submitted_by_id", Type: field.TypeString, Nullable: true},
+		{Name: "approved_by_id", Type: field.TypeString, Nullable: true},
+		{Name: "internal_policy_id", Type: field.TypeString, Nullable: true},
+		{Name: "procedure_id", Type: field.TypeString, Nullable: true},
+		{Name: "action_plan_id", Type: field.TypeString, Nullable: true},
+	}
+	// DocumentRevisionHistoryTable holds the schema information for the "document_revision_history" table.
+	DocumentRevisionHistoryTable = &schema.Table{
+		Name:       "document_revision_history",
+		Columns:    DocumentRevisionHistoryColumns,
+		PrimaryKey: []*schema.Column{DocumentRevisionHistoryColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "documentrevisionhistory_history_time",
+				Unique:  false,
+				Columns: []*schema.Column{DocumentRevisionHistoryColumns[1]},
 			},
 		},
 	}
@@ -1395,7 +1508,6 @@ var (
 		{Name: "name", Type: field.TypeString},
 		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"PUBLISHED", "DRAFT", "NEEDS_APPROVAL", "APPROVED", "ARCHIVED"}, Default: "DRAFT"},
 		{Name: "policy_type", Type: field.TypeString, Nullable: true},
-		{Name: "details", Type: field.TypeString, Nullable: true, Size: 2147483647},
 		{Name: "approval_required", Type: field.TypeBool, Nullable: true, Default: true},
 		{Name: "review_due", Type: field.TypeTime, Nullable: true},
 		{Name: "review_frequency", Type: field.TypeEnum, Nullable: true, Enums: []string{"YEARLY", "QUARTERLY", "BIANNUALLY", "MONTHLY"}, Default: "YEARLY"},
@@ -1413,31 +1525,31 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "internal_policies_controls_internal_policies",
-				Columns:    []*schema.Column{InternalPoliciesColumns[17]},
+				Columns:    []*schema.Column{InternalPoliciesColumns[16]},
 				RefColumns: []*schema.Column{ControlsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "internal_policies_groups_approver",
-				Columns:    []*schema.Column{InternalPoliciesColumns[18]},
+				Columns:    []*schema.Column{InternalPoliciesColumns[17]},
 				RefColumns: []*schema.Column{GroupsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "internal_policies_groups_delegate",
-				Columns:    []*schema.Column{InternalPoliciesColumns[19]},
+				Columns:    []*schema.Column{InternalPoliciesColumns[18]},
 				RefColumns: []*schema.Column{GroupsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "internal_policies_organizations_internal_policies",
-				Columns:    []*schema.Column{InternalPoliciesColumns[20]},
+				Columns:    []*schema.Column{InternalPoliciesColumns[19]},
 				RefColumns: []*schema.Column{OrganizationsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "internal_policies_subcontrols_internal_policies",
-				Columns:    []*schema.Column{InternalPoliciesColumns[21]},
+				Columns:    []*schema.Column{InternalPoliciesColumns[20]},
 				RefColumns: []*schema.Column{SubcontrolsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -1446,7 +1558,7 @@ var (
 			{
 				Name:    "internalpolicy_display_id_owner_id",
 				Unique:  true,
-				Columns: []*schema.Column{InternalPoliciesColumns[7], InternalPoliciesColumns[20]},
+				Columns: []*schema.Column{InternalPoliciesColumns[7], InternalPoliciesColumns[19]},
 			},
 		},
 	}
@@ -1469,7 +1581,6 @@ var (
 		{Name: "name", Type: field.TypeString},
 		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"PUBLISHED", "DRAFT", "NEEDS_APPROVAL", "APPROVED", "ARCHIVED"}, Default: "DRAFT"},
 		{Name: "policy_type", Type: field.TypeString, Nullable: true},
-		{Name: "details", Type: field.TypeString, Nullable: true, Size: 2147483647},
 		{Name: "approval_required", Type: field.TypeBool, Nullable: true, Default: true},
 		{Name: "review_due", Type: field.TypeTime, Nullable: true},
 		{Name: "review_frequency", Type: field.TypeEnum, Nullable: true, Enums: []string{"YEARLY", "QUARTERLY", "BIANNUALLY", "MONTHLY"}, Default: "YEARLY"},
@@ -2194,7 +2305,6 @@ var (
 		{Name: "name", Type: field.TypeString},
 		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"PUBLISHED", "DRAFT", "NEEDS_APPROVAL", "APPROVED", "ARCHIVED"}, Default: "DRAFT"},
 		{Name: "procedure_type", Type: field.TypeString, Nullable: true},
-		{Name: "details", Type: field.TypeString, Nullable: true, Size: 2147483647},
 		{Name: "approval_required", Type: field.TypeBool, Nullable: true, Default: true},
 		{Name: "review_due", Type: field.TypeTime, Nullable: true},
 		{Name: "review_frequency", Type: field.TypeEnum, Nullable: true, Enums: []string{"YEARLY", "QUARTERLY", "BIANNUALLY", "MONTHLY"}, Default: "YEARLY"},
@@ -2212,31 +2322,31 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "procedures_control_objectives_procedures",
-				Columns:    []*schema.Column{ProceduresColumns[17]},
+				Columns:    []*schema.Column{ProceduresColumns[16]},
 				RefColumns: []*schema.Column{ControlObjectivesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "procedures_organizations_procedures",
-				Columns:    []*schema.Column{ProceduresColumns[18]},
+				Columns:    []*schema.Column{ProceduresColumns[17]},
 				RefColumns: []*schema.Column{OrganizationsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "procedures_groups_approver",
-				Columns:    []*schema.Column{ProceduresColumns[19]},
+				Columns:    []*schema.Column{ProceduresColumns[18]},
 				RefColumns: []*schema.Column{GroupsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "procedures_groups_delegate",
-				Columns:    []*schema.Column{ProceduresColumns[20]},
+				Columns:    []*schema.Column{ProceduresColumns[19]},
 				RefColumns: []*schema.Column{GroupsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "procedures_subcontrols_procedures",
-				Columns:    []*schema.Column{ProceduresColumns[21]},
+				Columns:    []*schema.Column{ProceduresColumns[20]},
 				RefColumns: []*schema.Column{SubcontrolsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -2245,7 +2355,7 @@ var (
 			{
 				Name:    "procedure_display_id_owner_id",
 				Unique:  true,
-				Columns: []*schema.Column{ProceduresColumns[7], ProceduresColumns[18]},
+				Columns: []*schema.Column{ProceduresColumns[7], ProceduresColumns[17]},
 			},
 		},
 	}
@@ -2268,7 +2378,6 @@ var (
 		{Name: "name", Type: field.TypeString},
 		{Name: "status", Type: field.TypeEnum, Nullable: true, Enums: []string{"PUBLISHED", "DRAFT", "NEEDS_APPROVAL", "APPROVED", "ARCHIVED"}, Default: "DRAFT"},
 		{Name: "procedure_type", Type: field.TypeString, Nullable: true},
-		{Name: "details", Type: field.TypeString, Nullable: true, Size: 2147483647},
 		{Name: "approval_required", Type: field.TypeBool, Nullable: true, Default: true},
 		{Name: "review_due", Type: field.TypeTime, Nullable: true},
 		{Name: "review_frequency", Type: field.TypeEnum, Nullable: true, Enums: []string{"YEARLY", "QUARTERLY", "BIANNUALLY", "MONTHLY"}, Default: "YEARLY"},
@@ -5258,6 +5367,8 @@ var (
 		ControlObjectiveHistoryTable,
 		DocumentDataTable,
 		DocumentDataHistoryTable,
+		DocumentRevisionsTable,
+		DocumentRevisionHistoryTable,
 		EmailVerificationTokensTable,
 		EntitiesTable,
 		EntityHistoryTable,
@@ -5438,6 +5549,17 @@ func init() {
 	DocumentDataTable.ForeignKeys[1].RefTable = TemplatesTable
 	DocumentDataHistoryTable.Annotation = &entsql.Annotation{
 		Table: "document_data_history",
+	}
+	DocumentRevisionsTable.ForeignKeys[0].RefTable = ActionPlansTable
+	DocumentRevisionsTable.ForeignKeys[1].RefTable = UsersTable
+	DocumentRevisionsTable.ForeignKeys[2].RefTable = UsersTable
+	DocumentRevisionsTable.ForeignKeys[3].RefTable = InternalPoliciesTable
+	DocumentRevisionsTable.ForeignKeys[4].RefTable = ProceduresTable
+	DocumentRevisionsTable.ForeignKeys[5].RefTable = ActionPlansTable
+	DocumentRevisionsTable.ForeignKeys[6].RefTable = InternalPoliciesTable
+	DocumentRevisionsTable.ForeignKeys[7].RefTable = ProceduresTable
+	DocumentRevisionHistoryTable.Annotation = &entsql.Annotation{
+		Table: "document_revision_history",
 	}
 	EmailVerificationTokensTable.ForeignKeys[0].RefTable = UsersTable
 	EntitiesTable.ForeignKeys[0].RefTable = EntityTypesTable

@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/theopenlane/core/internal/ent/generated/control"
 	"github.com/theopenlane/core/internal/ent/generated/controlobjective"
+	"github.com/theopenlane/core/internal/ent/generated/documentrevision"
 	"github.com/theopenlane/core/internal/ent/generated/group"
 	"github.com/theopenlane/core/internal/ent/generated/internalpolicy"
 	"github.com/theopenlane/core/internal/ent/generated/narrative"
@@ -187,20 +188,6 @@ func (ipc *InternalPolicyCreate) SetNillablePolicyType(s *string) *InternalPolic
 	return ipc
 }
 
-// SetDetails sets the "details" field.
-func (ipc *InternalPolicyCreate) SetDetails(s string) *InternalPolicyCreate {
-	ipc.mutation.SetDetails(s)
-	return ipc
-}
-
-// SetNillableDetails sets the "details" field if the given value is not nil.
-func (ipc *InternalPolicyCreate) SetNillableDetails(s *string) *InternalPolicyCreate {
-	if s != nil {
-		ipc.SetDetails(*s)
-	}
-	return ipc
-}
-
 // SetApprovalRequired sets the "approval_required" field.
 func (ipc *InternalPolicyCreate) SetApprovalRequired(b bool) *InternalPolicyCreate {
 	ipc.mutation.SetApprovalRequired(b)
@@ -328,6 +315,21 @@ func (ipc *InternalPolicyCreate) SetApprover(g *Group) *InternalPolicyCreate {
 // SetDelegate sets the "delegate" edge to the Group entity.
 func (ipc *InternalPolicyCreate) SetDelegate(g *Group) *InternalPolicyCreate {
 	return ipc.SetDelegateID(g.ID)
+}
+
+// AddDocumentRevisionIDs adds the "document_revisions" edge to the DocumentRevision entity by IDs.
+func (ipc *InternalPolicyCreate) AddDocumentRevisionIDs(ids ...string) *InternalPolicyCreate {
+	ipc.mutation.AddDocumentRevisionIDs(ids...)
+	return ipc
+}
+
+// AddDocumentRevisions adds the "document_revisions" edges to the DocumentRevision entity.
+func (ipc *InternalPolicyCreate) AddDocumentRevisions(d ...*DocumentRevision) *InternalPolicyCreate {
+	ids := make([]string, len(d))
+	for i := range d {
+		ids[i] = d[i].ID
+	}
+	return ipc.AddDocumentRevisionIDs(ids...)
 }
 
 // AddControlObjectiveIDs adds the "control_objectives" edge to the ControlObjective entity by IDs.
@@ -627,10 +629,6 @@ func (ipc *InternalPolicyCreate) createSpec() (*InternalPolicy, *sqlgraph.Create
 		_spec.SetField(internalpolicy.FieldPolicyType, field.TypeString, value)
 		_node.PolicyType = value
 	}
-	if value, ok := ipc.mutation.Details(); ok {
-		_spec.SetField(internalpolicy.FieldDetails, field.TypeString, value)
-		_node.Details = value
-	}
 	if value, ok := ipc.mutation.ApprovalRequired(); ok {
 		_spec.SetField(internalpolicy.FieldApprovalRequired, field.TypeBool, value)
 		_node.ApprovalRequired = value
@@ -729,6 +727,23 @@ func (ipc *InternalPolicyCreate) createSpec() (*InternalPolicy, *sqlgraph.Create
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.DelegateID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ipc.mutation.DocumentRevisionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   internalpolicy.DocumentRevisionsTable,
+			Columns: []string{internalpolicy.DocumentRevisionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(documentrevision.FieldID, field.TypeString),
+			},
+		}
+		edge.Schema = ipc.schemaConfig.DocumentRevision
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := ipc.mutation.ControlObjectivesIDs(); len(nodes) > 0 {

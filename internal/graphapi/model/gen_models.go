@@ -294,6 +294,36 @@ type DocumentDataUpdatePayload struct {
 	DocumentData *generated.DocumentData `json:"documentData"`
 }
 
+// Return response for createBulkDocumentRevision mutation
+type DocumentRevisionBulkCreatePayload struct {
+	// Created documentRevisions
+	DocumentRevisions []*generated.DocumentRevision `json:"documentRevisions,omitempty"`
+}
+
+// Return response for createDocumentRevision mutation
+type DocumentRevisionCreatePayload struct {
+	// Created documentRevision
+	DocumentRevision *generated.DocumentRevision `json:"documentRevision"`
+}
+
+// Return response for deleteDocumentRevision mutation
+type DocumentRevisionDeletePayload struct {
+	// Deleted documentRevision ID
+	DeletedID string `json:"deletedID"`
+}
+
+type DocumentRevisionSearchResult struct {
+	DocumentRevisions []*generated.DocumentRevision `json:"documentRevisions,omitempty"`
+}
+
+func (DocumentRevisionSearchResult) IsSearchResult() {}
+
+// Return response for updateDocumentRevision mutation
+type DocumentRevisionUpdatePayload struct {
+	// Updated documentRevision
+	DocumentRevision *generated.DocumentRevision `json:"documentRevision"`
+}
+
 // Return response for createBulkEntity mutation
 type EntityBulkCreatePayload struct {
 	// Created entities

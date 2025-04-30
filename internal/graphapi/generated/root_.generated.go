@@ -114,35 +114,35 @@ type ComplexityRoot struct {
 	}
 
 	ActionPlan struct {
-		ActionPlanType   func(childComplexity int) int
-		ApprovalRequired func(childComplexity int) int
-		Approver         func(childComplexity int) int
-		ApproverID       func(childComplexity int) int
-		Controls         func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.ControlOrder, where *generated.ControlWhereInput) int
-		CreatedAt        func(childComplexity int) int
-		CreatedBy        func(childComplexity int) int
-		Delegate         func(childComplexity int) int
-		DelegateID       func(childComplexity int) int
-		DeletedAt        func(childComplexity int) int
-		DeletedBy        func(childComplexity int) int
-		Details          func(childComplexity int) int
-		DueDate          func(childComplexity int) int
-		ID               func(childComplexity int) int
-		Name             func(childComplexity int) int
-		Owner            func(childComplexity int) int
-		OwnerID          func(childComplexity int) int
-		Priority         func(childComplexity int) int
-		Programs         func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.ProgramOrder, where *generated.ProgramWhereInput) int
-		ReviewDue        func(childComplexity int) int
-		ReviewFrequency  func(childComplexity int) int
-		Revision         func(childComplexity int) int
-		Risks            func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.RiskOrder, where *generated.RiskWhereInput) int
-		Source           func(childComplexity int) int
-		Status           func(childComplexity int) int
-		Tags             func(childComplexity int) int
-		UpdatedAt        func(childComplexity int) int
-		UpdatedBy        func(childComplexity int) int
-		Users            func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.UserOrder, where *generated.UserWhereInput) int
+		ActionPlanType    func(childComplexity int) int
+		ApprovalRequired  func(childComplexity int) int
+		Approver          func(childComplexity int) int
+		ApproverID        func(childComplexity int) int
+		Controls          func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.ControlOrder, where *generated.ControlWhereInput) int
+		CreatedAt         func(childComplexity int) int
+		CreatedBy         func(childComplexity int) int
+		Delegate          func(childComplexity int) int
+		DelegateID        func(childComplexity int) int
+		DeletedAt         func(childComplexity int) int
+		DeletedBy         func(childComplexity int) int
+		DocumentRevisions func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.DocumentRevisionOrder, where *generated.DocumentRevisionWhereInput) int
+		DueDate           func(childComplexity int) int
+		ID                func(childComplexity int) int
+		Name              func(childComplexity int) int
+		Owner             func(childComplexity int) int
+		OwnerID           func(childComplexity int) int
+		Priority          func(childComplexity int) int
+		Programs          func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.ProgramOrder, where *generated.ProgramWhereInput) int
+		ReviewDue         func(childComplexity int) int
+		ReviewFrequency   func(childComplexity int) int
+		Revision          func(childComplexity int) int
+		Risks             func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.RiskOrder, where *generated.RiskWhereInput) int
+		Source            func(childComplexity int) int
+		Status            func(childComplexity int) int
+		Tags              func(childComplexity int) int
+		UpdatedAt         func(childComplexity int) int
+		UpdatedBy         func(childComplexity int) int
+		Users             func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.UserOrder, where *generated.UserWhereInput) int
 	}
 
 	ActionPlanBulkCreatePayload struct {
@@ -177,7 +177,6 @@ type ComplexityRoot struct {
 		DelegateID       func(childComplexity int) int
 		DeletedAt        func(childComplexity int) int
 		DeletedBy        func(childComplexity int) int
-		Details          func(childComplexity int) int
 		DueDate          func(childComplexity int) int
 		HistoryTime      func(childComplexity int) int
 		ID               func(childComplexity int) int
@@ -708,6 +707,96 @@ type ComplexityRoot struct {
 
 	DocumentDataUpdatePayload struct {
 		DocumentData func(childComplexity int) int
+	}
+
+	DocumentRevision struct {
+		ActionPlan       func(childComplexity int) int
+		ActionPlanID     func(childComplexity int) int
+		ApprovalDate     func(childComplexity int) int
+		ApprovedBy       func(childComplexity int) int
+		ApprovedByID     func(childComplexity int) int
+		CreatedAt        func(childComplexity int) int
+		CreatedBy        func(childComplexity int) int
+		DeletedAt        func(childComplexity int) int
+		DeletedBy        func(childComplexity int) int
+		Details          func(childComplexity int) int
+		ID               func(childComplexity int) int
+		InternalPolicy   func(childComplexity int) int
+		InternalPolicyID func(childComplexity int) int
+		Procedure        func(childComplexity int) int
+		ProcedureID      func(childComplexity int) int
+		Revision         func(childComplexity int) int
+		Status           func(childComplexity int) int
+		SubmittedBy      func(childComplexity int) int
+		SubmittedByID    func(childComplexity int) int
+		Tags             func(childComplexity int) int
+		UpdatedAt        func(childComplexity int) int
+		UpdatedBy        func(childComplexity int) int
+	}
+
+	DocumentRevisionBulkCreatePayload struct {
+		DocumentRevisions func(childComplexity int) int
+	}
+
+	DocumentRevisionConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	DocumentRevisionCreatePayload struct {
+		DocumentRevision func(childComplexity int) int
+	}
+
+	DocumentRevisionDeletePayload struct {
+		DeletedID func(childComplexity int) int
+	}
+
+	DocumentRevisionEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
+	DocumentRevisionHistory struct {
+		ActionPlanID     func(childComplexity int) int
+		ApprovalDate     func(childComplexity int) int
+		ApprovedByID     func(childComplexity int) int
+		CreatedAt        func(childComplexity int) int
+		CreatedBy        func(childComplexity int) int
+		DeletedAt        func(childComplexity int) int
+		DeletedBy        func(childComplexity int) int
+		Details          func(childComplexity int) int
+		HistoryTime      func(childComplexity int) int
+		ID               func(childComplexity int) int
+		InternalPolicyID func(childComplexity int) int
+		Operation        func(childComplexity int) int
+		ProcedureID      func(childComplexity int) int
+		Ref              func(childComplexity int) int
+		Revision         func(childComplexity int) int
+		Status           func(childComplexity int) int
+		SubmittedByID    func(childComplexity int) int
+		Tags             func(childComplexity int) int
+		UpdatedAt        func(childComplexity int) int
+		UpdatedBy        func(childComplexity int) int
+	}
+
+	DocumentRevisionHistoryConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	DocumentRevisionHistoryEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
+	DocumentRevisionSearchResult struct {
+		DocumentRevisions func(childComplexity int) int
+	}
+
+	DocumentRevisionUpdatePayload struct {
+		DocumentRevision func(childComplexity int) int
 	}
 
 	Entity struct {
@@ -1569,8 +1658,8 @@ type ComplexityRoot struct {
 		DelegateID        func(childComplexity int) int
 		DeletedAt         func(childComplexity int) int
 		DeletedBy         func(childComplexity int) int
-		Details           func(childComplexity int) int
 		DisplayID         func(childComplexity int) int
+		DocumentRevisions func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.DocumentRevisionOrder, where *generated.DocumentRevisionWhereInput) int
 		Editors           func(childComplexity int) int
 		ID                func(childComplexity int) int
 		Name              func(childComplexity int) int
@@ -1621,7 +1710,6 @@ type ComplexityRoot struct {
 		DelegateID       func(childComplexity int) int
 		DeletedAt        func(childComplexity int) int
 		DeletedBy        func(childComplexity int) int
-		Details          func(childComplexity int) int
 		DisplayID        func(childComplexity int) int
 		HistoryTime      func(childComplexity int) int
 		ID               func(childComplexity int) int
@@ -1789,6 +1877,7 @@ type ComplexityRoot struct {
 		CreateBulkCSVControlImplementation func(childComplexity int, input graphql.Upload) int
 		CreateBulkCSVControlObjective      func(childComplexity int, input graphql.Upload) int
 		CreateBulkCSVDocumentData          func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVDocumentRevision      func(childComplexity int, input graphql.Upload) int
 		CreateBulkCSVEntity                func(childComplexity int, input graphql.Upload) int
 		CreateBulkCSVEntityType            func(childComplexity int, input graphql.Upload) int
 		CreateBulkCSVEvent                 func(childComplexity int, input graphql.Upload) int
@@ -1817,6 +1906,7 @@ type ComplexityRoot struct {
 		CreateBulkControlImplementation    func(childComplexity int, input []*generated.CreateControlImplementationInput) int
 		CreateBulkControlObjective         func(childComplexity int, input []*generated.CreateControlObjectiveInput) int
 		CreateBulkDocumentData             func(childComplexity int, input []*generated.CreateDocumentDataInput) int
+		CreateBulkDocumentRevision         func(childComplexity int, input []*generated.CreateDocumentRevisionInput) int
 		CreateBulkEntity                   func(childComplexity int, input []*generated.CreateEntityInput) int
 		CreateBulkEntityType               func(childComplexity int, input []*generated.CreateEntityTypeInput) int
 		CreateBulkEvent                    func(childComplexity int, input []*generated.CreateEventInput) int
@@ -1847,6 +1937,7 @@ type ComplexityRoot struct {
 		CreateControlWithSubcontrols       func(childComplexity int, input model.CreateControlWithSubcontrolsInput) int
 		CreateControlsByClone              func(childComplexity int, input *model.CloneControlInput) int
 		CreateDocumentData                 func(childComplexity int, input generated.CreateDocumentDataInput) int
+		CreateDocumentRevision             func(childComplexity int, input generated.CreateDocumentRevisionInput) int
 		CreateEntity                       func(childComplexity int, input generated.CreateEntityInput) int
 		CreateEntityType                   func(childComplexity int, input generated.CreateEntityTypeInput) int
 		CreateEvent                        func(childComplexity int, input generated.CreateEventInput) int
@@ -1889,6 +1980,7 @@ type ComplexityRoot struct {
 		DeleteControlImplementation        func(childComplexity int, id string) int
 		DeleteControlObjective             func(childComplexity int, id string) int
 		DeleteDocumentData                 func(childComplexity int, id string) int
+		DeleteDocumentRevision             func(childComplexity int, id string) int
 		DeleteEntity                       func(childComplexity int, id string) int
 		DeleteEntityType                   func(childComplexity int, id string) int
 		DeleteEvent                        func(childComplexity int, id string) int
@@ -1924,6 +2016,7 @@ type ComplexityRoot struct {
 		UpdateControlImplementation        func(childComplexity int, id string, input generated.UpdateControlImplementationInput) int
 		UpdateControlObjective             func(childComplexity int, id string, input generated.UpdateControlObjectiveInput) int
 		UpdateDocumentData                 func(childComplexity int, id string, input generated.UpdateDocumentDataInput) int
+		UpdateDocumentRevision             func(childComplexity int, id string, input generated.UpdateDocumentRevisionInput) int
 		UpdateEntity                       func(childComplexity int, id string, input generated.UpdateEntityInput) int
 		UpdateEntityType                   func(childComplexity int, id string, input generated.UpdateEntityTypeInput) int
 		UpdateEvent                        func(childComplexity int, id string, input generated.UpdateEventInput) int
@@ -2543,37 +2636,37 @@ type ComplexityRoot struct {
 	}
 
 	Procedure struct {
-		ApprovalRequired func(childComplexity int) int
-		Approver         func(childComplexity int) int
-		ApproverID       func(childComplexity int) int
-		BlockedGroups    func(childComplexity int) int
-		Controls         func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.ControlOrder, where *generated.ControlWhereInput) int
-		CreatedAt        func(childComplexity int) int
-		CreatedBy        func(childComplexity int) int
-		Delegate         func(childComplexity int) int
-		DelegateID       func(childComplexity int) int
-		DeletedAt        func(childComplexity int) int
-		DeletedBy        func(childComplexity int) int
-		Details          func(childComplexity int) int
-		DisplayID        func(childComplexity int) int
-		Editors          func(childComplexity int) int
-		ID               func(childComplexity int) int
-		InternalPolicies func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.InternalPolicyOrder, where *generated.InternalPolicyWhereInput) int
-		Name             func(childComplexity int) int
-		Narratives       func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.NarrativeOrder, where *generated.NarrativeWhereInput) int
-		Owner            func(childComplexity int) int
-		OwnerID          func(childComplexity int) int
-		ProcedureType    func(childComplexity int) int
-		Programs         func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.ProgramOrder, where *generated.ProgramWhereInput) int
-		ReviewDue        func(childComplexity int) int
-		ReviewFrequency  func(childComplexity int) int
-		Revision         func(childComplexity int) int
-		Risks            func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.RiskOrder, where *generated.RiskWhereInput) int
-		Status           func(childComplexity int) int
-		Tags             func(childComplexity int) int
-		Tasks            func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.TaskOrder, where *generated.TaskWhereInput) int
-		UpdatedAt        func(childComplexity int) int
-		UpdatedBy        func(childComplexity int) int
+		ApprovalRequired  func(childComplexity int) int
+		Approver          func(childComplexity int) int
+		ApproverID        func(childComplexity int) int
+		BlockedGroups     func(childComplexity int) int
+		Controls          func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.ControlOrder, where *generated.ControlWhereInput) int
+		CreatedAt         func(childComplexity int) int
+		CreatedBy         func(childComplexity int) int
+		Delegate          func(childComplexity int) int
+		DelegateID        func(childComplexity int) int
+		DeletedAt         func(childComplexity int) int
+		DeletedBy         func(childComplexity int) int
+		DisplayID         func(childComplexity int) int
+		DocumentRevisions func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.DocumentRevisionOrder, where *generated.DocumentRevisionWhereInput) int
+		Editors           func(childComplexity int) int
+		ID                func(childComplexity int) int
+		InternalPolicies  func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.InternalPolicyOrder, where *generated.InternalPolicyWhereInput) int
+		Name              func(childComplexity int) int
+		Narratives        func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.NarrativeOrder, where *generated.NarrativeWhereInput) int
+		Owner             func(childComplexity int) int
+		OwnerID           func(childComplexity int) int
+		ProcedureType     func(childComplexity int) int
+		Programs          func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.ProgramOrder, where *generated.ProgramWhereInput) int
+		ReviewDue         func(childComplexity int) int
+		ReviewFrequency   func(childComplexity int) int
+		Revision          func(childComplexity int) int
+		Risks             func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.RiskOrder, where *generated.RiskWhereInput) int
+		Status            func(childComplexity int) int
+		Tags              func(childComplexity int) int
+		Tasks             func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.TaskOrder, where *generated.TaskWhereInput) int
+		UpdatedAt         func(childComplexity int) int
+		UpdatedBy         func(childComplexity int) int
 	}
 
 	ProcedureBulkCreatePayload struct {
@@ -2607,7 +2700,6 @@ type ComplexityRoot struct {
 		DelegateID       func(childComplexity int) int
 		DeletedAt        func(childComplexity int) int
 		DeletedBy        func(childComplexity int) int
-		Details          func(childComplexity int) int
 		DisplayID        func(childComplexity int) int
 		HistoryTime      func(childComplexity int) int
 		ID               func(childComplexity int) int
@@ -2833,6 +2925,7 @@ type ComplexityRoot struct {
 		AdminControlObjectiveSearch      func(childComplexity int, query string) int
 		AdminControlSearch               func(childComplexity int, query string) int
 		AdminDocumentDataSearch          func(childComplexity int, query string) int
+		AdminDocumentRevisionSearch      func(childComplexity int, query string) int
 		AdminEntitySearch                func(childComplexity int, query string) int
 		AdminEntityTypeSearch            func(childComplexity int, query string) int
 		AdminEventSearch                 func(childComplexity int, query string) int
@@ -2879,6 +2972,10 @@ type ComplexityRoot struct {
 		DocumentDataHistories            func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy *generated.DocumentDataHistoryOrder, where *generated.DocumentDataHistoryWhereInput) int
 		DocumentDataSearch               func(childComplexity int, query string) int
 		DocumentDataSlice                func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.DocumentDataOrder, where *generated.DocumentDataWhereInput) int
+		DocumentRevision                 func(childComplexity int, id string) int
+		DocumentRevisionHistories        func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy *generated.DocumentRevisionHistoryOrder, where *generated.DocumentRevisionHistoryWhereInput) int
+		DocumentRevisionSearch           func(childComplexity int, query string) int
+		DocumentRevisions                func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.DocumentRevisionOrder, where *generated.DocumentRevisionWhereInput) int
 		Entities                         func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.EntityOrder, where *generated.EntityWhereInput) int
 		Entity                           func(childComplexity int, id string) int
 		EntityHistories                  func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy *generated.EntityHistoryOrder, where *generated.EntityHistoryWhereInput) int
@@ -4110,12 +4207,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.ActionPlan.DeletedBy(childComplexity), true
 
-	case "ActionPlan.details":
-		if e.complexity.ActionPlan.Details == nil {
+	case "ActionPlan.documentRevisions":
+		if e.complexity.ActionPlan.DocumentRevisions == nil {
 			break
 		}
 
-		return e.complexity.ActionPlan.Details(childComplexity), true
+		args, err := ec.field_ActionPlan_documentRevisions_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.ActionPlan.DocumentRevisions(childComplexity, args["after"].(*entgql.Cursor[string]), args["first"].(*int), args["before"].(*entgql.Cursor[string]), args["last"].(*int), args["orderBy"].([]*generated.DocumentRevisionOrder), args["where"].(*generated.DocumentRevisionWhereInput)), true
 
 	case "ActionPlan.dueDate":
 		if e.complexity.ActionPlan.DueDate == nil {
@@ -4362,13 +4464,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.ActionPlanHistory.DeletedBy(childComplexity), true
-
-	case "ActionPlanHistory.details":
-		if e.complexity.ActionPlanHistory.Details == nil {
-			break
-		}
-
-		return e.complexity.ActionPlanHistory.Details(childComplexity), true
 
 	case "ActionPlanHistory.dueDate":
 		if e.complexity.ActionPlanHistory.DueDate == nil {
@@ -6912,6 +7007,405 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.DocumentDataUpdatePayload.DocumentData(childComplexity), true
+
+	case "DocumentRevision.actionPlan":
+		if e.complexity.DocumentRevision.ActionPlan == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevision.ActionPlan(childComplexity), true
+
+	case "DocumentRevision.actionPlanID":
+		if e.complexity.DocumentRevision.ActionPlanID == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevision.ActionPlanID(childComplexity), true
+
+	case "DocumentRevision.approvalDate":
+		if e.complexity.DocumentRevision.ApprovalDate == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevision.ApprovalDate(childComplexity), true
+
+	case "DocumentRevision.approvedBy":
+		if e.complexity.DocumentRevision.ApprovedBy == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevision.ApprovedBy(childComplexity), true
+
+	case "DocumentRevision.approvedByID":
+		if e.complexity.DocumentRevision.ApprovedByID == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevision.ApprovedByID(childComplexity), true
+
+	case "DocumentRevision.createdAt":
+		if e.complexity.DocumentRevision.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevision.CreatedAt(childComplexity), true
+
+	case "DocumentRevision.createdBy":
+		if e.complexity.DocumentRevision.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevision.CreatedBy(childComplexity), true
+
+	case "DocumentRevision.deletedAt":
+		if e.complexity.DocumentRevision.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevision.DeletedAt(childComplexity), true
+
+	case "DocumentRevision.deletedBy":
+		if e.complexity.DocumentRevision.DeletedBy == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevision.DeletedBy(childComplexity), true
+
+	case "DocumentRevision.details":
+		if e.complexity.DocumentRevision.Details == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevision.Details(childComplexity), true
+
+	case "DocumentRevision.id":
+		if e.complexity.DocumentRevision.ID == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevision.ID(childComplexity), true
+
+	case "DocumentRevision.internalPolicy":
+		if e.complexity.DocumentRevision.InternalPolicy == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevision.InternalPolicy(childComplexity), true
+
+	case "DocumentRevision.internalPolicyID":
+		if e.complexity.DocumentRevision.InternalPolicyID == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevision.InternalPolicyID(childComplexity), true
+
+	case "DocumentRevision.procedure":
+		if e.complexity.DocumentRevision.Procedure == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevision.Procedure(childComplexity), true
+
+	case "DocumentRevision.procedureID":
+		if e.complexity.DocumentRevision.ProcedureID == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevision.ProcedureID(childComplexity), true
+
+	case "DocumentRevision.revision":
+		if e.complexity.DocumentRevision.Revision == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevision.Revision(childComplexity), true
+
+	case "DocumentRevision.status":
+		if e.complexity.DocumentRevision.Status == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevision.Status(childComplexity), true
+
+	case "DocumentRevision.submittedBy":
+		if e.complexity.DocumentRevision.SubmittedBy == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevision.SubmittedBy(childComplexity), true
+
+	case "DocumentRevision.submittedByID":
+		if e.complexity.DocumentRevision.SubmittedByID == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevision.SubmittedByID(childComplexity), true
+
+	case "DocumentRevision.tags":
+		if e.complexity.DocumentRevision.Tags == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevision.Tags(childComplexity), true
+
+	case "DocumentRevision.updatedAt":
+		if e.complexity.DocumentRevision.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevision.UpdatedAt(childComplexity), true
+
+	case "DocumentRevision.updatedBy":
+		if e.complexity.DocumentRevision.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevision.UpdatedBy(childComplexity), true
+
+	case "DocumentRevisionBulkCreatePayload.documentRevisions":
+		if e.complexity.DocumentRevisionBulkCreatePayload.DocumentRevisions == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionBulkCreatePayload.DocumentRevisions(childComplexity), true
+
+	case "DocumentRevisionConnection.edges":
+		if e.complexity.DocumentRevisionConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionConnection.Edges(childComplexity), true
+
+	case "DocumentRevisionConnection.pageInfo":
+		if e.complexity.DocumentRevisionConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionConnection.PageInfo(childComplexity), true
+
+	case "DocumentRevisionConnection.totalCount":
+		if e.complexity.DocumentRevisionConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionConnection.TotalCount(childComplexity), true
+
+	case "DocumentRevisionCreatePayload.documentRevision":
+		if e.complexity.DocumentRevisionCreatePayload.DocumentRevision == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionCreatePayload.DocumentRevision(childComplexity), true
+
+	case "DocumentRevisionDeletePayload.deletedID":
+		if e.complexity.DocumentRevisionDeletePayload.DeletedID == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionDeletePayload.DeletedID(childComplexity), true
+
+	case "DocumentRevisionEdge.cursor":
+		if e.complexity.DocumentRevisionEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionEdge.Cursor(childComplexity), true
+
+	case "DocumentRevisionEdge.node":
+		if e.complexity.DocumentRevisionEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionEdge.Node(childComplexity), true
+
+	case "DocumentRevisionHistory.actionPlanID":
+		if e.complexity.DocumentRevisionHistory.ActionPlanID == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionHistory.ActionPlanID(childComplexity), true
+
+	case "DocumentRevisionHistory.approvalDate":
+		if e.complexity.DocumentRevisionHistory.ApprovalDate == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionHistory.ApprovalDate(childComplexity), true
+
+	case "DocumentRevisionHistory.approvedByID":
+		if e.complexity.DocumentRevisionHistory.ApprovedByID == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionHistory.ApprovedByID(childComplexity), true
+
+	case "DocumentRevisionHistory.createdAt":
+		if e.complexity.DocumentRevisionHistory.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionHistory.CreatedAt(childComplexity), true
+
+	case "DocumentRevisionHistory.createdBy":
+		if e.complexity.DocumentRevisionHistory.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionHistory.CreatedBy(childComplexity), true
+
+	case "DocumentRevisionHistory.deletedAt":
+		if e.complexity.DocumentRevisionHistory.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionHistory.DeletedAt(childComplexity), true
+
+	case "DocumentRevisionHistory.deletedBy":
+		if e.complexity.DocumentRevisionHistory.DeletedBy == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionHistory.DeletedBy(childComplexity), true
+
+	case "DocumentRevisionHistory.details":
+		if e.complexity.DocumentRevisionHistory.Details == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionHistory.Details(childComplexity), true
+
+	case "DocumentRevisionHistory.historyTime":
+		if e.complexity.DocumentRevisionHistory.HistoryTime == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionHistory.HistoryTime(childComplexity), true
+
+	case "DocumentRevisionHistory.id":
+		if e.complexity.DocumentRevisionHistory.ID == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionHistory.ID(childComplexity), true
+
+	case "DocumentRevisionHistory.internalPolicyID":
+		if e.complexity.DocumentRevisionHistory.InternalPolicyID == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionHistory.InternalPolicyID(childComplexity), true
+
+	case "DocumentRevisionHistory.operation":
+		if e.complexity.DocumentRevisionHistory.Operation == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionHistory.Operation(childComplexity), true
+
+	case "DocumentRevisionHistory.procedureID":
+		if e.complexity.DocumentRevisionHistory.ProcedureID == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionHistory.ProcedureID(childComplexity), true
+
+	case "DocumentRevisionHistory.ref":
+		if e.complexity.DocumentRevisionHistory.Ref == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionHistory.Ref(childComplexity), true
+
+	case "DocumentRevisionHistory.revision":
+		if e.complexity.DocumentRevisionHistory.Revision == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionHistory.Revision(childComplexity), true
+
+	case "DocumentRevisionHistory.status":
+		if e.complexity.DocumentRevisionHistory.Status == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionHistory.Status(childComplexity), true
+
+	case "DocumentRevisionHistory.submittedByID":
+		if e.complexity.DocumentRevisionHistory.SubmittedByID == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionHistory.SubmittedByID(childComplexity), true
+
+	case "DocumentRevisionHistory.tags":
+		if e.complexity.DocumentRevisionHistory.Tags == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionHistory.Tags(childComplexity), true
+
+	case "DocumentRevisionHistory.updatedAt":
+		if e.complexity.DocumentRevisionHistory.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionHistory.UpdatedAt(childComplexity), true
+
+	case "DocumentRevisionHistory.updatedBy":
+		if e.complexity.DocumentRevisionHistory.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionHistory.UpdatedBy(childComplexity), true
+
+	case "DocumentRevisionHistoryConnection.edges":
+		if e.complexity.DocumentRevisionHistoryConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionHistoryConnection.Edges(childComplexity), true
+
+	case "DocumentRevisionHistoryConnection.pageInfo":
+		if e.complexity.DocumentRevisionHistoryConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionHistoryConnection.PageInfo(childComplexity), true
+
+	case "DocumentRevisionHistoryConnection.totalCount":
+		if e.complexity.DocumentRevisionHistoryConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionHistoryConnection.TotalCount(childComplexity), true
+
+	case "DocumentRevisionHistoryEdge.cursor":
+		if e.complexity.DocumentRevisionHistoryEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionHistoryEdge.Cursor(childComplexity), true
+
+	case "DocumentRevisionHistoryEdge.node":
+		if e.complexity.DocumentRevisionHistoryEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionHistoryEdge.Node(childComplexity), true
+
+	case "DocumentRevisionSearchResult.documentRevisions":
+		if e.complexity.DocumentRevisionSearchResult.DocumentRevisions == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionSearchResult.DocumentRevisions(childComplexity), true
+
+	case "DocumentRevisionUpdatePayload.documentRevision":
+		if e.complexity.DocumentRevisionUpdatePayload.DocumentRevision == nil {
+			break
+		}
+
+		return e.complexity.DocumentRevisionUpdatePayload.DocumentRevision(childComplexity), true
 
 	case "Entity.contacts":
 		if e.complexity.Entity.Contacts == nil {
@@ -10894,19 +11388,24 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.InternalPolicy.DeletedBy(childComplexity), true
 
-	case "InternalPolicy.details":
-		if e.complexity.InternalPolicy.Details == nil {
-			break
-		}
-
-		return e.complexity.InternalPolicy.Details(childComplexity), true
-
 	case "InternalPolicy.displayID":
 		if e.complexity.InternalPolicy.DisplayID == nil {
 			break
 		}
 
 		return e.complexity.InternalPolicy.DisplayID(childComplexity), true
+
+	case "InternalPolicy.documentRevisions":
+		if e.complexity.InternalPolicy.DocumentRevisions == nil {
+			break
+		}
+
+		args, err := ec.field_InternalPolicy_documentRevisions_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.InternalPolicy.DocumentRevisions(childComplexity, args["after"].(*entgql.Cursor[string]), args["first"].(*int), args["before"].(*entgql.Cursor[string]), args["last"].(*int), args["orderBy"].([]*generated.DocumentRevisionOrder), args["where"].(*generated.DocumentRevisionWhereInput)), true
 
 	case "InternalPolicy.editors":
 		if e.complexity.InternalPolicy.Editors == nil {
@@ -11151,13 +11650,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.InternalPolicyHistory.DeletedBy(childComplexity), true
-
-	case "InternalPolicyHistory.details":
-		if e.complexity.InternalPolicyHistory.Details == nil {
-			break
-		}
-
-		return e.complexity.InternalPolicyHistory.Details(childComplexity), true
 
 	case "InternalPolicyHistory.displayID":
 		if e.complexity.InternalPolicyHistory.DisplayID == nil {
@@ -11915,6 +12407,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateBulkCSVDocumentData(childComplexity, args["input"].(graphql.Upload)), true
 
+	case "Mutation.createBulkCSVDocumentRevision":
+		if e.complexity.Mutation.CreateBulkCSVDocumentRevision == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createBulkCSVDocumentRevision_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateBulkCSVDocumentRevision(childComplexity, args["input"].(graphql.Upload)), true
+
 	case "Mutation.createBulkCSVEntity":
 		if e.complexity.Mutation.CreateBulkCSVEntity == nil {
 			break
@@ -12250,6 +12754,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateBulkDocumentData(childComplexity, args["input"].([]*generated.CreateDocumentDataInput)), true
+
+	case "Mutation.createBulkDocumentRevision":
+		if e.complexity.Mutation.CreateBulkDocumentRevision == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createBulkDocumentRevision_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateBulkDocumentRevision(childComplexity, args["input"].([]*generated.CreateDocumentRevisionInput)), true
 
 	case "Mutation.createBulkEntity":
 		if e.complexity.Mutation.CreateBulkEntity == nil {
@@ -12610,6 +13126,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateDocumentData(childComplexity, args["input"].(generated.CreateDocumentDataInput)), true
+
+	case "Mutation.createDocumentRevision":
+		if e.complexity.Mutation.CreateDocumentRevision == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createDocumentRevision_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateDocumentRevision(childComplexity, args["input"].(generated.CreateDocumentRevisionInput)), true
 
 	case "Mutation.createEntity":
 		if e.complexity.Mutation.CreateEntity == nil {
@@ -13115,6 +13643,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.DeleteDocumentData(childComplexity, args["id"].(string)), true
 
+	case "Mutation.deleteDocumentRevision":
+		if e.complexity.Mutation.DeleteDocumentRevision == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteDocumentRevision_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteDocumentRevision(childComplexity, args["id"].(string)), true
+
 	case "Mutation.deleteEntity":
 		if e.complexity.Mutation.DeleteEntity == nil {
 			break
@@ -13534,6 +14074,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateDocumentData(childComplexity, args["id"].(string), args["input"].(generated.UpdateDocumentDataInput)), true
+
+	case "Mutation.updateDocumentRevision":
+		if e.complexity.Mutation.UpdateDocumentRevision == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateDocumentRevision_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateDocumentRevision(childComplexity, args["id"].(string), args["input"].(generated.UpdateDocumentRevisionInput)), true
 
 	case "Mutation.updateEntity":
 		if e.complexity.Mutation.UpdateEntity == nil {
@@ -16857,19 +17409,24 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Procedure.DeletedBy(childComplexity), true
 
-	case "Procedure.details":
-		if e.complexity.Procedure.Details == nil {
-			break
-		}
-
-		return e.complexity.Procedure.Details(childComplexity), true
-
 	case "Procedure.displayID":
 		if e.complexity.Procedure.DisplayID == nil {
 			break
 		}
 
 		return e.complexity.Procedure.DisplayID(childComplexity), true
+
+	case "Procedure.documentRevisions":
+		if e.complexity.Procedure.DocumentRevisions == nil {
+			break
+		}
+
+		args, err := ec.field_Procedure_documentRevisions_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Procedure.DocumentRevisions(childComplexity, args["after"].(*entgql.Cursor[string]), args["first"].(*int), args["before"].(*entgql.Cursor[string]), args["last"].(*int), args["orderBy"].([]*generated.DocumentRevisionOrder), args["where"].(*generated.DocumentRevisionWhereInput)), true
 
 	case "Procedure.editors":
 		if e.complexity.Procedure.Editors == nil {
@@ -17126,13 +17683,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.ProcedureHistory.DeletedBy(childComplexity), true
-
-	case "ProcedureHistory.details":
-		if e.complexity.ProcedureHistory.Details == nil {
-			break
-		}
-
-		return e.complexity.ProcedureHistory.Details(childComplexity), true
 
 	case "ProcedureHistory.displayID":
 		if e.complexity.ProcedureHistory.DisplayID == nil {
@@ -18303,6 +18853,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.AdminDocumentDataSearch(childComplexity, args["query"].(string)), true
 
+	case "Query.adminDocumentRevisionSearch":
+		if e.complexity.Query.AdminDocumentRevisionSearch == nil {
+			break
+		}
+
+		args, err := ec.field_Query_adminDocumentRevisionSearch_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.AdminDocumentRevisionSearch(childComplexity, args["query"].(string)), true
+
 	case "Query.adminEntitySearch":
 		if e.complexity.Query.AdminEntitySearch == nil {
 			break
@@ -18854,6 +19416,54 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.DocumentDataSlice(childComplexity, args["after"].(*entgql.Cursor[string]), args["first"].(*int), args["before"].(*entgql.Cursor[string]), args["last"].(*int), args["orderBy"].([]*generated.DocumentDataOrder), args["where"].(*generated.DocumentDataWhereInput)), true
+
+	case "Query.documentRevision":
+		if e.complexity.Query.DocumentRevision == nil {
+			break
+		}
+
+		args, err := ec.field_Query_documentRevision_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.DocumentRevision(childComplexity, args["id"].(string)), true
+
+	case "Query.documentRevisionHistories":
+		if e.complexity.Query.DocumentRevisionHistories == nil {
+			break
+		}
+
+		args, err := ec.field_Query_documentRevisionHistories_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.DocumentRevisionHistories(childComplexity, args["after"].(*entgql.Cursor[string]), args["first"].(*int), args["before"].(*entgql.Cursor[string]), args["last"].(*int), args["orderBy"].(*generated.DocumentRevisionHistoryOrder), args["where"].(*generated.DocumentRevisionHistoryWhereInput)), true
+
+	case "Query.documentRevisionSearch":
+		if e.complexity.Query.DocumentRevisionSearch == nil {
+			break
+		}
+
+		args, err := ec.field_Query_documentRevisionSearch_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.DocumentRevisionSearch(childComplexity, args["query"].(string)), true
+
+	case "Query.documentRevisions":
+		if e.complexity.Query.DocumentRevisions == nil {
+			break
+		}
+
+		args, err := ec.field_Query_documentRevisions_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.DocumentRevisions(childComplexity, args["after"].(*entgql.Cursor[string]), args["first"].(*int), args["before"].(*entgql.Cursor[string]), args["last"].(*int), args["orderBy"].([]*generated.DocumentRevisionOrder), args["where"].(*generated.DocumentRevisionWhereInput)), true
 
 	case "Query.entities":
 		if e.complexity.Query.Entities == nil {
@@ -24219,6 +24829,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCreateControlObjectiveInput,
 		ec.unmarshalInputCreateControlWithSubcontrolsInput,
 		ec.unmarshalInputCreateDocumentDataInput,
+		ec.unmarshalInputCreateDocumentRevisionInput,
 		ec.unmarshalInputCreateEntityInput,
 		ec.unmarshalInputCreateEntityTypeInput,
 		ec.unmarshalInputCreateEventInput,
@@ -24258,6 +24869,10 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputDocumentDataHistoryWhereInput,
 		ec.unmarshalInputDocumentDataOrder,
 		ec.unmarshalInputDocumentDataWhereInput,
+		ec.unmarshalInputDocumentRevisionHistoryOrder,
+		ec.unmarshalInputDocumentRevisionHistoryWhereInput,
+		ec.unmarshalInputDocumentRevisionOrder,
+		ec.unmarshalInputDocumentRevisionWhereInput,
 		ec.unmarshalInputEntityHistoryOrder,
 		ec.unmarshalInputEntityHistoryWhereInput,
 		ec.unmarshalInputEntityOrder,
@@ -24380,6 +24995,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputUpdateControlInput,
 		ec.unmarshalInputUpdateControlObjectiveInput,
 		ec.unmarshalInputUpdateDocumentDataInput,
+		ec.unmarshalInputUpdateDocumentRevisionInput,
 		ec.unmarshalInputUpdateEntityInput,
 		ec.unmarshalInputUpdateEntityTypeInput,
 		ec.unmarshalInputUpdateEventInput,
@@ -24683,6 +25299,15 @@ type ActionPlanBulkCreatePayload {
         """
         query: String!
     ): DocumentDataSearchResult
+    """
+    Search across DocumentRevision objects
+    """
+    adminDocumentRevisionSearch(
+        """
+        Search query
+        """
+        query: String!
+    ): DocumentRevisionSearchResult
     """
     Search across Entity objects
     """
@@ -25616,6 +26241,109 @@ type DocumentDataBulkCreatePayload {
     """
     documentData: [DocumentData!]
 }`, BuiltIn: false},
+	{Name: "../schema/documentrevision.graphql", Input: `extend type Query {
+    """
+    Look up documentRevision by ID
+    """
+     documentRevision(
+        """
+        ID of the documentRevision
+        """
+        id: ID!
+    ):  DocumentRevision!
+}
+
+extend type Mutation{
+    """
+    Create a new documentRevision
+    """
+    createDocumentRevision(
+        """
+        values of the documentRevision
+        """
+        input: CreateDocumentRevisionInput!
+    ): DocumentRevisionCreatePayload!
+    """
+    Create multiple new documentRevisions
+    """
+    createBulkDocumentRevision(
+        """
+        values of the documentRevision
+        """
+        input: [CreateDocumentRevisionInput!]
+    ): DocumentRevisionBulkCreatePayload!
+    """
+    Create multiple new documentRevisions via file upload
+    """
+    createBulkCSVDocumentRevision(
+        """
+        csv file containing values of the documentRevision
+        """
+        input: Upload!
+    ): DocumentRevisionBulkCreatePayload!
+    """
+    Update an existing documentRevision
+    """
+    updateDocumentRevision(
+        """
+        ID of the documentRevision
+        """
+        id: ID!
+        """
+        New values for the documentRevision
+        """
+        input: UpdateDocumentRevisionInput!
+    ): DocumentRevisionUpdatePayload!
+    """
+    Delete an existing documentRevision
+    """
+    deleteDocumentRevision(
+        """
+        ID of the documentRevision
+        """
+        id: ID!
+    ): DocumentRevisionDeletePayload!
+}
+
+"""
+Return response for createDocumentRevision mutation
+"""
+type DocumentRevisionCreatePayload {
+    """
+    Created documentRevision
+    """
+    documentRevision: DocumentRevision!
+}
+
+"""
+Return response for updateDocumentRevision mutation
+"""
+type DocumentRevisionUpdatePayload {
+    """
+    Updated documentRevision
+    """
+    documentRevision: DocumentRevision!
+}
+
+"""
+Return response for deleteDocumentRevision mutation
+"""
+type DocumentRevisionDeletePayload {
+    """
+    Deleted documentRevision ID
+    """
+    deletedID: ID!
+}
+
+"""
+Return response for createBulkDocumentRevision mutation
+"""
+type DocumentRevisionBulkCreatePayload {
+    """
+    Created documentRevisions
+    """
+    documentRevisions: [DocumentRevision!]
+}`, BuiltIn: false},
 	{Name: "../schema/ent.graphql", Input: `directive @goField(forceResolver: Boolean, name: String, omittable: Boolean) on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
 directive @goModel(model: String, models: [String!], forceGenerate: Boolean) on OBJECT | INPUT_OBJECT | SCALAR | ENUM | INTERFACE | UNION
 type APIToken implements Node {
@@ -25986,10 +26714,6 @@ type ActionPlan implements Node {
   """
   actionPlanType: String
   """
-  details of the action_plan
-  """
-  details: String
-  """
   whether approval is required for edits to the action_plan
   """
   approvalRequired: Boolean
@@ -26033,6 +26757,37 @@ type ActionPlan implements Node {
   temporary delegates for the action_plan, used for temporary approval
   """
   delegate: Group
+  documentRevisions(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: Cursor
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: Cursor
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for DocumentRevisions returned from the connection.
+    """
+    orderBy: [DocumentRevisionOrder!]
+
+    """
+    Filtering options for DocumentRevisions returned from the connection.
+    """
+    where: DocumentRevisionWhereInput
+  ): DocumentRevisionConnection!
   owner: Organization
   risks(
     """
@@ -26239,10 +26994,6 @@ type ActionPlanHistory implements Node {
   type of the action_plan, e.g. compliance, operational, health and safety, etc.
   """
   actionPlanType: String
-  """
-  details of the action_plan
-  """
-  details: String
   """
   whether approval is required for edits to the action_plan
   """
@@ -26586,24 +27337,6 @@ input ActionPlanHistoryWhereInput {
   actionPlanTypeEqualFold: String
   actionPlanTypeContainsFold: String
   """
-  details field predicates
-  """
-  details: String
-  detailsNEQ: String
-  detailsIn: [String!]
-  detailsNotIn: [String!]
-  detailsGT: String
-  detailsGTE: String
-  detailsLT: String
-  detailsLTE: String
-  detailsContains: String
-  detailsHasPrefix: String
-  detailsHasSuffix: String
-  detailsIsNil: Boolean
-  detailsNotNil: Boolean
-  detailsEqualFold: String
-  detailsContainsFold: String
-  """
   approval_required field predicates
   """
   approvalRequired: Boolean
@@ -26940,24 +27673,6 @@ input ActionPlanWhereInput {
   actionPlanTypeEqualFold: String
   actionPlanTypeContainsFold: String
   """
-  details field predicates
-  """
-  details: String
-  detailsNEQ: String
-  detailsIn: [String!]
-  detailsNotIn: [String!]
-  detailsGT: String
-  detailsGTE: String
-  detailsLT: String
-  detailsLTE: String
-  detailsContains: String
-  detailsHasPrefix: String
-  detailsHasSuffix: String
-  detailsIsNil: Boolean
-  detailsNotNil: Boolean
-  detailsEqualFold: String
-  detailsContainsFold: String
-  """
   approval_required field predicates
   """
   approvalRequired: Boolean
@@ -27090,6 +27805,11 @@ input ActionPlanWhereInput {
   """
   hasDelegate: Boolean
   hasDelegateWith: [GroupWhereInput!]
+  """
+  document_revisions edge predicates
+  """
+  hasDocumentRevisions: Boolean
+  hasDocumentRevisionsWith: [DocumentRevisionWhereInput!]
   """
   owner edge predicates
   """
@@ -31555,10 +32275,6 @@ input CreateActionPlanInput {
   """
   actionPlanType: String
   """
-  details of the action_plan
-  """
-  details: String
-  """
   whether approval is required for edits to the action_plan
   """
   approvalRequired: Boolean
@@ -31584,6 +32300,7 @@ input CreateActionPlanInput {
   source: String
   approverID: ID
   delegateID: ID
+  documentRevisionIDs: [ID!]
   ownerID: ID
   riskIDs: [ID!]
   controlIDs: [ID!]
@@ -31833,6 +32550,34 @@ input CreateDocumentDataInput {
   templateID: ID!
   entityIDs: [ID!]
   fileIDs: [ID!]
+}
+"""
+CreateDocumentRevisionInput is used for create DocumentRevision object.
+Input was generated by ent.
+"""
+input CreateDocumentRevisionInput {
+  """
+  tags associated with the object
+  """
+  tags: [String!]
+  """
+  revision of the object as a semver (e.g. v1.0.0), by default any update will bump the patch version, unless the revision_bump field is set
+  """
+  revision: String
+  """
+  details of the document
+  """
+  details: String
+  """
+  status of the approval, e.g. pending, approved, rejected
+  """
+  status: DocumentRevisionApprovalStatus
+  approvalDate: Time
+  submittedByID: ID
+  approvedByID: ID
+  internalPolicyID: ID
+  procedureID: ID
+  actionPlanID: ID
 }
 """
 CreateEntityInput is used for create Entity object.
@@ -32195,10 +32940,6 @@ input CreateInternalPolicyInput {
   """
   policyType: String
   """
-  details of the policy
-  """
-  details: String
-  """
   whether approval is required for edits to the policy
   """
   approvalRequired: Boolean
@@ -32215,6 +32956,7 @@ input CreateInternalPolicyInput {
   editorIDs: [ID!]
   approverID: ID
   delegateID: ID
+  documentRevisionIDs: [ID!]
   controlObjectiveIDs: [ID!]
   controlIDs: [ID!]
   procedureIDs: [ID!]
@@ -32532,10 +33274,6 @@ input CreateProcedureInput {
   """
   procedureType: String
   """
-  details of the procedure
-  """
-  details: String
-  """
   whether approval is required for edits to the procedure
   """
   approvalRequired: Boolean
@@ -32552,6 +33290,7 @@ input CreateProcedureInput {
   editorIDs: [ID!]
   approverID: ID
   delegateID: ID
+  documentRevisionIDs: [ID!]
   controlIDs: [ID!]
   internalPolicyIDs: [ID!]
   programIDs: [ID!]
@@ -33643,6 +34382,836 @@ input DocumentDataWhereInput {
   """
   hasFiles: Boolean
   hasFilesWith: [FileWhereInput!]
+}
+type DocumentRevision implements Node {
+  id: ID!
+  createdAt: Time
+  updatedAt: Time
+  createdBy: String
+  updatedBy: String
+  deletedAt: Time
+  deletedBy: String
+  """
+  tags associated with the object
+  """
+  tags: [String!]
+  """
+  revision of the object as a semver (e.g. v1.0.0), by default any update will bump the patch version, unless the revision_bump field is set
+  """
+  revision: String
+  """
+  details of the document
+  """
+  details: String
+  """
+  status of the approval, e.g. pending, approved, rejected
+  """
+  status: DocumentRevisionApprovalStatus
+  approvalDate: Time
+  """
+  the user that submitted the document for approval
+  """
+  submittedByID: ID
+  """
+  the user that approved the document
+  """
+  approvedByID: ID
+  """
+  the internal policy the document is related to
+  """
+  internalPolicyID: ID
+  """
+  the procedure the document is related to
+  """
+  procedureID: ID
+  """
+  the action plan the document is related to
+  """
+  actionPlanID: ID
+  """
+  the user that submitted the document for approval
+  """
+  submittedBy: User
+  """
+  the user that approved the document
+  """
+  approvedBy: User
+  """
+  the internal policy the document is related to
+  """
+  internalPolicy: InternalPolicy
+  """
+  the procedure the document is related to
+  """
+  procedure: Procedure
+  """
+  the action plan the document is related to
+  """
+  actionPlan: ActionPlan
+}
+"""
+DocumentRevisionApprovalStatus is enum for the field status
+"""
+enum DocumentRevisionApprovalStatus @goModel(model: "github.com/theopenlane/core/pkg/enums.ApprovalStatus") {
+  APPROVED
+  PENDING
+  REJECTED
+}
+"""
+A connection to a list of items.
+"""
+type DocumentRevisionConnection {
+  """
+  A list of edges.
+  """
+  edges: [DocumentRevisionEdge]
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+"""
+An edge in a connection.
+"""
+type DocumentRevisionEdge {
+  """
+  The item at the end of the edge.
+  """
+  node: DocumentRevision
+  """
+  A cursor for use in pagination.
+  """
+  cursor: Cursor!
+}
+type DocumentRevisionHistory implements Node {
+  id: ID!
+  historyTime: Time!
+  ref: String
+  operation: DocumentRevisionHistoryOpType!
+  createdAt: Time
+  updatedAt: Time
+  createdBy: String
+  updatedBy: String
+  deletedAt: Time
+  deletedBy: String
+  """
+  tags associated with the object
+  """
+  tags: [String!]
+  """
+  revision of the object as a semver (e.g. v1.0.0), by default any update will bump the patch version, unless the revision_bump field is set
+  """
+  revision: String
+  """
+  details of the document
+  """
+  details: String
+  """
+  status of the approval, e.g. pending, approved, rejected
+  """
+  status: DocumentRevisionHistoryApprovalStatus
+  approvalDate: Time
+  """
+  the user that submitted the document for approval
+  """
+  submittedByID: String
+  """
+  the user that approved the document
+  """
+  approvedByID: String
+  """
+  the internal policy the document is related to
+  """
+  internalPolicyID: String
+  """
+  the procedure the document is related to
+  """
+  procedureID: String
+  """
+  the action plan the document is related to
+  """
+  actionPlanID: String
+}
+"""
+DocumentRevisionHistoryApprovalStatus is enum for the field status
+"""
+enum DocumentRevisionHistoryApprovalStatus @goModel(model: "github.com/theopenlane/core/pkg/enums.ApprovalStatus") {
+  APPROVED
+  PENDING
+  REJECTED
+}
+"""
+A connection to a list of items.
+"""
+type DocumentRevisionHistoryConnection {
+  """
+  A list of edges.
+  """
+  edges: [DocumentRevisionHistoryEdge]
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+"""
+An edge in a connection.
+"""
+type DocumentRevisionHistoryEdge {
+  """
+  The item at the end of the edge.
+  """
+  node: DocumentRevisionHistory
+  """
+  A cursor for use in pagination.
+  """
+  cursor: Cursor!
+}
+"""
+DocumentRevisionHistoryOpType is enum for the field operation
+"""
+enum DocumentRevisionHistoryOpType @goModel(model: "github.com/theopenlane/entx/history.OpType") {
+  INSERT
+  UPDATE
+  DELETE
+}
+"""
+Ordering options for DocumentRevisionHistory connections
+"""
+input DocumentRevisionHistoryOrder {
+  """
+  The ordering direction.
+  """
+  direction: OrderDirection! = ASC
+  """
+  The field by which to order DocumentRevisionHistories.
+  """
+  field: DocumentRevisionHistoryOrderField!
+}
+"""
+Properties by which DocumentRevisionHistory connections can be ordered.
+"""
+enum DocumentRevisionHistoryOrderField {
+  created_at
+  updated_at
+  revision
+  STATUS
+}
+"""
+DocumentRevisionHistoryWhereInput is used for filtering DocumentRevisionHistory objects.
+Input was generated by ent.
+"""
+input DocumentRevisionHistoryWhereInput {
+  not: DocumentRevisionHistoryWhereInput
+  and: [DocumentRevisionHistoryWhereInput!]
+  or: [DocumentRevisionHistoryWhereInput!]
+  """
+  id field predicates
+  """
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  idEqualFold: ID
+  idContainsFold: ID
+  """
+  history_time field predicates
+  """
+  historyTime: Time
+  historyTimeNEQ: Time
+  historyTimeIn: [Time!]
+  historyTimeNotIn: [Time!]
+  historyTimeGT: Time
+  historyTimeGTE: Time
+  historyTimeLT: Time
+  historyTimeLTE: Time
+  """
+  ref field predicates
+  """
+  ref: String
+  refNEQ: String
+  refIn: [String!]
+  refNotIn: [String!]
+  refGT: String
+  refGTE: String
+  refLT: String
+  refLTE: String
+  refContains: String
+  refHasPrefix: String
+  refHasSuffix: String
+  refIsNil: Boolean
+  refNotNil: Boolean
+  refEqualFold: String
+  refContainsFold: String
+  """
+  operation field predicates
+  """
+  operation: DocumentRevisionHistoryOpType
+  operationNEQ: DocumentRevisionHistoryOpType
+  operationIn: [DocumentRevisionHistoryOpType!]
+  operationNotIn: [DocumentRevisionHistoryOpType!]
+  """
+  created_at field predicates
+  """
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  createdAtIsNil: Boolean
+  createdAtNotNil: Boolean
+  """
+  updated_at field predicates
+  """
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  updatedAtIsNil: Boolean
+  updatedAtNotNil: Boolean
+  """
+  created_by field predicates
+  """
+  createdBy: String
+  createdByNEQ: String
+  createdByIn: [String!]
+  createdByNotIn: [String!]
+  createdByGT: String
+  createdByGTE: String
+  createdByLT: String
+  createdByLTE: String
+  createdByContains: String
+  createdByHasPrefix: String
+  createdByHasSuffix: String
+  createdByIsNil: Boolean
+  createdByNotNil: Boolean
+  createdByEqualFold: String
+  createdByContainsFold: String
+  """
+  updated_by field predicates
+  """
+  updatedBy: String
+  updatedByNEQ: String
+  updatedByIn: [String!]
+  updatedByNotIn: [String!]
+  updatedByGT: String
+  updatedByGTE: String
+  updatedByLT: String
+  updatedByLTE: String
+  updatedByContains: String
+  updatedByHasPrefix: String
+  updatedByHasSuffix: String
+  updatedByIsNil: Boolean
+  updatedByNotNil: Boolean
+  updatedByEqualFold: String
+  updatedByContainsFold: String
+  """
+  deleted_at field predicates
+  """
+  deletedAt: Time
+  deletedAtNEQ: Time
+  deletedAtIn: [Time!]
+  deletedAtNotIn: [Time!]
+  deletedAtGT: Time
+  deletedAtGTE: Time
+  deletedAtLT: Time
+  deletedAtLTE: Time
+  deletedAtIsNil: Boolean
+  deletedAtNotNil: Boolean
+  """
+  deleted_by field predicates
+  """
+  deletedBy: String
+  deletedByNEQ: String
+  deletedByIn: [String!]
+  deletedByNotIn: [String!]
+  deletedByGT: String
+  deletedByGTE: String
+  deletedByLT: String
+  deletedByLTE: String
+  deletedByContains: String
+  deletedByHasPrefix: String
+  deletedByHasSuffix: String
+  deletedByIsNil: Boolean
+  deletedByNotNil: Boolean
+  deletedByEqualFold: String
+  deletedByContainsFold: String
+  """
+  revision field predicates
+  """
+  revision: String
+  revisionNEQ: String
+  revisionIn: [String!]
+  revisionNotIn: [String!]
+  revisionGT: String
+  revisionGTE: String
+  revisionLT: String
+  revisionLTE: String
+  revisionContains: String
+  revisionHasPrefix: String
+  revisionHasSuffix: String
+  revisionIsNil: Boolean
+  revisionNotNil: Boolean
+  revisionEqualFold: String
+  revisionContainsFold: String
+  """
+  details field predicates
+  """
+  details: String
+  detailsNEQ: String
+  detailsIn: [String!]
+  detailsNotIn: [String!]
+  detailsGT: String
+  detailsGTE: String
+  detailsLT: String
+  detailsLTE: String
+  detailsContains: String
+  detailsHasPrefix: String
+  detailsHasSuffix: String
+  detailsIsNil: Boolean
+  detailsNotNil: Boolean
+  detailsEqualFold: String
+  detailsContainsFold: String
+  """
+  status field predicates
+  """
+  status: DocumentRevisionHistoryApprovalStatus
+  statusNEQ: DocumentRevisionHistoryApprovalStatus
+  statusIn: [DocumentRevisionHistoryApprovalStatus!]
+  statusNotIn: [DocumentRevisionHistoryApprovalStatus!]
+  statusIsNil: Boolean
+  statusNotNil: Boolean
+  """
+  approval_date field predicates
+  """
+  approvalDate: Time
+  approvalDateNEQ: Time
+  approvalDateIn: [Time!]
+  approvalDateNotIn: [Time!]
+  approvalDateGT: Time
+  approvalDateGTE: Time
+  approvalDateLT: Time
+  approvalDateLTE: Time
+  approvalDateIsNil: Boolean
+  approvalDateNotNil: Boolean
+  """
+  submitted_by_id field predicates
+  """
+  submittedByID: String
+  submittedByIDNEQ: String
+  submittedByIDIn: [String!]
+  submittedByIDNotIn: [String!]
+  submittedByIDGT: String
+  submittedByIDGTE: String
+  submittedByIDLT: String
+  submittedByIDLTE: String
+  submittedByIDContains: String
+  submittedByIDHasPrefix: String
+  submittedByIDHasSuffix: String
+  submittedByIDIsNil: Boolean
+  submittedByIDNotNil: Boolean
+  submittedByIDEqualFold: String
+  submittedByIDContainsFold: String
+  """
+  approved_by_id field predicates
+  """
+  approvedByID: String
+  approvedByIDNEQ: String
+  approvedByIDIn: [String!]
+  approvedByIDNotIn: [String!]
+  approvedByIDGT: String
+  approvedByIDGTE: String
+  approvedByIDLT: String
+  approvedByIDLTE: String
+  approvedByIDContains: String
+  approvedByIDHasPrefix: String
+  approvedByIDHasSuffix: String
+  approvedByIDIsNil: Boolean
+  approvedByIDNotNil: Boolean
+  approvedByIDEqualFold: String
+  approvedByIDContainsFold: String
+  """
+  internal_policy_id field predicates
+  """
+  internalPolicyID: String
+  internalPolicyIDNEQ: String
+  internalPolicyIDIn: [String!]
+  internalPolicyIDNotIn: [String!]
+  internalPolicyIDGT: String
+  internalPolicyIDGTE: String
+  internalPolicyIDLT: String
+  internalPolicyIDLTE: String
+  internalPolicyIDContains: String
+  internalPolicyIDHasPrefix: String
+  internalPolicyIDHasSuffix: String
+  internalPolicyIDIsNil: Boolean
+  internalPolicyIDNotNil: Boolean
+  internalPolicyIDEqualFold: String
+  internalPolicyIDContainsFold: String
+  """
+  procedure_id field predicates
+  """
+  procedureID: String
+  procedureIDNEQ: String
+  procedureIDIn: [String!]
+  procedureIDNotIn: [String!]
+  procedureIDGT: String
+  procedureIDGTE: String
+  procedureIDLT: String
+  procedureIDLTE: String
+  procedureIDContains: String
+  procedureIDHasPrefix: String
+  procedureIDHasSuffix: String
+  procedureIDIsNil: Boolean
+  procedureIDNotNil: Boolean
+  procedureIDEqualFold: String
+  procedureIDContainsFold: String
+  """
+  action_plan_id field predicates
+  """
+  actionPlanID: String
+  actionPlanIDNEQ: String
+  actionPlanIDIn: [String!]
+  actionPlanIDNotIn: [String!]
+  actionPlanIDGT: String
+  actionPlanIDGTE: String
+  actionPlanIDLT: String
+  actionPlanIDLTE: String
+  actionPlanIDContains: String
+  actionPlanIDHasPrefix: String
+  actionPlanIDHasSuffix: String
+  actionPlanIDIsNil: Boolean
+  actionPlanIDNotNil: Boolean
+  actionPlanIDEqualFold: String
+  actionPlanIDContainsFold: String
+}
+"""
+Ordering options for DocumentRevision connections
+"""
+input DocumentRevisionOrder {
+  """
+  The ordering direction.
+  """
+  direction: OrderDirection! = ASC
+  """
+  The field by which to order DocumentRevisions.
+  """
+  field: DocumentRevisionOrderField!
+}
+"""
+Properties by which DocumentRevision connections can be ordered.
+"""
+enum DocumentRevisionOrderField {
+  created_at
+  updated_at
+  revision
+  STATUS
+}
+"""
+DocumentRevisionWhereInput is used for filtering DocumentRevision objects.
+Input was generated by ent.
+"""
+input DocumentRevisionWhereInput {
+  not: DocumentRevisionWhereInput
+  and: [DocumentRevisionWhereInput!]
+  or: [DocumentRevisionWhereInput!]
+  """
+  id field predicates
+  """
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  idEqualFold: ID
+  idContainsFold: ID
+  """
+  created_at field predicates
+  """
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  createdAtIsNil: Boolean
+  createdAtNotNil: Boolean
+  """
+  updated_at field predicates
+  """
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  updatedAtIsNil: Boolean
+  updatedAtNotNil: Boolean
+  """
+  created_by field predicates
+  """
+  createdBy: String
+  createdByNEQ: String
+  createdByIn: [String!]
+  createdByNotIn: [String!]
+  createdByGT: String
+  createdByGTE: String
+  createdByLT: String
+  createdByLTE: String
+  createdByContains: String
+  createdByHasPrefix: String
+  createdByHasSuffix: String
+  createdByIsNil: Boolean
+  createdByNotNil: Boolean
+  createdByEqualFold: String
+  createdByContainsFold: String
+  """
+  updated_by field predicates
+  """
+  updatedBy: String
+  updatedByNEQ: String
+  updatedByIn: [String!]
+  updatedByNotIn: [String!]
+  updatedByGT: String
+  updatedByGTE: String
+  updatedByLT: String
+  updatedByLTE: String
+  updatedByContains: String
+  updatedByHasPrefix: String
+  updatedByHasSuffix: String
+  updatedByIsNil: Boolean
+  updatedByNotNil: Boolean
+  updatedByEqualFold: String
+  updatedByContainsFold: String
+  """
+  deleted_at field predicates
+  """
+  deletedAt: Time
+  deletedAtNEQ: Time
+  deletedAtIn: [Time!]
+  deletedAtNotIn: [Time!]
+  deletedAtGT: Time
+  deletedAtGTE: Time
+  deletedAtLT: Time
+  deletedAtLTE: Time
+  deletedAtIsNil: Boolean
+  deletedAtNotNil: Boolean
+  """
+  deleted_by field predicates
+  """
+  deletedBy: String
+  deletedByNEQ: String
+  deletedByIn: [String!]
+  deletedByNotIn: [String!]
+  deletedByGT: String
+  deletedByGTE: String
+  deletedByLT: String
+  deletedByLTE: String
+  deletedByContains: String
+  deletedByHasPrefix: String
+  deletedByHasSuffix: String
+  deletedByIsNil: Boolean
+  deletedByNotNil: Boolean
+  deletedByEqualFold: String
+  deletedByContainsFold: String
+  """
+  revision field predicates
+  """
+  revision: String
+  revisionNEQ: String
+  revisionIn: [String!]
+  revisionNotIn: [String!]
+  revisionGT: String
+  revisionGTE: String
+  revisionLT: String
+  revisionLTE: String
+  revisionContains: String
+  revisionHasPrefix: String
+  revisionHasSuffix: String
+  revisionIsNil: Boolean
+  revisionNotNil: Boolean
+  revisionEqualFold: String
+  revisionContainsFold: String
+  """
+  details field predicates
+  """
+  details: String
+  detailsNEQ: String
+  detailsIn: [String!]
+  detailsNotIn: [String!]
+  detailsGT: String
+  detailsGTE: String
+  detailsLT: String
+  detailsLTE: String
+  detailsContains: String
+  detailsHasPrefix: String
+  detailsHasSuffix: String
+  detailsIsNil: Boolean
+  detailsNotNil: Boolean
+  detailsEqualFold: String
+  detailsContainsFold: String
+  """
+  status field predicates
+  """
+  status: DocumentRevisionApprovalStatus
+  statusNEQ: DocumentRevisionApprovalStatus
+  statusIn: [DocumentRevisionApprovalStatus!]
+  statusNotIn: [DocumentRevisionApprovalStatus!]
+  statusIsNil: Boolean
+  statusNotNil: Boolean
+  """
+  approval_date field predicates
+  """
+  approvalDate: Time
+  approvalDateNEQ: Time
+  approvalDateIn: [Time!]
+  approvalDateNotIn: [Time!]
+  approvalDateGT: Time
+  approvalDateGTE: Time
+  approvalDateLT: Time
+  approvalDateLTE: Time
+  approvalDateIsNil: Boolean
+  approvalDateNotNil: Boolean
+  """
+  submitted_by_id field predicates
+  """
+  submittedByID: ID
+  submittedByIDNEQ: ID
+  submittedByIDIn: [ID!]
+  submittedByIDNotIn: [ID!]
+  submittedByIDGT: ID
+  submittedByIDGTE: ID
+  submittedByIDLT: ID
+  submittedByIDLTE: ID
+  submittedByIDContains: ID
+  submittedByIDHasPrefix: ID
+  submittedByIDHasSuffix: ID
+  submittedByIDIsNil: Boolean
+  submittedByIDNotNil: Boolean
+  submittedByIDEqualFold: ID
+  submittedByIDContainsFold: ID
+  """
+  approved_by_id field predicates
+  """
+  approvedByID: ID
+  approvedByIDNEQ: ID
+  approvedByIDIn: [ID!]
+  approvedByIDNotIn: [ID!]
+  approvedByIDGT: ID
+  approvedByIDGTE: ID
+  approvedByIDLT: ID
+  approvedByIDLTE: ID
+  approvedByIDContains: ID
+  approvedByIDHasPrefix: ID
+  approvedByIDHasSuffix: ID
+  approvedByIDIsNil: Boolean
+  approvedByIDNotNil: Boolean
+  approvedByIDEqualFold: ID
+  approvedByIDContainsFold: ID
+  """
+  internal_policy_id field predicates
+  """
+  internalPolicyID: ID
+  internalPolicyIDNEQ: ID
+  internalPolicyIDIn: [ID!]
+  internalPolicyIDNotIn: [ID!]
+  internalPolicyIDGT: ID
+  internalPolicyIDGTE: ID
+  internalPolicyIDLT: ID
+  internalPolicyIDLTE: ID
+  internalPolicyIDContains: ID
+  internalPolicyIDHasPrefix: ID
+  internalPolicyIDHasSuffix: ID
+  internalPolicyIDIsNil: Boolean
+  internalPolicyIDNotNil: Boolean
+  internalPolicyIDEqualFold: ID
+  internalPolicyIDContainsFold: ID
+  """
+  procedure_id field predicates
+  """
+  procedureID: ID
+  procedureIDNEQ: ID
+  procedureIDIn: [ID!]
+  procedureIDNotIn: [ID!]
+  procedureIDGT: ID
+  procedureIDGTE: ID
+  procedureIDLT: ID
+  procedureIDLTE: ID
+  procedureIDContains: ID
+  procedureIDHasPrefix: ID
+  procedureIDHasSuffix: ID
+  procedureIDIsNil: Boolean
+  procedureIDNotNil: Boolean
+  procedureIDEqualFold: ID
+  procedureIDContainsFold: ID
+  """
+  action_plan_id field predicates
+  """
+  actionPlanID: ID
+  actionPlanIDNEQ: ID
+  actionPlanIDIn: [ID!]
+  actionPlanIDNotIn: [ID!]
+  actionPlanIDGT: ID
+  actionPlanIDGTE: ID
+  actionPlanIDLT: ID
+  actionPlanIDLTE: ID
+  actionPlanIDContains: ID
+  actionPlanIDHasPrefix: ID
+  actionPlanIDHasSuffix: ID
+  actionPlanIDIsNil: Boolean
+  actionPlanIDNotNil: Boolean
+  actionPlanIDEqualFold: ID
+  actionPlanIDContainsFold: ID
+  """
+  submitted_by edge predicates
+  """
+  hasSubmittedBy: Boolean
+  hasSubmittedByWith: [UserWhereInput!]
+  """
+  approved_by edge predicates
+  """
+  hasApprovedBy: Boolean
+  hasApprovedByWith: [UserWhereInput!]
+  """
+  internal_policy edge predicates
+  """
+  hasInternalPolicy: Boolean
+  hasInternalPolicyWith: [InternalPolicyWhereInput!]
+  """
+  procedure edge predicates
+  """
+  hasProcedure: Boolean
+  hasProcedureWith: [ProcedureWhereInput!]
+  """
+  action_plan edge predicates
+  """
+  hasActionPlan: Boolean
+  hasActionPlanWith: [ActionPlanWhereInput!]
 }
 type Entity implements Node {
   id: ID!
@@ -41260,10 +42829,6 @@ type InternalPolicy implements Node {
   """
   policyType: String
   """
-  details of the policy
-  """
-  details: String
-  """
   whether approval is required for edits to the policy
   """
   approvalRequired: Boolean
@@ -41300,6 +42865,37 @@ type InternalPolicy implements Node {
   temporary delegates for the policy, used for temporary approval
   """
   delegate: Group
+  documentRevisions(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: Cursor
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: Cursor
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for DocumentRevisions returned from the connection.
+    """
+    orderBy: [DocumentRevisionOrder!]
+
+    """
+    Filtering options for DocumentRevisions returned from the connection.
+    """
+    where: DocumentRevisionWhereInput
+  ): DocumentRevisionConnection!
   controlObjectives(
     """
     Returns the elements in the list that come after the specified cursor.
@@ -41575,10 +43171,6 @@ type InternalPolicyHistory implements Node {
   type of the policy, e.g. compliance, operational, health and safety, etc.
   """
   policyType: String
-  """
-  details of the policy
-  """
-  details: String
   """
   whether approval is required for edits to the policy
   """
@@ -41928,24 +43520,6 @@ input InternalPolicyHistoryWhereInput {
   policyTypeEqualFold: String
   policyTypeContainsFold: String
   """
-  details field predicates
-  """
-  details: String
-  detailsNEQ: String
-  detailsIn: [String!]
-  detailsNotIn: [String!]
-  detailsGT: String
-  detailsGTE: String
-  detailsLT: String
-  detailsLTE: String
-  detailsContains: String
-  detailsHasPrefix: String
-  detailsHasSuffix: String
-  detailsIsNil: Boolean
-  detailsNotNil: Boolean
-  detailsEqualFold: String
-  detailsContainsFold: String
-  """
   approval_required field predicates
   """
   approvalRequired: Boolean
@@ -42246,24 +43820,6 @@ input InternalPolicyWhereInput {
   policyTypeEqualFold: String
   policyTypeContainsFold: String
   """
-  details field predicates
-  """
-  details: String
-  detailsNEQ: String
-  detailsIn: [String!]
-  detailsNotIn: [String!]
-  detailsGT: String
-  detailsGTE: String
-  detailsLT: String
-  detailsLTE: String
-  detailsContains: String
-  detailsHasPrefix: String
-  detailsHasSuffix: String
-  detailsIsNil: Boolean
-  detailsNotNil: Boolean
-  detailsEqualFold: String
-  detailsContainsFold: String
-  """
   approval_required field predicates
   """
   approvalRequired: Boolean
@@ -42353,6 +43909,11 @@ input InternalPolicyWhereInput {
   """
   hasDelegate: Boolean
   hasDelegateWith: [GroupWhereInput!]
+  """
+  document_revisions edge predicates
+  """
+  hasDocumentRevisions: Boolean
+  hasDocumentRevisionsWith: [DocumentRevisionWhereInput!]
   """
   control_objectives edge predicates
   """
@@ -49142,10 +50703,6 @@ type Procedure implements Node {
   """
   procedureType: String
   """
-  details of the procedure
-  """
-  details: String
-  """
   whether approval is required for edits to the procedure
   """
   approvalRequired: Boolean
@@ -49182,6 +50739,37 @@ type Procedure implements Node {
   temporary delegates for the procedure, used for temporary approval
   """
   delegate: Group
+  documentRevisions(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: Cursor
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: Cursor
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for DocumentRevisions returned from the connection.
+    """
+    orderBy: [DocumentRevisionOrder!]
+
+    """
+    Filtering options for DocumentRevisions returned from the connection.
+    """
+    where: DocumentRevisionWhereInput
+  ): DocumentRevisionConnection!
   controls(
     """
     Returns the elements in the list that come after the specified cursor.
@@ -49457,10 +51045,6 @@ type ProcedureHistory implements Node {
   type of the procedure, e.g. compliance, operational, health and safety, etc.
   """
   procedureType: String
-  """
-  details of the procedure
-  """
-  details: String
   """
   whether approval is required for edits to the procedure
   """
@@ -49810,24 +51394,6 @@ input ProcedureHistoryWhereInput {
   procedureTypeEqualFold: String
   procedureTypeContainsFold: String
   """
-  details field predicates
-  """
-  details: String
-  detailsNEQ: String
-  detailsIn: [String!]
-  detailsNotIn: [String!]
-  detailsGT: String
-  detailsGTE: String
-  detailsLT: String
-  detailsLTE: String
-  detailsContains: String
-  detailsHasPrefix: String
-  detailsHasSuffix: String
-  detailsIsNil: Boolean
-  detailsNotNil: Boolean
-  detailsEqualFold: String
-  detailsContainsFold: String
-  """
   approval_required field predicates
   """
   approvalRequired: Boolean
@@ -50128,24 +51694,6 @@ input ProcedureWhereInput {
   procedureTypeEqualFold: String
   procedureTypeContainsFold: String
   """
-  details field predicates
-  """
-  details: String
-  detailsNEQ: String
-  detailsIn: [String!]
-  detailsNotIn: [String!]
-  detailsGT: String
-  detailsGTE: String
-  detailsLT: String
-  detailsLTE: String
-  detailsContains: String
-  detailsHasPrefix: String
-  detailsHasSuffix: String
-  detailsIsNil: Boolean
-  detailsNotNil: Boolean
-  detailsEqualFold: String
-  detailsContainsFold: String
-  """
   approval_required field predicates
   """
   approvalRequired: Boolean
@@ -50235,6 +51783,11 @@ input ProcedureWhereInput {
   """
   hasDelegate: Boolean
   hasDelegateWith: [GroupWhereInput!]
+  """
+  document_revisions edge predicates
+  """
+  hasDocumentRevisions: Boolean
+  hasDocumentRevisionsWith: [DocumentRevisionWhereInput!]
   """
   controls edge predicates
   """
@@ -52433,6 +53986,68 @@ type Query {
     """
     where: DocumentDataHistoryWhereInput
   ): DocumentDataHistoryConnection!
+  documentRevisions(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: Cursor
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: Cursor
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for DocumentRevisions returned from the connection.
+    """
+    orderBy: [DocumentRevisionOrder!]
+
+    """
+    Filtering options for DocumentRevisions returned from the connection.
+    """
+    where: DocumentRevisionWhereInput
+  ): DocumentRevisionConnection!
+  documentRevisionHistories(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: Cursor
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: Cursor
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for DocumentRevisionHistories returned from the connection.
+    """
+    orderBy: DocumentRevisionHistoryOrder
+
+    """
+    Filtering options for DocumentRevisionHistories returned from the connection.
+    """
+    where: DocumentRevisionHistoryWhereInput
+  ): DocumentRevisionHistoryConnection!
   entities(
     """
     Returns the elements in the list that come after the specified cursor.
@@ -60554,11 +62169,6 @@ input UpdateActionPlanInput {
   actionPlanType: String
   clearActionPlanType: Boolean
   """
-  details of the action_plan
-  """
-  details: String
-  clearDetails: Boolean
-  """
   whether approval is required for edits to the action_plan
   """
   approvalRequired: Boolean
@@ -60592,6 +62202,9 @@ input UpdateActionPlanInput {
   clearApprover: Boolean
   delegateID: ID
   clearDelegate: Boolean
+  addDocumentRevisionIDs: [ID!]
+  removeDocumentRevisionIDs: [ID!]
+  clearDocumentRevisions: Boolean
   ownerID: ID
   clearOwner: Boolean
   addRiskIDs: [ID!]
@@ -60966,6 +62579,45 @@ input UpdateDocumentDataInput {
   addFileIDs: [ID!]
   removeFileIDs: [ID!]
   clearFiles: Boolean
+}
+"""
+UpdateDocumentRevisionInput is used for update DocumentRevision object.
+Input was generated by ent.
+"""
+input UpdateDocumentRevisionInput {
+  """
+  tags associated with the object
+  """
+  tags: [String!]
+  appendTags: [String!]
+  clearTags: Boolean
+  """
+  revision of the object as a semver (e.g. v1.0.0), by default any update will bump the patch version, unless the revision_bump field is set
+  """
+  revision: String
+  clearRevision: Boolean
+  """
+  details of the document
+  """
+  details: String
+  clearDetails: Boolean
+  """
+  status of the approval, e.g. pending, approved, rejected
+  """
+  status: DocumentRevisionApprovalStatus
+  clearStatus: Boolean
+  approvalDate: Time
+  clearApprovalDate: Boolean
+  submittedByID: ID
+  clearSubmittedBy: Boolean
+  approvedByID: ID
+  clearApprovedBy: Boolean
+  internalPolicyID: ID
+  clearInternalPolicy: Boolean
+  procedureID: ID
+  clearProcedure: Boolean
+  actionPlanID: ID
+  clearActionPlan: Boolean
 }
 """
 UpdateEntityInput is used for update Entity object.
@@ -61500,11 +63152,6 @@ input UpdateInternalPolicyInput {
   policyType: String
   clearPolicyType: Boolean
   """
-  details of the policy
-  """
-  details: String
-  clearDetails: Boolean
-  """
   whether approval is required for edits to the policy
   """
   approvalRequired: Boolean
@@ -61531,6 +63178,9 @@ input UpdateInternalPolicyInput {
   clearApprover: Boolean
   delegateID: ID
   clearDelegate: Boolean
+  addDocumentRevisionIDs: [ID!]
+  removeDocumentRevisionIDs: [ID!]
+  clearDocumentRevisions: Boolean
   addControlObjectiveIDs: [ID!]
   removeControlObjectiveIDs: [ID!]
   clearControlObjectives: Boolean
@@ -61953,11 +63603,6 @@ input UpdateProcedureInput {
   procedureType: String
   clearProcedureType: Boolean
   """
-  details of the procedure
-  """
-  details: String
-  clearDetails: Boolean
-  """
   whether approval is required for edits to the procedure
   """
   approvalRequired: Boolean
@@ -61984,6 +63629,9 @@ input UpdateProcedureInput {
   clearApprover: Boolean
   delegateID: ID
   clearDelegate: Boolean
+  addDocumentRevisionIDs: [ID!]
+  removeDocumentRevisionIDs: [ID!]
+  clearDocumentRevisions: Boolean
   addControlIDs: [ID!]
   removeControlIDs: [ID!]
   clearControls: Boolean
@@ -67306,6 +68954,15 @@ scalar VersionBump`, BuiltIn: false},
         query: String!
     ): DocumentDataSearchResult
     """
+    Search across DocumentRevision objects
+    """
+    documentRevisionSearch(
+        """
+        Search query
+        """
+        query: String!
+    ): DocumentRevisionSearchResult
+    """
     Search across Entity objects
     """
     entitySearch(
@@ -67530,6 +69187,7 @@ union SearchResult =
   | ControlImplementationSearchResult
   | ControlObjectiveSearchResult
   | DocumentDataSearchResult
+  | DocumentRevisionSearchResult
   | EntitySearchResult
   | EntityTypeSearchResult
   | EventSearchResult
@@ -67617,6 +69275,10 @@ type  ControlObjectiveSearchResult {
 
 type  DocumentDataSearchResult {
    documentData: [ DocumentData!]
+}
+
+type  DocumentRevisionSearchResult {
+   documentRevisions: [ DocumentRevision!]
 }
 
 type  EntitySearchResult {

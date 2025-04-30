@@ -131,11 +131,6 @@ func PolicyType(v string) predicate.InternalPolicyHistory {
 	return predicate.InternalPolicyHistory(sql.FieldEQ(FieldPolicyType, v))
 }
 
-// Details applies equality check predicate on the "details" field. It's identical to DetailsEQ.
-func Details(v string) predicate.InternalPolicyHistory {
-	return predicate.InternalPolicyHistory(sql.FieldEQ(FieldDetails, v))
-}
-
 // ApprovalRequired applies equality check predicate on the "approval_required" field. It's identical to ApprovalRequiredEQ.
 func ApprovalRequired(v bool) predicate.InternalPolicyHistory {
 	return predicate.InternalPolicyHistory(sql.FieldEQ(FieldApprovalRequired, v))
@@ -1069,81 +1064,6 @@ func PolicyTypeEqualFold(v string) predicate.InternalPolicyHistory {
 // PolicyTypeContainsFold applies the ContainsFold predicate on the "policy_type" field.
 func PolicyTypeContainsFold(v string) predicate.InternalPolicyHistory {
 	return predicate.InternalPolicyHistory(sql.FieldContainsFold(FieldPolicyType, v))
-}
-
-// DetailsEQ applies the EQ predicate on the "details" field.
-func DetailsEQ(v string) predicate.InternalPolicyHistory {
-	return predicate.InternalPolicyHistory(sql.FieldEQ(FieldDetails, v))
-}
-
-// DetailsNEQ applies the NEQ predicate on the "details" field.
-func DetailsNEQ(v string) predicate.InternalPolicyHistory {
-	return predicate.InternalPolicyHistory(sql.FieldNEQ(FieldDetails, v))
-}
-
-// DetailsIn applies the In predicate on the "details" field.
-func DetailsIn(vs ...string) predicate.InternalPolicyHistory {
-	return predicate.InternalPolicyHistory(sql.FieldIn(FieldDetails, vs...))
-}
-
-// DetailsNotIn applies the NotIn predicate on the "details" field.
-func DetailsNotIn(vs ...string) predicate.InternalPolicyHistory {
-	return predicate.InternalPolicyHistory(sql.FieldNotIn(FieldDetails, vs...))
-}
-
-// DetailsGT applies the GT predicate on the "details" field.
-func DetailsGT(v string) predicate.InternalPolicyHistory {
-	return predicate.InternalPolicyHistory(sql.FieldGT(FieldDetails, v))
-}
-
-// DetailsGTE applies the GTE predicate on the "details" field.
-func DetailsGTE(v string) predicate.InternalPolicyHistory {
-	return predicate.InternalPolicyHistory(sql.FieldGTE(FieldDetails, v))
-}
-
-// DetailsLT applies the LT predicate on the "details" field.
-func DetailsLT(v string) predicate.InternalPolicyHistory {
-	return predicate.InternalPolicyHistory(sql.FieldLT(FieldDetails, v))
-}
-
-// DetailsLTE applies the LTE predicate on the "details" field.
-func DetailsLTE(v string) predicate.InternalPolicyHistory {
-	return predicate.InternalPolicyHistory(sql.FieldLTE(FieldDetails, v))
-}
-
-// DetailsContains applies the Contains predicate on the "details" field.
-func DetailsContains(v string) predicate.InternalPolicyHistory {
-	return predicate.InternalPolicyHistory(sql.FieldContains(FieldDetails, v))
-}
-
-// DetailsHasPrefix applies the HasPrefix predicate on the "details" field.
-func DetailsHasPrefix(v string) predicate.InternalPolicyHistory {
-	return predicate.InternalPolicyHistory(sql.FieldHasPrefix(FieldDetails, v))
-}
-
-// DetailsHasSuffix applies the HasSuffix predicate on the "details" field.
-func DetailsHasSuffix(v string) predicate.InternalPolicyHistory {
-	return predicate.InternalPolicyHistory(sql.FieldHasSuffix(FieldDetails, v))
-}
-
-// DetailsIsNil applies the IsNil predicate on the "details" field.
-func DetailsIsNil() predicate.InternalPolicyHistory {
-	return predicate.InternalPolicyHistory(sql.FieldIsNull(FieldDetails))
-}
-
-// DetailsNotNil applies the NotNil predicate on the "details" field.
-func DetailsNotNil() predicate.InternalPolicyHistory {
-	return predicate.InternalPolicyHistory(sql.FieldNotNull(FieldDetails))
-}
-
-// DetailsEqualFold applies the EqualFold predicate on the "details" field.
-func DetailsEqualFold(v string) predicate.InternalPolicyHistory {
-	return predicate.InternalPolicyHistory(sql.FieldEqualFold(FieldDetails, v))
-}
-
-// DetailsContainsFold applies the ContainsFold predicate on the "details" field.
-func DetailsContainsFold(v string) predicate.InternalPolicyHistory {
-	return predicate.InternalPolicyHistory(sql.FieldContainsFold(FieldDetails, v))
 }
 
 // ApprovalRequiredEQ applies the EQ predicate on the "approval_required" field.

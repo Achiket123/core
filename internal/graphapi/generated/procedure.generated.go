@@ -93,8 +93,6 @@ func (ec *executionContext) fieldContext_ProcedureBulkCreatePayload_procedures(_
 				return ec.fieldContext_Procedure_status(ctx, field)
 			case "procedureType":
 				return ec.fieldContext_Procedure_procedureType(ctx, field)
-			case "details":
-				return ec.fieldContext_Procedure_details(ctx, field)
 			case "approvalRequired":
 				return ec.fieldContext_Procedure_approvalRequired(ctx, field)
 			case "reviewDue":
@@ -115,6 +113,8 @@ func (ec *executionContext) fieldContext_ProcedureBulkCreatePayload_procedures(_
 				return ec.fieldContext_Procedure_approver(ctx, field)
 			case "delegate":
 				return ec.fieldContext_Procedure_delegate(ctx, field)
+			case "documentRevisions":
+				return ec.fieldContext_Procedure_documentRevisions(ctx, field)
 			case "controls":
 				return ec.fieldContext_Procedure_controls(ctx, field)
 			case "internalPolicies":
@@ -201,8 +201,6 @@ func (ec *executionContext) fieldContext_ProcedureCreatePayload_procedure(_ cont
 				return ec.fieldContext_Procedure_status(ctx, field)
 			case "procedureType":
 				return ec.fieldContext_Procedure_procedureType(ctx, field)
-			case "details":
-				return ec.fieldContext_Procedure_details(ctx, field)
 			case "approvalRequired":
 				return ec.fieldContext_Procedure_approvalRequired(ctx, field)
 			case "reviewDue":
@@ -223,6 +221,8 @@ func (ec *executionContext) fieldContext_ProcedureCreatePayload_procedure(_ cont
 				return ec.fieldContext_Procedure_approver(ctx, field)
 			case "delegate":
 				return ec.fieldContext_Procedure_delegate(ctx, field)
+			case "documentRevisions":
+				return ec.fieldContext_Procedure_documentRevisions(ctx, field)
 			case "controls":
 				return ec.fieldContext_Procedure_controls(ctx, field)
 			case "internalPolicies":
@@ -353,8 +353,6 @@ func (ec *executionContext) fieldContext_ProcedureUpdatePayload_procedure(_ cont
 				return ec.fieldContext_Procedure_status(ctx, field)
 			case "procedureType":
 				return ec.fieldContext_Procedure_procedureType(ctx, field)
-			case "details":
-				return ec.fieldContext_Procedure_details(ctx, field)
 			case "approvalRequired":
 				return ec.fieldContext_Procedure_approvalRequired(ctx, field)
 			case "reviewDue":
@@ -375,6 +373,8 @@ func (ec *executionContext) fieldContext_ProcedureUpdatePayload_procedure(_ cont
 				return ec.fieldContext_Procedure_approver(ctx, field)
 			case "delegate":
 				return ec.fieldContext_Procedure_delegate(ctx, field)
+			case "documentRevisions":
+				return ec.fieldContext_Procedure_documentRevisions(ctx, field)
 			case "controls":
 				return ec.fieldContext_Procedure_controls(ctx, field)
 			case "internalPolicies":

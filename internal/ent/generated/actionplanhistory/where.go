@@ -121,11 +121,6 @@ func ActionPlanType(v string) predicate.ActionPlanHistory {
 	return predicate.ActionPlanHistory(sql.FieldEQ(FieldActionPlanType, v))
 }
 
-// Details applies equality check predicate on the "details" field. It's identical to DetailsEQ.
-func Details(v string) predicate.ActionPlanHistory {
-	return predicate.ActionPlanHistory(sql.FieldEQ(FieldDetails, v))
-}
-
 // ApprovalRequired applies equality check predicate on the "approval_required" field. It's identical to ApprovalRequiredEQ.
 func ApprovalRequired(v bool) predicate.ActionPlanHistory {
 	return predicate.ActionPlanHistory(sql.FieldEQ(FieldApprovalRequired, v))
@@ -934,81 +929,6 @@ func ActionPlanTypeEqualFold(v string) predicate.ActionPlanHistory {
 // ActionPlanTypeContainsFold applies the ContainsFold predicate on the "action_plan_type" field.
 func ActionPlanTypeContainsFold(v string) predicate.ActionPlanHistory {
 	return predicate.ActionPlanHistory(sql.FieldContainsFold(FieldActionPlanType, v))
-}
-
-// DetailsEQ applies the EQ predicate on the "details" field.
-func DetailsEQ(v string) predicate.ActionPlanHistory {
-	return predicate.ActionPlanHistory(sql.FieldEQ(FieldDetails, v))
-}
-
-// DetailsNEQ applies the NEQ predicate on the "details" field.
-func DetailsNEQ(v string) predicate.ActionPlanHistory {
-	return predicate.ActionPlanHistory(sql.FieldNEQ(FieldDetails, v))
-}
-
-// DetailsIn applies the In predicate on the "details" field.
-func DetailsIn(vs ...string) predicate.ActionPlanHistory {
-	return predicate.ActionPlanHistory(sql.FieldIn(FieldDetails, vs...))
-}
-
-// DetailsNotIn applies the NotIn predicate on the "details" field.
-func DetailsNotIn(vs ...string) predicate.ActionPlanHistory {
-	return predicate.ActionPlanHistory(sql.FieldNotIn(FieldDetails, vs...))
-}
-
-// DetailsGT applies the GT predicate on the "details" field.
-func DetailsGT(v string) predicate.ActionPlanHistory {
-	return predicate.ActionPlanHistory(sql.FieldGT(FieldDetails, v))
-}
-
-// DetailsGTE applies the GTE predicate on the "details" field.
-func DetailsGTE(v string) predicate.ActionPlanHistory {
-	return predicate.ActionPlanHistory(sql.FieldGTE(FieldDetails, v))
-}
-
-// DetailsLT applies the LT predicate on the "details" field.
-func DetailsLT(v string) predicate.ActionPlanHistory {
-	return predicate.ActionPlanHistory(sql.FieldLT(FieldDetails, v))
-}
-
-// DetailsLTE applies the LTE predicate on the "details" field.
-func DetailsLTE(v string) predicate.ActionPlanHistory {
-	return predicate.ActionPlanHistory(sql.FieldLTE(FieldDetails, v))
-}
-
-// DetailsContains applies the Contains predicate on the "details" field.
-func DetailsContains(v string) predicate.ActionPlanHistory {
-	return predicate.ActionPlanHistory(sql.FieldContains(FieldDetails, v))
-}
-
-// DetailsHasPrefix applies the HasPrefix predicate on the "details" field.
-func DetailsHasPrefix(v string) predicate.ActionPlanHistory {
-	return predicate.ActionPlanHistory(sql.FieldHasPrefix(FieldDetails, v))
-}
-
-// DetailsHasSuffix applies the HasSuffix predicate on the "details" field.
-func DetailsHasSuffix(v string) predicate.ActionPlanHistory {
-	return predicate.ActionPlanHistory(sql.FieldHasSuffix(FieldDetails, v))
-}
-
-// DetailsIsNil applies the IsNil predicate on the "details" field.
-func DetailsIsNil() predicate.ActionPlanHistory {
-	return predicate.ActionPlanHistory(sql.FieldIsNull(FieldDetails))
-}
-
-// DetailsNotNil applies the NotNil predicate on the "details" field.
-func DetailsNotNil() predicate.ActionPlanHistory {
-	return predicate.ActionPlanHistory(sql.FieldNotNull(FieldDetails))
-}
-
-// DetailsEqualFold applies the EqualFold predicate on the "details" field.
-func DetailsEqualFold(v string) predicate.ActionPlanHistory {
-	return predicate.ActionPlanHistory(sql.FieldEqualFold(FieldDetails, v))
-}
-
-// DetailsContainsFold applies the ContainsFold predicate on the "details" field.
-func DetailsContainsFold(v string) predicate.ActionPlanHistory {
-	return predicate.ActionPlanHistory(sql.FieldContainsFold(FieldDetails, v))
 }
 
 // ApprovalRequiredEQ applies the EQ predicate on the "approval_required" field.

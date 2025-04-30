@@ -36,6 +36,8 @@ type SchemaConfig struct {
 	DocumentData                     string // DocumentData table.
 	DocumentDataFiles                string // DocumentData-files->File table.
 	DocumentDataHistory              string // DocumentDataHistory table.
+	DocumentRevision                 string // DocumentRevision table.
+	DocumentRevisionHistory          string // DocumentRevisionHistory table.
 	EmailVerificationToken           string // EmailVerificationToken table.
 	Entity                           string // Entity table.
 	EntityContacts                   string // Entity-contacts->Contact table.

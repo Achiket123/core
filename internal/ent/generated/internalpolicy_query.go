@@ -15,6 +15,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/theopenlane/core/internal/ent/generated/control"
 	"github.com/theopenlane/core/internal/ent/generated/controlobjective"
+	"github.com/theopenlane/core/internal/ent/generated/documentrevision"
 	"github.com/theopenlane/core/internal/ent/generated/group"
 	"github.com/theopenlane/core/internal/ent/generated/internalpolicy"
 	"github.com/theopenlane/core/internal/ent/generated/narrative"
@@ -39,6 +40,7 @@ type InternalPolicyQuery struct {
 	withEditors                *GroupQuery
 	withApprover               *GroupQuery
 	withDelegate               *GroupQuery
+	withDocumentRevisions      *DocumentRevisionQuery
 	withControlObjectives      *ControlObjectiveQuery
 	withControls               *ControlQuery
 	withProcedures             *ProcedureQuery
@@ -50,6 +52,7 @@ type InternalPolicyQuery struct {
 	modifiers                  []func(*sql.Selector)
 	withNamedBlockedGroups     map[string]*GroupQuery
 	withNamedEditors           map[string]*GroupQuery
+	withNamedDocumentRevisions map[string]*DocumentRevisionQuery
 	withNamedControlObjectives map[string]*ControlObjectiveQuery
 	withNamedControls          map[string]*ControlQuery
 	withNamedProcedures        map[string]*ProcedureQuery
@@ -211,6 +214,31 @@ func (ipq *InternalPolicyQuery) QueryDelegate() *GroupQuery {
 		schemaConfig := ipq.schemaConfig
 		step.To.Schema = schemaConfig.Group
 		step.Edge.Schema = schemaConfig.InternalPolicy
+		fromU = sqlgraph.SetNeighbors(ipq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryDocumentRevisions chains the current query on the "document_revisions" edge.
+func (ipq *InternalPolicyQuery) QueryDocumentRevisions() *DocumentRevisionQuery {
+	query := (&DocumentRevisionClient{config: ipq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := ipq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := ipq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(internalpolicy.Table, internalpolicy.FieldID, selector),
+			sqlgraph.To(documentrevision.Table, documentrevision.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, internalpolicy.DocumentRevisionsTable, internalpolicy.DocumentRevisionsColumn),
+		)
+		schemaConfig := ipq.schemaConfig
+		step.To.Schema = schemaConfig.DocumentRevision
+		step.Edge.Schema = schemaConfig.DocumentRevision
 		fromU = sqlgraph.SetNeighbors(ipq.driver.Dialect(), step)
 		return fromU, nil
 	}
@@ -564,6 +592,7 @@ func (ipq *InternalPolicyQuery) Clone() *InternalPolicyQuery {
 		withEditors:           ipq.withEditors.Clone(),
 		withApprover:          ipq.withApprover.Clone(),
 		withDelegate:          ipq.withDelegate.Clone(),
+		withDocumentRevisions: ipq.withDocumentRevisions.Clone(),
 		withControlObjectives: ipq.withControlObjectives.Clone(),
 		withControls:          ipq.withControls.Clone(),
 		withProcedures:        ipq.withProcedures.Clone(),
@@ -629,6 +658,17 @@ func (ipq *InternalPolicyQuery) WithDelegate(opts ...func(*GroupQuery)) *Interna
 		opt(query)
 	}
 	ipq.withDelegate = query
+	return ipq
+}
+
+// WithDocumentRevisions tells the query-builder to eager-load the nodes that are connected to
+// the "document_revisions" edge. The optional arguments are used to configure the query builder of the edge.
+func (ipq *InternalPolicyQuery) WithDocumentRevisions(opts ...func(*DocumentRevisionQuery)) *InternalPolicyQuery {
+	query := (&DocumentRevisionClient{config: ipq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	ipq.withDocumentRevisions = query
 	return ipq
 }
 
@@ -783,12 +823,13 @@ func (ipq *InternalPolicyQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 		nodes       = []*InternalPolicy{}
 		withFKs     = ipq.withFKs
 		_spec       = ipq.querySpec()
-		loadedTypes = [11]bool{
+		loadedTypes = [12]bool{
 			ipq.withOwner != nil,
 			ipq.withBlockedGroups != nil,
 			ipq.withEditors != nil,
 			ipq.withApprover != nil,
 			ipq.withDelegate != nil,
+			ipq.withDocumentRevisions != nil,
 			ipq.withControlObjectives != nil,
 			ipq.withControls != nil,
 			ipq.withProcedures != nil,
@@ -855,6 +896,15 @@ func (ipq *InternalPolicyQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 			return nil, err
 		}
 	}
+	if query := ipq.withDocumentRevisions; query != nil {
+		if err := ipq.loadDocumentRevisions(ctx, query, nodes,
+			func(n *InternalPolicy) { n.Edges.DocumentRevisions = []*DocumentRevision{} },
+			func(n *InternalPolicy, e *DocumentRevision) {
+				n.Edges.DocumentRevisions = append(n.Edges.DocumentRevisions, e)
+			}); err != nil {
+			return nil, err
+		}
+	}
 	if query := ipq.withControlObjectives; query != nil {
 		if err := ipq.loadControlObjectives(ctx, query, nodes,
 			func(n *InternalPolicy) { n.Edges.ControlObjectives = []*ControlObjective{} },
@@ -910,6 +960,13 @@ func (ipq *InternalPolicyQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 		if err := ipq.loadEditors(ctx, query, nodes,
 			func(n *InternalPolicy) { n.appendNamedEditors(name) },
 			func(n *InternalPolicy, e *Group) { n.appendNamedEditors(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range ipq.withNamedDocumentRevisions {
+		if err := ipq.loadDocumentRevisions(ctx, query, nodes,
+			func(n *InternalPolicy) { n.appendNamedDocumentRevisions(name) },
+			func(n *InternalPolicy, e *DocumentRevision) { n.appendNamedDocumentRevisions(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -1171,6 +1228,37 @@ func (ipq *InternalPolicyQuery) loadDelegate(ctx context.Context, query *GroupQu
 		for i := range nodes {
 			assign(nodes[i], n)
 		}
+	}
+	return nil
+}
+func (ipq *InternalPolicyQuery) loadDocumentRevisions(ctx context.Context, query *DocumentRevisionQuery, nodes []*InternalPolicy, init func(*InternalPolicy), assign func(*InternalPolicy, *DocumentRevision)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[string]*InternalPolicy)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.DocumentRevision(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(internalpolicy.DocumentRevisionsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.internal_policy_document_revisions
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "internal_policy_document_revisions" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "internal_policy_document_revisions" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
 	}
 	return nil
 }
@@ -1617,6 +1705,20 @@ func (ipq *InternalPolicyQuery) WithNamedEditors(name string, opts ...func(*Grou
 		ipq.withNamedEditors = make(map[string]*GroupQuery)
 	}
 	ipq.withNamedEditors[name] = query
+	return ipq
+}
+
+// WithNamedDocumentRevisions tells the query-builder to eager-load the nodes that are connected to the "document_revisions"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (ipq *InternalPolicyQuery) WithNamedDocumentRevisions(name string, opts ...func(*DocumentRevisionQuery)) *InternalPolicyQuery {
+	query := (&DocumentRevisionClient{config: ipq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if ipq.withNamedDocumentRevisions == nil {
+		ipq.withNamedDocumentRevisions = make(map[string]*DocumentRevisionQuery)
+	}
+	ipq.withNamedDocumentRevisions[name] = query
 	return ipq
 }
 

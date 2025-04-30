@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/theopenlane/core/internal/ent/generated/actionplan"
 	"github.com/theopenlane/core/internal/ent/generated/control"
+	"github.com/theopenlane/core/internal/ent/generated/documentrevision"
 	"github.com/theopenlane/core/internal/ent/generated/group"
 	"github.com/theopenlane/core/internal/ent/generated/organization"
 	"github.com/theopenlane/core/internal/ent/generated/program"
@@ -165,20 +166,6 @@ func (apc *ActionPlanCreate) SetNillableActionPlanType(s *string) *ActionPlanCre
 	return apc
 }
 
-// SetDetails sets the "details" field.
-func (apc *ActionPlanCreate) SetDetails(s string) *ActionPlanCreate {
-	apc.mutation.SetDetails(s)
-	return apc
-}
-
-// SetNillableDetails sets the "details" field if the given value is not nil.
-func (apc *ActionPlanCreate) SetNillableDetails(s *string) *ActionPlanCreate {
-	if s != nil {
-		apc.SetDetails(*s)
-	}
-	return apc
-}
-
 // SetApprovalRequired sets the "approval_required" field.
 func (apc *ActionPlanCreate) SetApprovalRequired(b bool) *ActionPlanCreate {
 	apc.mutation.SetApprovalRequired(b)
@@ -327,6 +314,21 @@ func (apc *ActionPlanCreate) SetApprover(g *Group) *ActionPlanCreate {
 // SetDelegate sets the "delegate" edge to the Group entity.
 func (apc *ActionPlanCreate) SetDelegate(g *Group) *ActionPlanCreate {
 	return apc.SetDelegateID(g.ID)
+}
+
+// AddDocumentRevisionIDs adds the "document_revisions" edge to the DocumentRevision entity by IDs.
+func (apc *ActionPlanCreate) AddDocumentRevisionIDs(ids ...string) *ActionPlanCreate {
+	apc.mutation.AddDocumentRevisionIDs(ids...)
+	return apc
+}
+
+// AddDocumentRevisions adds the "document_revisions" edges to the DocumentRevision entity.
+func (apc *ActionPlanCreate) AddDocumentRevisions(d ...*DocumentRevision) *ActionPlanCreate {
+	ids := make([]string, len(d))
+	for i := range d {
+		ids[i] = d[i].ID
+	}
+	return apc.AddDocumentRevisionIDs(ids...)
 }
 
 // SetOwner sets the "owner" edge to the Organization entity.
@@ -594,10 +596,6 @@ func (apc *ActionPlanCreate) createSpec() (*ActionPlan, *sqlgraph.CreateSpec) {
 		_spec.SetField(actionplan.FieldActionPlanType, field.TypeString, value)
 		_node.ActionPlanType = value
 	}
-	if value, ok := apc.mutation.Details(); ok {
-		_spec.SetField(actionplan.FieldDetails, field.TypeString, value)
-		_node.Details = value
-	}
 	if value, ok := apc.mutation.ApprovalRequired(); ok {
 		_spec.SetField(actionplan.FieldApprovalRequired, field.TypeBool, value)
 		_node.ApprovalRequired = value
@@ -656,6 +654,23 @@ func (apc *ActionPlanCreate) createSpec() (*ActionPlan, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.DelegateID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := apc.mutation.DocumentRevisionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   actionplan.DocumentRevisionsTable,
+			Columns: []string{actionplan.DocumentRevisionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(documentrevision.FieldID, field.TypeString),
+			},
+		}
+		edge.Schema = apc.schemaConfig.DocumentRevision
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := apc.mutation.OwnerIDs(); len(nodes) > 0 {

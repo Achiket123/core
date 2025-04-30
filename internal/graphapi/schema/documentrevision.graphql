@@ -1,0 +1,103 @@
+extend type Query {
+    """
+    Look up documentRevision by ID
+    """
+     documentRevision(
+        """
+        ID of the documentRevision
+        """
+        id: ID!
+    ):  DocumentRevision!
+}
+
+extend type Mutation{
+    """
+    Create a new documentRevision
+    """
+    createDocumentRevision(
+        """
+        values of the documentRevision
+        """
+        input: CreateDocumentRevisionInput!
+    ): DocumentRevisionCreatePayload!
+    """
+    Create multiple new documentRevisions
+    """
+    createBulkDocumentRevision(
+        """
+        values of the documentRevision
+        """
+        input: [CreateDocumentRevisionInput!]
+    ): DocumentRevisionBulkCreatePayload!
+    """
+    Create multiple new documentRevisions via file upload
+    """
+    createBulkCSVDocumentRevision(
+        """
+        csv file containing values of the documentRevision
+        """
+        input: Upload!
+    ): DocumentRevisionBulkCreatePayload!
+    """
+    Update an existing documentRevision
+    """
+    updateDocumentRevision(
+        """
+        ID of the documentRevision
+        """
+        id: ID!
+        """
+        New values for the documentRevision
+        """
+        input: UpdateDocumentRevisionInput!
+    ): DocumentRevisionUpdatePayload!
+    """
+    Delete an existing documentRevision
+    """
+    deleteDocumentRevision(
+        """
+        ID of the documentRevision
+        """
+        id: ID!
+    ): DocumentRevisionDeletePayload!
+}
+
+"""
+Return response for createDocumentRevision mutation
+"""
+type DocumentRevisionCreatePayload {
+    """
+    Created documentRevision
+    """
+    documentRevision: DocumentRevision!
+}
+
+"""
+Return response for updateDocumentRevision mutation
+"""
+type DocumentRevisionUpdatePayload {
+    """
+    Updated documentRevision
+    """
+    documentRevision: DocumentRevision!
+}
+
+"""
+Return response for deleteDocumentRevision mutation
+"""
+type DocumentRevisionDeletePayload {
+    """
+    Deleted documentRevision ID
+    """
+    deletedID: ID!
+}
+
+"""
+Return response for createBulkDocumentRevision mutation
+"""
+type DocumentRevisionBulkCreatePayload {
+    """
+    Created documentRevisions
+    """
+    documentRevisions: [DocumentRevision!]
+}

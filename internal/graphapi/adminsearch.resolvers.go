@@ -31,6 +31,7 @@ func (r *queryResolver) AdminSearch(ctx context.Context, query string) (*model.S
 		controlimplementationResults []*generated.ControlImplementation
 		controlobjectiveResults      []*generated.ControlObjective
 		documentdataResults          []*generated.DocumentData
+		documentrevisionResults      []*generated.DocumentRevision
 		entityResults                []*generated.Entity
 		entitytypeResults            []*generated.EntityType
 		eventResults                 []*generated.Event
@@ -103,6 +104,13 @@ func (r *queryResolver) AdminSearch(ctx context.Context, query string) (*model.S
 		func() {
 			var err error
 			documentdataResults, err = searchDocumentData(ctx, query)
+			if err != nil {
+				errors = append(errors, err)
+			}
+		},
+		func() {
+			var err error
+			documentrevisionResults, err = searchDocumentRevisions(ctx, query)
 			if err != nil {
 				errors = append(errors, err)
 			}
@@ -333,6 +341,13 @@ func (r *queryResolver) AdminSearch(ctx context.Context, query string) (*model.S
 		})
 
 		resultCount += len(documentdataResults)
+	}
+	if len(documentrevisionResults) > 0 {
+		nodes = append(nodes, model.DocumentRevisionSearchResult{
+			DocumentRevisions: documentrevisionResults,
+		})
+
+		resultCount += len(documentrevisionResults)
 	}
 	if len(entityResults) > 0 {
 		nodes = append(nodes, model.EntitySearchResult{
@@ -632,6 +647,24 @@ func (r *queryResolver) AdminDocumentDataSearch(ctx context.Context, query strin
 	// return the results
 	return &model.DocumentDataSearchResult{
 		DocumentData: documentdataResults,
+	}, nil
+}
+func (r *queryResolver) AdminDocumentRevisionSearch(ctx context.Context, query string) (*model.DocumentRevisionSearchResult, error) {
+	// ensure the user is a system admin
+	isAdmin, err := rule.CheckIsSystemAdminWithContext(ctx)
+	if err != nil || !isAdmin {
+		return nil, generated.ErrPermissionDenied
+	}
+
+	documentrevisionResults, err := adminSearchDocumentRevisions(ctx, query)
+
+	if err != nil {
+		return nil, ErrSearchFailed
+	}
+
+	// return the results
+	return &model.DocumentRevisionSearchResult{
+		DocumentRevisions: documentrevisionResults,
 	}, nil
 }
 func (r *queryResolver) AdminEntitySearch(ctx context.Context, query string) (*model.EntitySearchResult, error) {

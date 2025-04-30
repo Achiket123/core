@@ -40,7 +40,12 @@ func (d DocumentMixin) Fields() []ent.Field {
 
 // Edges of the DocumentMixin.
 func (d DocumentMixin) Edges() []ent.Edge {
-	return getApproverEdges(d.DocumentType)
+	edges := getApproverEdges(d.DocumentType)
+
+	// add document revision edge
+	edge := defaultEdgeToWithPagination(d, DocumentRevision{})
+
+	return append(edges, edge)
 }
 
 // Hooks of the DocumentMixin.
@@ -82,12 +87,6 @@ func getDocumentFields(documentType string) []ent.Field {
 		field.String(fmt.Sprintf("%s_type", documentType)).
 			Optional().
 			Comment(fmt.Sprintf("type of the %s, e.g. compliance, operational, health and safety, etc.", documentType)),
-		field.Text("details").
-			Optional().
-			Annotations(
-				entx.FieldSearchable(),
-			).
-			Comment(fmt.Sprintf("details of the %s", documentType)),
 		field.Bool("approval_required").
 			Default(true).
 			Optional().

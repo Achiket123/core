@@ -25,6 +25,7 @@ func (r *queryResolver) Search(ctx context.Context, query string) (*model.Search
 		controlimplementationResults []*generated.ControlImplementation
 		controlobjectiveResults      []*generated.ControlObjective
 		documentdataResults          []*generated.DocumentData
+		documentrevisionResults      []*generated.DocumentRevision
 		entityResults                []*generated.Entity
 		entitytypeResults            []*generated.EntityType
 		eventResults                 []*generated.Event
@@ -97,6 +98,13 @@ func (r *queryResolver) Search(ctx context.Context, query string) (*model.Search
 		func() {
 			var err error
 			documentdataResults, err = searchDocumentData(ctx, query)
+			if err != nil {
+				errors = append(errors, err)
+			}
+		},
+		func() {
+			var err error
+			documentrevisionResults, err = searchDocumentRevisions(ctx, query)
 			if err != nil {
 				errors = append(errors, err)
 			}
@@ -327,6 +335,13 @@ func (r *queryResolver) Search(ctx context.Context, query string) (*model.Search
 		})
 
 		resultCount += len(documentdataResults)
+	}
+	if len(documentrevisionResults) > 0 {
+		nodes = append(nodes, model.DocumentRevisionSearchResult{
+			DocumentRevisions: documentrevisionResults,
+		})
+
+		resultCount += len(documentrevisionResults)
 	}
 	if len(entityResults) > 0 {
 		nodes = append(nodes, model.EntitySearchResult{
@@ -584,6 +599,18 @@ func (r *queryResolver) DocumentDataSearch(ctx context.Context, query string) (*
 	// return the results
 	return &model.DocumentDataSearchResult{
 		DocumentData: documentdataResults,
+	}, nil
+}
+func (r *queryResolver) DocumentRevisionSearch(ctx context.Context, query string) (*model.DocumentRevisionSearchResult, error) {
+	documentrevisionResults, err := searchDocumentRevisions(ctx, query)
+
+	if err != nil {
+		return nil, ErrSearchFailed
+	}
+
+	// return the results
+	return &model.DocumentRevisionSearchResult{
+		DocumentRevisions: documentrevisionResults,
 	}, nil
 }
 func (r *queryResolver) EntitySearch(ctx context.Context, query string) (*model.EntitySearchResult, error) {

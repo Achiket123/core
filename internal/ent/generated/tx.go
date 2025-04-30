@@ -38,6 +38,10 @@ type Tx struct {
 	DocumentData *DocumentDataClient
 	// DocumentDataHistory is the client for interacting with the DocumentDataHistory builders.
 	DocumentDataHistory *DocumentDataHistoryClient
+	// DocumentRevision is the client for interacting with the DocumentRevision builders.
+	DocumentRevision *DocumentRevisionClient
+	// DocumentRevisionHistory is the client for interacting with the DocumentRevisionHistory builders.
+	DocumentRevisionHistory *DocumentRevisionHistoryClient
 	// EmailVerificationToken is the client for interacting with the EmailVerificationToken builders.
 	EmailVerificationToken *EmailVerificationTokenClient
 	// Entity is the client for interacting with the Entity builders.
@@ -310,6 +314,8 @@ func (tx *Tx) init() {
 	tx.ControlObjectiveHistory = NewControlObjectiveHistoryClient(tx.config)
 	tx.DocumentData = NewDocumentDataClient(tx.config)
 	tx.DocumentDataHistory = NewDocumentDataHistoryClient(tx.config)
+	tx.DocumentRevision = NewDocumentRevisionClient(tx.config)
+	tx.DocumentRevisionHistory = NewDocumentRevisionHistoryClient(tx.config)
 	tx.EmailVerificationToken = NewEmailVerificationTokenClient(tx.config)
 	tx.Entity = NewEntityClient(tx.config)
 	tx.EntityHistory = NewEntityHistoryClient(tx.config)

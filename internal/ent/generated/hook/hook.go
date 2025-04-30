@@ -165,6 +165,30 @@ func (f DocumentDataHistoryFunc) Mutate(ctx context.Context, m generated.Mutatio
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *generated.DocumentDataHistoryMutation", m)
 }
 
+// The DocumentRevisionFunc type is an adapter to allow the use of ordinary
+// function as DocumentRevision mutator.
+type DocumentRevisionFunc func(context.Context, *generated.DocumentRevisionMutation) (generated.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f DocumentRevisionFunc) Mutate(ctx context.Context, m generated.Mutation) (generated.Value, error) {
+	if mv, ok := m.(*generated.DocumentRevisionMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *generated.DocumentRevisionMutation", m)
+}
+
+// The DocumentRevisionHistoryFunc type is an adapter to allow the use of ordinary
+// function as DocumentRevisionHistory mutator.
+type DocumentRevisionHistoryFunc func(context.Context, *generated.DocumentRevisionHistoryMutation) (generated.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f DocumentRevisionHistoryFunc) Mutate(ctx context.Context, m generated.Mutation) (generated.Value, error) {
+	if mv, ok := m.(*generated.DocumentRevisionHistoryMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *generated.DocumentRevisionHistoryMutation", m)
+}
+
 // The EmailVerificationTokenFunc type is an adapter to allow the use of ordinary
 // function as EmailVerificationToken mutator.
 type EmailVerificationTokenFunc func(context.Context, *generated.EmailVerificationTokenMutation) (generated.Value, error)

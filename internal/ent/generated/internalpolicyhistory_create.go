@@ -214,20 +214,6 @@ func (iphc *InternalPolicyHistoryCreate) SetNillablePolicyType(s *string) *Inter
 	return iphc
 }
 
-// SetDetails sets the "details" field.
-func (iphc *InternalPolicyHistoryCreate) SetDetails(s string) *InternalPolicyHistoryCreate {
-	iphc.mutation.SetDetails(s)
-	return iphc
-}
-
-// SetNillableDetails sets the "details" field if the given value is not nil.
-func (iphc *InternalPolicyHistoryCreate) SetNillableDetails(s *string) *InternalPolicyHistoryCreate {
-	if s != nil {
-		iphc.SetDetails(*s)
-	}
-	return iphc
-}
-
 // SetApprovalRequired sets the "approval_required" field.
 func (iphc *InternalPolicyHistoryCreate) SetApprovalRequired(b bool) *InternalPolicyHistoryCreate {
 	iphc.mutation.SetApprovalRequired(b)
@@ -517,10 +503,6 @@ func (iphc *InternalPolicyHistoryCreate) createSpec() (*InternalPolicyHistory, *
 	if value, ok := iphc.mutation.PolicyType(); ok {
 		_spec.SetField(internalpolicyhistory.FieldPolicyType, field.TypeString, value)
 		_node.PolicyType = value
-	}
-	if value, ok := iphc.mutation.Details(); ok {
-		_spec.SetField(internalpolicyhistory.FieldDetails, field.TypeString, value)
-		_node.Details = value
 	}
 	if value, ok := iphc.mutation.ApprovalRequired(); ok {
 		_spec.SetField(internalpolicyhistory.FieldApprovalRequired, field.TypeBool, value)

@@ -26,6 +26,9 @@ func (c *Client) WithHistory() {
 	for _, hook := range history.Hooks[*DocumentDataMutation]() {
 		c.DocumentData.Use(hook)
 	}
+	for _, hook := range history.Hooks[*DocumentRevisionMutation]() {
+		c.DocumentRevision.Use(hook)
+	}
 	for _, hook := range history.Hooks[*EntityMutation]() {
 		c.Entity.Use(hook)
 	}

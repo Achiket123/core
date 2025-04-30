@@ -136,6 +136,18 @@ func DocumentDataHistoryEdgeCleanup(ctx context.Context, id string) error {
 	return nil
 }
 
+func DocumentRevisionEdgeCleanup(ctx context.Context, id string) error {
+	ctx = contextx.With(privacy.DecisionContext(ctx, privacy.Allowf("cleanup documentrevision edge")), entfga.DeleteTuplesFirstKey{})
+
+	return nil
+}
+
+func DocumentRevisionHistoryEdgeCleanup(ctx context.Context, id string) error {
+	ctx = contextx.With(privacy.DecisionContext(ctx, privacy.Allowf("cleanup documentrevisionhistory edge")), entfga.DeleteTuplesFirstKey{})
+
+	return nil
+}
+
 func EmailVerificationTokenEdgeCleanup(ctx context.Context, id string) error {
 	ctx = contextx.With(privacy.DecisionContext(ctx, privacy.Allowf("cleanup emailverificationtoken edge")), entfga.DeleteTuplesFirstKey{})
 

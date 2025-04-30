@@ -52,8 +52,6 @@ type ProcedureHistory struct {
 	Status enums.DocumentStatus `json:"status,omitempty"`
 	// type of the procedure, e.g. compliance, operational, health and safety, etc.
 	ProcedureType string `json:"procedure_type,omitempty"`
-	// details of the procedure
-	Details string `json:"details,omitempty"`
 	// whether approval is required for edits to the procedure
 	ApprovalRequired bool `json:"approval_required,omitempty"`
 	// the date the procedure should be reviewed, calculated based on the review_frequency if not directly set
@@ -78,7 +76,7 @@ func (*ProcedureHistory) scanValues(columns []string) ([]any, error) {
 			values[i] = new(history.OpType)
 		case procedurehistory.FieldApprovalRequired:
 			values[i] = new(sql.NullBool)
-		case procedurehistory.FieldID, procedurehistory.FieldRef, procedurehistory.FieldCreatedBy, procedurehistory.FieldUpdatedBy, procedurehistory.FieldDeletedBy, procedurehistory.FieldDisplayID, procedurehistory.FieldRevision, procedurehistory.FieldOwnerID, procedurehistory.FieldName, procedurehistory.FieldStatus, procedurehistory.FieldProcedureType, procedurehistory.FieldDetails, procedurehistory.FieldReviewFrequency, procedurehistory.FieldApproverID, procedurehistory.FieldDelegateID:
+		case procedurehistory.FieldID, procedurehistory.FieldRef, procedurehistory.FieldCreatedBy, procedurehistory.FieldUpdatedBy, procedurehistory.FieldDeletedBy, procedurehistory.FieldDisplayID, procedurehistory.FieldRevision, procedurehistory.FieldOwnerID, procedurehistory.FieldName, procedurehistory.FieldStatus, procedurehistory.FieldProcedureType, procedurehistory.FieldReviewFrequency, procedurehistory.FieldApproverID, procedurehistory.FieldDelegateID:
 			values[i] = new(sql.NullString)
 		case procedurehistory.FieldHistoryTime, procedurehistory.FieldCreatedAt, procedurehistory.FieldUpdatedAt, procedurehistory.FieldDeletedAt, procedurehistory.FieldReviewDue:
 			values[i] = new(sql.NullTime)
@@ -201,12 +199,6 @@ func (ph *ProcedureHistory) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				ph.ProcedureType = value.String
 			}
-		case procedurehistory.FieldDetails:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field details", values[i])
-			} else if value.Valid {
-				ph.Details = value.String
-			}
 		case procedurehistory.FieldApprovalRequired:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field approval_required", values[i])
@@ -320,9 +312,6 @@ func (ph *ProcedureHistory) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("procedure_type=")
 	builder.WriteString(ph.ProcedureType)
-	builder.WriteString(", ")
-	builder.WriteString("details=")
-	builder.WriteString(ph.Details)
 	builder.WriteString(", ")
 	builder.WriteString("approval_required=")
 	builder.WriteString(fmt.Sprintf("%v", ph.ApprovalRequired))

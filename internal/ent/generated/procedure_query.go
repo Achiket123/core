@@ -14,6 +14,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/theopenlane/core/internal/ent/generated/control"
+	"github.com/theopenlane/core/internal/ent/generated/documentrevision"
 	"github.com/theopenlane/core/internal/ent/generated/group"
 	"github.com/theopenlane/core/internal/ent/generated/internalpolicy"
 	"github.com/theopenlane/core/internal/ent/generated/narrative"
@@ -30,32 +31,34 @@ import (
 // ProcedureQuery is the builder for querying Procedure entities.
 type ProcedureQuery struct {
 	config
-	ctx                       *QueryContext
-	order                     []procedure.OrderOption
-	inters                    []Interceptor
-	predicates                []predicate.Procedure
-	withOwner                 *OrganizationQuery
-	withBlockedGroups         *GroupQuery
-	withEditors               *GroupQuery
-	withApprover              *GroupQuery
-	withDelegate              *GroupQuery
-	withControls              *ControlQuery
-	withInternalPolicies      *InternalPolicyQuery
-	withPrograms              *ProgramQuery
-	withNarratives            *NarrativeQuery
-	withRisks                 *RiskQuery
-	withTasks                 *TaskQuery
-	withFKs                   bool
-	loadTotal                 []func(context.Context, []*Procedure) error
-	modifiers                 []func(*sql.Selector)
-	withNamedBlockedGroups    map[string]*GroupQuery
-	withNamedEditors          map[string]*GroupQuery
-	withNamedControls         map[string]*ControlQuery
-	withNamedInternalPolicies map[string]*InternalPolicyQuery
-	withNamedPrograms         map[string]*ProgramQuery
-	withNamedNarratives       map[string]*NarrativeQuery
-	withNamedRisks            map[string]*RiskQuery
-	withNamedTasks            map[string]*TaskQuery
+	ctx                        *QueryContext
+	order                      []procedure.OrderOption
+	inters                     []Interceptor
+	predicates                 []predicate.Procedure
+	withOwner                  *OrganizationQuery
+	withBlockedGroups          *GroupQuery
+	withEditors                *GroupQuery
+	withApprover               *GroupQuery
+	withDelegate               *GroupQuery
+	withDocumentRevisions      *DocumentRevisionQuery
+	withControls               *ControlQuery
+	withInternalPolicies       *InternalPolicyQuery
+	withPrograms               *ProgramQuery
+	withNarratives             *NarrativeQuery
+	withRisks                  *RiskQuery
+	withTasks                  *TaskQuery
+	withFKs                    bool
+	loadTotal                  []func(context.Context, []*Procedure) error
+	modifiers                  []func(*sql.Selector)
+	withNamedBlockedGroups     map[string]*GroupQuery
+	withNamedEditors           map[string]*GroupQuery
+	withNamedDocumentRevisions map[string]*DocumentRevisionQuery
+	withNamedControls          map[string]*ControlQuery
+	withNamedInternalPolicies  map[string]*InternalPolicyQuery
+	withNamedPrograms          map[string]*ProgramQuery
+	withNamedNarratives        map[string]*NarrativeQuery
+	withNamedRisks             map[string]*RiskQuery
+	withNamedTasks             map[string]*TaskQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -211,6 +214,31 @@ func (pq *ProcedureQuery) QueryDelegate() *GroupQuery {
 		schemaConfig := pq.schemaConfig
 		step.To.Schema = schemaConfig.Group
 		step.Edge.Schema = schemaConfig.Procedure
+		fromU = sqlgraph.SetNeighbors(pq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryDocumentRevisions chains the current query on the "document_revisions" edge.
+func (pq *ProcedureQuery) QueryDocumentRevisions() *DocumentRevisionQuery {
+	query := (&DocumentRevisionClient{config: pq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := pq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := pq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(procedure.Table, procedure.FieldID, selector),
+			sqlgraph.To(documentrevision.Table, documentrevision.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, procedure.DocumentRevisionsTable, procedure.DocumentRevisionsColumn),
+		)
+		schemaConfig := pq.schemaConfig
+		step.To.Schema = schemaConfig.DocumentRevision
+		step.Edge.Schema = schemaConfig.DocumentRevision
 		fromU = sqlgraph.SetNeighbors(pq.driver.Dialect(), step)
 		return fromU, nil
 	}
@@ -554,22 +582,23 @@ func (pq *ProcedureQuery) Clone() *ProcedureQuery {
 		return nil
 	}
 	return &ProcedureQuery{
-		config:               pq.config,
-		ctx:                  pq.ctx.Clone(),
-		order:                append([]procedure.OrderOption{}, pq.order...),
-		inters:               append([]Interceptor{}, pq.inters...),
-		predicates:           append([]predicate.Procedure{}, pq.predicates...),
-		withOwner:            pq.withOwner.Clone(),
-		withBlockedGroups:    pq.withBlockedGroups.Clone(),
-		withEditors:          pq.withEditors.Clone(),
-		withApprover:         pq.withApprover.Clone(),
-		withDelegate:         pq.withDelegate.Clone(),
-		withControls:         pq.withControls.Clone(),
-		withInternalPolicies: pq.withInternalPolicies.Clone(),
-		withPrograms:         pq.withPrograms.Clone(),
-		withNarratives:       pq.withNarratives.Clone(),
-		withRisks:            pq.withRisks.Clone(),
-		withTasks:            pq.withTasks.Clone(),
+		config:                pq.config,
+		ctx:                   pq.ctx.Clone(),
+		order:                 append([]procedure.OrderOption{}, pq.order...),
+		inters:                append([]Interceptor{}, pq.inters...),
+		predicates:            append([]predicate.Procedure{}, pq.predicates...),
+		withOwner:             pq.withOwner.Clone(),
+		withBlockedGroups:     pq.withBlockedGroups.Clone(),
+		withEditors:           pq.withEditors.Clone(),
+		withApprover:          pq.withApprover.Clone(),
+		withDelegate:          pq.withDelegate.Clone(),
+		withDocumentRevisions: pq.withDocumentRevisions.Clone(),
+		withControls:          pq.withControls.Clone(),
+		withInternalPolicies:  pq.withInternalPolicies.Clone(),
+		withPrograms:          pq.withPrograms.Clone(),
+		withNarratives:        pq.withNarratives.Clone(),
+		withRisks:             pq.withRisks.Clone(),
+		withTasks:             pq.withTasks.Clone(),
 		// clone intermediate query.
 		sql:       pq.sql.Clone(),
 		path:      pq.path,
@@ -629,6 +658,17 @@ func (pq *ProcedureQuery) WithDelegate(opts ...func(*GroupQuery)) *ProcedureQuer
 		opt(query)
 	}
 	pq.withDelegate = query
+	return pq
+}
+
+// WithDocumentRevisions tells the query-builder to eager-load the nodes that are connected to
+// the "document_revisions" edge. The optional arguments are used to configure the query builder of the edge.
+func (pq *ProcedureQuery) WithDocumentRevisions(opts ...func(*DocumentRevisionQuery)) *ProcedureQuery {
+	query := (&DocumentRevisionClient{config: pq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	pq.withDocumentRevisions = query
 	return pq
 }
 
@@ -783,12 +823,13 @@ func (pq *ProcedureQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Pr
 		nodes       = []*Procedure{}
 		withFKs     = pq.withFKs
 		_spec       = pq.querySpec()
-		loadedTypes = [11]bool{
+		loadedTypes = [12]bool{
 			pq.withOwner != nil,
 			pq.withBlockedGroups != nil,
 			pq.withEditors != nil,
 			pq.withApprover != nil,
 			pq.withDelegate != nil,
+			pq.withDocumentRevisions != nil,
 			pq.withControls != nil,
 			pq.withInternalPolicies != nil,
 			pq.withPrograms != nil,
@@ -855,6 +896,15 @@ func (pq *ProcedureQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Pr
 			return nil, err
 		}
 	}
+	if query := pq.withDocumentRevisions; query != nil {
+		if err := pq.loadDocumentRevisions(ctx, query, nodes,
+			func(n *Procedure) { n.Edges.DocumentRevisions = []*DocumentRevision{} },
+			func(n *Procedure, e *DocumentRevision) {
+				n.Edges.DocumentRevisions = append(n.Edges.DocumentRevisions, e)
+			}); err != nil {
+			return nil, err
+		}
+	}
 	if query := pq.withControls; query != nil {
 		if err := pq.loadControls(ctx, query, nodes,
 			func(n *Procedure) { n.Edges.Controls = []*Control{} },
@@ -908,6 +958,13 @@ func (pq *ProcedureQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Pr
 		if err := pq.loadEditors(ctx, query, nodes,
 			func(n *Procedure) { n.appendNamedEditors(name) },
 			func(n *Procedure, e *Group) { n.appendNamedEditors(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range pq.withNamedDocumentRevisions {
+		if err := pq.loadDocumentRevisions(ctx, query, nodes,
+			func(n *Procedure) { n.appendNamedDocumentRevisions(name) },
+			func(n *Procedure, e *DocumentRevision) { n.appendNamedDocumentRevisions(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -1169,6 +1226,37 @@ func (pq *ProcedureQuery) loadDelegate(ctx context.Context, query *GroupQuery, n
 		for i := range nodes {
 			assign(nodes[i], n)
 		}
+	}
+	return nil
+}
+func (pq *ProcedureQuery) loadDocumentRevisions(ctx context.Context, query *DocumentRevisionQuery, nodes []*Procedure, init func(*Procedure), assign func(*Procedure, *DocumentRevision)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[string]*Procedure)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.DocumentRevision(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(procedure.DocumentRevisionsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.procedure_document_revisions
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "procedure_document_revisions" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "procedure_document_revisions" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
 	}
 	return nil
 }
@@ -1646,6 +1734,20 @@ func (pq *ProcedureQuery) WithNamedEditors(name string, opts ...func(*GroupQuery
 		pq.withNamedEditors = make(map[string]*GroupQuery)
 	}
 	pq.withNamedEditors[name] = query
+	return pq
+}
+
+// WithNamedDocumentRevisions tells the query-builder to eager-load the nodes that are connected to the "document_revisions"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (pq *ProcedureQuery) WithNamedDocumentRevisions(name string, opts ...func(*DocumentRevisionQuery)) *ProcedureQuery {
+	query := (&DocumentRevisionClient{config: pq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if pq.withNamedDocumentRevisions == nil {
+		pq.withNamedDocumentRevisions = make(map[string]*DocumentRevisionQuery)
+	}
+	pq.withNamedDocumentRevisions[name] = query
 	return pq
 }
 

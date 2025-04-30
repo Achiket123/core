@@ -40,8 +40,6 @@ const (
 	FieldStatus = "status"
 	// FieldActionPlanType holds the string denoting the action_plan_type field in the database.
 	FieldActionPlanType = "action_plan_type"
-	// FieldDetails holds the string denoting the details field in the database.
-	FieldDetails = "details"
 	// FieldApprovalRequired holds the string denoting the approval_required field in the database.
 	FieldApprovalRequired = "approval_required"
 	// FieldReviewDue holds the string denoting the review_due field in the database.
@@ -64,6 +62,8 @@ const (
 	EdgeApprover = "approver"
 	// EdgeDelegate holds the string denoting the delegate edge name in mutations.
 	EdgeDelegate = "delegate"
+	// EdgeDocumentRevisions holds the string denoting the document_revisions edge name in mutations.
+	EdgeDocumentRevisions = "document_revisions"
 	// EdgeOwner holds the string denoting the owner edge name in mutations.
 	EdgeOwner = "owner"
 	// EdgeRisks holds the string denoting the risks edge name in mutations.
@@ -90,6 +90,13 @@ const (
 	DelegateInverseTable = "groups"
 	// DelegateColumn is the table column denoting the delegate relation/edge.
 	DelegateColumn = "delegate_id"
+	// DocumentRevisionsTable is the table that holds the document_revisions relation/edge.
+	DocumentRevisionsTable = "document_revisions"
+	// DocumentRevisionsInverseTable is the table name for the DocumentRevision entity.
+	// It exists in this package in order to avoid circular dependency with the "documentrevision" package.
+	DocumentRevisionsInverseTable = "document_revisions"
+	// DocumentRevisionsColumn is the table column denoting the document_revisions relation/edge.
+	DocumentRevisionsColumn = "action_plan_document_revisions"
 	// OwnerTable is the table that holds the owner relation/edge.
 	OwnerTable = "action_plans"
 	// OwnerInverseTable is the table name for the Organization entity.
@@ -133,7 +140,6 @@ var Columns = []string{
 	FieldName,
 	FieldStatus,
 	FieldActionPlanType,
-	FieldDetails,
 	FieldApprovalRequired,
 	FieldReviewDue,
 	FieldReviewFrequency,
@@ -306,11 +312,6 @@ func ByActionPlanType(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldActionPlanType, opts...).ToFunc()
 }
 
-// ByDetails orders the results by the details field.
-func ByDetails(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldDetails, opts...).ToFunc()
-}
-
 // ByApprovalRequired orders the results by the approval_required field.
 func ByApprovalRequired(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldApprovalRequired, opts...).ToFunc()
@@ -367,6 +368,20 @@ func ByApproverField(field string, opts ...sql.OrderTermOption) OrderOption {
 func ByDelegateField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newDelegateStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByDocumentRevisionsCount orders the results by document_revisions count.
+func ByDocumentRevisionsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newDocumentRevisionsStep(), opts...)
+	}
+}
+
+// ByDocumentRevisions orders the results by document_revisions terms.
+func ByDocumentRevisions(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newDocumentRevisionsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
@@ -444,6 +459,13 @@ func newDelegateStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(DelegateInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, false, DelegateTable, DelegateColumn),
+	)
+}
+func newDocumentRevisionsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(DocumentRevisionsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, DocumentRevisionsTable, DocumentRevisionsColumn),
 	)
 }
 func newOwnerStep() *sqlgraph.Step {

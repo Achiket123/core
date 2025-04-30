@@ -14,6 +14,7 @@ import (
 	"github.com/theopenlane/core/internal/ent/generated/controlimplementationhistory"
 	"github.com/theopenlane/core/internal/ent/generated/controlobjectivehistory"
 	"github.com/theopenlane/core/internal/ent/generated/documentdatahistory"
+	"github.com/theopenlane/core/internal/ent/generated/documentrevisionhistory"
 	"github.com/theopenlane/core/internal/ent/generated/entityhistory"
 	"github.com/theopenlane/core/internal/ent/generated/entitytypehistory"
 	"github.com/theopenlane/core/internal/ent/generated/eventhistory"
@@ -317,6 +318,52 @@ func (ddhq *DocumentDataHistoryQuery) AsOf(ctx context.Context, time time.Time) 
 	return ddhq.
 		Where(documentdatahistory.HistoryTimeLTE(time)).
 		Order(documentdatahistory.ByHistoryTime(sql.OrderDesc())).
+		First(ctx)
+}
+
+func (dr *DocumentRevision) History() *DocumentRevisionHistoryQuery {
+	historyClient := NewDocumentRevisionHistoryClient(dr.config)
+	return historyClient.Query().Where(documentrevisionhistory.Ref(dr.ID))
+}
+
+func (drh *DocumentRevisionHistory) Next(ctx context.Context) (*DocumentRevisionHistory, error) {
+	client := NewDocumentRevisionHistoryClient(drh.config)
+	return client.Query().
+		Where(
+			documentrevisionhistory.Ref(drh.Ref),
+			documentrevisionhistory.HistoryTimeGT(drh.HistoryTime),
+		).
+		Order(documentrevisionhistory.ByHistoryTime()).
+		First(ctx)
+}
+
+func (drh *DocumentRevisionHistory) Prev(ctx context.Context) (*DocumentRevisionHistory, error) {
+	client := NewDocumentRevisionHistoryClient(drh.config)
+	return client.Query().
+		Where(
+			documentrevisionhistory.Ref(drh.Ref),
+			documentrevisionhistory.HistoryTimeLT(drh.HistoryTime),
+		).
+		Order(documentrevisionhistory.ByHistoryTime(sql.OrderDesc())).
+		First(ctx)
+}
+
+func (drhq *DocumentRevisionHistoryQuery) Earliest(ctx context.Context) (*DocumentRevisionHistory, error) {
+	return drhq.
+		Order(documentrevisionhistory.ByHistoryTime()).
+		First(ctx)
+}
+
+func (drhq *DocumentRevisionHistoryQuery) Latest(ctx context.Context) (*DocumentRevisionHistory, error) {
+	return drhq.
+		Order(documentrevisionhistory.ByHistoryTime(sql.OrderDesc())).
+		First(ctx)
+}
+
+func (drhq *DocumentRevisionHistoryQuery) AsOf(ctx context.Context, time time.Time) (*DocumentRevisionHistory, error) {
+	return drhq.
+		Where(documentrevisionhistory.HistoryTimeLTE(time)).
+		Order(documentrevisionhistory.ByHistoryTime(sql.OrderDesc())).
 		First(ctx)
 }
 

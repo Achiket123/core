@@ -50,8 +50,6 @@ const (
 	FieldStatus = "status"
 	// FieldPolicyType holds the string denoting the policy_type field in the database.
 	FieldPolicyType = "policy_type"
-	// FieldDetails holds the string denoting the details field in the database.
-	FieldDetails = "details"
 	// FieldApprovalRequired holds the string denoting the approval_required field in the database.
 	FieldApprovalRequired = "approval_required"
 	// FieldReviewDue holds the string denoting the review_due field in the database.
@@ -85,7 +83,6 @@ var Columns = []string{
 	FieldName,
 	FieldStatus,
 	FieldPolicyType,
-	FieldDetails,
 	FieldApprovalRequired,
 	FieldReviewDue,
 	FieldReviewFrequency,
@@ -245,11 +242,6 @@ func ByStatus(opts ...sql.OrderTermOption) OrderOption {
 // ByPolicyType orders the results by the policy_type field.
 func ByPolicyType(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPolicyType, opts...).ToFunc()
-}
-
-// ByDetails orders the results by the details field.
-func ByDetails(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldDetails, opts...).ToFunc()
 }
 
 // ByApprovalRequired orders the results by the approval_required field.

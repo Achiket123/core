@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
 	"github.com/theopenlane/core/internal/ent/generated/control"
+	"github.com/theopenlane/core/internal/ent/generated/documentrevision"
 	"github.com/theopenlane/core/internal/ent/generated/group"
 	"github.com/theopenlane/core/internal/ent/generated/internalpolicy"
 	"github.com/theopenlane/core/internal/ent/generated/narrative"
@@ -225,26 +226,6 @@ func (pu *ProcedureUpdate) ClearProcedureType() *ProcedureUpdate {
 	return pu
 }
 
-// SetDetails sets the "details" field.
-func (pu *ProcedureUpdate) SetDetails(s string) *ProcedureUpdate {
-	pu.mutation.SetDetails(s)
-	return pu
-}
-
-// SetNillableDetails sets the "details" field if the given value is not nil.
-func (pu *ProcedureUpdate) SetNillableDetails(s *string) *ProcedureUpdate {
-	if s != nil {
-		pu.SetDetails(*s)
-	}
-	return pu
-}
-
-// ClearDetails clears the value of the "details" field.
-func (pu *ProcedureUpdate) ClearDetails() *ProcedureUpdate {
-	pu.mutation.ClearDetails()
-	return pu
-}
-
 // SetApprovalRequired sets the "approval_required" field.
 func (pu *ProcedureUpdate) SetApprovalRequired(b bool) *ProcedureUpdate {
 	pu.mutation.SetApprovalRequired(b)
@@ -388,6 +369,21 @@ func (pu *ProcedureUpdate) SetApprover(g *Group) *ProcedureUpdate {
 // SetDelegate sets the "delegate" edge to the Group entity.
 func (pu *ProcedureUpdate) SetDelegate(g *Group) *ProcedureUpdate {
 	return pu.SetDelegateID(g.ID)
+}
+
+// AddDocumentRevisionIDs adds the "document_revisions" edge to the DocumentRevision entity by IDs.
+func (pu *ProcedureUpdate) AddDocumentRevisionIDs(ids ...string) *ProcedureUpdate {
+	pu.mutation.AddDocumentRevisionIDs(ids...)
+	return pu
+}
+
+// AddDocumentRevisions adds the "document_revisions" edges to the DocumentRevision entity.
+func (pu *ProcedureUpdate) AddDocumentRevisions(d ...*DocumentRevision) *ProcedureUpdate {
+	ids := make([]string, len(d))
+	for i := range d {
+		ids[i] = d[i].ID
+	}
+	return pu.AddDocumentRevisionIDs(ids...)
 }
 
 // AddControlIDs adds the "controls" edge to the Control entity by IDs.
@@ -543,6 +539,27 @@ func (pu *ProcedureUpdate) ClearApprover() *ProcedureUpdate {
 func (pu *ProcedureUpdate) ClearDelegate() *ProcedureUpdate {
 	pu.mutation.ClearDelegate()
 	return pu
+}
+
+// ClearDocumentRevisions clears all "document_revisions" edges to the DocumentRevision entity.
+func (pu *ProcedureUpdate) ClearDocumentRevisions() *ProcedureUpdate {
+	pu.mutation.ClearDocumentRevisions()
+	return pu
+}
+
+// RemoveDocumentRevisionIDs removes the "document_revisions" edge to DocumentRevision entities by IDs.
+func (pu *ProcedureUpdate) RemoveDocumentRevisionIDs(ids ...string) *ProcedureUpdate {
+	pu.mutation.RemoveDocumentRevisionIDs(ids...)
+	return pu
+}
+
+// RemoveDocumentRevisions removes "document_revisions" edges to DocumentRevision entities.
+func (pu *ProcedureUpdate) RemoveDocumentRevisions(d ...*DocumentRevision) *ProcedureUpdate {
+	ids := make([]string, len(d))
+	for i := range d {
+		ids[i] = d[i].ID
+	}
+	return pu.RemoveDocumentRevisionIDs(ids...)
 }
 
 // ClearControls clears all "controls" edges to the Control entity.
@@ -823,12 +840,6 @@ func (pu *ProcedureUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if pu.mutation.ProcedureTypeCleared() {
 		_spec.ClearField(procedure.FieldProcedureType, field.TypeString)
 	}
-	if value, ok := pu.mutation.Details(); ok {
-		_spec.SetField(procedure.FieldDetails, field.TypeString, value)
-	}
-	if pu.mutation.DetailsCleared() {
-		_spec.ClearField(procedure.FieldDetails, field.TypeString)
-	}
 	if value, ok := pu.mutation.ApprovalRequired(); ok {
 		_spec.SetField(procedure.FieldApprovalRequired, field.TypeBool, value)
 	}
@@ -1031,6 +1042,54 @@ func (pu *ProcedureUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			},
 		}
 		edge.Schema = pu.schemaConfig.Procedure
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if pu.mutation.DocumentRevisionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   procedure.DocumentRevisionsTable,
+			Columns: []string{procedure.DocumentRevisionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(documentrevision.FieldID, field.TypeString),
+			},
+		}
+		edge.Schema = pu.schemaConfig.DocumentRevision
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := pu.mutation.RemovedDocumentRevisionsIDs(); len(nodes) > 0 && !pu.mutation.DocumentRevisionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   procedure.DocumentRevisionsTable,
+			Columns: []string{procedure.DocumentRevisionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(documentrevision.FieldID, field.TypeString),
+			},
+		}
+		edge.Schema = pu.schemaConfig.DocumentRevision
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := pu.mutation.DocumentRevisionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   procedure.DocumentRevisionsTable,
+			Columns: []string{procedure.DocumentRevisionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(documentrevision.FieldID, field.TypeString),
+			},
+		}
+		edge.Schema = pu.schemaConfig.DocumentRevision
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
@@ -1532,26 +1591,6 @@ func (puo *ProcedureUpdateOne) ClearProcedureType() *ProcedureUpdateOne {
 	return puo
 }
 
-// SetDetails sets the "details" field.
-func (puo *ProcedureUpdateOne) SetDetails(s string) *ProcedureUpdateOne {
-	puo.mutation.SetDetails(s)
-	return puo
-}
-
-// SetNillableDetails sets the "details" field if the given value is not nil.
-func (puo *ProcedureUpdateOne) SetNillableDetails(s *string) *ProcedureUpdateOne {
-	if s != nil {
-		puo.SetDetails(*s)
-	}
-	return puo
-}
-
-// ClearDetails clears the value of the "details" field.
-func (puo *ProcedureUpdateOne) ClearDetails() *ProcedureUpdateOne {
-	puo.mutation.ClearDetails()
-	return puo
-}
-
 // SetApprovalRequired sets the "approval_required" field.
 func (puo *ProcedureUpdateOne) SetApprovalRequired(b bool) *ProcedureUpdateOne {
 	puo.mutation.SetApprovalRequired(b)
@@ -1695,6 +1734,21 @@ func (puo *ProcedureUpdateOne) SetApprover(g *Group) *ProcedureUpdateOne {
 // SetDelegate sets the "delegate" edge to the Group entity.
 func (puo *ProcedureUpdateOne) SetDelegate(g *Group) *ProcedureUpdateOne {
 	return puo.SetDelegateID(g.ID)
+}
+
+// AddDocumentRevisionIDs adds the "document_revisions" edge to the DocumentRevision entity by IDs.
+func (puo *ProcedureUpdateOne) AddDocumentRevisionIDs(ids ...string) *ProcedureUpdateOne {
+	puo.mutation.AddDocumentRevisionIDs(ids...)
+	return puo
+}
+
+// AddDocumentRevisions adds the "document_revisions" edges to the DocumentRevision entity.
+func (puo *ProcedureUpdateOne) AddDocumentRevisions(d ...*DocumentRevision) *ProcedureUpdateOne {
+	ids := make([]string, len(d))
+	for i := range d {
+		ids[i] = d[i].ID
+	}
+	return puo.AddDocumentRevisionIDs(ids...)
 }
 
 // AddControlIDs adds the "controls" edge to the Control entity by IDs.
@@ -1850,6 +1904,27 @@ func (puo *ProcedureUpdateOne) ClearApprover() *ProcedureUpdateOne {
 func (puo *ProcedureUpdateOne) ClearDelegate() *ProcedureUpdateOne {
 	puo.mutation.ClearDelegate()
 	return puo
+}
+
+// ClearDocumentRevisions clears all "document_revisions" edges to the DocumentRevision entity.
+func (puo *ProcedureUpdateOne) ClearDocumentRevisions() *ProcedureUpdateOne {
+	puo.mutation.ClearDocumentRevisions()
+	return puo
+}
+
+// RemoveDocumentRevisionIDs removes the "document_revisions" edge to DocumentRevision entities by IDs.
+func (puo *ProcedureUpdateOne) RemoveDocumentRevisionIDs(ids ...string) *ProcedureUpdateOne {
+	puo.mutation.RemoveDocumentRevisionIDs(ids...)
+	return puo
+}
+
+// RemoveDocumentRevisions removes "document_revisions" edges to DocumentRevision entities.
+func (puo *ProcedureUpdateOne) RemoveDocumentRevisions(d ...*DocumentRevision) *ProcedureUpdateOne {
+	ids := make([]string, len(d))
+	for i := range d {
+		ids[i] = d[i].ID
+	}
+	return puo.RemoveDocumentRevisionIDs(ids...)
 }
 
 // ClearControls clears all "controls" edges to the Control entity.
@@ -2160,12 +2235,6 @@ func (puo *ProcedureUpdateOne) sqlSave(ctx context.Context) (_node *Procedure, e
 	if puo.mutation.ProcedureTypeCleared() {
 		_spec.ClearField(procedure.FieldProcedureType, field.TypeString)
 	}
-	if value, ok := puo.mutation.Details(); ok {
-		_spec.SetField(procedure.FieldDetails, field.TypeString, value)
-	}
-	if puo.mutation.DetailsCleared() {
-		_spec.ClearField(procedure.FieldDetails, field.TypeString)
-	}
 	if value, ok := puo.mutation.ApprovalRequired(); ok {
 		_spec.SetField(procedure.FieldApprovalRequired, field.TypeBool, value)
 	}
@@ -2368,6 +2437,54 @@ func (puo *ProcedureUpdateOne) sqlSave(ctx context.Context) (_node *Procedure, e
 			},
 		}
 		edge.Schema = puo.schemaConfig.Procedure
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if puo.mutation.DocumentRevisionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   procedure.DocumentRevisionsTable,
+			Columns: []string{procedure.DocumentRevisionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(documentrevision.FieldID, field.TypeString),
+			},
+		}
+		edge.Schema = puo.schemaConfig.DocumentRevision
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := puo.mutation.RemovedDocumentRevisionsIDs(); len(nodes) > 0 && !puo.mutation.DocumentRevisionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   procedure.DocumentRevisionsTable,
+			Columns: []string{procedure.DocumentRevisionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(documentrevision.FieldID, field.TypeString),
+			},
+		}
+		edge.Schema = puo.schemaConfig.DocumentRevision
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := puo.mutation.DocumentRevisionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   procedure.DocumentRevisionsTable,
+			Columns: []string{procedure.DocumentRevisionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(documentrevision.FieldID, field.TypeString),
+			},
+		}
+		edge.Schema = puo.schemaConfig.DocumentRevision
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}

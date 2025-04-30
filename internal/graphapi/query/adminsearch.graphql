@@ -21,7 +21,6 @@ query AdminSearch($query: String!) {
           revision
           name
           actionPlanType
-          details
           approverID
           delegateID
           ownerID
@@ -101,6 +100,20 @@ query AdminSearch($query: String!) {
           ownerID
           templateID
           data
+        }
+      }
+      ... on DocumentRevisionSearchResult {
+        documentRevisions {
+          deletedBy
+          id
+          tags
+          revision
+          details
+          submittedByID
+          approvedByID
+          internalPolicyID
+          procedureID
+          actionPlanID
         }
       }
       ... on EntitySearchResult {
@@ -199,7 +212,6 @@ query AdminSearch($query: String!) {
           ownerID
           name
           policyType
-          details
           approverID
           delegateID
         }
@@ -289,7 +301,6 @@ query AdminSearch($query: String!) {
           ownerID
           name
           procedureType
-          details
           approverID
           delegateID
         }

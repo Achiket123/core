@@ -197,26 +197,6 @@ func (aphu *ActionPlanHistoryUpdate) ClearActionPlanType() *ActionPlanHistoryUpd
 	return aphu
 }
 
-// SetDetails sets the "details" field.
-func (aphu *ActionPlanHistoryUpdate) SetDetails(s string) *ActionPlanHistoryUpdate {
-	aphu.mutation.SetDetails(s)
-	return aphu
-}
-
-// SetNillableDetails sets the "details" field if the given value is not nil.
-func (aphu *ActionPlanHistoryUpdate) SetNillableDetails(s *string) *ActionPlanHistoryUpdate {
-	if s != nil {
-		aphu.SetDetails(*s)
-	}
-	return aphu
-}
-
-// ClearDetails clears the value of the "details" field.
-func (aphu *ActionPlanHistoryUpdate) ClearDetails() *ActionPlanHistoryUpdate {
-	aphu.mutation.ClearDetails()
-	return aphu
-}
-
 // SetApprovalRequired sets the "approval_required" field.
 func (aphu *ActionPlanHistoryUpdate) SetApprovalRequired(b bool) *ActionPlanHistoryUpdate {
 	aphu.mutation.SetApprovalRequired(b)
@@ -541,12 +521,6 @@ func (aphu *ActionPlanHistoryUpdate) sqlSave(ctx context.Context) (n int, err er
 	if aphu.mutation.ActionPlanTypeCleared() {
 		_spec.ClearField(actionplanhistory.FieldActionPlanType, field.TypeString)
 	}
-	if value, ok := aphu.mutation.Details(); ok {
-		_spec.SetField(actionplanhistory.FieldDetails, field.TypeString, value)
-	}
-	if aphu.mutation.DetailsCleared() {
-		_spec.ClearField(actionplanhistory.FieldDetails, field.TypeString)
-	}
 	if value, ok := aphu.mutation.ApprovalRequired(); ok {
 		_spec.SetField(actionplanhistory.FieldApprovalRequired, field.TypeBool, value)
 	}
@@ -786,26 +760,6 @@ func (aphuo *ActionPlanHistoryUpdateOne) SetNillableActionPlanType(s *string) *A
 // ClearActionPlanType clears the value of the "action_plan_type" field.
 func (aphuo *ActionPlanHistoryUpdateOne) ClearActionPlanType() *ActionPlanHistoryUpdateOne {
 	aphuo.mutation.ClearActionPlanType()
-	return aphuo
-}
-
-// SetDetails sets the "details" field.
-func (aphuo *ActionPlanHistoryUpdateOne) SetDetails(s string) *ActionPlanHistoryUpdateOne {
-	aphuo.mutation.SetDetails(s)
-	return aphuo
-}
-
-// SetNillableDetails sets the "details" field if the given value is not nil.
-func (aphuo *ActionPlanHistoryUpdateOne) SetNillableDetails(s *string) *ActionPlanHistoryUpdateOne {
-	if s != nil {
-		aphuo.SetDetails(*s)
-	}
-	return aphuo
-}
-
-// ClearDetails clears the value of the "details" field.
-func (aphuo *ActionPlanHistoryUpdateOne) ClearDetails() *ActionPlanHistoryUpdateOne {
-	aphuo.mutation.ClearDetails()
 	return aphuo
 }
 
@@ -1162,12 +1116,6 @@ func (aphuo *ActionPlanHistoryUpdateOne) sqlSave(ctx context.Context) (_node *Ac
 	}
 	if aphuo.mutation.ActionPlanTypeCleared() {
 		_spec.ClearField(actionplanhistory.FieldActionPlanType, field.TypeString)
-	}
-	if value, ok := aphuo.mutation.Details(); ok {
-		_spec.SetField(actionplanhistory.FieldDetails, field.TypeString, value)
-	}
-	if aphuo.mutation.DetailsCleared() {
-		_spec.ClearField(actionplanhistory.FieldDetails, field.TypeString)
 	}
 	if value, ok := aphuo.mutation.ApprovalRequired(); ok {
 		_spec.SetField(actionplanhistory.FieldApprovalRequired, field.TypeBool, value)

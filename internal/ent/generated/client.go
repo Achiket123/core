@@ -32,6 +32,8 @@ import (
 	"github.com/theopenlane/core/internal/ent/generated/controlobjectivehistory"
 	"github.com/theopenlane/core/internal/ent/generated/documentdata"
 	"github.com/theopenlane/core/internal/ent/generated/documentdatahistory"
+	"github.com/theopenlane/core/internal/ent/generated/documentrevision"
+	"github.com/theopenlane/core/internal/ent/generated/documentrevisionhistory"
 	"github.com/theopenlane/core/internal/ent/generated/emailverificationtoken"
 	"github.com/theopenlane/core/internal/ent/generated/entity"
 	"github.com/theopenlane/core/internal/ent/generated/entityhistory"
@@ -143,6 +145,10 @@ type Client struct {
 	DocumentData *DocumentDataClient
 	// DocumentDataHistory is the client for interacting with the DocumentDataHistory builders.
 	DocumentDataHistory *DocumentDataHistoryClient
+	// DocumentRevision is the client for interacting with the DocumentRevision builders.
+	DocumentRevision *DocumentRevisionClient
+	// DocumentRevisionHistory is the client for interacting with the DocumentRevisionHistory builders.
+	DocumentRevisionHistory *DocumentRevisionHistoryClient
 	// EmailVerificationToken is the client for interacting with the EmailVerificationToken builders.
 	EmailVerificationToken *EmailVerificationTokenClient
 	// Entity is the client for interacting with the Entity builders.
@@ -304,6 +310,8 @@ func (c *Client) init() {
 	c.ControlObjectiveHistory = NewControlObjectiveHistoryClient(c.config)
 	c.DocumentData = NewDocumentDataClient(c.config)
 	c.DocumentDataHistory = NewDocumentDataHistoryClient(c.config)
+	c.DocumentRevision = NewDocumentRevisionClient(c.config)
+	c.DocumentRevisionHistory = NewDocumentRevisionHistoryClient(c.config)
 	c.EmailVerificationToken = NewEmailVerificationTokenClient(c.config)
 	c.Entity = NewEntityClient(c.config)
 	c.EntityHistory = NewEntityHistoryClient(c.config)
@@ -550,6 +558,8 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		ControlObjectiveHistory:      NewControlObjectiveHistoryClient(cfg),
 		DocumentData:                 NewDocumentDataClient(cfg),
 		DocumentDataHistory:          NewDocumentDataHistoryClient(cfg),
+		DocumentRevision:             NewDocumentRevisionClient(cfg),
+		DocumentRevisionHistory:      NewDocumentRevisionHistoryClient(cfg),
 		EmailVerificationToken:       NewEmailVerificationTokenClient(cfg),
 		Entity:                       NewEntityClient(cfg),
 		EntityHistory:                NewEntityHistoryClient(cfg),
@@ -646,6 +656,8 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		ControlObjectiveHistory:      NewControlObjectiveHistoryClient(cfg),
 		DocumentData:                 NewDocumentDataClient(cfg),
 		DocumentDataHistory:          NewDocumentDataHistoryClient(cfg),
+		DocumentRevision:             NewDocumentRevisionClient(cfg),
+		DocumentRevisionHistory:      NewDocumentRevisionHistoryClient(cfg),
 		EmailVerificationToken:       NewEmailVerificationTokenClient(cfg),
 		Entity:                       NewEntityClient(cfg),
 		EntityHistory:                NewEntityHistoryClient(cfg),
@@ -742,9 +754,10 @@ func (c *Client) Use(hooks ...Hook) {
 		c.APIToken, c.ActionPlan, c.ActionPlanHistory, c.Contact, c.ContactHistory,
 		c.Control, c.ControlHistory, c.ControlImplementation,
 		c.ControlImplementationHistory, c.ControlObjective, c.ControlObjectiveHistory,
-		c.DocumentData, c.DocumentDataHistory, c.EmailVerificationToken, c.Entity,
-		c.EntityHistory, c.EntityType, c.EntityTypeHistory, c.Event, c.EventHistory,
-		c.Evidence, c.EvidenceHistory, c.File, c.FileHistory, c.Group, c.GroupHistory,
+		c.DocumentData, c.DocumentDataHistory, c.DocumentRevision,
+		c.DocumentRevisionHistory, c.EmailVerificationToken, c.Entity, c.EntityHistory,
+		c.EntityType, c.EntityTypeHistory, c.Event, c.EventHistory, c.Evidence,
+		c.EvidenceHistory, c.File, c.FileHistory, c.Group, c.GroupHistory,
 		c.GroupMembership, c.GroupMembershipHistory, c.GroupSetting,
 		c.GroupSettingHistory, c.Hush, c.HushHistory, c.Integration,
 		c.IntegrationHistory, c.InternalPolicy, c.InternalPolicyHistory, c.Invite,
@@ -770,9 +783,10 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 		c.APIToken, c.ActionPlan, c.ActionPlanHistory, c.Contact, c.ContactHistory,
 		c.Control, c.ControlHistory, c.ControlImplementation,
 		c.ControlImplementationHistory, c.ControlObjective, c.ControlObjectiveHistory,
-		c.DocumentData, c.DocumentDataHistory, c.EmailVerificationToken, c.Entity,
-		c.EntityHistory, c.EntityType, c.EntityTypeHistory, c.Event, c.EventHistory,
-		c.Evidence, c.EvidenceHistory, c.File, c.FileHistory, c.Group, c.GroupHistory,
+		c.DocumentData, c.DocumentDataHistory, c.DocumentRevision,
+		c.DocumentRevisionHistory, c.EmailVerificationToken, c.Entity, c.EntityHistory,
+		c.EntityType, c.EntityTypeHistory, c.Event, c.EventHistory, c.Evidence,
+		c.EvidenceHistory, c.File, c.FileHistory, c.Group, c.GroupHistory,
 		c.GroupMembership, c.GroupMembershipHistory, c.GroupSetting,
 		c.GroupSettingHistory, c.Hush, c.HushHistory, c.Integration,
 		c.IntegrationHistory, c.InternalPolicy, c.InternalPolicyHistory, c.Invite,
@@ -892,6 +906,10 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.DocumentData.mutate(ctx, m)
 	case *DocumentDataHistoryMutation:
 		return c.DocumentDataHistory.mutate(ctx, m)
+	case *DocumentRevisionMutation:
+		return c.DocumentRevision.mutate(ctx, m)
+	case *DocumentRevisionHistoryMutation:
+		return c.DocumentRevisionHistory.mutate(ctx, m)
 	case *EmailVerificationTokenMutation:
 		return c.EmailVerificationToken.mutate(ctx, m)
 	case *EntityMutation:
@@ -1319,6 +1337,25 @@ func (c *ActionPlanClient) QueryDelegate(ap *ActionPlan) *GroupQuery {
 		schemaConfig := ap.schemaConfig
 		step.To.Schema = schemaConfig.Group
 		step.Edge.Schema = schemaConfig.ActionPlan
+		fromV = sqlgraph.Neighbors(ap.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryDocumentRevisions queries the document_revisions edge of a ActionPlan.
+func (c *ActionPlanClient) QueryDocumentRevisions(ap *ActionPlan) *DocumentRevisionQuery {
+	query := (&DocumentRevisionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := ap.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(actionplan.Table, actionplan.FieldID, id),
+			sqlgraph.To(documentrevision.Table, documentrevision.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, actionplan.DocumentRevisionsTable, actionplan.DocumentRevisionsColumn),
+		)
+		schemaConfig := ap.schemaConfig
+		step.To.Schema = schemaConfig.DocumentRevision
+		step.Edge.Schema = schemaConfig.DocumentRevision
 		fromV = sqlgraph.Neighbors(ap.driver.Dialect(), step)
 		return fromV, nil
 	}
@@ -3721,6 +3758,370 @@ func (c *DocumentDataHistoryClient) mutate(ctx context.Context, m *DocumentDataH
 		return (&DocumentDataHistoryDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("generated: unknown DocumentDataHistory mutation op: %q", m.Op())
+	}
+}
+
+// DocumentRevisionClient is a client for the DocumentRevision schema.
+type DocumentRevisionClient struct {
+	config
+}
+
+// NewDocumentRevisionClient returns a client for the DocumentRevision from the given config.
+func NewDocumentRevisionClient(c config) *DocumentRevisionClient {
+	return &DocumentRevisionClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `documentrevision.Hooks(f(g(h())))`.
+func (c *DocumentRevisionClient) Use(hooks ...Hook) {
+	c.hooks.DocumentRevision = append(c.hooks.DocumentRevision, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `documentrevision.Intercept(f(g(h())))`.
+func (c *DocumentRevisionClient) Intercept(interceptors ...Interceptor) {
+	c.inters.DocumentRevision = append(c.inters.DocumentRevision, interceptors...)
+}
+
+// Create returns a builder for creating a DocumentRevision entity.
+func (c *DocumentRevisionClient) Create() *DocumentRevisionCreate {
+	mutation := newDocumentRevisionMutation(c.config, OpCreate)
+	return &DocumentRevisionCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of DocumentRevision entities.
+func (c *DocumentRevisionClient) CreateBulk(builders ...*DocumentRevisionCreate) *DocumentRevisionCreateBulk {
+	return &DocumentRevisionCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *DocumentRevisionClient) MapCreateBulk(slice any, setFunc func(*DocumentRevisionCreate, int)) *DocumentRevisionCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &DocumentRevisionCreateBulk{err: fmt.Errorf("calling to DocumentRevisionClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*DocumentRevisionCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &DocumentRevisionCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for DocumentRevision.
+func (c *DocumentRevisionClient) Update() *DocumentRevisionUpdate {
+	mutation := newDocumentRevisionMutation(c.config, OpUpdate)
+	return &DocumentRevisionUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *DocumentRevisionClient) UpdateOne(dr *DocumentRevision) *DocumentRevisionUpdateOne {
+	mutation := newDocumentRevisionMutation(c.config, OpUpdateOne, withDocumentRevision(dr))
+	return &DocumentRevisionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *DocumentRevisionClient) UpdateOneID(id string) *DocumentRevisionUpdateOne {
+	mutation := newDocumentRevisionMutation(c.config, OpUpdateOne, withDocumentRevisionID(id))
+	return &DocumentRevisionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for DocumentRevision.
+func (c *DocumentRevisionClient) Delete() *DocumentRevisionDelete {
+	mutation := newDocumentRevisionMutation(c.config, OpDelete)
+	return &DocumentRevisionDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *DocumentRevisionClient) DeleteOne(dr *DocumentRevision) *DocumentRevisionDeleteOne {
+	return c.DeleteOneID(dr.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *DocumentRevisionClient) DeleteOneID(id string) *DocumentRevisionDeleteOne {
+	builder := c.Delete().Where(documentrevision.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &DocumentRevisionDeleteOne{builder}
+}
+
+// Query returns a query builder for DocumentRevision.
+func (c *DocumentRevisionClient) Query() *DocumentRevisionQuery {
+	return &DocumentRevisionQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeDocumentRevision},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a DocumentRevision entity by its id.
+func (c *DocumentRevisionClient) Get(ctx context.Context, id string) (*DocumentRevision, error) {
+	return c.Query().Where(documentrevision.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *DocumentRevisionClient) GetX(ctx context.Context, id string) *DocumentRevision {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QuerySubmittedBy queries the submitted_by edge of a DocumentRevision.
+func (c *DocumentRevisionClient) QuerySubmittedBy(dr *DocumentRevision) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := dr.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(documentrevision.Table, documentrevision.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, documentrevision.SubmittedByTable, documentrevision.SubmittedByColumn),
+		)
+		schemaConfig := dr.schemaConfig
+		step.To.Schema = schemaConfig.User
+		step.Edge.Schema = schemaConfig.DocumentRevision
+		fromV = sqlgraph.Neighbors(dr.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryApprovedBy queries the approved_by edge of a DocumentRevision.
+func (c *DocumentRevisionClient) QueryApprovedBy(dr *DocumentRevision) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := dr.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(documentrevision.Table, documentrevision.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, documentrevision.ApprovedByTable, documentrevision.ApprovedByColumn),
+		)
+		schemaConfig := dr.schemaConfig
+		step.To.Schema = schemaConfig.User
+		step.Edge.Schema = schemaConfig.DocumentRevision
+		fromV = sqlgraph.Neighbors(dr.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryInternalPolicy queries the internal_policy edge of a DocumentRevision.
+func (c *DocumentRevisionClient) QueryInternalPolicy(dr *DocumentRevision) *InternalPolicyQuery {
+	query := (&InternalPolicyClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := dr.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(documentrevision.Table, documentrevision.FieldID, id),
+			sqlgraph.To(internalpolicy.Table, internalpolicy.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, documentrevision.InternalPolicyTable, documentrevision.InternalPolicyColumn),
+		)
+		schemaConfig := dr.schemaConfig
+		step.To.Schema = schemaConfig.InternalPolicy
+		step.Edge.Schema = schemaConfig.DocumentRevision
+		fromV = sqlgraph.Neighbors(dr.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryProcedure queries the procedure edge of a DocumentRevision.
+func (c *DocumentRevisionClient) QueryProcedure(dr *DocumentRevision) *ProcedureQuery {
+	query := (&ProcedureClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := dr.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(documentrevision.Table, documentrevision.FieldID, id),
+			sqlgraph.To(procedure.Table, procedure.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, documentrevision.ProcedureTable, documentrevision.ProcedureColumn),
+		)
+		schemaConfig := dr.schemaConfig
+		step.To.Schema = schemaConfig.Procedure
+		step.Edge.Schema = schemaConfig.DocumentRevision
+		fromV = sqlgraph.Neighbors(dr.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryActionPlan queries the action_plan edge of a DocumentRevision.
+func (c *DocumentRevisionClient) QueryActionPlan(dr *DocumentRevision) *ActionPlanQuery {
+	query := (&ActionPlanClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := dr.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(documentrevision.Table, documentrevision.FieldID, id),
+			sqlgraph.To(actionplan.Table, actionplan.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, documentrevision.ActionPlanTable, documentrevision.ActionPlanColumn),
+		)
+		schemaConfig := dr.schemaConfig
+		step.To.Schema = schemaConfig.ActionPlan
+		step.Edge.Schema = schemaConfig.DocumentRevision
+		fromV = sqlgraph.Neighbors(dr.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *DocumentRevisionClient) Hooks() []Hook {
+	hooks := c.hooks.DocumentRevision
+	return append(hooks[:len(hooks):len(hooks)], documentrevision.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *DocumentRevisionClient) Interceptors() []Interceptor {
+	inters := c.inters.DocumentRevision
+	return append(inters[:len(inters):len(inters)], documentrevision.Interceptors[:]...)
+}
+
+func (c *DocumentRevisionClient) mutate(ctx context.Context, m *DocumentRevisionMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&DocumentRevisionCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&DocumentRevisionUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&DocumentRevisionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&DocumentRevisionDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("generated: unknown DocumentRevision mutation op: %q", m.Op())
+	}
+}
+
+// DocumentRevisionHistoryClient is a client for the DocumentRevisionHistory schema.
+type DocumentRevisionHistoryClient struct {
+	config
+}
+
+// NewDocumentRevisionHistoryClient returns a client for the DocumentRevisionHistory from the given config.
+func NewDocumentRevisionHistoryClient(c config) *DocumentRevisionHistoryClient {
+	return &DocumentRevisionHistoryClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `documentrevisionhistory.Hooks(f(g(h())))`.
+func (c *DocumentRevisionHistoryClient) Use(hooks ...Hook) {
+	c.hooks.DocumentRevisionHistory = append(c.hooks.DocumentRevisionHistory, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `documentrevisionhistory.Intercept(f(g(h())))`.
+func (c *DocumentRevisionHistoryClient) Intercept(interceptors ...Interceptor) {
+	c.inters.DocumentRevisionHistory = append(c.inters.DocumentRevisionHistory, interceptors...)
+}
+
+// Create returns a builder for creating a DocumentRevisionHistory entity.
+func (c *DocumentRevisionHistoryClient) Create() *DocumentRevisionHistoryCreate {
+	mutation := newDocumentRevisionHistoryMutation(c.config, OpCreate)
+	return &DocumentRevisionHistoryCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of DocumentRevisionHistory entities.
+func (c *DocumentRevisionHistoryClient) CreateBulk(builders ...*DocumentRevisionHistoryCreate) *DocumentRevisionHistoryCreateBulk {
+	return &DocumentRevisionHistoryCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *DocumentRevisionHistoryClient) MapCreateBulk(slice any, setFunc func(*DocumentRevisionHistoryCreate, int)) *DocumentRevisionHistoryCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &DocumentRevisionHistoryCreateBulk{err: fmt.Errorf("calling to DocumentRevisionHistoryClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*DocumentRevisionHistoryCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &DocumentRevisionHistoryCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for DocumentRevisionHistory.
+func (c *DocumentRevisionHistoryClient) Update() *DocumentRevisionHistoryUpdate {
+	mutation := newDocumentRevisionHistoryMutation(c.config, OpUpdate)
+	return &DocumentRevisionHistoryUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *DocumentRevisionHistoryClient) UpdateOne(drh *DocumentRevisionHistory) *DocumentRevisionHistoryUpdateOne {
+	mutation := newDocumentRevisionHistoryMutation(c.config, OpUpdateOne, withDocumentRevisionHistory(drh))
+	return &DocumentRevisionHistoryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *DocumentRevisionHistoryClient) UpdateOneID(id string) *DocumentRevisionHistoryUpdateOne {
+	mutation := newDocumentRevisionHistoryMutation(c.config, OpUpdateOne, withDocumentRevisionHistoryID(id))
+	return &DocumentRevisionHistoryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for DocumentRevisionHistory.
+func (c *DocumentRevisionHistoryClient) Delete() *DocumentRevisionHistoryDelete {
+	mutation := newDocumentRevisionHistoryMutation(c.config, OpDelete)
+	return &DocumentRevisionHistoryDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *DocumentRevisionHistoryClient) DeleteOne(drh *DocumentRevisionHistory) *DocumentRevisionHistoryDeleteOne {
+	return c.DeleteOneID(drh.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *DocumentRevisionHistoryClient) DeleteOneID(id string) *DocumentRevisionHistoryDeleteOne {
+	builder := c.Delete().Where(documentrevisionhistory.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &DocumentRevisionHistoryDeleteOne{builder}
+}
+
+// Query returns a query builder for DocumentRevisionHistory.
+func (c *DocumentRevisionHistoryClient) Query() *DocumentRevisionHistoryQuery {
+	return &DocumentRevisionHistoryQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeDocumentRevisionHistory},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a DocumentRevisionHistory entity by its id.
+func (c *DocumentRevisionHistoryClient) Get(ctx context.Context, id string) (*DocumentRevisionHistory, error) {
+	return c.Query().Where(documentrevisionhistory.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *DocumentRevisionHistoryClient) GetX(ctx context.Context, id string) *DocumentRevisionHistory {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *DocumentRevisionHistoryClient) Hooks() []Hook {
+	return c.hooks.DocumentRevisionHistory
+}
+
+// Interceptors returns the client interceptors.
+func (c *DocumentRevisionHistoryClient) Interceptors() []Interceptor {
+	inters := c.inters.DocumentRevisionHistory
+	return append(inters[:len(inters):len(inters)], documentrevisionhistory.Interceptors[:]...)
+}
+
+func (c *DocumentRevisionHistoryClient) mutate(ctx context.Context, m *DocumentRevisionHistoryMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&DocumentRevisionHistoryCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&DocumentRevisionHistoryUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&DocumentRevisionHistoryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&DocumentRevisionHistoryDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("generated: unknown DocumentRevisionHistory mutation op: %q", m.Op())
 	}
 }
 
@@ -8231,6 +8632,25 @@ func (c *InternalPolicyClient) QueryDelegate(ip *InternalPolicy) *GroupQuery {
 	return query
 }
 
+// QueryDocumentRevisions queries the document_revisions edge of a InternalPolicy.
+func (c *InternalPolicyClient) QueryDocumentRevisions(ip *InternalPolicy) *DocumentRevisionQuery {
+	query := (&DocumentRevisionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := ip.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(internalpolicy.Table, internalpolicy.FieldID, id),
+			sqlgraph.To(documentrevision.Table, documentrevision.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, internalpolicy.DocumentRevisionsTable, internalpolicy.DocumentRevisionsColumn),
+		)
+		schemaConfig := ip.schemaConfig
+		step.To.Schema = schemaConfig.DocumentRevision
+		step.Edge.Schema = schemaConfig.DocumentRevision
+		fromV = sqlgraph.Neighbors(ip.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // QueryControlObjectives queries the control_objectives edge of a InternalPolicy.
 func (c *InternalPolicyClient) QueryControlObjectives(ip *InternalPolicy) *ControlObjectiveQuery {
 	query := (&ControlObjectiveClient{config: c.config}).Query()
@@ -12436,6 +12856,25 @@ func (c *ProcedureClient) QueryDelegate(pr *Procedure) *GroupQuery {
 		schemaConfig := pr.schemaConfig
 		step.To.Schema = schemaConfig.Group
 		step.Edge.Schema = schemaConfig.Procedure
+		fromV = sqlgraph.Neighbors(pr.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryDocumentRevisions queries the document_revisions edge of a Procedure.
+func (c *ProcedureClient) QueryDocumentRevisions(pr *Procedure) *DocumentRevisionQuery {
+	query := (&DocumentRevisionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := pr.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(procedure.Table, procedure.FieldID, id),
+			sqlgraph.To(documentrevision.Table, documentrevision.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, procedure.DocumentRevisionsTable, procedure.DocumentRevisionsColumn),
+		)
+		schemaConfig := pr.schemaConfig
+		step.To.Schema = schemaConfig.DocumentRevision
+		step.Edge.Schema = schemaConfig.DocumentRevision
 		fromV = sqlgraph.Neighbors(pr.driver.Dialect(), step)
 		return fromV, nil
 	}
@@ -17221,13 +17660,13 @@ type (
 		APIToken, ActionPlan, ActionPlanHistory, Contact, ContactHistory, Control,
 		ControlHistory, ControlImplementation, ControlImplementationHistory,
 		ControlObjective, ControlObjectiveHistory, DocumentData, DocumentDataHistory,
-		EmailVerificationToken, Entity, EntityHistory, EntityType, EntityTypeHistory,
-		Event, EventHistory, Evidence, EvidenceHistory, File, FileHistory, Group,
-		GroupHistory, GroupMembership, GroupMembershipHistory, GroupSetting,
-		GroupSettingHistory, Hush, HushHistory, Integration, IntegrationHistory,
-		InternalPolicy, InternalPolicyHistory, Invite, MappedControl,
-		MappedControlHistory, Narrative, NarrativeHistory, Note, NoteHistory,
-		Onboarding, OrgMembership, OrgMembershipHistory, OrgSubscription,
+		DocumentRevision, DocumentRevisionHistory, EmailVerificationToken, Entity,
+		EntityHistory, EntityType, EntityTypeHistory, Event, EventHistory, Evidence,
+		EvidenceHistory, File, FileHistory, Group, GroupHistory, GroupMembership,
+		GroupMembershipHistory, GroupSetting, GroupSettingHistory, Hush, HushHistory,
+		Integration, IntegrationHistory, InternalPolicy, InternalPolicyHistory, Invite,
+		MappedControl, MappedControlHistory, Narrative, NarrativeHistory, Note,
+		NoteHistory, Onboarding, OrgMembership, OrgMembershipHistory, OrgSubscription,
 		OrgSubscriptionHistory, Organization, OrganizationHistory, OrganizationSetting,
 		OrganizationSettingHistory, PasswordResetToken, PersonalAccessToken, Procedure,
 		ProcedureHistory, Program, ProgramHistory, ProgramMembership,
@@ -17240,13 +17679,13 @@ type (
 		APIToken, ActionPlan, ActionPlanHistory, Contact, ContactHistory, Control,
 		ControlHistory, ControlImplementation, ControlImplementationHistory,
 		ControlObjective, ControlObjectiveHistory, DocumentData, DocumentDataHistory,
-		EmailVerificationToken, Entity, EntityHistory, EntityType, EntityTypeHistory,
-		Event, EventHistory, Evidence, EvidenceHistory, File, FileHistory, Group,
-		GroupHistory, GroupMembership, GroupMembershipHistory, GroupSetting,
-		GroupSettingHistory, Hush, HushHistory, Integration, IntegrationHistory,
-		InternalPolicy, InternalPolicyHistory, Invite, MappedControl,
-		MappedControlHistory, Narrative, NarrativeHistory, Note, NoteHistory,
-		Onboarding, OrgMembership, OrgMembershipHistory, OrgSubscription,
+		DocumentRevision, DocumentRevisionHistory, EmailVerificationToken, Entity,
+		EntityHistory, EntityType, EntityTypeHistory, Event, EventHistory, Evidence,
+		EvidenceHistory, File, FileHistory, Group, GroupHistory, GroupMembership,
+		GroupMembershipHistory, GroupSetting, GroupSettingHistory, Hush, HushHistory,
+		Integration, IntegrationHistory, InternalPolicy, InternalPolicyHistory, Invite,
+		MappedControl, MappedControlHistory, Narrative, NarrativeHistory, Note,
+		NoteHistory, Onboarding, OrgMembership, OrgMembershipHistory, OrgSubscription,
 		OrgSubscriptionHistory, Organization, OrganizationHistory, OrganizationSetting,
 		OrganizationSettingHistory, PasswordResetToken, PersonalAccessToken, Procedure,
 		ProcedureHistory, Program, ProgramHistory, ProgramMembership,

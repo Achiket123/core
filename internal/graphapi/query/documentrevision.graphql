@@ -1,0 +1,182 @@
+mutation CreateBulkCSVDocumentRevision($input: Upload!) {
+  createBulkCSVDocumentRevision(input: $input) {
+    documentRevisions {
+      actionPlanID
+      approvalDate
+      approvedByID
+      createdAt
+      createdBy
+      details
+      id
+      internalPolicyID
+      name
+      procedureID
+      revision
+      status
+      submittedByID
+      tags
+      updatedAt
+      updatedBy
+    }
+  }
+}
+
+mutation CreateBulkDocumentRevision($input: [CreateDocumentRevisionInput!]) {
+  createBulkDocumentRevision(input: $input) {
+    documentRevisions {
+      actionPlanID
+      approvalDate
+      approvedByID
+      createdAt
+      createdBy
+      details
+      id
+      internalPolicyID
+      name
+      procedureID
+      revision
+      status
+      submittedByID
+      tags
+      updatedAt
+      updatedBy
+    }
+  }
+}
+
+mutation CreateDocumentRevision($input: CreateDocumentRevisionInput!) {
+  createDocumentRevision(input: $input) {
+    documentRevision {
+      actionPlanID
+      approvalDate
+      approvedByID
+      createdAt
+      createdBy
+      details
+      id
+      internalPolicyID
+      name
+      procedureID
+      revision
+      status
+      submittedByID
+      tags
+      updatedAt
+      updatedBy
+    }
+  }
+}
+
+mutation DeleteDocumentRevision($deleteDocumentRevisionId: ID!) {
+  deleteDocumentRevision(id: $deleteDocumentRevisionId) {
+    deletedID
+  }
+}
+
+query GetAllDocumentRevisions {
+  documentRevisions {
+    totalCount
+    pageInfo {
+      startCursor
+      endCursor
+      hasPreviousPage
+      hasNextPage
+    }
+    edges {
+      node {
+        actionPlanID
+        approvalDate
+        approvedByID
+        createdAt
+        createdBy
+        details
+        id
+        internalPolicyID
+        name
+        procedureID
+        revision
+        status
+        submittedByID
+        tags
+        updatedAt
+        updatedBy
+      }
+    }
+  }
+}
+
+query GetDocumentRevisionByID($documentRevisionId: ID!) {
+  documentRevision(id: $documentRevisionId) {
+    actionPlanID
+    approvalDate
+    approvedByID
+    createdAt
+    createdBy
+    details
+    id
+    internalPolicyID
+    name
+    procedureID
+    revision
+    status
+    submittedByID
+    tags
+    updatedAt
+    updatedBy
+  }
+}
+
+query GetDocumentRevisions($first: Int, $last: Int, $where: DocumentRevisionWhereInput) {
+  documentRevisions(first: $first, last: $last, where: $where) {
+    totalCount
+    pageInfo {
+      startCursor
+      endCursor
+      hasPreviousPage
+      hasNextPage
+    }
+    edges {
+      node {
+        actionPlanID
+        approvalDate
+        approvedByID
+        createdAt
+        createdBy
+        details
+        id
+        internalPolicyID
+        name
+        procedureID
+        revision
+        status
+        submittedByID
+        tags
+        updatedAt
+        updatedBy
+      }
+    }
+  }
+}
+
+mutation UpdateDocumentRevision($updateDocumentRevisionId: ID!, $input: UpdateDocumentRevisionInput!) {
+  updateDocumentRevision(id: $updateDocumentRevisionId, input: $input) {
+    documentRevision {
+      actionPlanID
+      approvalDate
+      approvedByID
+      createdAt
+      createdBy
+      details
+      id
+      internalPolicyID
+      name
+      procedureID
+      revision
+      status
+      submittedByID
+      tags
+      updatedAt
+      updatedBy
+    }
+  }
+}

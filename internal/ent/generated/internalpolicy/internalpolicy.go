@@ -44,8 +44,6 @@ const (
 	FieldStatus = "status"
 	// FieldPolicyType holds the string denoting the policy_type field in the database.
 	FieldPolicyType = "policy_type"
-	// FieldDetails holds the string denoting the details field in the database.
-	FieldDetails = "details"
 	// FieldApprovalRequired holds the string denoting the approval_required field in the database.
 	FieldApprovalRequired = "approval_required"
 	// FieldReviewDue holds the string denoting the review_due field in the database.
@@ -66,6 +64,8 @@ const (
 	EdgeApprover = "approver"
 	// EdgeDelegate holds the string denoting the delegate edge name in mutations.
 	EdgeDelegate = "delegate"
+	// EdgeDocumentRevisions holds the string denoting the document_revisions edge name in mutations.
+	EdgeDocumentRevisions = "document_revisions"
 	// EdgeControlObjectives holds the string denoting the control_objectives edge name in mutations.
 	EdgeControlObjectives = "control_objectives"
 	// EdgeControls holds the string denoting the controls edge name in mutations.
@@ -111,6 +111,13 @@ const (
 	DelegateInverseTable = "groups"
 	// DelegateColumn is the table column denoting the delegate relation/edge.
 	DelegateColumn = "delegate_id"
+	// DocumentRevisionsTable is the table that holds the document_revisions relation/edge.
+	DocumentRevisionsTable = "document_revisions"
+	// DocumentRevisionsInverseTable is the table name for the DocumentRevision entity.
+	// It exists in this package in order to avoid circular dependency with the "documentrevision" package.
+	DocumentRevisionsInverseTable = "document_revisions"
+	// DocumentRevisionsColumn is the table column denoting the document_revisions relation/edge.
+	DocumentRevisionsColumn = "internal_policy_document_revisions"
 	// ControlObjectivesTable is the table that holds the control_objectives relation/edge. The primary key declared below.
 	ControlObjectivesTable = "internal_policy_control_objectives"
 	// ControlObjectivesInverseTable is the table name for the ControlObjective entity.
@@ -163,7 +170,6 @@ var Columns = []string{
 	FieldName,
 	FieldStatus,
 	FieldPolicyType,
-	FieldDetails,
 	FieldApprovalRequired,
 	FieldReviewDue,
 	FieldReviewFrequency,
@@ -341,11 +347,6 @@ func ByPolicyType(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPolicyType, opts...).ToFunc()
 }
 
-// ByDetails orders the results by the details field.
-func ByDetails(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldDetails, opts...).ToFunc()
-}
-
 // ByApprovalRequired orders the results by the approval_required field.
 func ByApprovalRequired(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldApprovalRequired, opts...).ToFunc()
@@ -417,6 +418,20 @@ func ByApproverField(field string, opts ...sql.OrderTermOption) OrderOption {
 func ByDelegateField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newDelegateStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByDocumentRevisionsCount orders the results by document_revisions count.
+func ByDocumentRevisionsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newDocumentRevisionsStep(), opts...)
+	}
+}
+
+// ByDocumentRevisions orders the results by document_revisions terms.
+func ByDocumentRevisions(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newDocumentRevisionsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
@@ -536,6 +551,13 @@ func newDelegateStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(DelegateInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, false, DelegateTable, DelegateColumn),
+	)
+}
+func newDocumentRevisionsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(DocumentRevisionsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, DocumentRevisionsTable, DocumentRevisionsColumn),
 	)
 }
 func newControlObjectivesStep() *sqlgraph.Step {

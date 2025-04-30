@@ -14,6 +14,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/theopenlane/core/internal/ent/generated/actionplan"
 	"github.com/theopenlane/core/internal/ent/generated/control"
+	"github.com/theopenlane/core/internal/ent/generated/documentrevision"
 	"github.com/theopenlane/core/internal/ent/generated/group"
 	"github.com/theopenlane/core/internal/ent/generated/organization"
 	"github.com/theopenlane/core/internal/ent/generated/predicate"
@@ -200,26 +201,6 @@ func (apu *ActionPlanUpdate) SetNillableActionPlanType(s *string) *ActionPlanUpd
 // ClearActionPlanType clears the value of the "action_plan_type" field.
 func (apu *ActionPlanUpdate) ClearActionPlanType() *ActionPlanUpdate {
 	apu.mutation.ClearActionPlanType()
-	return apu
-}
-
-// SetDetails sets the "details" field.
-func (apu *ActionPlanUpdate) SetDetails(s string) *ActionPlanUpdate {
-	apu.mutation.SetDetails(s)
-	return apu
-}
-
-// SetNillableDetails sets the "details" field if the given value is not nil.
-func (apu *ActionPlanUpdate) SetNillableDetails(s *string) *ActionPlanUpdate {
-	if s != nil {
-		apu.SetDetails(*s)
-	}
-	return apu
-}
-
-// ClearDetails clears the value of the "details" field.
-func (apu *ActionPlanUpdate) ClearDetails() *ActionPlanUpdate {
-	apu.mutation.ClearDetails()
 	return apu
 }
 
@@ -413,6 +394,21 @@ func (apu *ActionPlanUpdate) SetDelegate(g *Group) *ActionPlanUpdate {
 	return apu.SetDelegateID(g.ID)
 }
 
+// AddDocumentRevisionIDs adds the "document_revisions" edge to the DocumentRevision entity by IDs.
+func (apu *ActionPlanUpdate) AddDocumentRevisionIDs(ids ...string) *ActionPlanUpdate {
+	apu.mutation.AddDocumentRevisionIDs(ids...)
+	return apu
+}
+
+// AddDocumentRevisions adds the "document_revisions" edges to the DocumentRevision entity.
+func (apu *ActionPlanUpdate) AddDocumentRevisions(d ...*DocumentRevision) *ActionPlanUpdate {
+	ids := make([]string, len(d))
+	for i := range d {
+		ids[i] = d[i].ID
+	}
+	return apu.AddDocumentRevisionIDs(ids...)
+}
+
 // SetOwner sets the "owner" edge to the Organization entity.
 func (apu *ActionPlanUpdate) SetOwner(o *Organization) *ActionPlanUpdate {
 	return apu.SetOwnerID(o.ID)
@@ -493,6 +489,27 @@ func (apu *ActionPlanUpdate) ClearApprover() *ActionPlanUpdate {
 func (apu *ActionPlanUpdate) ClearDelegate() *ActionPlanUpdate {
 	apu.mutation.ClearDelegate()
 	return apu
+}
+
+// ClearDocumentRevisions clears all "document_revisions" edges to the DocumentRevision entity.
+func (apu *ActionPlanUpdate) ClearDocumentRevisions() *ActionPlanUpdate {
+	apu.mutation.ClearDocumentRevisions()
+	return apu
+}
+
+// RemoveDocumentRevisionIDs removes the "document_revisions" edge to DocumentRevision entities by IDs.
+func (apu *ActionPlanUpdate) RemoveDocumentRevisionIDs(ids ...string) *ActionPlanUpdate {
+	apu.mutation.RemoveDocumentRevisionIDs(ids...)
+	return apu
+}
+
+// RemoveDocumentRevisions removes "document_revisions" edges to DocumentRevision entities.
+func (apu *ActionPlanUpdate) RemoveDocumentRevisions(d ...*DocumentRevision) *ActionPlanUpdate {
+	ids := make([]string, len(d))
+	for i := range d {
+		ids[i] = d[i].ID
+	}
+	return apu.RemoveDocumentRevisionIDs(ids...)
 }
 
 // ClearOwner clears the "owner" edge to the Organization entity.
@@ -742,12 +759,6 @@ func (apu *ActionPlanUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if apu.mutation.ActionPlanTypeCleared() {
 		_spec.ClearField(actionplan.FieldActionPlanType, field.TypeString)
 	}
-	if value, ok := apu.mutation.Details(); ok {
-		_spec.SetField(actionplan.FieldDetails, field.TypeString, value)
-	}
-	if apu.mutation.DetailsCleared() {
-		_spec.ClearField(actionplan.FieldDetails, field.TypeString)
-	}
 	if value, ok := apu.mutation.ApprovalRequired(); ok {
 		_spec.SetField(actionplan.FieldApprovalRequired, field.TypeBool, value)
 	}
@@ -841,6 +852,54 @@ func (apu *ActionPlanUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			},
 		}
 		edge.Schema = apu.schemaConfig.ActionPlan
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if apu.mutation.DocumentRevisionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   actionplan.DocumentRevisionsTable,
+			Columns: []string{actionplan.DocumentRevisionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(documentrevision.FieldID, field.TypeString),
+			},
+		}
+		edge.Schema = apu.schemaConfig.DocumentRevision
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := apu.mutation.RemovedDocumentRevisionsIDs(); len(nodes) > 0 && !apu.mutation.DocumentRevisionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   actionplan.DocumentRevisionsTable,
+			Columns: []string{actionplan.DocumentRevisionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(documentrevision.FieldID, field.TypeString),
+			},
+		}
+		edge.Schema = apu.schemaConfig.DocumentRevision
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := apu.mutation.DocumentRevisionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   actionplan.DocumentRevisionsTable,
+			Columns: []string{actionplan.DocumentRevisionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(documentrevision.FieldID, field.TypeString),
+			},
+		}
+		edge.Schema = apu.schemaConfig.DocumentRevision
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
@@ -1257,26 +1316,6 @@ func (apuo *ActionPlanUpdateOne) ClearActionPlanType() *ActionPlanUpdateOne {
 	return apuo
 }
 
-// SetDetails sets the "details" field.
-func (apuo *ActionPlanUpdateOne) SetDetails(s string) *ActionPlanUpdateOne {
-	apuo.mutation.SetDetails(s)
-	return apuo
-}
-
-// SetNillableDetails sets the "details" field if the given value is not nil.
-func (apuo *ActionPlanUpdateOne) SetNillableDetails(s *string) *ActionPlanUpdateOne {
-	if s != nil {
-		apuo.SetDetails(*s)
-	}
-	return apuo
-}
-
-// ClearDetails clears the value of the "details" field.
-func (apuo *ActionPlanUpdateOne) ClearDetails() *ActionPlanUpdateOne {
-	apuo.mutation.ClearDetails()
-	return apuo
-}
-
 // SetApprovalRequired sets the "approval_required" field.
 func (apuo *ActionPlanUpdateOne) SetApprovalRequired(b bool) *ActionPlanUpdateOne {
 	apuo.mutation.SetApprovalRequired(b)
@@ -1467,6 +1506,21 @@ func (apuo *ActionPlanUpdateOne) SetDelegate(g *Group) *ActionPlanUpdateOne {
 	return apuo.SetDelegateID(g.ID)
 }
 
+// AddDocumentRevisionIDs adds the "document_revisions" edge to the DocumentRevision entity by IDs.
+func (apuo *ActionPlanUpdateOne) AddDocumentRevisionIDs(ids ...string) *ActionPlanUpdateOne {
+	apuo.mutation.AddDocumentRevisionIDs(ids...)
+	return apuo
+}
+
+// AddDocumentRevisions adds the "document_revisions" edges to the DocumentRevision entity.
+func (apuo *ActionPlanUpdateOne) AddDocumentRevisions(d ...*DocumentRevision) *ActionPlanUpdateOne {
+	ids := make([]string, len(d))
+	for i := range d {
+		ids[i] = d[i].ID
+	}
+	return apuo.AddDocumentRevisionIDs(ids...)
+}
+
 // SetOwner sets the "owner" edge to the Organization entity.
 func (apuo *ActionPlanUpdateOne) SetOwner(o *Organization) *ActionPlanUpdateOne {
 	return apuo.SetOwnerID(o.ID)
@@ -1547,6 +1601,27 @@ func (apuo *ActionPlanUpdateOne) ClearApprover() *ActionPlanUpdateOne {
 func (apuo *ActionPlanUpdateOne) ClearDelegate() *ActionPlanUpdateOne {
 	apuo.mutation.ClearDelegate()
 	return apuo
+}
+
+// ClearDocumentRevisions clears all "document_revisions" edges to the DocumentRevision entity.
+func (apuo *ActionPlanUpdateOne) ClearDocumentRevisions() *ActionPlanUpdateOne {
+	apuo.mutation.ClearDocumentRevisions()
+	return apuo
+}
+
+// RemoveDocumentRevisionIDs removes the "document_revisions" edge to DocumentRevision entities by IDs.
+func (apuo *ActionPlanUpdateOne) RemoveDocumentRevisionIDs(ids ...string) *ActionPlanUpdateOne {
+	apuo.mutation.RemoveDocumentRevisionIDs(ids...)
+	return apuo
+}
+
+// RemoveDocumentRevisions removes "document_revisions" edges to DocumentRevision entities.
+func (apuo *ActionPlanUpdateOne) RemoveDocumentRevisions(d ...*DocumentRevision) *ActionPlanUpdateOne {
+	ids := make([]string, len(d))
+	for i := range d {
+		ids[i] = d[i].ID
+	}
+	return apuo.RemoveDocumentRevisionIDs(ids...)
 }
 
 // ClearOwner clears the "owner" edge to the Organization entity.
@@ -1826,12 +1901,6 @@ func (apuo *ActionPlanUpdateOne) sqlSave(ctx context.Context) (_node *ActionPlan
 	if apuo.mutation.ActionPlanTypeCleared() {
 		_spec.ClearField(actionplan.FieldActionPlanType, field.TypeString)
 	}
-	if value, ok := apuo.mutation.Details(); ok {
-		_spec.SetField(actionplan.FieldDetails, field.TypeString, value)
-	}
-	if apuo.mutation.DetailsCleared() {
-		_spec.ClearField(actionplan.FieldDetails, field.TypeString)
-	}
 	if value, ok := apuo.mutation.ApprovalRequired(); ok {
 		_spec.SetField(actionplan.FieldApprovalRequired, field.TypeBool, value)
 	}
@@ -1925,6 +1994,54 @@ func (apuo *ActionPlanUpdateOne) sqlSave(ctx context.Context) (_node *ActionPlan
 			},
 		}
 		edge.Schema = apuo.schemaConfig.ActionPlan
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if apuo.mutation.DocumentRevisionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   actionplan.DocumentRevisionsTable,
+			Columns: []string{actionplan.DocumentRevisionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(documentrevision.FieldID, field.TypeString),
+			},
+		}
+		edge.Schema = apuo.schemaConfig.DocumentRevision
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := apuo.mutation.RemovedDocumentRevisionsIDs(); len(nodes) > 0 && !apuo.mutation.DocumentRevisionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   actionplan.DocumentRevisionsTable,
+			Columns: []string{actionplan.DocumentRevisionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(documentrevision.FieldID, field.TypeString),
+			},
+		}
+		edge.Schema = apuo.schemaConfig.DocumentRevision
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := apuo.mutation.DocumentRevisionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   actionplan.DocumentRevisionsTable,
+			Columns: []string{actionplan.DocumentRevisionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(documentrevision.FieldID, field.TypeString),
+			},
+		}
+		edge.Schema = apuo.schemaConfig.DocumentRevision
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}

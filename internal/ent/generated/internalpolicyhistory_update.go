@@ -217,26 +217,6 @@ func (iphu *InternalPolicyHistoryUpdate) ClearPolicyType() *InternalPolicyHistor
 	return iphu
 }
 
-// SetDetails sets the "details" field.
-func (iphu *InternalPolicyHistoryUpdate) SetDetails(s string) *InternalPolicyHistoryUpdate {
-	iphu.mutation.SetDetails(s)
-	return iphu
-}
-
-// SetNillableDetails sets the "details" field if the given value is not nil.
-func (iphu *InternalPolicyHistoryUpdate) SetNillableDetails(s *string) *InternalPolicyHistoryUpdate {
-	if s != nil {
-		iphu.SetDetails(*s)
-	}
-	return iphu
-}
-
-// ClearDetails clears the value of the "details" field.
-func (iphu *InternalPolicyHistoryUpdate) ClearDetails() *InternalPolicyHistoryUpdate {
-	iphu.mutation.ClearDetails()
-	return iphu
-}
-
 // SetApprovalRequired sets the "approval_required" field.
 func (iphu *InternalPolicyHistoryUpdate) SetApprovalRequired(b bool) *InternalPolicyHistoryUpdate {
 	iphu.mutation.SetApprovalRequired(b)
@@ -482,12 +462,6 @@ func (iphu *InternalPolicyHistoryUpdate) sqlSave(ctx context.Context) (n int, er
 	if iphu.mutation.PolicyTypeCleared() {
 		_spec.ClearField(internalpolicyhistory.FieldPolicyType, field.TypeString)
 	}
-	if value, ok := iphu.mutation.Details(); ok {
-		_spec.SetField(internalpolicyhistory.FieldDetails, field.TypeString, value)
-	}
-	if iphu.mutation.DetailsCleared() {
-		_spec.ClearField(internalpolicyhistory.FieldDetails, field.TypeString)
-	}
 	if value, ok := iphu.mutation.ApprovalRequired(); ok {
 		_spec.SetField(internalpolicyhistory.FieldApprovalRequired, field.TypeBool, value)
 	}
@@ -723,26 +697,6 @@ func (iphuo *InternalPolicyHistoryUpdateOne) SetNillablePolicyType(s *string) *I
 // ClearPolicyType clears the value of the "policy_type" field.
 func (iphuo *InternalPolicyHistoryUpdateOne) ClearPolicyType() *InternalPolicyHistoryUpdateOne {
 	iphuo.mutation.ClearPolicyType()
-	return iphuo
-}
-
-// SetDetails sets the "details" field.
-func (iphuo *InternalPolicyHistoryUpdateOne) SetDetails(s string) *InternalPolicyHistoryUpdateOne {
-	iphuo.mutation.SetDetails(s)
-	return iphuo
-}
-
-// SetNillableDetails sets the "details" field if the given value is not nil.
-func (iphuo *InternalPolicyHistoryUpdateOne) SetNillableDetails(s *string) *InternalPolicyHistoryUpdateOne {
-	if s != nil {
-		iphuo.SetDetails(*s)
-	}
-	return iphuo
-}
-
-// ClearDetails clears the value of the "details" field.
-func (iphuo *InternalPolicyHistoryUpdateOne) ClearDetails() *InternalPolicyHistoryUpdateOne {
-	iphuo.mutation.ClearDetails()
 	return iphuo
 }
 
@@ -1020,12 +974,6 @@ func (iphuo *InternalPolicyHistoryUpdateOne) sqlSave(ctx context.Context) (_node
 	}
 	if iphuo.mutation.PolicyTypeCleared() {
 		_spec.ClearField(internalpolicyhistory.FieldPolicyType, field.TypeString)
-	}
-	if value, ok := iphuo.mutation.Details(); ok {
-		_spec.SetField(internalpolicyhistory.FieldDetails, field.TypeString, value)
-	}
-	if iphuo.mutation.DetailsCleared() {
-		_spec.ClearField(internalpolicyhistory.FieldDetails, field.TypeString)
 	}
 	if value, ok := iphuo.mutation.ApprovalRequired(); ok {
 		_spec.SetField(internalpolicyhistory.FieldApprovalRequired, field.TypeBool, value)

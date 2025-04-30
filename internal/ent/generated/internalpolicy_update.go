@@ -14,6 +14,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/theopenlane/core/internal/ent/generated/control"
 	"github.com/theopenlane/core/internal/ent/generated/controlobjective"
+	"github.com/theopenlane/core/internal/ent/generated/documentrevision"
 	"github.com/theopenlane/core/internal/ent/generated/group"
 	"github.com/theopenlane/core/internal/ent/generated/internalpolicy"
 	"github.com/theopenlane/core/internal/ent/generated/narrative"
@@ -225,26 +226,6 @@ func (ipu *InternalPolicyUpdate) ClearPolicyType() *InternalPolicyUpdate {
 	return ipu
 }
 
-// SetDetails sets the "details" field.
-func (ipu *InternalPolicyUpdate) SetDetails(s string) *InternalPolicyUpdate {
-	ipu.mutation.SetDetails(s)
-	return ipu
-}
-
-// SetNillableDetails sets the "details" field if the given value is not nil.
-func (ipu *InternalPolicyUpdate) SetNillableDetails(s *string) *InternalPolicyUpdate {
-	if s != nil {
-		ipu.SetDetails(*s)
-	}
-	return ipu
-}
-
-// ClearDetails clears the value of the "details" field.
-func (ipu *InternalPolicyUpdate) ClearDetails() *InternalPolicyUpdate {
-	ipu.mutation.ClearDetails()
-	return ipu
-}
-
 // SetApprovalRequired sets the "approval_required" field.
 func (ipu *InternalPolicyUpdate) SetApprovalRequired(b bool) *InternalPolicyUpdate {
 	ipu.mutation.SetApprovalRequired(b)
@@ -388,6 +369,21 @@ func (ipu *InternalPolicyUpdate) SetApprover(g *Group) *InternalPolicyUpdate {
 // SetDelegate sets the "delegate" edge to the Group entity.
 func (ipu *InternalPolicyUpdate) SetDelegate(g *Group) *InternalPolicyUpdate {
 	return ipu.SetDelegateID(g.ID)
+}
+
+// AddDocumentRevisionIDs adds the "document_revisions" edge to the DocumentRevision entity by IDs.
+func (ipu *InternalPolicyUpdate) AddDocumentRevisionIDs(ids ...string) *InternalPolicyUpdate {
+	ipu.mutation.AddDocumentRevisionIDs(ids...)
+	return ipu
+}
+
+// AddDocumentRevisions adds the "document_revisions" edges to the DocumentRevision entity.
+func (ipu *InternalPolicyUpdate) AddDocumentRevisions(d ...*DocumentRevision) *InternalPolicyUpdate {
+	ids := make([]string, len(d))
+	for i := range d {
+		ids[i] = d[i].ID
+	}
+	return ipu.AddDocumentRevisionIDs(ids...)
 }
 
 // AddControlObjectiveIDs adds the "control_objectives" edge to the ControlObjective entity by IDs.
@@ -543,6 +539,27 @@ func (ipu *InternalPolicyUpdate) ClearApprover() *InternalPolicyUpdate {
 func (ipu *InternalPolicyUpdate) ClearDelegate() *InternalPolicyUpdate {
 	ipu.mutation.ClearDelegate()
 	return ipu
+}
+
+// ClearDocumentRevisions clears all "document_revisions" edges to the DocumentRevision entity.
+func (ipu *InternalPolicyUpdate) ClearDocumentRevisions() *InternalPolicyUpdate {
+	ipu.mutation.ClearDocumentRevisions()
+	return ipu
+}
+
+// RemoveDocumentRevisionIDs removes the "document_revisions" edge to DocumentRevision entities by IDs.
+func (ipu *InternalPolicyUpdate) RemoveDocumentRevisionIDs(ids ...string) *InternalPolicyUpdate {
+	ipu.mutation.RemoveDocumentRevisionIDs(ids...)
+	return ipu
+}
+
+// RemoveDocumentRevisions removes "document_revisions" edges to DocumentRevision entities.
+func (ipu *InternalPolicyUpdate) RemoveDocumentRevisions(d ...*DocumentRevision) *InternalPolicyUpdate {
+	ids := make([]string, len(d))
+	for i := range d {
+		ids[i] = d[i].ID
+	}
+	return ipu.RemoveDocumentRevisionIDs(ids...)
 }
 
 // ClearControlObjectives clears all "control_objectives" edges to the ControlObjective entity.
@@ -823,12 +840,6 @@ func (ipu *InternalPolicyUpdate) sqlSave(ctx context.Context) (n int, err error)
 	if ipu.mutation.PolicyTypeCleared() {
 		_spec.ClearField(internalpolicy.FieldPolicyType, field.TypeString)
 	}
-	if value, ok := ipu.mutation.Details(); ok {
-		_spec.SetField(internalpolicy.FieldDetails, field.TypeString, value)
-	}
-	if ipu.mutation.DetailsCleared() {
-		_spec.ClearField(internalpolicy.FieldDetails, field.TypeString)
-	}
 	if value, ok := ipu.mutation.ApprovalRequired(); ok {
 		_spec.SetField(internalpolicy.FieldApprovalRequired, field.TypeBool, value)
 	}
@@ -1031,6 +1042,54 @@ func (ipu *InternalPolicyUpdate) sqlSave(ctx context.Context) (n int, err error)
 			},
 		}
 		edge.Schema = ipu.schemaConfig.InternalPolicy
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if ipu.mutation.DocumentRevisionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   internalpolicy.DocumentRevisionsTable,
+			Columns: []string{internalpolicy.DocumentRevisionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(documentrevision.FieldID, field.TypeString),
+			},
+		}
+		edge.Schema = ipu.schemaConfig.DocumentRevision
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ipu.mutation.RemovedDocumentRevisionsIDs(); len(nodes) > 0 && !ipu.mutation.DocumentRevisionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   internalpolicy.DocumentRevisionsTable,
+			Columns: []string{internalpolicy.DocumentRevisionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(documentrevision.FieldID, field.TypeString),
+			},
+		}
+		edge.Schema = ipu.schemaConfig.DocumentRevision
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ipu.mutation.DocumentRevisionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   internalpolicy.DocumentRevisionsTable,
+			Columns: []string{internalpolicy.DocumentRevisionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(documentrevision.FieldID, field.TypeString),
+			},
+		}
+		edge.Schema = ipu.schemaConfig.DocumentRevision
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
@@ -1532,26 +1591,6 @@ func (ipuo *InternalPolicyUpdateOne) ClearPolicyType() *InternalPolicyUpdateOne 
 	return ipuo
 }
 
-// SetDetails sets the "details" field.
-func (ipuo *InternalPolicyUpdateOne) SetDetails(s string) *InternalPolicyUpdateOne {
-	ipuo.mutation.SetDetails(s)
-	return ipuo
-}
-
-// SetNillableDetails sets the "details" field if the given value is not nil.
-func (ipuo *InternalPolicyUpdateOne) SetNillableDetails(s *string) *InternalPolicyUpdateOne {
-	if s != nil {
-		ipuo.SetDetails(*s)
-	}
-	return ipuo
-}
-
-// ClearDetails clears the value of the "details" field.
-func (ipuo *InternalPolicyUpdateOne) ClearDetails() *InternalPolicyUpdateOne {
-	ipuo.mutation.ClearDetails()
-	return ipuo
-}
-
 // SetApprovalRequired sets the "approval_required" field.
 func (ipuo *InternalPolicyUpdateOne) SetApprovalRequired(b bool) *InternalPolicyUpdateOne {
 	ipuo.mutation.SetApprovalRequired(b)
@@ -1695,6 +1734,21 @@ func (ipuo *InternalPolicyUpdateOne) SetApprover(g *Group) *InternalPolicyUpdate
 // SetDelegate sets the "delegate" edge to the Group entity.
 func (ipuo *InternalPolicyUpdateOne) SetDelegate(g *Group) *InternalPolicyUpdateOne {
 	return ipuo.SetDelegateID(g.ID)
+}
+
+// AddDocumentRevisionIDs adds the "document_revisions" edge to the DocumentRevision entity by IDs.
+func (ipuo *InternalPolicyUpdateOne) AddDocumentRevisionIDs(ids ...string) *InternalPolicyUpdateOne {
+	ipuo.mutation.AddDocumentRevisionIDs(ids...)
+	return ipuo
+}
+
+// AddDocumentRevisions adds the "document_revisions" edges to the DocumentRevision entity.
+func (ipuo *InternalPolicyUpdateOne) AddDocumentRevisions(d ...*DocumentRevision) *InternalPolicyUpdateOne {
+	ids := make([]string, len(d))
+	for i := range d {
+		ids[i] = d[i].ID
+	}
+	return ipuo.AddDocumentRevisionIDs(ids...)
 }
 
 // AddControlObjectiveIDs adds the "control_objectives" edge to the ControlObjective entity by IDs.
@@ -1850,6 +1904,27 @@ func (ipuo *InternalPolicyUpdateOne) ClearApprover() *InternalPolicyUpdateOne {
 func (ipuo *InternalPolicyUpdateOne) ClearDelegate() *InternalPolicyUpdateOne {
 	ipuo.mutation.ClearDelegate()
 	return ipuo
+}
+
+// ClearDocumentRevisions clears all "document_revisions" edges to the DocumentRevision entity.
+func (ipuo *InternalPolicyUpdateOne) ClearDocumentRevisions() *InternalPolicyUpdateOne {
+	ipuo.mutation.ClearDocumentRevisions()
+	return ipuo
+}
+
+// RemoveDocumentRevisionIDs removes the "document_revisions" edge to DocumentRevision entities by IDs.
+func (ipuo *InternalPolicyUpdateOne) RemoveDocumentRevisionIDs(ids ...string) *InternalPolicyUpdateOne {
+	ipuo.mutation.RemoveDocumentRevisionIDs(ids...)
+	return ipuo
+}
+
+// RemoveDocumentRevisions removes "document_revisions" edges to DocumentRevision entities.
+func (ipuo *InternalPolicyUpdateOne) RemoveDocumentRevisions(d ...*DocumentRevision) *InternalPolicyUpdateOne {
+	ids := make([]string, len(d))
+	for i := range d {
+		ids[i] = d[i].ID
+	}
+	return ipuo.RemoveDocumentRevisionIDs(ids...)
 }
 
 // ClearControlObjectives clears all "control_objectives" edges to the ControlObjective entity.
@@ -2160,12 +2235,6 @@ func (ipuo *InternalPolicyUpdateOne) sqlSave(ctx context.Context) (_node *Intern
 	if ipuo.mutation.PolicyTypeCleared() {
 		_spec.ClearField(internalpolicy.FieldPolicyType, field.TypeString)
 	}
-	if value, ok := ipuo.mutation.Details(); ok {
-		_spec.SetField(internalpolicy.FieldDetails, field.TypeString, value)
-	}
-	if ipuo.mutation.DetailsCleared() {
-		_spec.ClearField(internalpolicy.FieldDetails, field.TypeString)
-	}
 	if value, ok := ipuo.mutation.ApprovalRequired(); ok {
 		_spec.SetField(internalpolicy.FieldApprovalRequired, field.TypeBool, value)
 	}
@@ -2368,6 +2437,54 @@ func (ipuo *InternalPolicyUpdateOne) sqlSave(ctx context.Context) (_node *Intern
 			},
 		}
 		edge.Schema = ipuo.schemaConfig.InternalPolicy
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if ipuo.mutation.DocumentRevisionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   internalpolicy.DocumentRevisionsTable,
+			Columns: []string{internalpolicy.DocumentRevisionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(documentrevision.FieldID, field.TypeString),
+			},
+		}
+		edge.Schema = ipuo.schemaConfig.DocumentRevision
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ipuo.mutation.RemovedDocumentRevisionsIDs(); len(nodes) > 0 && !ipuo.mutation.DocumentRevisionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   internalpolicy.DocumentRevisionsTable,
+			Columns: []string{internalpolicy.DocumentRevisionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(documentrevision.FieldID, field.TypeString),
+			},
+		}
+		edge.Schema = ipuo.schemaConfig.DocumentRevision
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ipuo.mutation.DocumentRevisionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   internalpolicy.DocumentRevisionsTable,
+			Columns: []string{internalpolicy.DocumentRevisionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(documentrevision.FieldID, field.TypeString),
+			},
+		}
+		edge.Schema = ipuo.schemaConfig.DocumentRevision
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}

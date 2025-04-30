@@ -174,8 +174,6 @@ func (ec *executionContext) fieldContext_ActionPlanSearchResult_actionPlans(_ co
 				return ec.fieldContext_ActionPlan_status(ctx, field)
 			case "actionPlanType":
 				return ec.fieldContext_ActionPlan_actionPlanType(ctx, field)
-			case "details":
-				return ec.fieldContext_ActionPlan_details(ctx, field)
 			case "approvalRequired":
 				return ec.fieldContext_ActionPlan_approvalRequired(ctx, field)
 			case "reviewDue":
@@ -198,6 +196,8 @@ func (ec *executionContext) fieldContext_ActionPlanSearchResult_actionPlans(_ co
 				return ec.fieldContext_ActionPlan_approver(ctx, field)
 			case "delegate":
 				return ec.fieldContext_ActionPlan_delegate(ctx, field)
+			case "documentRevisions":
+				return ec.fieldContext_ActionPlan_documentRevisions(ctx, field)
 			case "owner":
 				return ec.fieldContext_ActionPlan_owner(ctx, field)
 			case "risks":
@@ -687,6 +687,93 @@ func (ec *executionContext) fieldContext_DocumentDataSearchResult_documentData(_
 				return ec.fieldContext_DocumentData_files(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type DocumentData", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DocumentRevisionSearchResult_documentRevisions(ctx context.Context, field graphql.CollectedField, obj *model.DocumentRevisionSearchResult) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DocumentRevisionSearchResult_documentRevisions(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DocumentRevisions, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*generated.DocumentRevision)
+	fc.Result = res
+	return ec.marshalODocumentRevision2ᚕᚖgithubᚗcomᚋtheopenlaneᚋcoreᚋinternalᚋentᚋgeneratedᚐDocumentRevisionᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DocumentRevisionSearchResult_documentRevisions(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DocumentRevisionSearchResult",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_DocumentRevision_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_DocumentRevision_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_DocumentRevision_updatedAt(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_DocumentRevision_createdBy(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_DocumentRevision_updatedBy(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_DocumentRevision_deletedAt(ctx, field)
+			case "deletedBy":
+				return ec.fieldContext_DocumentRevision_deletedBy(ctx, field)
+			case "tags":
+				return ec.fieldContext_DocumentRevision_tags(ctx, field)
+			case "revision":
+				return ec.fieldContext_DocumentRevision_revision(ctx, field)
+			case "details":
+				return ec.fieldContext_DocumentRevision_details(ctx, field)
+			case "status":
+				return ec.fieldContext_DocumentRevision_status(ctx, field)
+			case "approvalDate":
+				return ec.fieldContext_DocumentRevision_approvalDate(ctx, field)
+			case "submittedByID":
+				return ec.fieldContext_DocumentRevision_submittedByID(ctx, field)
+			case "approvedByID":
+				return ec.fieldContext_DocumentRevision_approvedByID(ctx, field)
+			case "internalPolicyID":
+				return ec.fieldContext_DocumentRevision_internalPolicyID(ctx, field)
+			case "procedureID":
+				return ec.fieldContext_DocumentRevision_procedureID(ctx, field)
+			case "actionPlanID":
+				return ec.fieldContext_DocumentRevision_actionPlanID(ctx, field)
+			case "submittedBy":
+				return ec.fieldContext_DocumentRevision_submittedBy(ctx, field)
+			case "approvedBy":
+				return ec.fieldContext_DocumentRevision_approvedBy(ctx, field)
+			case "internalPolicy":
+				return ec.fieldContext_DocumentRevision_internalPolicy(ctx, field)
+			case "procedure":
+				return ec.fieldContext_DocumentRevision_procedure(ctx, field)
+			case "actionPlan":
+				return ec.fieldContext_DocumentRevision_actionPlan(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type DocumentRevision", field.Name)
 		},
 	}
 	return fc, nil
@@ -1405,8 +1492,6 @@ func (ec *executionContext) fieldContext_InternalPolicySearchResult_internalPoli
 				return ec.fieldContext_InternalPolicy_status(ctx, field)
 			case "policyType":
 				return ec.fieldContext_InternalPolicy_policyType(ctx, field)
-			case "details":
-				return ec.fieldContext_InternalPolicy_details(ctx, field)
 			case "approvalRequired":
 				return ec.fieldContext_InternalPolicy_approvalRequired(ctx, field)
 			case "reviewDue":
@@ -1427,6 +1512,8 @@ func (ec *executionContext) fieldContext_InternalPolicySearchResult_internalPoli
 				return ec.fieldContext_InternalPolicy_approver(ctx, field)
 			case "delegate":
 				return ec.fieldContext_InternalPolicy_delegate(ctx, field)
+			case "documentRevisions":
+				return ec.fieldContext_InternalPolicy_documentRevisions(ctx, field)
 			case "controlObjectives":
 				return ec.fieldContext_InternalPolicy_controlObjectives(ctx, field)
 			case "controls":
@@ -2086,8 +2173,6 @@ func (ec *executionContext) fieldContext_ProcedureSearchResult_procedures(_ cont
 				return ec.fieldContext_Procedure_status(ctx, field)
 			case "procedureType":
 				return ec.fieldContext_Procedure_procedureType(ctx, field)
-			case "details":
-				return ec.fieldContext_Procedure_details(ctx, field)
 			case "approvalRequired":
 				return ec.fieldContext_Procedure_approvalRequired(ctx, field)
 			case "reviewDue":
@@ -2108,6 +2193,8 @@ func (ec *executionContext) fieldContext_ProcedureSearchResult_procedures(_ cont
 				return ec.fieldContext_Procedure_approver(ctx, field)
 			case "delegate":
 				return ec.fieldContext_Procedure_delegate(ctx, field)
+			case "documentRevisions":
+				return ec.fieldContext_Procedure_documentRevisions(ctx, field)
 			case "controls":
 				return ec.fieldContext_Procedure_controls(ctx, field)
 			case "internalPolicies":
@@ -3352,6 +3439,13 @@ func (ec *executionContext) _SearchResult(ctx context.Context, sel ast.Selection
 			return graphql.Null
 		}
 		return ec._EntitySearchResult(ctx, sel, obj)
+	case model.DocumentRevisionSearchResult:
+		return ec._DocumentRevisionSearchResult(ctx, sel, &obj)
+	case *model.DocumentRevisionSearchResult:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._DocumentRevisionSearchResult(ctx, sel, obj)
 	case model.DocumentDataSearchResult:
 		return ec._DocumentDataSearchResult(ctx, sel, &obj)
 	case *model.DocumentDataSearchResult:
@@ -3639,6 +3733,42 @@ func (ec *executionContext) _DocumentDataSearchResult(ctx context.Context, sel a
 			out.Values[i] = graphql.MarshalString("DocumentDataSearchResult")
 		case "documentData":
 			out.Values[i] = ec._DocumentDataSearchResult_documentData(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var documentRevisionSearchResultImplementors = []string{"DocumentRevisionSearchResult", "SearchResult"}
+
+func (ec *executionContext) _DocumentRevisionSearchResult(ctx context.Context, sel ast.SelectionSet, obj *model.DocumentRevisionSearchResult) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, documentRevisionSearchResultImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("DocumentRevisionSearchResult")
+		case "documentRevisions":
+			out.Values[i] = ec._DocumentRevisionSearchResult_documentRevisions(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -4680,6 +4810,13 @@ func (ec *executionContext) marshalODocumentDataSearchResult2ᚖgithubᚗcomᚋt
 		return graphql.Null
 	}
 	return ec._DocumentDataSearchResult(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalODocumentRevisionSearchResult2ᚖgithubᚗcomᚋtheopenlaneᚋcoreᚋinternalᚋgraphapiᚋmodelᚐDocumentRevisionSearchResult(ctx context.Context, sel ast.SelectionSet, v *model.DocumentRevisionSearchResult) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._DocumentRevisionSearchResult(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalOEntitySearchResult2ᚖgithubᚗcomᚋtheopenlaneᚋcoreᚋinternalᚋgraphapiᚋmodelᚐEntitySearchResult(ctx context.Context, sel ast.SelectionSet, v *model.EntitySearchResult) graphql.Marshaler {

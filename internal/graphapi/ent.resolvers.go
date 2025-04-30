@@ -358,6 +358,62 @@ func (r *queryResolver) DocumentDataHistories(ctx context.Context, after *entgql
 	return res, err
 }
 
+// DocumentRevisions is the resolver for the documentRevisions field.
+func (r *queryResolver) DocumentRevisions(ctx context.Context, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.DocumentRevisionOrder, where *generated.DocumentRevisionWhereInput) (*generated.DocumentRevisionConnection, error) {
+	// grab preloads to set max result limits
+	graphutils.GetPreloads(ctx, r.maxResultLimit)
+
+	// set page limit if nothing was set
+	first, last = graphutils.SetFirstLastDefaults(first, last, r.maxResultLimit)
+
+	query, err := withTransactionalMutation(ctx).DocumentRevision.Query().CollectFields(ctx)
+	if err != nil {
+		return nil, parseRequestError(err, action{action: ActionGet, object: "documentrevision"})
+	}
+
+	res, err := query.Paginate(
+		ctx,
+		after,
+		first,
+		before,
+		last,
+		generated.WithDocumentRevisionOrder(orderBy),
+		generated.WithDocumentRevisionFilter(where.Filter))
+	if err != nil {
+		return nil, parseRequestError(err, action{action: ActionGet, object: "documentrevision"})
+	}
+
+	return res, err
+}
+
+// DocumentRevisionHistories is the resolver for the documentRevisionHistories field.
+func (r *queryResolver) DocumentRevisionHistories(ctx context.Context, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy *generated.DocumentRevisionHistoryOrder, where *generated.DocumentRevisionHistoryWhereInput) (*generated.DocumentRevisionHistoryConnection, error) {
+	// grab preloads to set max result limits
+	graphutils.GetPreloads(ctx, r.maxResultLimit)
+
+	// set page limit if nothing was set
+	first, last = graphutils.SetFirstLastDefaults(first, last, r.maxResultLimit)
+
+	query, err := withTransactionalMutation(ctx).DocumentRevisionHistory.Query().CollectFields(ctx)
+	if err != nil {
+		return nil, parseRequestError(err, action{action: ActionGet, object: "documentrevisionhistory"})
+	}
+
+	res, err := query.Paginate(
+		ctx,
+		after,
+		first,
+		before,
+		last,
+		generated.WithDocumentRevisionHistoryOrder(orderBy),
+		generated.WithDocumentRevisionHistoryFilter(where.Filter))
+	if err != nil {
+		return nil, parseRequestError(err, action{action: ActionGet, object: "documentrevisionhistory"})
+	}
+
+	return res, err
+}
+
 // Entities is the resolver for the entities field.
 func (r *queryResolver) Entities(ctx context.Context, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.EntityOrder, where *generated.EntityWhereInput) (*generated.EntityConnection, error) {
 	// set page limit if nothing was set

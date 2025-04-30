@@ -1,0 +1,71 @@
+
+
+query GetAllDocumentRevisionHistories {
+  documentRevisionHistories {
+    totalCount
+    pageInfo {
+      startCursor
+      endCursor
+      hasPreviousPage
+      hasNextPage
+    }
+    edges {
+      node {
+        actionPlanID
+        approvalDate
+        approvedByID
+        createdAt
+        createdBy
+        details
+        historyTime
+        id
+        internalPolicyID
+        name
+        operation
+        procedureID
+        ref
+        revision
+        status
+        submittedByID
+        tags
+        updatedAt
+        updatedBy
+      }
+    }
+  }
+}
+
+query GetDocumentRevisionHistories($first: Int, $last: Int, $where: DocumentRevisionHistoryWhereInput) {
+  documentRevisionHistories(first: $first, last: $last, where: $where) {
+    totalCount
+    pageInfo {
+      startCursor
+      endCursor
+      hasPreviousPage
+      hasNextPage
+    }
+    edges {
+      node {
+        actionPlanID
+        approvalDate
+        approvedByID
+        createdAt
+        createdBy
+        details
+        historyTime
+        id
+        internalPolicyID
+        name
+        operation
+        procedureID
+        ref
+        revision
+        status
+        submittedByID
+        tags
+        updatedAt
+        updatedBy
+      }
+    }
+  }
+}

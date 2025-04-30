@@ -23,6 +23,8 @@ import (
 	"github.com/theopenlane/core/internal/ent/generated/controlobjectivehistory"
 	"github.com/theopenlane/core/internal/ent/generated/documentdata"
 	"github.com/theopenlane/core/internal/ent/generated/documentdatahistory"
+	"github.com/theopenlane/core/internal/ent/generated/documentrevision"
+	"github.com/theopenlane/core/internal/ent/generated/documentrevisionhistory"
 	"github.com/theopenlane/core/internal/ent/generated/entity"
 	"github.com/theopenlane/core/internal/ent/generated/entityhistory"
 	"github.com/theopenlane/core/internal/ent/generated/entitytype"
@@ -333,6 +335,95 @@ func (ap *ActionPlanQuery) collectField(ctx context.Context, oneNode bool, opCtx
 				fieldSeen[actionplan.FieldDelegateID] = struct{}{}
 			}
 
+		case "documentRevisions":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&DocumentRevisionClient{config: ap.config}).Query()
+			)
+			args := newDocumentRevisionPaginateArgs(fieldArgs(ctx, new(DocumentRevisionWhereInput), path...))
+			if err := validateFirstLast(args.first, args.last); err != nil {
+				return fmt.Errorf("validate first and last in path %q: %w", path, err)
+			}
+			pager, err := newDocumentRevisionPager(args.opts, args.last != nil)
+			if err != nil {
+				return fmt.Errorf("create new pager in path %q: %w", path, err)
+			}
+			if query, err = pager.applyFilter(query); err != nil {
+				return err
+			}
+			ignoredEdges := !hasCollectedField(ctx, append(path, edgesField)...)
+			if hasCollectedField(ctx, append(path, totalCountField)...) || hasCollectedField(ctx, append(path, pageInfoField)...) {
+				hasPagination := args.after != nil || args.first != nil || args.before != nil || args.last != nil
+				if hasPagination || ignoredEdges {
+					query := query.Clone()
+					ap.loadTotal = append(ap.loadTotal, func(ctx context.Context, nodes []*ActionPlan) error {
+						ids := make([]driver.Value, len(nodes))
+						for i := range nodes {
+							ids[i] = nodes[i].ID
+						}
+						var v []struct {
+							NodeID string `sql:"action_plan_document_revisions"`
+							Count  int    `sql:"count"`
+						}
+						query.Where(func(s *sql.Selector) {
+							s.Where(sql.InValues(s.C(actionplan.DocumentRevisionsColumn), ids...))
+						})
+						if err := query.GroupBy(actionplan.DocumentRevisionsColumn).Aggregate(Count()).Scan(ctx, &v); err != nil {
+							return err
+						}
+						m := make(map[string]int, len(v))
+						for i := range v {
+							m[v[i].NodeID] = v[i].Count
+						}
+						for i := range nodes {
+							n := m[nodes[i].ID]
+							if nodes[i].Edges.totalCount[2] == nil {
+								nodes[i].Edges.totalCount[2] = make(map[string]int)
+							}
+							nodes[i].Edges.totalCount[2][alias] = n
+						}
+						return nil
+					})
+				} else {
+					ap.loadTotal = append(ap.loadTotal, func(_ context.Context, nodes []*ActionPlan) error {
+						for i := range nodes {
+							n := len(nodes[i].Edges.DocumentRevisions)
+							if nodes[i].Edges.totalCount[2] == nil {
+								nodes[i].Edges.totalCount[2] = make(map[string]int)
+							}
+							nodes[i].Edges.totalCount[2][alias] = n
+						}
+						return nil
+					})
+				}
+			}
+			if ignoredEdges || (args.first != nil && *args.first == 0) || (args.last != nil && *args.last == 0) {
+				continue
+			}
+			if query, err = pager.applyCursors(query, args.after, args.before); err != nil {
+				return err
+			}
+			path = append(path, edgesField, nodeField)
+			if field := collectedField(ctx, path...); field != nil {
+				if err := query.collectField(ctx, false, opCtx, *field, path, mayAddCondition(satisfies, documentrevisionImplementors)...); err != nil {
+					return err
+				}
+			}
+			if limit := paginateLimit(args.first, args.last); limit > 0 {
+				if oneNode {
+					pager.applyOrder(query.Limit(limit))
+				} else {
+					modify := entgql.LimitPerRow(actionplan.DocumentRevisionsColumn, limit, pager.orderExpr(query))
+					query.modifiers = append(query.modifiers, modify)
+				}
+			} else {
+				query = pager.applyOrder(query)
+			}
+			ap.WithNamedDocumentRevisions(alias, func(wq *DocumentRevisionQuery) {
+				*wq = *query
+			})
+
 		case "owner":
 			var (
 				alias = field.Alias
@@ -395,10 +486,10 @@ func (ap *ActionPlanQuery) collectField(ctx context.Context, oneNode bool, opCtx
 						}
 						for i := range nodes {
 							n := m[nodes[i].ID]
-							if nodes[i].Edges.totalCount[3] == nil {
-								nodes[i].Edges.totalCount[3] = make(map[string]int)
+							if nodes[i].Edges.totalCount[4] == nil {
+								nodes[i].Edges.totalCount[4] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[3][alias] = n
+							nodes[i].Edges.totalCount[4][alias] = n
 						}
 						return nil
 					})
@@ -406,10 +497,10 @@ func (ap *ActionPlanQuery) collectField(ctx context.Context, oneNode bool, opCtx
 					ap.loadTotal = append(ap.loadTotal, func(_ context.Context, nodes []*ActionPlan) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.Risks)
-							if nodes[i].Edges.totalCount[3] == nil {
-								nodes[i].Edges.totalCount[3] = make(map[string]int)
+							if nodes[i].Edges.totalCount[4] == nil {
+								nodes[i].Edges.totalCount[4] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[3][alias] = n
+							nodes[i].Edges.totalCount[4][alias] = n
 						}
 						return nil
 					})
@@ -488,10 +579,10 @@ func (ap *ActionPlanQuery) collectField(ctx context.Context, oneNode bool, opCtx
 						}
 						for i := range nodes {
 							n := m[nodes[i].ID]
-							if nodes[i].Edges.totalCount[4] == nil {
-								nodes[i].Edges.totalCount[4] = make(map[string]int)
+							if nodes[i].Edges.totalCount[5] == nil {
+								nodes[i].Edges.totalCount[5] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[4][alias] = n
+							nodes[i].Edges.totalCount[5][alias] = n
 						}
 						return nil
 					})
@@ -499,10 +590,10 @@ func (ap *ActionPlanQuery) collectField(ctx context.Context, oneNode bool, opCtx
 					ap.loadTotal = append(ap.loadTotal, func(_ context.Context, nodes []*ActionPlan) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.Controls)
-							if nodes[i].Edges.totalCount[4] == nil {
-								nodes[i].Edges.totalCount[4] = make(map[string]int)
+							if nodes[i].Edges.totalCount[5] == nil {
+								nodes[i].Edges.totalCount[5] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[4][alias] = n
+							nodes[i].Edges.totalCount[5][alias] = n
 						}
 						return nil
 					})
@@ -581,10 +672,10 @@ func (ap *ActionPlanQuery) collectField(ctx context.Context, oneNode bool, opCtx
 						}
 						for i := range nodes {
 							n := m[nodes[i].ID]
-							if nodes[i].Edges.totalCount[5] == nil {
-								nodes[i].Edges.totalCount[5] = make(map[string]int)
+							if nodes[i].Edges.totalCount[6] == nil {
+								nodes[i].Edges.totalCount[6] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[5][alias] = n
+							nodes[i].Edges.totalCount[6][alias] = n
 						}
 						return nil
 					})
@@ -592,10 +683,10 @@ func (ap *ActionPlanQuery) collectField(ctx context.Context, oneNode bool, opCtx
 					ap.loadTotal = append(ap.loadTotal, func(_ context.Context, nodes []*ActionPlan) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.Users)
-							if nodes[i].Edges.totalCount[5] == nil {
-								nodes[i].Edges.totalCount[5] = make(map[string]int)
+							if nodes[i].Edges.totalCount[6] == nil {
+								nodes[i].Edges.totalCount[6] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[5][alias] = n
+							nodes[i].Edges.totalCount[6][alias] = n
 						}
 						return nil
 					})
@@ -674,10 +765,10 @@ func (ap *ActionPlanQuery) collectField(ctx context.Context, oneNode bool, opCtx
 						}
 						for i := range nodes {
 							n := m[nodes[i].ID]
-							if nodes[i].Edges.totalCount[6] == nil {
-								nodes[i].Edges.totalCount[6] = make(map[string]int)
+							if nodes[i].Edges.totalCount[7] == nil {
+								nodes[i].Edges.totalCount[7] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[6][alias] = n
+							nodes[i].Edges.totalCount[7][alias] = n
 						}
 						return nil
 					})
@@ -685,10 +776,10 @@ func (ap *ActionPlanQuery) collectField(ctx context.Context, oneNode bool, opCtx
 					ap.loadTotal = append(ap.loadTotal, func(_ context.Context, nodes []*ActionPlan) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.Programs)
-							if nodes[i].Edges.totalCount[6] == nil {
-								nodes[i].Edges.totalCount[6] = make(map[string]int)
+							if nodes[i].Edges.totalCount[7] == nil {
+								nodes[i].Edges.totalCount[7] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[6][alias] = n
+							nodes[i].Edges.totalCount[7][alias] = n
 						}
 						return nil
 					})
@@ -773,11 +864,6 @@ func (ap *ActionPlanQuery) collectField(ctx context.Context, oneNode bool, opCtx
 			if _, ok := fieldSeen[actionplan.FieldActionPlanType]; !ok {
 				selectedFields = append(selectedFields, actionplan.FieldActionPlanType)
 				fieldSeen[actionplan.FieldActionPlanType] = struct{}{}
-			}
-		case "details":
-			if _, ok := fieldSeen[actionplan.FieldDetails]; !ok {
-				selectedFields = append(selectedFields, actionplan.FieldDetails)
-				fieldSeen[actionplan.FieldDetails] = struct{}{}
 			}
 		case "approvalRequired":
 			if _, ok := fieldSeen[actionplan.FieldApprovalRequired]; !ok {
@@ -983,11 +1069,6 @@ func (aph *ActionPlanHistoryQuery) collectField(ctx context.Context, oneNode boo
 			if _, ok := fieldSeen[actionplanhistory.FieldActionPlanType]; !ok {
 				selectedFields = append(selectedFields, actionplanhistory.FieldActionPlanType)
 				fieldSeen[actionplanhistory.FieldActionPlanType] = struct{}{}
-			}
-		case "details":
-			if _, ok := fieldSeen[actionplanhistory.FieldDetails]; !ok {
-				selectedFields = append(selectedFields, actionplanhistory.FieldDetails)
-				fieldSeen[actionplanhistory.FieldDetails] = struct{}{}
 			}
 		case "approvalRequired":
 			if _, ok := fieldSeen[actionplanhistory.FieldApprovalRequired]; !ok {
@@ -5582,6 +5663,430 @@ func newDocumentDataHistoryPaginateArgs(rv map[string]any) *documentdatahistoryP
 	}
 	if v, ok := rv[whereField].(*DocumentDataHistoryWhereInput); ok {
 		args.opts = append(args.opts, WithDocumentDataHistoryFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (dr *DocumentRevisionQuery) CollectFields(ctx context.Context, satisfies ...string) (*DocumentRevisionQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return dr, nil
+	}
+	if err := dr.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return dr, nil
+}
+
+func (dr *DocumentRevisionQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(documentrevision.Columns))
+		selectedFields = []string{documentrevision.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "submittedBy":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&UserClient{config: dr.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, userImplementors)...); err != nil {
+				return err
+			}
+			dr.withSubmittedBy = query
+			if _, ok := fieldSeen[documentrevision.FieldSubmittedByID]; !ok {
+				selectedFields = append(selectedFields, documentrevision.FieldSubmittedByID)
+				fieldSeen[documentrevision.FieldSubmittedByID] = struct{}{}
+			}
+
+		case "approvedBy":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&UserClient{config: dr.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, userImplementors)...); err != nil {
+				return err
+			}
+			dr.withApprovedBy = query
+			if _, ok := fieldSeen[documentrevision.FieldApprovedByID]; !ok {
+				selectedFields = append(selectedFields, documentrevision.FieldApprovedByID)
+				fieldSeen[documentrevision.FieldApprovedByID] = struct{}{}
+			}
+
+		case "internalPolicy":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&InternalPolicyClient{config: dr.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, internalpolicyImplementors)...); err != nil {
+				return err
+			}
+			dr.withInternalPolicy = query
+			if _, ok := fieldSeen[documentrevision.FieldInternalPolicyID]; !ok {
+				selectedFields = append(selectedFields, documentrevision.FieldInternalPolicyID)
+				fieldSeen[documentrevision.FieldInternalPolicyID] = struct{}{}
+			}
+
+		case "procedure":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ProcedureClient{config: dr.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, procedureImplementors)...); err != nil {
+				return err
+			}
+			dr.withProcedure = query
+			if _, ok := fieldSeen[documentrevision.FieldProcedureID]; !ok {
+				selectedFields = append(selectedFields, documentrevision.FieldProcedureID)
+				fieldSeen[documentrevision.FieldProcedureID] = struct{}{}
+			}
+
+		case "actionPlan":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ActionPlanClient{config: dr.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, actionplanImplementors)...); err != nil {
+				return err
+			}
+			dr.withActionPlan = query
+			if _, ok := fieldSeen[documentrevision.FieldActionPlanID]; !ok {
+				selectedFields = append(selectedFields, documentrevision.FieldActionPlanID)
+				fieldSeen[documentrevision.FieldActionPlanID] = struct{}{}
+			}
+		case "createdAt":
+			if _, ok := fieldSeen[documentrevision.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, documentrevision.FieldCreatedAt)
+				fieldSeen[documentrevision.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[documentrevision.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, documentrevision.FieldUpdatedAt)
+				fieldSeen[documentrevision.FieldUpdatedAt] = struct{}{}
+			}
+		case "createdBy":
+			if _, ok := fieldSeen[documentrevision.FieldCreatedBy]; !ok {
+				selectedFields = append(selectedFields, documentrevision.FieldCreatedBy)
+				fieldSeen[documentrevision.FieldCreatedBy] = struct{}{}
+			}
+		case "updatedBy":
+			if _, ok := fieldSeen[documentrevision.FieldUpdatedBy]; !ok {
+				selectedFields = append(selectedFields, documentrevision.FieldUpdatedBy)
+				fieldSeen[documentrevision.FieldUpdatedBy] = struct{}{}
+			}
+		case "deletedAt":
+			if _, ok := fieldSeen[documentrevision.FieldDeletedAt]; !ok {
+				selectedFields = append(selectedFields, documentrevision.FieldDeletedAt)
+				fieldSeen[documentrevision.FieldDeletedAt] = struct{}{}
+			}
+		case "deletedBy":
+			if _, ok := fieldSeen[documentrevision.FieldDeletedBy]; !ok {
+				selectedFields = append(selectedFields, documentrevision.FieldDeletedBy)
+				fieldSeen[documentrevision.FieldDeletedBy] = struct{}{}
+			}
+		case "tags":
+			if _, ok := fieldSeen[documentrevision.FieldTags]; !ok {
+				selectedFields = append(selectedFields, documentrevision.FieldTags)
+				fieldSeen[documentrevision.FieldTags] = struct{}{}
+			}
+		case "revision":
+			if _, ok := fieldSeen[documentrevision.FieldRevision]; !ok {
+				selectedFields = append(selectedFields, documentrevision.FieldRevision)
+				fieldSeen[documentrevision.FieldRevision] = struct{}{}
+			}
+		case "details":
+			if _, ok := fieldSeen[documentrevision.FieldDetails]; !ok {
+				selectedFields = append(selectedFields, documentrevision.FieldDetails)
+				fieldSeen[documentrevision.FieldDetails] = struct{}{}
+			}
+		case "status":
+			if _, ok := fieldSeen[documentrevision.FieldStatus]; !ok {
+				selectedFields = append(selectedFields, documentrevision.FieldStatus)
+				fieldSeen[documentrevision.FieldStatus] = struct{}{}
+			}
+		case "approvalDate":
+			if _, ok := fieldSeen[documentrevision.FieldApprovalDate]; !ok {
+				selectedFields = append(selectedFields, documentrevision.FieldApprovalDate)
+				fieldSeen[documentrevision.FieldApprovalDate] = struct{}{}
+			}
+		case "submittedByID":
+			if _, ok := fieldSeen[documentrevision.FieldSubmittedByID]; !ok {
+				selectedFields = append(selectedFields, documentrevision.FieldSubmittedByID)
+				fieldSeen[documentrevision.FieldSubmittedByID] = struct{}{}
+			}
+		case "approvedByID":
+			if _, ok := fieldSeen[documentrevision.FieldApprovedByID]; !ok {
+				selectedFields = append(selectedFields, documentrevision.FieldApprovedByID)
+				fieldSeen[documentrevision.FieldApprovedByID] = struct{}{}
+			}
+		case "internalPolicyID":
+			if _, ok := fieldSeen[documentrevision.FieldInternalPolicyID]; !ok {
+				selectedFields = append(selectedFields, documentrevision.FieldInternalPolicyID)
+				fieldSeen[documentrevision.FieldInternalPolicyID] = struct{}{}
+			}
+		case "procedureID":
+			if _, ok := fieldSeen[documentrevision.FieldProcedureID]; !ok {
+				selectedFields = append(selectedFields, documentrevision.FieldProcedureID)
+				fieldSeen[documentrevision.FieldProcedureID] = struct{}{}
+			}
+		case "actionPlanID":
+			if _, ok := fieldSeen[documentrevision.FieldActionPlanID]; !ok {
+				selectedFields = append(selectedFields, documentrevision.FieldActionPlanID)
+				fieldSeen[documentrevision.FieldActionPlanID] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		dr.Select(selectedFields...)
+	}
+	return nil
+}
+
+type documentrevisionPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []DocumentRevisionPaginateOption
+}
+
+func newDocumentRevisionPaginateArgs(rv map[string]any) *documentrevisionPaginateArgs {
+	args := &documentrevisionPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case []*DocumentRevisionOrder:
+			args.opts = append(args.opts, WithDocumentRevisionOrder(v))
+		case []any:
+			var orders []*DocumentRevisionOrder
+			for i := range v {
+				mv, ok := v[i].(map[string]any)
+				if !ok {
+					continue
+				}
+				var (
+					err1, err2 error
+					order      = &DocumentRevisionOrder{Field: &DocumentRevisionOrderField{}, Direction: entgql.OrderDirectionAsc}
+				)
+				if d, ok := mv[directionField]; ok {
+					err1 = order.Direction.UnmarshalGQL(d)
+				}
+				if f, ok := mv[fieldField]; ok {
+					err2 = order.Field.UnmarshalGQL(f)
+				}
+				if err1 == nil && err2 == nil {
+					orders = append(orders, order)
+				}
+			}
+			args.opts = append(args.opts, WithDocumentRevisionOrder(orders))
+		}
+	}
+	if v, ok := rv[whereField].(*DocumentRevisionWhereInput); ok {
+		args.opts = append(args.opts, WithDocumentRevisionFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (drh *DocumentRevisionHistoryQuery) CollectFields(ctx context.Context, satisfies ...string) (*DocumentRevisionHistoryQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return drh, nil
+	}
+	if err := drh.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return drh, nil
+}
+
+func (drh *DocumentRevisionHistoryQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(documentrevisionhistory.Columns))
+		selectedFields = []string{documentrevisionhistory.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+		case "historyTime":
+			if _, ok := fieldSeen[documentrevisionhistory.FieldHistoryTime]; !ok {
+				selectedFields = append(selectedFields, documentrevisionhistory.FieldHistoryTime)
+				fieldSeen[documentrevisionhistory.FieldHistoryTime] = struct{}{}
+			}
+		case "ref":
+			if _, ok := fieldSeen[documentrevisionhistory.FieldRef]; !ok {
+				selectedFields = append(selectedFields, documentrevisionhistory.FieldRef)
+				fieldSeen[documentrevisionhistory.FieldRef] = struct{}{}
+			}
+		case "operation":
+			if _, ok := fieldSeen[documentrevisionhistory.FieldOperation]; !ok {
+				selectedFields = append(selectedFields, documentrevisionhistory.FieldOperation)
+				fieldSeen[documentrevisionhistory.FieldOperation] = struct{}{}
+			}
+		case "createdAt":
+			if _, ok := fieldSeen[documentrevisionhistory.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, documentrevisionhistory.FieldCreatedAt)
+				fieldSeen[documentrevisionhistory.FieldCreatedAt] = struct{}{}
+			}
+		case "updatedAt":
+			if _, ok := fieldSeen[documentrevisionhistory.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, documentrevisionhistory.FieldUpdatedAt)
+				fieldSeen[documentrevisionhistory.FieldUpdatedAt] = struct{}{}
+			}
+		case "createdBy":
+			if _, ok := fieldSeen[documentrevisionhistory.FieldCreatedBy]; !ok {
+				selectedFields = append(selectedFields, documentrevisionhistory.FieldCreatedBy)
+				fieldSeen[documentrevisionhistory.FieldCreatedBy] = struct{}{}
+			}
+		case "updatedBy":
+			if _, ok := fieldSeen[documentrevisionhistory.FieldUpdatedBy]; !ok {
+				selectedFields = append(selectedFields, documentrevisionhistory.FieldUpdatedBy)
+				fieldSeen[documentrevisionhistory.FieldUpdatedBy] = struct{}{}
+			}
+		case "deletedAt":
+			if _, ok := fieldSeen[documentrevisionhistory.FieldDeletedAt]; !ok {
+				selectedFields = append(selectedFields, documentrevisionhistory.FieldDeletedAt)
+				fieldSeen[documentrevisionhistory.FieldDeletedAt] = struct{}{}
+			}
+		case "deletedBy":
+			if _, ok := fieldSeen[documentrevisionhistory.FieldDeletedBy]; !ok {
+				selectedFields = append(selectedFields, documentrevisionhistory.FieldDeletedBy)
+				fieldSeen[documentrevisionhistory.FieldDeletedBy] = struct{}{}
+			}
+		case "tags":
+			if _, ok := fieldSeen[documentrevisionhistory.FieldTags]; !ok {
+				selectedFields = append(selectedFields, documentrevisionhistory.FieldTags)
+				fieldSeen[documentrevisionhistory.FieldTags] = struct{}{}
+			}
+		case "revision":
+			if _, ok := fieldSeen[documentrevisionhistory.FieldRevision]; !ok {
+				selectedFields = append(selectedFields, documentrevisionhistory.FieldRevision)
+				fieldSeen[documentrevisionhistory.FieldRevision] = struct{}{}
+			}
+		case "details":
+			if _, ok := fieldSeen[documentrevisionhistory.FieldDetails]; !ok {
+				selectedFields = append(selectedFields, documentrevisionhistory.FieldDetails)
+				fieldSeen[documentrevisionhistory.FieldDetails] = struct{}{}
+			}
+		case "status":
+			if _, ok := fieldSeen[documentrevisionhistory.FieldStatus]; !ok {
+				selectedFields = append(selectedFields, documentrevisionhistory.FieldStatus)
+				fieldSeen[documentrevisionhistory.FieldStatus] = struct{}{}
+			}
+		case "approvalDate":
+			if _, ok := fieldSeen[documentrevisionhistory.FieldApprovalDate]; !ok {
+				selectedFields = append(selectedFields, documentrevisionhistory.FieldApprovalDate)
+				fieldSeen[documentrevisionhistory.FieldApprovalDate] = struct{}{}
+			}
+		case "submittedByID":
+			if _, ok := fieldSeen[documentrevisionhistory.FieldSubmittedByID]; !ok {
+				selectedFields = append(selectedFields, documentrevisionhistory.FieldSubmittedByID)
+				fieldSeen[documentrevisionhistory.FieldSubmittedByID] = struct{}{}
+			}
+		case "approvedByID":
+			if _, ok := fieldSeen[documentrevisionhistory.FieldApprovedByID]; !ok {
+				selectedFields = append(selectedFields, documentrevisionhistory.FieldApprovedByID)
+				fieldSeen[documentrevisionhistory.FieldApprovedByID] = struct{}{}
+			}
+		case "internalPolicyID":
+			if _, ok := fieldSeen[documentrevisionhistory.FieldInternalPolicyID]; !ok {
+				selectedFields = append(selectedFields, documentrevisionhistory.FieldInternalPolicyID)
+				fieldSeen[documentrevisionhistory.FieldInternalPolicyID] = struct{}{}
+			}
+		case "procedureID":
+			if _, ok := fieldSeen[documentrevisionhistory.FieldProcedureID]; !ok {
+				selectedFields = append(selectedFields, documentrevisionhistory.FieldProcedureID)
+				fieldSeen[documentrevisionhistory.FieldProcedureID] = struct{}{}
+			}
+		case "actionPlanID":
+			if _, ok := fieldSeen[documentrevisionhistory.FieldActionPlanID]; !ok {
+				selectedFields = append(selectedFields, documentrevisionhistory.FieldActionPlanID)
+				fieldSeen[documentrevisionhistory.FieldActionPlanID] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		drh.Select(selectedFields...)
+	}
+	return nil
+}
+
+type documentrevisionhistoryPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []DocumentRevisionHistoryPaginateOption
+}
+
+func newDocumentRevisionHistoryPaginateArgs(rv map[string]any) *documentrevisionhistoryPaginateArgs {
+	args := &documentrevisionhistoryPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &DocumentRevisionHistoryOrder{Field: &DocumentRevisionHistoryOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithDocumentRevisionHistoryOrder(order))
+			}
+		case *DocumentRevisionHistoryOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithDocumentRevisionHistoryOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*DocumentRevisionHistoryWhereInput); ok {
+		args.opts = append(args.opts, WithDocumentRevisionHistoryFilter(v.Filter))
 	}
 	return args
 }
@@ -12553,6 +13058,95 @@ func (ip *InternalPolicyQuery) collectField(ctx context.Context, oneNode bool, o
 				fieldSeen[internalpolicy.FieldDelegateID] = struct{}{}
 			}
 
+		case "documentRevisions":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&DocumentRevisionClient{config: ip.config}).Query()
+			)
+			args := newDocumentRevisionPaginateArgs(fieldArgs(ctx, new(DocumentRevisionWhereInput), path...))
+			if err := validateFirstLast(args.first, args.last); err != nil {
+				return fmt.Errorf("validate first and last in path %q: %w", path, err)
+			}
+			pager, err := newDocumentRevisionPager(args.opts, args.last != nil)
+			if err != nil {
+				return fmt.Errorf("create new pager in path %q: %w", path, err)
+			}
+			if query, err = pager.applyFilter(query); err != nil {
+				return err
+			}
+			ignoredEdges := !hasCollectedField(ctx, append(path, edgesField)...)
+			if hasCollectedField(ctx, append(path, totalCountField)...) || hasCollectedField(ctx, append(path, pageInfoField)...) {
+				hasPagination := args.after != nil || args.first != nil || args.before != nil || args.last != nil
+				if hasPagination || ignoredEdges {
+					query := query.Clone()
+					ip.loadTotal = append(ip.loadTotal, func(ctx context.Context, nodes []*InternalPolicy) error {
+						ids := make([]driver.Value, len(nodes))
+						for i := range nodes {
+							ids[i] = nodes[i].ID
+						}
+						var v []struct {
+							NodeID string `sql:"internal_policy_document_revisions"`
+							Count  int    `sql:"count"`
+						}
+						query.Where(func(s *sql.Selector) {
+							s.Where(sql.InValues(s.C(internalpolicy.DocumentRevisionsColumn), ids...))
+						})
+						if err := query.GroupBy(internalpolicy.DocumentRevisionsColumn).Aggregate(Count()).Scan(ctx, &v); err != nil {
+							return err
+						}
+						m := make(map[string]int, len(v))
+						for i := range v {
+							m[v[i].NodeID] = v[i].Count
+						}
+						for i := range nodes {
+							n := m[nodes[i].ID]
+							if nodes[i].Edges.totalCount[5] == nil {
+								nodes[i].Edges.totalCount[5] = make(map[string]int)
+							}
+							nodes[i].Edges.totalCount[5][alias] = n
+						}
+						return nil
+					})
+				} else {
+					ip.loadTotal = append(ip.loadTotal, func(_ context.Context, nodes []*InternalPolicy) error {
+						for i := range nodes {
+							n := len(nodes[i].Edges.DocumentRevisions)
+							if nodes[i].Edges.totalCount[5] == nil {
+								nodes[i].Edges.totalCount[5] = make(map[string]int)
+							}
+							nodes[i].Edges.totalCount[5][alias] = n
+						}
+						return nil
+					})
+				}
+			}
+			if ignoredEdges || (args.first != nil && *args.first == 0) || (args.last != nil && *args.last == 0) {
+				continue
+			}
+			if query, err = pager.applyCursors(query, args.after, args.before); err != nil {
+				return err
+			}
+			path = append(path, edgesField, nodeField)
+			if field := collectedField(ctx, path...); field != nil {
+				if err := query.collectField(ctx, false, opCtx, *field, path, mayAddCondition(satisfies, documentrevisionImplementors)...); err != nil {
+					return err
+				}
+			}
+			if limit := paginateLimit(args.first, args.last); limit > 0 {
+				if oneNode {
+					pager.applyOrder(query.Limit(limit))
+				} else {
+					modify := entgql.LimitPerRow(internalpolicy.DocumentRevisionsColumn, limit, pager.orderExpr(query))
+					query.modifiers = append(query.modifiers, modify)
+				}
+			} else {
+				query = pager.applyOrder(query)
+			}
+			ip.WithNamedDocumentRevisions(alias, func(wq *DocumentRevisionQuery) {
+				*wq = *query
+			})
+
 		case "controlObjectives":
 			var (
 				alias = field.Alias
@@ -12600,10 +13194,10 @@ func (ip *InternalPolicyQuery) collectField(ctx context.Context, oneNode bool, o
 						}
 						for i := range nodes {
 							n := m[nodes[i].ID]
-							if nodes[i].Edges.totalCount[5] == nil {
-								nodes[i].Edges.totalCount[5] = make(map[string]int)
+							if nodes[i].Edges.totalCount[6] == nil {
+								nodes[i].Edges.totalCount[6] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[5][alias] = n
+							nodes[i].Edges.totalCount[6][alias] = n
 						}
 						return nil
 					})
@@ -12611,10 +13205,10 @@ func (ip *InternalPolicyQuery) collectField(ctx context.Context, oneNode bool, o
 					ip.loadTotal = append(ip.loadTotal, func(_ context.Context, nodes []*InternalPolicy) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.ControlObjectives)
-							if nodes[i].Edges.totalCount[5] == nil {
-								nodes[i].Edges.totalCount[5] = make(map[string]int)
+							if nodes[i].Edges.totalCount[6] == nil {
+								nodes[i].Edges.totalCount[6] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[5][alias] = n
+							nodes[i].Edges.totalCount[6][alias] = n
 						}
 						return nil
 					})
@@ -12689,10 +13283,10 @@ func (ip *InternalPolicyQuery) collectField(ctx context.Context, oneNode bool, o
 						}
 						for i := range nodes {
 							n := m[nodes[i].ID]
-							if nodes[i].Edges.totalCount[6] == nil {
-								nodes[i].Edges.totalCount[6] = make(map[string]int)
+							if nodes[i].Edges.totalCount[7] == nil {
+								nodes[i].Edges.totalCount[7] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[6][alias] = n
+							nodes[i].Edges.totalCount[7][alias] = n
 						}
 						return nil
 					})
@@ -12700,10 +13294,10 @@ func (ip *InternalPolicyQuery) collectField(ctx context.Context, oneNode bool, o
 					ip.loadTotal = append(ip.loadTotal, func(_ context.Context, nodes []*InternalPolicy) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.Controls)
-							if nodes[i].Edges.totalCount[6] == nil {
-								nodes[i].Edges.totalCount[6] = make(map[string]int)
+							if nodes[i].Edges.totalCount[7] == nil {
+								nodes[i].Edges.totalCount[7] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[6][alias] = n
+							nodes[i].Edges.totalCount[7][alias] = n
 						}
 						return nil
 					})
@@ -12782,10 +13376,10 @@ func (ip *InternalPolicyQuery) collectField(ctx context.Context, oneNode bool, o
 						}
 						for i := range nodes {
 							n := m[nodes[i].ID]
-							if nodes[i].Edges.totalCount[7] == nil {
-								nodes[i].Edges.totalCount[7] = make(map[string]int)
+							if nodes[i].Edges.totalCount[8] == nil {
+								nodes[i].Edges.totalCount[8] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[7][alias] = n
+							nodes[i].Edges.totalCount[8][alias] = n
 						}
 						return nil
 					})
@@ -12793,10 +13387,10 @@ func (ip *InternalPolicyQuery) collectField(ctx context.Context, oneNode bool, o
 					ip.loadTotal = append(ip.loadTotal, func(_ context.Context, nodes []*InternalPolicy) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.Procedures)
-							if nodes[i].Edges.totalCount[7] == nil {
-								nodes[i].Edges.totalCount[7] = make(map[string]int)
+							if nodes[i].Edges.totalCount[8] == nil {
+								nodes[i].Edges.totalCount[8] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[7][alias] = n
+							nodes[i].Edges.totalCount[8][alias] = n
 						}
 						return nil
 					})
@@ -12871,10 +13465,10 @@ func (ip *InternalPolicyQuery) collectField(ctx context.Context, oneNode bool, o
 						}
 						for i := range nodes {
 							n := m[nodes[i].ID]
-							if nodes[i].Edges.totalCount[8] == nil {
-								nodes[i].Edges.totalCount[8] = make(map[string]int)
+							if nodes[i].Edges.totalCount[9] == nil {
+								nodes[i].Edges.totalCount[9] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[8][alias] = n
+							nodes[i].Edges.totalCount[9][alias] = n
 						}
 						return nil
 					})
@@ -12882,10 +13476,10 @@ func (ip *InternalPolicyQuery) collectField(ctx context.Context, oneNode bool, o
 					ip.loadTotal = append(ip.loadTotal, func(_ context.Context, nodes []*InternalPolicy) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.Narratives)
-							if nodes[i].Edges.totalCount[8] == nil {
-								nodes[i].Edges.totalCount[8] = make(map[string]int)
+							if nodes[i].Edges.totalCount[9] == nil {
+								nodes[i].Edges.totalCount[9] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[8][alias] = n
+							nodes[i].Edges.totalCount[9][alias] = n
 						}
 						return nil
 					})
@@ -12964,10 +13558,10 @@ func (ip *InternalPolicyQuery) collectField(ctx context.Context, oneNode bool, o
 						}
 						for i := range nodes {
 							n := m[nodes[i].ID]
-							if nodes[i].Edges.totalCount[9] == nil {
-								nodes[i].Edges.totalCount[9] = make(map[string]int)
+							if nodes[i].Edges.totalCount[10] == nil {
+								nodes[i].Edges.totalCount[10] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[9][alias] = n
+							nodes[i].Edges.totalCount[10][alias] = n
 						}
 						return nil
 					})
@@ -12975,10 +13569,10 @@ func (ip *InternalPolicyQuery) collectField(ctx context.Context, oneNode bool, o
 					ip.loadTotal = append(ip.loadTotal, func(_ context.Context, nodes []*InternalPolicy) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.Tasks)
-							if nodes[i].Edges.totalCount[9] == nil {
-								nodes[i].Edges.totalCount[9] = make(map[string]int)
+							if nodes[i].Edges.totalCount[10] == nil {
+								nodes[i].Edges.totalCount[10] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[9][alias] = n
+							nodes[i].Edges.totalCount[10][alias] = n
 						}
 						return nil
 					})
@@ -13057,10 +13651,10 @@ func (ip *InternalPolicyQuery) collectField(ctx context.Context, oneNode bool, o
 						}
 						for i := range nodes {
 							n := m[nodes[i].ID]
-							if nodes[i].Edges.totalCount[10] == nil {
-								nodes[i].Edges.totalCount[10] = make(map[string]int)
+							if nodes[i].Edges.totalCount[11] == nil {
+								nodes[i].Edges.totalCount[11] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[10][alias] = n
+							nodes[i].Edges.totalCount[11][alias] = n
 						}
 						return nil
 					})
@@ -13068,10 +13662,10 @@ func (ip *InternalPolicyQuery) collectField(ctx context.Context, oneNode bool, o
 					ip.loadTotal = append(ip.loadTotal, func(_ context.Context, nodes []*InternalPolicy) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.Programs)
-							if nodes[i].Edges.totalCount[10] == nil {
-								nodes[i].Edges.totalCount[10] = make(map[string]int)
+							if nodes[i].Edges.totalCount[11] == nil {
+								nodes[i].Edges.totalCount[11] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[10][alias] = n
+							nodes[i].Edges.totalCount[11][alias] = n
 						}
 						return nil
 					})
@@ -13166,11 +13760,6 @@ func (ip *InternalPolicyQuery) collectField(ctx context.Context, oneNode bool, o
 			if _, ok := fieldSeen[internalpolicy.FieldPolicyType]; !ok {
 				selectedFields = append(selectedFields, internalpolicy.FieldPolicyType)
 				fieldSeen[internalpolicy.FieldPolicyType] = struct{}{}
-			}
-		case "details":
-			if _, ok := fieldSeen[internalpolicy.FieldDetails]; !ok {
-				selectedFields = append(selectedFields, internalpolicy.FieldDetails)
-				fieldSeen[internalpolicy.FieldDetails] = struct{}{}
 			}
 		case "approvalRequired":
 			if _, ok := fieldSeen[internalpolicy.FieldApprovalRequired]; !ok {
@@ -13366,11 +13955,6 @@ func (iph *InternalPolicyHistoryQuery) collectField(ctx context.Context, oneNode
 			if _, ok := fieldSeen[internalpolicyhistory.FieldPolicyType]; !ok {
 				selectedFields = append(selectedFields, internalpolicyhistory.FieldPolicyType)
 				fieldSeen[internalpolicyhistory.FieldPolicyType] = struct{}{}
-			}
-		case "details":
-			if _, ok := fieldSeen[internalpolicyhistory.FieldDetails]; !ok {
-				selectedFields = append(selectedFields, internalpolicyhistory.FieldDetails)
-				fieldSeen[internalpolicyhistory.FieldDetails] = struct{}{}
 			}
 		case "approvalRequired":
 			if _, ok := fieldSeen[internalpolicyhistory.FieldApprovalRequired]; !ok {
@@ -20216,6 +20800,95 @@ func (pr *ProcedureQuery) collectField(ctx context.Context, oneNode bool, opCtx 
 				fieldSeen[procedure.FieldDelegateID] = struct{}{}
 			}
 
+		case "documentRevisions":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&DocumentRevisionClient{config: pr.config}).Query()
+			)
+			args := newDocumentRevisionPaginateArgs(fieldArgs(ctx, new(DocumentRevisionWhereInput), path...))
+			if err := validateFirstLast(args.first, args.last); err != nil {
+				return fmt.Errorf("validate first and last in path %q: %w", path, err)
+			}
+			pager, err := newDocumentRevisionPager(args.opts, args.last != nil)
+			if err != nil {
+				return fmt.Errorf("create new pager in path %q: %w", path, err)
+			}
+			if query, err = pager.applyFilter(query); err != nil {
+				return err
+			}
+			ignoredEdges := !hasCollectedField(ctx, append(path, edgesField)...)
+			if hasCollectedField(ctx, append(path, totalCountField)...) || hasCollectedField(ctx, append(path, pageInfoField)...) {
+				hasPagination := args.after != nil || args.first != nil || args.before != nil || args.last != nil
+				if hasPagination || ignoredEdges {
+					query := query.Clone()
+					pr.loadTotal = append(pr.loadTotal, func(ctx context.Context, nodes []*Procedure) error {
+						ids := make([]driver.Value, len(nodes))
+						for i := range nodes {
+							ids[i] = nodes[i].ID
+						}
+						var v []struct {
+							NodeID string `sql:"procedure_document_revisions"`
+							Count  int    `sql:"count"`
+						}
+						query.Where(func(s *sql.Selector) {
+							s.Where(sql.InValues(s.C(procedure.DocumentRevisionsColumn), ids...))
+						})
+						if err := query.GroupBy(procedure.DocumentRevisionsColumn).Aggregate(Count()).Scan(ctx, &v); err != nil {
+							return err
+						}
+						m := make(map[string]int, len(v))
+						for i := range v {
+							m[v[i].NodeID] = v[i].Count
+						}
+						for i := range nodes {
+							n := m[nodes[i].ID]
+							if nodes[i].Edges.totalCount[5] == nil {
+								nodes[i].Edges.totalCount[5] = make(map[string]int)
+							}
+							nodes[i].Edges.totalCount[5][alias] = n
+						}
+						return nil
+					})
+				} else {
+					pr.loadTotal = append(pr.loadTotal, func(_ context.Context, nodes []*Procedure) error {
+						for i := range nodes {
+							n := len(nodes[i].Edges.DocumentRevisions)
+							if nodes[i].Edges.totalCount[5] == nil {
+								nodes[i].Edges.totalCount[5] = make(map[string]int)
+							}
+							nodes[i].Edges.totalCount[5][alias] = n
+						}
+						return nil
+					})
+				}
+			}
+			if ignoredEdges || (args.first != nil && *args.first == 0) || (args.last != nil && *args.last == 0) {
+				continue
+			}
+			if query, err = pager.applyCursors(query, args.after, args.before); err != nil {
+				return err
+			}
+			path = append(path, edgesField, nodeField)
+			if field := collectedField(ctx, path...); field != nil {
+				if err := query.collectField(ctx, false, opCtx, *field, path, mayAddCondition(satisfies, documentrevisionImplementors)...); err != nil {
+					return err
+				}
+			}
+			if limit := paginateLimit(args.first, args.last); limit > 0 {
+				if oneNode {
+					pager.applyOrder(query.Limit(limit))
+				} else {
+					modify := entgql.LimitPerRow(procedure.DocumentRevisionsColumn, limit, pager.orderExpr(query))
+					query.modifiers = append(query.modifiers, modify)
+				}
+			} else {
+				query = pager.applyOrder(query)
+			}
+			pr.WithNamedDocumentRevisions(alias, func(wq *DocumentRevisionQuery) {
+				*wq = *query
+			})
+
 		case "controls":
 			var (
 				alias = field.Alias
@@ -20263,10 +20936,10 @@ func (pr *ProcedureQuery) collectField(ctx context.Context, oneNode bool, opCtx 
 						}
 						for i := range nodes {
 							n := m[nodes[i].ID]
-							if nodes[i].Edges.totalCount[5] == nil {
-								nodes[i].Edges.totalCount[5] = make(map[string]int)
+							if nodes[i].Edges.totalCount[6] == nil {
+								nodes[i].Edges.totalCount[6] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[5][alias] = n
+							nodes[i].Edges.totalCount[6][alias] = n
 						}
 						return nil
 					})
@@ -20274,10 +20947,10 @@ func (pr *ProcedureQuery) collectField(ctx context.Context, oneNode bool, opCtx 
 					pr.loadTotal = append(pr.loadTotal, func(_ context.Context, nodes []*Procedure) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.Controls)
-							if nodes[i].Edges.totalCount[5] == nil {
-								nodes[i].Edges.totalCount[5] = make(map[string]int)
+							if nodes[i].Edges.totalCount[6] == nil {
+								nodes[i].Edges.totalCount[6] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[5][alias] = n
+							nodes[i].Edges.totalCount[6][alias] = n
 						}
 						return nil
 					})
@@ -20356,10 +21029,10 @@ func (pr *ProcedureQuery) collectField(ctx context.Context, oneNode bool, opCtx 
 						}
 						for i := range nodes {
 							n := m[nodes[i].ID]
-							if nodes[i].Edges.totalCount[6] == nil {
-								nodes[i].Edges.totalCount[6] = make(map[string]int)
+							if nodes[i].Edges.totalCount[7] == nil {
+								nodes[i].Edges.totalCount[7] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[6][alias] = n
+							nodes[i].Edges.totalCount[7][alias] = n
 						}
 						return nil
 					})
@@ -20367,10 +21040,10 @@ func (pr *ProcedureQuery) collectField(ctx context.Context, oneNode bool, opCtx 
 					pr.loadTotal = append(pr.loadTotal, func(_ context.Context, nodes []*Procedure) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.InternalPolicies)
-							if nodes[i].Edges.totalCount[6] == nil {
-								nodes[i].Edges.totalCount[6] = make(map[string]int)
+							if nodes[i].Edges.totalCount[7] == nil {
+								nodes[i].Edges.totalCount[7] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[6][alias] = n
+							nodes[i].Edges.totalCount[7][alias] = n
 						}
 						return nil
 					})
@@ -20449,10 +21122,10 @@ func (pr *ProcedureQuery) collectField(ctx context.Context, oneNode bool, opCtx 
 						}
 						for i := range nodes {
 							n := m[nodes[i].ID]
-							if nodes[i].Edges.totalCount[7] == nil {
-								nodes[i].Edges.totalCount[7] = make(map[string]int)
+							if nodes[i].Edges.totalCount[8] == nil {
+								nodes[i].Edges.totalCount[8] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[7][alias] = n
+							nodes[i].Edges.totalCount[8][alias] = n
 						}
 						return nil
 					})
@@ -20460,10 +21133,10 @@ func (pr *ProcedureQuery) collectField(ctx context.Context, oneNode bool, opCtx 
 					pr.loadTotal = append(pr.loadTotal, func(_ context.Context, nodes []*Procedure) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.Programs)
-							if nodes[i].Edges.totalCount[7] == nil {
-								nodes[i].Edges.totalCount[7] = make(map[string]int)
+							if nodes[i].Edges.totalCount[8] == nil {
+								nodes[i].Edges.totalCount[8] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[7][alias] = n
+							nodes[i].Edges.totalCount[8][alias] = n
 						}
 						return nil
 					})
@@ -20538,10 +21211,10 @@ func (pr *ProcedureQuery) collectField(ctx context.Context, oneNode bool, opCtx 
 						}
 						for i := range nodes {
 							n := m[nodes[i].ID]
-							if nodes[i].Edges.totalCount[8] == nil {
-								nodes[i].Edges.totalCount[8] = make(map[string]int)
+							if nodes[i].Edges.totalCount[9] == nil {
+								nodes[i].Edges.totalCount[9] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[8][alias] = n
+							nodes[i].Edges.totalCount[9][alias] = n
 						}
 						return nil
 					})
@@ -20549,10 +21222,10 @@ func (pr *ProcedureQuery) collectField(ctx context.Context, oneNode bool, opCtx 
 					pr.loadTotal = append(pr.loadTotal, func(_ context.Context, nodes []*Procedure) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.Narratives)
-							if nodes[i].Edges.totalCount[8] == nil {
-								nodes[i].Edges.totalCount[8] = make(map[string]int)
+							if nodes[i].Edges.totalCount[9] == nil {
+								nodes[i].Edges.totalCount[9] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[8][alias] = n
+							nodes[i].Edges.totalCount[9][alias] = n
 						}
 						return nil
 					})
@@ -20631,10 +21304,10 @@ func (pr *ProcedureQuery) collectField(ctx context.Context, oneNode bool, opCtx 
 						}
 						for i := range nodes {
 							n := m[nodes[i].ID]
-							if nodes[i].Edges.totalCount[9] == nil {
-								nodes[i].Edges.totalCount[9] = make(map[string]int)
+							if nodes[i].Edges.totalCount[10] == nil {
+								nodes[i].Edges.totalCount[10] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[9][alias] = n
+							nodes[i].Edges.totalCount[10][alias] = n
 						}
 						return nil
 					})
@@ -20642,10 +21315,10 @@ func (pr *ProcedureQuery) collectField(ctx context.Context, oneNode bool, opCtx 
 					pr.loadTotal = append(pr.loadTotal, func(_ context.Context, nodes []*Procedure) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.Risks)
-							if nodes[i].Edges.totalCount[9] == nil {
-								nodes[i].Edges.totalCount[9] = make(map[string]int)
+							if nodes[i].Edges.totalCount[10] == nil {
+								nodes[i].Edges.totalCount[10] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[9][alias] = n
+							nodes[i].Edges.totalCount[10][alias] = n
 						}
 						return nil
 					})
@@ -20724,10 +21397,10 @@ func (pr *ProcedureQuery) collectField(ctx context.Context, oneNode bool, opCtx 
 						}
 						for i := range nodes {
 							n := m[nodes[i].ID]
-							if nodes[i].Edges.totalCount[10] == nil {
-								nodes[i].Edges.totalCount[10] = make(map[string]int)
+							if nodes[i].Edges.totalCount[11] == nil {
+								nodes[i].Edges.totalCount[11] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[10][alias] = n
+							nodes[i].Edges.totalCount[11][alias] = n
 						}
 						return nil
 					})
@@ -20735,10 +21408,10 @@ func (pr *ProcedureQuery) collectField(ctx context.Context, oneNode bool, opCtx 
 					pr.loadTotal = append(pr.loadTotal, func(_ context.Context, nodes []*Procedure) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.Tasks)
-							if nodes[i].Edges.totalCount[10] == nil {
-								nodes[i].Edges.totalCount[10] = make(map[string]int)
+							if nodes[i].Edges.totalCount[11] == nil {
+								nodes[i].Edges.totalCount[11] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[10][alias] = n
+							nodes[i].Edges.totalCount[11][alias] = n
 						}
 						return nil
 					})
@@ -20833,11 +21506,6 @@ func (pr *ProcedureQuery) collectField(ctx context.Context, oneNode bool, opCtx 
 			if _, ok := fieldSeen[procedure.FieldProcedureType]; !ok {
 				selectedFields = append(selectedFields, procedure.FieldProcedureType)
 				fieldSeen[procedure.FieldProcedureType] = struct{}{}
-			}
-		case "details":
-			if _, ok := fieldSeen[procedure.FieldDetails]; !ok {
-				selectedFields = append(selectedFields, procedure.FieldDetails)
-				fieldSeen[procedure.FieldDetails] = struct{}{}
 			}
 		case "approvalRequired":
 			if _, ok := fieldSeen[procedure.FieldApprovalRequired]; !ok {
@@ -21033,11 +21701,6 @@ func (ph *ProcedureHistoryQuery) collectField(ctx context.Context, oneNode bool,
 			if _, ok := fieldSeen[procedurehistory.FieldProcedureType]; !ok {
 				selectedFields = append(selectedFields, procedurehistory.FieldProcedureType)
 				fieldSeen[procedurehistory.FieldProcedureType] = struct{}{}
-			}
-		case "details":
-			if _, ok := fieldSeen[procedurehistory.FieldDetails]; !ok {
-				selectedFields = append(selectedFields, procedurehistory.FieldDetails)
-				fieldSeen[procedurehistory.FieldDetails] = struct{}{}
 			}
 		case "approvalRequired":
 			if _, ok := fieldSeen[procedurehistory.FieldApprovalRequired]; !ok {

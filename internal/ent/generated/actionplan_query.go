@@ -15,6 +15,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/theopenlane/core/internal/ent/generated/actionplan"
 	"github.com/theopenlane/core/internal/ent/generated/control"
+	"github.com/theopenlane/core/internal/ent/generated/documentrevision"
 	"github.com/theopenlane/core/internal/ent/generated/group"
 	"github.com/theopenlane/core/internal/ent/generated/organization"
 	"github.com/theopenlane/core/internal/ent/generated/predicate"
@@ -28,24 +29,26 @@ import (
 // ActionPlanQuery is the builder for querying ActionPlan entities.
 type ActionPlanQuery struct {
 	config
-	ctx               *QueryContext
-	order             []actionplan.OrderOption
-	inters            []Interceptor
-	predicates        []predicate.ActionPlan
-	withApprover      *GroupQuery
-	withDelegate      *GroupQuery
-	withOwner         *OrganizationQuery
-	withRisks         *RiskQuery
-	withControls      *ControlQuery
-	withUsers         *UserQuery
-	withPrograms      *ProgramQuery
-	withFKs           bool
-	loadTotal         []func(context.Context, []*ActionPlan) error
-	modifiers         []func(*sql.Selector)
-	withNamedRisks    map[string]*RiskQuery
-	withNamedControls map[string]*ControlQuery
-	withNamedUsers    map[string]*UserQuery
-	withNamedPrograms map[string]*ProgramQuery
+	ctx                        *QueryContext
+	order                      []actionplan.OrderOption
+	inters                     []Interceptor
+	predicates                 []predicate.ActionPlan
+	withApprover               *GroupQuery
+	withDelegate               *GroupQuery
+	withDocumentRevisions      *DocumentRevisionQuery
+	withOwner                  *OrganizationQuery
+	withRisks                  *RiskQuery
+	withControls               *ControlQuery
+	withUsers                  *UserQuery
+	withPrograms               *ProgramQuery
+	withFKs                    bool
+	loadTotal                  []func(context.Context, []*ActionPlan) error
+	modifiers                  []func(*sql.Selector)
+	withNamedDocumentRevisions map[string]*DocumentRevisionQuery
+	withNamedRisks             map[string]*RiskQuery
+	withNamedControls          map[string]*ControlQuery
+	withNamedUsers             map[string]*UserQuery
+	withNamedPrograms          map[string]*ProgramQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -126,6 +129,31 @@ func (apq *ActionPlanQuery) QueryDelegate() *GroupQuery {
 		schemaConfig := apq.schemaConfig
 		step.To.Schema = schemaConfig.Group
 		step.Edge.Schema = schemaConfig.ActionPlan
+		fromU = sqlgraph.SetNeighbors(apq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryDocumentRevisions chains the current query on the "document_revisions" edge.
+func (apq *ActionPlanQuery) QueryDocumentRevisions() *DocumentRevisionQuery {
+	query := (&DocumentRevisionClient{config: apq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := apq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := apq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(actionplan.Table, actionplan.FieldID, selector),
+			sqlgraph.To(documentrevision.Table, documentrevision.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, actionplan.DocumentRevisionsTable, actionplan.DocumentRevisionsColumn),
+		)
+		schemaConfig := apq.schemaConfig
+		step.To.Schema = schemaConfig.DocumentRevision
+		step.Edge.Schema = schemaConfig.DocumentRevision
 		fromU = sqlgraph.SetNeighbors(apq.driver.Dialect(), step)
 		return fromU, nil
 	}
@@ -444,18 +472,19 @@ func (apq *ActionPlanQuery) Clone() *ActionPlanQuery {
 		return nil
 	}
 	return &ActionPlanQuery{
-		config:       apq.config,
-		ctx:          apq.ctx.Clone(),
-		order:        append([]actionplan.OrderOption{}, apq.order...),
-		inters:       append([]Interceptor{}, apq.inters...),
-		predicates:   append([]predicate.ActionPlan{}, apq.predicates...),
-		withApprover: apq.withApprover.Clone(),
-		withDelegate: apq.withDelegate.Clone(),
-		withOwner:    apq.withOwner.Clone(),
-		withRisks:    apq.withRisks.Clone(),
-		withControls: apq.withControls.Clone(),
-		withUsers:    apq.withUsers.Clone(),
-		withPrograms: apq.withPrograms.Clone(),
+		config:                apq.config,
+		ctx:                   apq.ctx.Clone(),
+		order:                 append([]actionplan.OrderOption{}, apq.order...),
+		inters:                append([]Interceptor{}, apq.inters...),
+		predicates:            append([]predicate.ActionPlan{}, apq.predicates...),
+		withApprover:          apq.withApprover.Clone(),
+		withDelegate:          apq.withDelegate.Clone(),
+		withDocumentRevisions: apq.withDocumentRevisions.Clone(),
+		withOwner:             apq.withOwner.Clone(),
+		withRisks:             apq.withRisks.Clone(),
+		withControls:          apq.withControls.Clone(),
+		withUsers:             apq.withUsers.Clone(),
+		withPrograms:          apq.withPrograms.Clone(),
 		// clone intermediate query.
 		sql:       apq.sql.Clone(),
 		path:      apq.path,
@@ -482,6 +511,17 @@ func (apq *ActionPlanQuery) WithDelegate(opts ...func(*GroupQuery)) *ActionPlanQ
 		opt(query)
 	}
 	apq.withDelegate = query
+	return apq
+}
+
+// WithDocumentRevisions tells the query-builder to eager-load the nodes that are connected to
+// the "document_revisions" edge. The optional arguments are used to configure the query builder of the edge.
+func (apq *ActionPlanQuery) WithDocumentRevisions(opts ...func(*DocumentRevisionQuery)) *ActionPlanQuery {
+	query := (&DocumentRevisionClient{config: apq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	apq.withDocumentRevisions = query
 	return apq
 }
 
@@ -625,9 +665,10 @@ func (apq *ActionPlanQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 		nodes       = []*ActionPlan{}
 		withFKs     = apq.withFKs
 		_spec       = apq.querySpec()
-		loadedTypes = [7]bool{
+		loadedTypes = [8]bool{
 			apq.withApprover != nil,
 			apq.withDelegate != nil,
+			apq.withDocumentRevisions != nil,
 			apq.withOwner != nil,
 			apq.withRisks != nil,
 			apq.withControls != nil,
@@ -673,6 +714,15 @@ func (apq *ActionPlanQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 			return nil, err
 		}
 	}
+	if query := apq.withDocumentRevisions; query != nil {
+		if err := apq.loadDocumentRevisions(ctx, query, nodes,
+			func(n *ActionPlan) { n.Edges.DocumentRevisions = []*DocumentRevision{} },
+			func(n *ActionPlan, e *DocumentRevision) {
+				n.Edges.DocumentRevisions = append(n.Edges.DocumentRevisions, e)
+			}); err != nil {
+			return nil, err
+		}
+	}
 	if query := apq.withOwner; query != nil {
 		if err := apq.loadOwner(ctx, query, nodes, nil,
 			func(n *ActionPlan, e *Organization) { n.Edges.Owner = e }); err != nil {
@@ -704,6 +754,13 @@ func (apq *ActionPlanQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 		if err := apq.loadPrograms(ctx, query, nodes,
 			func(n *ActionPlan) { n.Edges.Programs = []*Program{} },
 			func(n *ActionPlan, e *Program) { n.Edges.Programs = append(n.Edges.Programs, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range apq.withNamedDocumentRevisions {
+		if err := apq.loadDocumentRevisions(ctx, query, nodes,
+			func(n *ActionPlan) { n.appendNamedDocumentRevisions(name) },
+			func(n *ActionPlan, e *DocumentRevision) { n.appendNamedDocumentRevisions(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -798,6 +855,37 @@ func (apq *ActionPlanQuery) loadDelegate(ctx context.Context, query *GroupQuery,
 		for i := range nodes {
 			assign(nodes[i], n)
 		}
+	}
+	return nil
+}
+func (apq *ActionPlanQuery) loadDocumentRevisions(ctx context.Context, query *DocumentRevisionQuery, nodes []*ActionPlan, init func(*ActionPlan), assign func(*ActionPlan, *DocumentRevision)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[string]*ActionPlan)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.DocumentRevision(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(actionplan.DocumentRevisionsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.action_plan_document_revisions
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "action_plan_document_revisions" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "action_plan_document_revisions" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
 	}
 	return nil
 }
@@ -1184,6 +1272,20 @@ func (apq *ActionPlanQuery) sqlQuery(ctx context.Context) *sql.Selector {
 func (apq *ActionPlanQuery) Modify(modifiers ...func(s *sql.Selector)) *ActionPlanSelect {
 	apq.modifiers = append(apq.modifiers, modifiers...)
 	return apq.Select()
+}
+
+// WithNamedDocumentRevisions tells the query-builder to eager-load the nodes that are connected to the "document_revisions"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (apq *ActionPlanQuery) WithNamedDocumentRevisions(name string, opts ...func(*DocumentRevisionQuery)) *ActionPlanQuery {
+	query := (&DocumentRevisionClient{config: apq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if apq.withNamedDocumentRevisions == nil {
+		apq.withNamedDocumentRevisions = make(map[string]*DocumentRevisionQuery)
+	}
+	apq.withNamedDocumentRevisions[name] = query
+	return apq
 }
 
 // WithNamedRisks tells the query-builder to eager-load the nodes that are connected to the "risks"

@@ -171,25 +171,25 @@ func (c *APITokenUpdateOne) SetInput(i UpdateAPITokenInput) *APITokenUpdateOne {
 
 // CreateActionPlanInput represents a mutation input for creating actionplans.
 type CreateActionPlanInput struct {
-	Tags             []string
-	Revision         *string
-	Name             string
-	Status           *enums.DocumentStatus
-	ActionPlanType   *string
-	Details          *string
-	ApprovalRequired *bool
-	ReviewDue        *time.Time
-	ReviewFrequency  *enums.Frequency
-	DueDate          *time.Time
-	Priority         *enums.Priority
-	Source           *string
-	ApproverID       *string
-	DelegateID       *string
-	OwnerID          *string
-	RiskIDs          []string
-	ControlIDs       []string
-	UserIDs          []string
-	ProgramIDs       []string
+	Tags                []string
+	Revision            *string
+	Name                string
+	Status              *enums.DocumentStatus
+	ActionPlanType      *string
+	ApprovalRequired    *bool
+	ReviewDue           *time.Time
+	ReviewFrequency     *enums.Frequency
+	DueDate             *time.Time
+	Priority            *enums.Priority
+	Source              *string
+	ApproverID          *string
+	DelegateID          *string
+	DocumentRevisionIDs []string
+	OwnerID             *string
+	RiskIDs             []string
+	ControlIDs          []string
+	UserIDs             []string
+	ProgramIDs          []string
 }
 
 // Mutate applies the CreateActionPlanInput on the ActionPlanMutation builder.
@@ -206,9 +206,6 @@ func (i *CreateActionPlanInput) Mutate(m *ActionPlanMutation) {
 	}
 	if v := i.ActionPlanType; v != nil {
 		m.SetActionPlanType(*v)
-	}
-	if v := i.Details; v != nil {
-		m.SetDetails(*v)
 	}
 	if v := i.ApprovalRequired; v != nil {
 		m.SetApprovalRequired(*v)
@@ -233,6 +230,9 @@ func (i *CreateActionPlanInput) Mutate(m *ActionPlanMutation) {
 	}
 	if v := i.DelegateID; v != nil {
 		m.SetDelegateID(*v)
+	}
+	if v := i.DocumentRevisionIDs; len(v) > 0 {
+		m.AddDocumentRevisionIDs(v...)
 	}
 	if v := i.OwnerID; v != nil {
 		m.SetOwnerID(*v)
@@ -259,48 +259,49 @@ func (c *ActionPlanCreate) SetInput(i CreateActionPlanInput) *ActionPlanCreate {
 
 // UpdateActionPlanInput represents a mutation input for updating actionplans.
 type UpdateActionPlanInput struct {
-	ClearTags             bool
-	Tags                  []string
-	AppendTags            []string
-	ClearRevision         bool
-	Revision              *string
-	Name                  *string
-	ClearStatus           bool
-	Status                *enums.DocumentStatus
-	ClearActionPlanType   bool
-	ActionPlanType        *string
-	ClearDetails          bool
-	Details               *string
-	ClearApprovalRequired bool
-	ApprovalRequired      *bool
-	ClearReviewDue        bool
-	ReviewDue             *time.Time
-	ClearReviewFrequency  bool
-	ReviewFrequency       *enums.Frequency
-	ClearDueDate          bool
-	DueDate               *time.Time
-	ClearPriority         bool
-	Priority              *enums.Priority
-	ClearSource           bool
-	Source                *string
-	ClearApprover         bool
-	ApproverID            *string
-	ClearDelegate         bool
-	DelegateID            *string
-	ClearOwner            bool
-	OwnerID               *string
-	ClearRisks            bool
-	AddRiskIDs            []string
-	RemoveRiskIDs         []string
-	ClearControls         bool
-	AddControlIDs         []string
-	RemoveControlIDs      []string
-	ClearUsers            bool
-	AddUserIDs            []string
-	RemoveUserIDs         []string
-	ClearPrograms         bool
-	AddProgramIDs         []string
-	RemoveProgramIDs      []string
+	ClearTags                 bool
+	Tags                      []string
+	AppendTags                []string
+	ClearRevision             bool
+	Revision                  *string
+	Name                      *string
+	ClearStatus               bool
+	Status                    *enums.DocumentStatus
+	ClearActionPlanType       bool
+	ActionPlanType            *string
+	ClearApprovalRequired     bool
+	ApprovalRequired          *bool
+	ClearReviewDue            bool
+	ReviewDue                 *time.Time
+	ClearReviewFrequency      bool
+	ReviewFrequency           *enums.Frequency
+	ClearDueDate              bool
+	DueDate                   *time.Time
+	ClearPriority             bool
+	Priority                  *enums.Priority
+	ClearSource               bool
+	Source                    *string
+	ClearApprover             bool
+	ApproverID                *string
+	ClearDelegate             bool
+	DelegateID                *string
+	ClearDocumentRevisions    bool
+	AddDocumentRevisionIDs    []string
+	RemoveDocumentRevisionIDs []string
+	ClearOwner                bool
+	OwnerID                   *string
+	ClearRisks                bool
+	AddRiskIDs                []string
+	RemoveRiskIDs             []string
+	ClearControls             bool
+	AddControlIDs             []string
+	RemoveControlIDs          []string
+	ClearUsers                bool
+	AddUserIDs                []string
+	RemoveUserIDs             []string
+	ClearPrograms             bool
+	AddProgramIDs             []string
+	RemoveProgramIDs          []string
 }
 
 // Mutate applies the UpdateActionPlanInput on the ActionPlanMutation builder.
@@ -334,12 +335,6 @@ func (i *UpdateActionPlanInput) Mutate(m *ActionPlanMutation) {
 	}
 	if v := i.ActionPlanType; v != nil {
 		m.SetActionPlanType(*v)
-	}
-	if i.ClearDetails {
-		m.ClearDetails()
-	}
-	if v := i.Details; v != nil {
-		m.SetDetails(*v)
 	}
 	if i.ClearApprovalRequired {
 		m.ClearApprovalRequired()
@@ -388,6 +383,15 @@ func (i *UpdateActionPlanInput) Mutate(m *ActionPlanMutation) {
 	}
 	if v := i.DelegateID; v != nil {
 		m.SetDelegateID(*v)
+	}
+	if i.ClearDocumentRevisions {
+		m.ClearDocumentRevisions()
+	}
+	if v := i.AddDocumentRevisionIDs; len(v) > 0 {
+		m.AddDocumentRevisionIDs(v...)
+	}
+	if v := i.RemoveDocumentRevisionIDs; len(v) > 0 {
+		m.RemoveDocumentRevisionIDs(v...)
 	}
 	if i.ClearOwner {
 		m.ClearOwner()
@@ -1747,6 +1751,164 @@ func (c *DocumentDataUpdate) SetInput(i UpdateDocumentDataInput) *DocumentDataUp
 
 // SetInput applies the change-set in the UpdateDocumentDataInput on the DocumentDataUpdateOne builder.
 func (c *DocumentDataUpdateOne) SetInput(i UpdateDocumentDataInput) *DocumentDataUpdateOne {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// CreateDocumentRevisionInput represents a mutation input for creating documentrevisions.
+type CreateDocumentRevisionInput struct {
+	Tags             []string
+	Revision         *string
+	Details          *string
+	Status           *enums.ApprovalStatus
+	ApprovalDate     *time.Time
+	SubmittedByID    *string
+	ApprovedByID     *string
+	InternalPolicyID *string
+	ProcedureID      *string
+	ActionPlanID     *string
+}
+
+// Mutate applies the CreateDocumentRevisionInput on the DocumentRevisionMutation builder.
+func (i *CreateDocumentRevisionInput) Mutate(m *DocumentRevisionMutation) {
+	if v := i.Tags; v != nil {
+		m.SetTags(v)
+	}
+	if v := i.Revision; v != nil {
+		m.SetRevision(*v)
+	}
+	if v := i.Details; v != nil {
+		m.SetDetails(*v)
+	}
+	if v := i.Status; v != nil {
+		m.SetStatus(*v)
+	}
+	if v := i.ApprovalDate; v != nil {
+		m.SetApprovalDate(*v)
+	}
+	if v := i.SubmittedByID; v != nil {
+		m.SetSubmittedByID(*v)
+	}
+	if v := i.ApprovedByID; v != nil {
+		m.SetApprovedByID(*v)
+	}
+	if v := i.InternalPolicyID; v != nil {
+		m.SetInternalPolicyID(*v)
+	}
+	if v := i.ProcedureID; v != nil {
+		m.SetProcedureID(*v)
+	}
+	if v := i.ActionPlanID; v != nil {
+		m.SetActionPlanID(*v)
+	}
+}
+
+// SetInput applies the change-set in the CreateDocumentRevisionInput on the DocumentRevisionCreate builder.
+func (c *DocumentRevisionCreate) SetInput(i CreateDocumentRevisionInput) *DocumentRevisionCreate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// UpdateDocumentRevisionInput represents a mutation input for updating documentrevisions.
+type UpdateDocumentRevisionInput struct {
+	ClearTags           bool
+	Tags                []string
+	AppendTags          []string
+	ClearRevision       bool
+	Revision            *string
+	ClearDetails        bool
+	Details             *string
+	ClearStatus         bool
+	Status              *enums.ApprovalStatus
+	ClearApprovalDate   bool
+	ApprovalDate        *time.Time
+	ClearSubmittedBy    bool
+	SubmittedByID       *string
+	ClearApprovedBy     bool
+	ApprovedByID        *string
+	ClearInternalPolicy bool
+	InternalPolicyID    *string
+	ClearProcedure      bool
+	ProcedureID         *string
+	ClearActionPlan     bool
+	ActionPlanID        *string
+}
+
+// Mutate applies the UpdateDocumentRevisionInput on the DocumentRevisionMutation builder.
+func (i *UpdateDocumentRevisionInput) Mutate(m *DocumentRevisionMutation) {
+	if i.ClearTags {
+		m.ClearTags()
+	}
+	if v := i.Tags; v != nil {
+		m.SetTags(v)
+	}
+	if i.AppendTags != nil {
+		m.AppendTags(i.Tags)
+	}
+	if i.ClearRevision {
+		m.ClearRevision()
+	}
+	if v := i.Revision; v != nil {
+		m.SetRevision(*v)
+	}
+	if i.ClearDetails {
+		m.ClearDetails()
+	}
+	if v := i.Details; v != nil {
+		m.SetDetails(*v)
+	}
+	if i.ClearStatus {
+		m.ClearStatus()
+	}
+	if v := i.Status; v != nil {
+		m.SetStatus(*v)
+	}
+	if i.ClearApprovalDate {
+		m.ClearApprovalDate()
+	}
+	if v := i.ApprovalDate; v != nil {
+		m.SetApprovalDate(*v)
+	}
+	if i.ClearSubmittedBy {
+		m.ClearSubmittedBy()
+	}
+	if v := i.SubmittedByID; v != nil {
+		m.SetSubmittedByID(*v)
+	}
+	if i.ClearApprovedBy {
+		m.ClearApprovedBy()
+	}
+	if v := i.ApprovedByID; v != nil {
+		m.SetApprovedByID(*v)
+	}
+	if i.ClearInternalPolicy {
+		m.ClearInternalPolicy()
+	}
+	if v := i.InternalPolicyID; v != nil {
+		m.SetInternalPolicyID(*v)
+	}
+	if i.ClearProcedure {
+		m.ClearProcedure()
+	}
+	if v := i.ProcedureID; v != nil {
+		m.SetProcedureID(*v)
+	}
+	if i.ClearActionPlan {
+		m.ClearActionPlan()
+	}
+	if v := i.ActionPlanID; v != nil {
+		m.SetActionPlanID(*v)
+	}
+}
+
+// SetInput applies the change-set in the UpdateDocumentRevisionInput on the DocumentRevisionUpdate builder.
+func (c *DocumentRevisionUpdate) SetInput(i UpdateDocumentRevisionInput) *DocumentRevisionUpdate {
+	i.Mutate(c.Mutation())
+	return c
+}
+
+// SetInput applies the change-set in the UpdateDocumentRevisionInput on the DocumentRevisionUpdateOne builder.
+func (c *DocumentRevisionUpdateOne) SetInput(i UpdateDocumentRevisionInput) *DocumentRevisionUpdateOne {
 	i.Mutate(c.Mutation())
 	return c
 }
@@ -3792,7 +3954,6 @@ type CreateInternalPolicyInput struct {
 	Name                string
 	Status              *enums.DocumentStatus
 	PolicyType          *string
-	Details             *string
 	ApprovalRequired    *bool
 	ReviewDue           *time.Time
 	ReviewFrequency     *enums.Frequency
@@ -3801,6 +3962,7 @@ type CreateInternalPolicyInput struct {
 	EditorIDs           []string
 	ApproverID          *string
 	DelegateID          *string
+	DocumentRevisionIDs []string
 	ControlObjectiveIDs []string
 	ControlIDs          []string
 	ProcedureIDs        []string
@@ -3823,9 +3985,6 @@ func (i *CreateInternalPolicyInput) Mutate(m *InternalPolicyMutation) {
 	}
 	if v := i.PolicyType; v != nil {
 		m.SetPolicyType(*v)
-	}
-	if v := i.Details; v != nil {
-		m.SetDetails(*v)
 	}
 	if v := i.ApprovalRequired; v != nil {
 		m.SetApprovalRequired(*v)
@@ -3850,6 +4009,9 @@ func (i *CreateInternalPolicyInput) Mutate(m *InternalPolicyMutation) {
 	}
 	if v := i.DelegateID; v != nil {
 		m.SetDelegateID(*v)
+	}
+	if v := i.DocumentRevisionIDs; len(v) > 0 {
+		m.AddDocumentRevisionIDs(v...)
 	}
 	if v := i.ControlObjectiveIDs; len(v) > 0 {
 		m.AddControlObjectiveIDs(v...)
@@ -3889,8 +4051,6 @@ type UpdateInternalPolicyInput struct {
 	Status                    *enums.DocumentStatus
 	ClearPolicyType           bool
 	PolicyType                *string
-	ClearDetails              bool
-	Details                   *string
 	ClearApprovalRequired     bool
 	ApprovalRequired          *bool
 	ClearReviewDue            bool
@@ -3909,6 +4069,9 @@ type UpdateInternalPolicyInput struct {
 	ApproverID                *string
 	ClearDelegate             bool
 	DelegateID                *string
+	ClearDocumentRevisions    bool
+	AddDocumentRevisionIDs    []string
+	RemoveDocumentRevisionIDs []string
 	ClearControlObjectives    bool
 	AddControlObjectiveIDs    []string
 	RemoveControlObjectiveIDs []string
@@ -3960,12 +4123,6 @@ func (i *UpdateInternalPolicyInput) Mutate(m *InternalPolicyMutation) {
 	}
 	if v := i.PolicyType; v != nil {
 		m.SetPolicyType(*v)
-	}
-	if i.ClearDetails {
-		m.ClearDetails()
-	}
-	if v := i.Details; v != nil {
-		m.SetDetails(*v)
 	}
 	if i.ClearApprovalRequired {
 		m.ClearApprovalRequired()
@@ -4020,6 +4177,15 @@ func (i *UpdateInternalPolicyInput) Mutate(m *InternalPolicyMutation) {
 	}
 	if v := i.DelegateID; v != nil {
 		m.SetDelegateID(*v)
+	}
+	if i.ClearDocumentRevisions {
+		m.ClearDocumentRevisions()
+	}
+	if v := i.AddDocumentRevisionIDs; len(v) > 0 {
+		m.AddDocumentRevisionIDs(v...)
+	}
+	if v := i.RemoveDocumentRevisionIDs; len(v) > 0 {
+		m.RemoveDocumentRevisionIDs(v...)
 	}
 	if i.ClearControlObjectives {
 		m.ClearControlObjectives()
@@ -5713,26 +5879,26 @@ func (c *PersonalAccessTokenUpdateOne) SetInput(i UpdatePersonalAccessTokenInput
 
 // CreateProcedureInput represents a mutation input for creating procedures.
 type CreateProcedureInput struct {
-	Tags              []string
-	Revision          *string
-	Name              string
-	Status            *enums.DocumentStatus
-	ProcedureType     *string
-	Details           *string
-	ApprovalRequired  *bool
-	ReviewDue         *time.Time
-	ReviewFrequency   *enums.Frequency
-	OwnerID           *string
-	BlockedGroupIDs   []string
-	EditorIDs         []string
-	ApproverID        *string
-	DelegateID        *string
-	ControlIDs        []string
-	InternalPolicyIDs []string
-	ProgramIDs        []string
-	NarrativeIDs      []string
-	RiskIDs           []string
-	TaskIDs           []string
+	Tags                []string
+	Revision            *string
+	Name                string
+	Status              *enums.DocumentStatus
+	ProcedureType       *string
+	ApprovalRequired    *bool
+	ReviewDue           *time.Time
+	ReviewFrequency     *enums.Frequency
+	OwnerID             *string
+	BlockedGroupIDs     []string
+	EditorIDs           []string
+	ApproverID          *string
+	DelegateID          *string
+	DocumentRevisionIDs []string
+	ControlIDs          []string
+	InternalPolicyIDs   []string
+	ProgramIDs          []string
+	NarrativeIDs        []string
+	RiskIDs             []string
+	TaskIDs             []string
 }
 
 // Mutate applies the CreateProcedureInput on the ProcedureMutation builder.
@@ -5749,9 +5915,6 @@ func (i *CreateProcedureInput) Mutate(m *ProcedureMutation) {
 	}
 	if v := i.ProcedureType; v != nil {
 		m.SetProcedureType(*v)
-	}
-	if v := i.Details; v != nil {
-		m.SetDetails(*v)
 	}
 	if v := i.ApprovalRequired; v != nil {
 		m.SetApprovalRequired(*v)
@@ -5776,6 +5939,9 @@ func (i *CreateProcedureInput) Mutate(m *ProcedureMutation) {
 	}
 	if v := i.DelegateID; v != nil {
 		m.SetDelegateID(*v)
+	}
+	if v := i.DocumentRevisionIDs; len(v) > 0 {
+		m.AddDocumentRevisionIDs(v...)
 	}
 	if v := i.ControlIDs; len(v) > 0 {
 		m.AddControlIDs(v...)
@@ -5805,54 +5971,55 @@ func (c *ProcedureCreate) SetInput(i CreateProcedureInput) *ProcedureCreate {
 
 // UpdateProcedureInput represents a mutation input for updating procedures.
 type UpdateProcedureInput struct {
-	ClearTags               bool
-	Tags                    []string
-	AppendTags              []string
-	ClearRevision           bool
-	Revision                *string
-	Name                    *string
-	ClearStatus             bool
-	Status                  *enums.DocumentStatus
-	ClearProcedureType      bool
-	ProcedureType           *string
-	ClearDetails            bool
-	Details                 *string
-	ClearApprovalRequired   bool
-	ApprovalRequired        *bool
-	ClearReviewDue          bool
-	ReviewDue               *time.Time
-	ClearReviewFrequency    bool
-	ReviewFrequency         *enums.Frequency
-	ClearOwner              bool
-	OwnerID                 *string
-	ClearBlockedGroups      bool
-	AddBlockedGroupIDs      []string
-	RemoveBlockedGroupIDs   []string
-	ClearEditors            bool
-	AddEditorIDs            []string
-	RemoveEditorIDs         []string
-	ClearApprover           bool
-	ApproverID              *string
-	ClearDelegate           bool
-	DelegateID              *string
-	ClearControls           bool
-	AddControlIDs           []string
-	RemoveControlIDs        []string
-	ClearInternalPolicies   bool
-	AddInternalPolicyIDs    []string
-	RemoveInternalPolicyIDs []string
-	ClearPrograms           bool
-	AddProgramIDs           []string
-	RemoveProgramIDs        []string
-	ClearNarratives         bool
-	AddNarrativeIDs         []string
-	RemoveNarrativeIDs      []string
-	ClearRisks              bool
-	AddRiskIDs              []string
-	RemoveRiskIDs           []string
-	ClearTasks              bool
-	AddTaskIDs              []string
-	RemoveTaskIDs           []string
+	ClearTags                 bool
+	Tags                      []string
+	AppendTags                []string
+	ClearRevision             bool
+	Revision                  *string
+	Name                      *string
+	ClearStatus               bool
+	Status                    *enums.DocumentStatus
+	ClearProcedureType        bool
+	ProcedureType             *string
+	ClearApprovalRequired     bool
+	ApprovalRequired          *bool
+	ClearReviewDue            bool
+	ReviewDue                 *time.Time
+	ClearReviewFrequency      bool
+	ReviewFrequency           *enums.Frequency
+	ClearOwner                bool
+	OwnerID                   *string
+	ClearBlockedGroups        bool
+	AddBlockedGroupIDs        []string
+	RemoveBlockedGroupIDs     []string
+	ClearEditors              bool
+	AddEditorIDs              []string
+	RemoveEditorIDs           []string
+	ClearApprover             bool
+	ApproverID                *string
+	ClearDelegate             bool
+	DelegateID                *string
+	ClearDocumentRevisions    bool
+	AddDocumentRevisionIDs    []string
+	RemoveDocumentRevisionIDs []string
+	ClearControls             bool
+	AddControlIDs             []string
+	RemoveControlIDs          []string
+	ClearInternalPolicies     bool
+	AddInternalPolicyIDs      []string
+	RemoveInternalPolicyIDs   []string
+	ClearPrograms             bool
+	AddProgramIDs             []string
+	RemoveProgramIDs          []string
+	ClearNarratives           bool
+	AddNarrativeIDs           []string
+	RemoveNarrativeIDs        []string
+	ClearRisks                bool
+	AddRiskIDs                []string
+	RemoveRiskIDs             []string
+	ClearTasks                bool
+	AddTaskIDs                []string
+	RemoveTaskIDs             []string
 }
 
 // Mutate applies the UpdateProcedureInput on the ProcedureMutation builder.
@@ -5886,12 +6053,6 @@ func (i *UpdateProcedureInput) Mutate(m *ProcedureMutation) {
 	}
 	if v := i.ProcedureType; v != nil {
 		m.SetProcedureType(*v)
-	}
-	if i.ClearDetails {
-		m.ClearDetails()
-	}
-	if v := i.Details; v != nil {
-		m.SetDetails(*v)
 	}
 	if i.ClearApprovalRequired {
 		m.ClearApprovalRequired()
@@ -5946,6 +6107,15 @@ func (i *UpdateProcedureInput) Mutate(m *ProcedureMutation) {
 	}
 	if v := i.DelegateID; v != nil {
 		m.SetDelegateID(*v)
+	}
+	if i.ClearDocumentRevisions {
+		m.ClearDocumentRevisions()
+	}
+	if v := i.AddDocumentRevisionIDs; len(v) > 0 {
+		m.AddDocumentRevisionIDs(v...)
+	}
+	if v := i.RemoveDocumentRevisionIDs; len(v) > 0 {
+		m.RemoveDocumentRevisionIDs(v...)
 	}
 	if i.ClearControls {
 		m.ClearControls()

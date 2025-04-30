@@ -9,7 +9,6 @@ query GlobalSearch($query: String!) {
       }
       ... on ActionPlanSearchResult {
         actionPlans {
-          details
           id
           name
           tags
@@ -53,6 +52,13 @@ query GlobalSearch($query: String!) {
       }
       ... on DocumentDataSearchResult {
         documentData {
+          id
+          tags
+        }
+      }
+      ... on DocumentRevisionSearchResult {
+        documentRevisions {
+          details
           id
           tags
         }
@@ -109,7 +115,6 @@ query GlobalSearch($query: String!) {
       }
       ... on InternalPolicySearchResult {
         internalPolicies {
-          details
           displayID
           id
           name
@@ -159,7 +164,6 @@ query GlobalSearch($query: String!) {
       }
       ... on ProcedureSearchResult {
         procedures {
-          details
           displayID
           id
           name

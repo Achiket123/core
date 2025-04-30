@@ -93,8 +93,6 @@ func (ec *executionContext) fieldContext_InternalPolicyBulkCreatePayload_interna
 				return ec.fieldContext_InternalPolicy_status(ctx, field)
 			case "policyType":
 				return ec.fieldContext_InternalPolicy_policyType(ctx, field)
-			case "details":
-				return ec.fieldContext_InternalPolicy_details(ctx, field)
 			case "approvalRequired":
 				return ec.fieldContext_InternalPolicy_approvalRequired(ctx, field)
 			case "reviewDue":
@@ -115,6 +113,8 @@ func (ec *executionContext) fieldContext_InternalPolicyBulkCreatePayload_interna
 				return ec.fieldContext_InternalPolicy_approver(ctx, field)
 			case "delegate":
 				return ec.fieldContext_InternalPolicy_delegate(ctx, field)
+			case "documentRevisions":
+				return ec.fieldContext_InternalPolicy_documentRevisions(ctx, field)
 			case "controlObjectives":
 				return ec.fieldContext_InternalPolicy_controlObjectives(ctx, field)
 			case "controls":
@@ -201,8 +201,6 @@ func (ec *executionContext) fieldContext_InternalPolicyCreatePayload_internalPol
 				return ec.fieldContext_InternalPolicy_status(ctx, field)
 			case "policyType":
 				return ec.fieldContext_InternalPolicy_policyType(ctx, field)
-			case "details":
-				return ec.fieldContext_InternalPolicy_details(ctx, field)
 			case "approvalRequired":
 				return ec.fieldContext_InternalPolicy_approvalRequired(ctx, field)
 			case "reviewDue":
@@ -223,6 +221,8 @@ func (ec *executionContext) fieldContext_InternalPolicyCreatePayload_internalPol
 				return ec.fieldContext_InternalPolicy_approver(ctx, field)
 			case "delegate":
 				return ec.fieldContext_InternalPolicy_delegate(ctx, field)
+			case "documentRevisions":
+				return ec.fieldContext_InternalPolicy_documentRevisions(ctx, field)
 			case "controlObjectives":
 				return ec.fieldContext_InternalPolicy_controlObjectives(ctx, field)
 			case "controls":
@@ -353,8 +353,6 @@ func (ec *executionContext) fieldContext_InternalPolicyUpdatePayload_internalPol
 				return ec.fieldContext_InternalPolicy_status(ctx, field)
 			case "policyType":
 				return ec.fieldContext_InternalPolicy_policyType(ctx, field)
-			case "details":
-				return ec.fieldContext_InternalPolicy_details(ctx, field)
 			case "approvalRequired":
 				return ec.fieldContext_InternalPolicy_approvalRequired(ctx, field)
 			case "reviewDue":
@@ -375,6 +373,8 @@ func (ec *executionContext) fieldContext_InternalPolicyUpdatePayload_internalPol
 				return ec.fieldContext_InternalPolicy_approver(ctx, field)
 			case "delegate":
 				return ec.fieldContext_InternalPolicy_delegate(ctx, field)
+			case "documentRevisions":
+				return ec.fieldContext_InternalPolicy_documentRevisions(ctx, field)
 			case "controlObjectives":
 				return ec.fieldContext_InternalPolicy_controlObjectives(ctx, field)
 			case "controls":

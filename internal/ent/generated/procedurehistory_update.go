@@ -217,26 +217,6 @@ func (phu *ProcedureHistoryUpdate) ClearProcedureType() *ProcedureHistoryUpdate 
 	return phu
 }
 
-// SetDetails sets the "details" field.
-func (phu *ProcedureHistoryUpdate) SetDetails(s string) *ProcedureHistoryUpdate {
-	phu.mutation.SetDetails(s)
-	return phu
-}
-
-// SetNillableDetails sets the "details" field if the given value is not nil.
-func (phu *ProcedureHistoryUpdate) SetNillableDetails(s *string) *ProcedureHistoryUpdate {
-	if s != nil {
-		phu.SetDetails(*s)
-	}
-	return phu
-}
-
-// ClearDetails clears the value of the "details" field.
-func (phu *ProcedureHistoryUpdate) ClearDetails() *ProcedureHistoryUpdate {
-	phu.mutation.ClearDetails()
-	return phu
-}
-
 // SetApprovalRequired sets the "approval_required" field.
 func (phu *ProcedureHistoryUpdate) SetApprovalRequired(b bool) *ProcedureHistoryUpdate {
 	phu.mutation.SetApprovalRequired(b)
@@ -482,12 +462,6 @@ func (phu *ProcedureHistoryUpdate) sqlSave(ctx context.Context) (n int, err erro
 	if phu.mutation.ProcedureTypeCleared() {
 		_spec.ClearField(procedurehistory.FieldProcedureType, field.TypeString)
 	}
-	if value, ok := phu.mutation.Details(); ok {
-		_spec.SetField(procedurehistory.FieldDetails, field.TypeString, value)
-	}
-	if phu.mutation.DetailsCleared() {
-		_spec.ClearField(procedurehistory.FieldDetails, field.TypeString)
-	}
 	if value, ok := phu.mutation.ApprovalRequired(); ok {
 		_spec.SetField(procedurehistory.FieldApprovalRequired, field.TypeBool, value)
 	}
@@ -723,26 +697,6 @@ func (phuo *ProcedureHistoryUpdateOne) SetNillableProcedureType(s *string) *Proc
 // ClearProcedureType clears the value of the "procedure_type" field.
 func (phuo *ProcedureHistoryUpdateOne) ClearProcedureType() *ProcedureHistoryUpdateOne {
 	phuo.mutation.ClearProcedureType()
-	return phuo
-}
-
-// SetDetails sets the "details" field.
-func (phuo *ProcedureHistoryUpdateOne) SetDetails(s string) *ProcedureHistoryUpdateOne {
-	phuo.mutation.SetDetails(s)
-	return phuo
-}
-
-// SetNillableDetails sets the "details" field if the given value is not nil.
-func (phuo *ProcedureHistoryUpdateOne) SetNillableDetails(s *string) *ProcedureHistoryUpdateOne {
-	if s != nil {
-		phuo.SetDetails(*s)
-	}
-	return phuo
-}
-
-// ClearDetails clears the value of the "details" field.
-func (phuo *ProcedureHistoryUpdateOne) ClearDetails() *ProcedureHistoryUpdateOne {
-	phuo.mutation.ClearDetails()
 	return phuo
 }
 
@@ -1020,12 +974,6 @@ func (phuo *ProcedureHistoryUpdateOne) sqlSave(ctx context.Context) (_node *Proc
 	}
 	if phuo.mutation.ProcedureTypeCleared() {
 		_spec.ClearField(procedurehistory.FieldProcedureType, field.TypeString)
-	}
-	if value, ok := phuo.mutation.Details(); ok {
-		_spec.SetField(procedurehistory.FieldDetails, field.TypeString, value)
-	}
-	if phuo.mutation.DetailsCleared() {
-		_spec.ClearField(procedurehistory.FieldDetails, field.TypeString)
 	}
 	if value, ok := phuo.mutation.ApprovalRequired(); ok {
 		_spec.SetField(procedurehistory.FieldApprovalRequired, field.TypeBool, value)

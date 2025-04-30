@@ -142,6 +142,25 @@ func (r *mutationResolver) bulkCreateDocumentData(ctx context.Context, input []*
 	}, nil
 }
 
+// bulkCreateDocumentRevision uses the CreateBulk function to create multiple DocumentRevision entities
+func (r *mutationResolver) bulkCreateDocumentRevision(ctx context.Context, input []*generated.CreateDocumentRevisionInput) (*model.DocumentRevisionBulkCreatePayload, error) {
+	c := withTransactionalMutation(ctx)
+	builders := make([]*generated.DocumentRevisionCreate, len(input))
+	for i, data := range input {
+		builders[i] = c.DocumentRevision.Create().SetInput(*data)
+	}
+
+	res, err := c.DocumentRevision.CreateBulk(builders...).Save(ctx)
+	if err != nil {
+		return nil, parseRequestError(err, action{action: ActionCreate, object: "documentrevision"})
+	}
+
+	// return response
+	return &model.DocumentRevisionBulkCreatePayload{
+		DocumentRevisions: res,
+	}, nil
+}
+
 // bulkCreateEntity uses the CreateBulk function to create multiple Entity entities
 func (r *mutationResolver) bulkCreateEntity(ctx context.Context, input []*generated.CreateEntityInput) (*model.EntityBulkCreatePayload, error) {
 	c := withTransactionalMutation(ctx)

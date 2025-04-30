@@ -194,20 +194,6 @@ func (aphc *ActionPlanHistoryCreate) SetNillableActionPlanType(s *string) *Actio
 	return aphc
 }
 
-// SetDetails sets the "details" field.
-func (aphc *ActionPlanHistoryCreate) SetDetails(s string) *ActionPlanHistoryCreate {
-	aphc.mutation.SetDetails(s)
-	return aphc
-}
-
-// SetNillableDetails sets the "details" field if the given value is not nil.
-func (aphc *ActionPlanHistoryCreate) SetNillableDetails(s *string) *ActionPlanHistoryCreate {
-	if s != nil {
-		aphc.SetDetails(*s)
-	}
-	return aphc
-}
-
 // SetApprovalRequired sets the "approval_required" field.
 func (aphc *ActionPlanHistoryCreate) SetApprovalRequired(b bool) *ActionPlanHistoryCreate {
 	aphc.mutation.SetApprovalRequired(b)
@@ -547,10 +533,6 @@ func (aphc *ActionPlanHistoryCreate) createSpec() (*ActionPlanHistory, *sqlgraph
 	if value, ok := aphc.mutation.ActionPlanType(); ok {
 		_spec.SetField(actionplanhistory.FieldActionPlanType, field.TypeString, value)
 		_node.ActionPlanType = value
-	}
-	if value, ok := aphc.mutation.Details(); ok {
-		_spec.SetField(actionplanhistory.FieldDetails, field.TypeString, value)
-		_node.Details = value
 	}
 	if value, ok := aphc.mutation.ApprovalRequired(); ok {
 		_spec.SetField(actionplanhistory.FieldApprovalRequired, field.TypeBool, value)

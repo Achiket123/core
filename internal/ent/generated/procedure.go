@@ -47,8 +47,6 @@ type Procedure struct {
 	Status enums.DocumentStatus `json:"status,omitempty"`
 	// type of the procedure, e.g. compliance, operational, health and safety, etc.
 	ProcedureType string `json:"procedure_type,omitempty"`
-	// details of the procedure
-	Details string `json:"details,omitempty"`
 	// whether approval is required for edits to the procedure
 	ApprovalRequired bool `json:"approval_required,omitempty"`
 	// the date the procedure should be reviewed, calculated based on the review_frequency if not directly set
@@ -79,6 +77,8 @@ type ProcedureEdges struct {
 	Approver *Group `json:"approver,omitempty"`
 	// temporary delegates for the procedure, used for temporary approval
 	Delegate *Group `json:"delegate,omitempty"`
+	// DocumentRevisions holds the value of the document_revisions edge.
+	DocumentRevisions []*DocumentRevision `json:"document_revisions,omitempty"`
 	// Controls holds the value of the controls edge.
 	Controls []*Control `json:"controls,omitempty"`
 	// InternalPolicies holds the value of the internal_policies edge.
@@ -93,18 +93,19 @@ type ProcedureEdges struct {
 	Tasks []*Task `json:"tasks,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [11]bool
+	loadedTypes [12]bool
 	// totalCount holds the count of the edges above.
-	totalCount [11]map[string]int
+	totalCount [12]map[string]int
 
-	namedBlockedGroups    map[string][]*Group
-	namedEditors          map[string][]*Group
-	namedControls         map[string][]*Control
-	namedInternalPolicies map[string][]*InternalPolicy
-	namedPrograms         map[string][]*Program
-	namedNarratives       map[string][]*Narrative
-	namedRisks            map[string][]*Risk
-	namedTasks            map[string][]*Task
+	namedBlockedGroups     map[string][]*Group
+	namedEditors           map[string][]*Group
+	namedDocumentRevisions map[string][]*DocumentRevision
+	namedControls          map[string][]*Control
+	namedInternalPolicies  map[string][]*InternalPolicy
+	namedPrograms          map[string][]*Program
+	namedNarratives        map[string][]*Narrative
+	namedRisks             map[string][]*Risk
+	namedTasks             map[string][]*Task
 }
 
 // OwnerOrErr returns the Owner value or an error if the edge
@@ -158,10 +159,19 @@ func (e ProcedureEdges) DelegateOrErr() (*Group, error) {
 	return nil, &NotLoadedError{edge: "delegate"}
 }
 
+// DocumentRevisionsOrErr returns the DocumentRevisions value or an error if the edge
+// was not loaded in eager-loading.
+func (e ProcedureEdges) DocumentRevisionsOrErr() ([]*DocumentRevision, error) {
+	if e.loadedTypes[5] {
+		return e.DocumentRevisions, nil
+	}
+	return nil, &NotLoadedError{edge: "document_revisions"}
+}
+
 // ControlsOrErr returns the Controls value or an error if the edge
 // was not loaded in eager-loading.
 func (e ProcedureEdges) ControlsOrErr() ([]*Control, error) {
-	if e.loadedTypes[5] {
+	if e.loadedTypes[6] {
 		return e.Controls, nil
 	}
 	return nil, &NotLoadedError{edge: "controls"}
@@ -170,7 +180,7 @@ func (e ProcedureEdges) ControlsOrErr() ([]*Control, error) {
 // InternalPoliciesOrErr returns the InternalPolicies value or an error if the edge
 // was not loaded in eager-loading.
 func (e ProcedureEdges) InternalPoliciesOrErr() ([]*InternalPolicy, error) {
-	if e.loadedTypes[6] {
+	if e.loadedTypes[7] {
 		return e.InternalPolicies, nil
 	}
 	return nil, &NotLoadedError{edge: "internal_policies"}
@@ -179,7 +189,7 @@ func (e ProcedureEdges) InternalPoliciesOrErr() ([]*InternalPolicy, error) {
 // ProgramsOrErr returns the Programs value or an error if the edge
 // was not loaded in eager-loading.
 func (e ProcedureEdges) ProgramsOrErr() ([]*Program, error) {
-	if e.loadedTypes[7] {
+	if e.loadedTypes[8] {
 		return e.Programs, nil
 	}
 	return nil, &NotLoadedError{edge: "programs"}
@@ -188,7 +198,7 @@ func (e ProcedureEdges) ProgramsOrErr() ([]*Program, error) {
 // NarrativesOrErr returns the Narratives value or an error if the edge
 // was not loaded in eager-loading.
 func (e ProcedureEdges) NarrativesOrErr() ([]*Narrative, error) {
-	if e.loadedTypes[8] {
+	if e.loadedTypes[9] {
 		return e.Narratives, nil
 	}
 	return nil, &NotLoadedError{edge: "narratives"}
@@ -197,7 +207,7 @@ func (e ProcedureEdges) NarrativesOrErr() ([]*Narrative, error) {
 // RisksOrErr returns the Risks value or an error if the edge
 // was not loaded in eager-loading.
 func (e ProcedureEdges) RisksOrErr() ([]*Risk, error) {
-	if e.loadedTypes[9] {
+	if e.loadedTypes[10] {
 		return e.Risks, nil
 	}
 	return nil, &NotLoadedError{edge: "risks"}
@@ -206,7 +216,7 @@ func (e ProcedureEdges) RisksOrErr() ([]*Risk, error) {
 // TasksOrErr returns the Tasks value or an error if the edge
 // was not loaded in eager-loading.
 func (e ProcedureEdges) TasksOrErr() ([]*Task, error) {
-	if e.loadedTypes[10] {
+	if e.loadedTypes[11] {
 		return e.Tasks, nil
 	}
 	return nil, &NotLoadedError{edge: "tasks"}
@@ -221,7 +231,7 @@ func (*Procedure) scanValues(columns []string) ([]any, error) {
 			values[i] = new([]byte)
 		case procedure.FieldApprovalRequired:
 			values[i] = new(sql.NullBool)
-		case procedure.FieldID, procedure.FieldCreatedBy, procedure.FieldUpdatedBy, procedure.FieldDeletedBy, procedure.FieldDisplayID, procedure.FieldRevision, procedure.FieldOwnerID, procedure.FieldName, procedure.FieldStatus, procedure.FieldProcedureType, procedure.FieldDetails, procedure.FieldReviewFrequency, procedure.FieldApproverID, procedure.FieldDelegateID:
+		case procedure.FieldID, procedure.FieldCreatedBy, procedure.FieldUpdatedBy, procedure.FieldDeletedBy, procedure.FieldDisplayID, procedure.FieldRevision, procedure.FieldOwnerID, procedure.FieldName, procedure.FieldStatus, procedure.FieldProcedureType, procedure.FieldReviewFrequency, procedure.FieldApproverID, procedure.FieldDelegateID:
 			values[i] = new(sql.NullString)
 		case procedure.FieldCreatedAt, procedure.FieldUpdatedAt, procedure.FieldDeletedAt, procedure.FieldReviewDue:
 			values[i] = new(sql.NullTime)
@@ -330,12 +340,6 @@ func (pr *Procedure) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				pr.ProcedureType = value.String
 			}
-		case procedure.FieldDetails:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field details", values[i])
-			} else if value.Valid {
-				pr.Details = value.String
-			}
 		case procedure.FieldApprovalRequired:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field approval_required", values[i])
@@ -416,6 +420,11 @@ func (pr *Procedure) QueryApprover() *GroupQuery {
 // QueryDelegate queries the "delegate" edge of the Procedure entity.
 func (pr *Procedure) QueryDelegate() *GroupQuery {
 	return NewProcedureClient(pr.config).QueryDelegate(pr)
+}
+
+// QueryDocumentRevisions queries the "document_revisions" edge of the Procedure entity.
+func (pr *Procedure) QueryDocumentRevisions() *DocumentRevisionQuery {
+	return NewProcedureClient(pr.config).QueryDocumentRevisions(pr)
 }
 
 // QueryControls queries the "controls" edge of the Procedure entity.
@@ -510,9 +519,6 @@ func (pr *Procedure) String() string {
 	builder.WriteString("procedure_type=")
 	builder.WriteString(pr.ProcedureType)
 	builder.WriteString(", ")
-	builder.WriteString("details=")
-	builder.WriteString(pr.Details)
-	builder.WriteString(", ")
 	builder.WriteString("approval_required=")
 	builder.WriteString(fmt.Sprintf("%v", pr.ApprovalRequired))
 	builder.WriteString(", ")
@@ -576,6 +582,30 @@ func (pr *Procedure) appendNamedEditors(name string, edges ...*Group) {
 		pr.Edges.namedEditors[name] = []*Group{}
 	} else {
 		pr.Edges.namedEditors[name] = append(pr.Edges.namedEditors[name], edges...)
+	}
+}
+
+// NamedDocumentRevisions returns the DocumentRevisions named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (pr *Procedure) NamedDocumentRevisions(name string) ([]*DocumentRevision, error) {
+	if pr.Edges.namedDocumentRevisions == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := pr.Edges.namedDocumentRevisions[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (pr *Procedure) appendNamedDocumentRevisions(name string, edges ...*DocumentRevision) {
+	if pr.Edges.namedDocumentRevisions == nil {
+		pr.Edges.namedDocumentRevisions = make(map[string][]*DocumentRevision)
+	}
+	if len(edges) == 0 {
+		pr.Edges.namedDocumentRevisions[name] = []*DocumentRevision{}
+	} else {
+		pr.Edges.namedDocumentRevisions[name] = append(pr.Edges.namedDocumentRevisions[name], edges...)
 	}
 }
 

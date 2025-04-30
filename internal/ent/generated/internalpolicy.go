@@ -47,8 +47,6 @@ type InternalPolicy struct {
 	Status enums.DocumentStatus `json:"status,omitempty"`
 	// type of the policy, e.g. compliance, operational, health and safety, etc.
 	PolicyType string `json:"policy_type,omitempty"`
-	// details of the policy
-	Details string `json:"details,omitempty"`
 	// whether approval is required for edits to the policy
 	ApprovalRequired bool `json:"approval_required,omitempty"`
 	// the date the policy should be reviewed, calculated based on the review_frequency if not directly set
@@ -79,6 +77,8 @@ type InternalPolicyEdges struct {
 	Approver *Group `json:"approver,omitempty"`
 	// temporary delegates for the policy, used for temporary approval
 	Delegate *Group `json:"delegate,omitempty"`
+	// DocumentRevisions holds the value of the document_revisions edge.
+	DocumentRevisions []*DocumentRevision `json:"document_revisions,omitempty"`
 	// ControlObjectives holds the value of the control_objectives edge.
 	ControlObjectives []*ControlObjective `json:"control_objectives,omitempty"`
 	// Controls holds the value of the controls edge.
@@ -93,12 +93,13 @@ type InternalPolicyEdges struct {
 	Programs []*Program `json:"programs,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [11]bool
+	loadedTypes [12]bool
 	// totalCount holds the count of the edges above.
-	totalCount [11]map[string]int
+	totalCount [12]map[string]int
 
 	namedBlockedGroups     map[string][]*Group
 	namedEditors           map[string][]*Group
+	namedDocumentRevisions map[string][]*DocumentRevision
 	namedControlObjectives map[string][]*ControlObjective
 	namedControls          map[string][]*Control
 	namedProcedures        map[string][]*Procedure
@@ -158,10 +159,19 @@ func (e InternalPolicyEdges) DelegateOrErr() (*Group, error) {
 	return nil, &NotLoadedError{edge: "delegate"}
 }
 
+// DocumentRevisionsOrErr returns the DocumentRevisions value or an error if the edge
+// was not loaded in eager-loading.
+func (e InternalPolicyEdges) DocumentRevisionsOrErr() ([]*DocumentRevision, error) {
+	if e.loadedTypes[5] {
+		return e.DocumentRevisions, nil
+	}
+	return nil, &NotLoadedError{edge: "document_revisions"}
+}
+
 // ControlObjectivesOrErr returns the ControlObjectives value or an error if the edge
 // was not loaded in eager-loading.
 func (e InternalPolicyEdges) ControlObjectivesOrErr() ([]*ControlObjective, error) {
-	if e.loadedTypes[5] {
+	if e.loadedTypes[6] {
 		return e.ControlObjectives, nil
 	}
 	return nil, &NotLoadedError{edge: "control_objectives"}
@@ -170,7 +180,7 @@ func (e InternalPolicyEdges) ControlObjectivesOrErr() ([]*ControlObjective, erro
 // ControlsOrErr returns the Controls value or an error if the edge
 // was not loaded in eager-loading.
 func (e InternalPolicyEdges) ControlsOrErr() ([]*Control, error) {
-	if e.loadedTypes[6] {
+	if e.loadedTypes[7] {
 		return e.Controls, nil
 	}
 	return nil, &NotLoadedError{edge: "controls"}
@@ -179,7 +189,7 @@ func (e InternalPolicyEdges) ControlsOrErr() ([]*Control, error) {
 // ProceduresOrErr returns the Procedures value or an error if the edge
 // was not loaded in eager-loading.
 func (e InternalPolicyEdges) ProceduresOrErr() ([]*Procedure, error) {
-	if e.loadedTypes[7] {
+	if e.loadedTypes[8] {
 		return e.Procedures, nil
 	}
 	return nil, &NotLoadedError{edge: "procedures"}
@@ -188,7 +198,7 @@ func (e InternalPolicyEdges) ProceduresOrErr() ([]*Procedure, error) {
 // NarrativesOrErr returns the Narratives value or an error if the edge
 // was not loaded in eager-loading.
 func (e InternalPolicyEdges) NarrativesOrErr() ([]*Narrative, error) {
-	if e.loadedTypes[8] {
+	if e.loadedTypes[9] {
 		return e.Narratives, nil
 	}
 	return nil, &NotLoadedError{edge: "narratives"}
@@ -197,7 +207,7 @@ func (e InternalPolicyEdges) NarrativesOrErr() ([]*Narrative, error) {
 // TasksOrErr returns the Tasks value or an error if the edge
 // was not loaded in eager-loading.
 func (e InternalPolicyEdges) TasksOrErr() ([]*Task, error) {
-	if e.loadedTypes[9] {
+	if e.loadedTypes[10] {
 		return e.Tasks, nil
 	}
 	return nil, &NotLoadedError{edge: "tasks"}
@@ -206,7 +216,7 @@ func (e InternalPolicyEdges) TasksOrErr() ([]*Task, error) {
 // ProgramsOrErr returns the Programs value or an error if the edge
 // was not loaded in eager-loading.
 func (e InternalPolicyEdges) ProgramsOrErr() ([]*Program, error) {
-	if e.loadedTypes[10] {
+	if e.loadedTypes[11] {
 		return e.Programs, nil
 	}
 	return nil, &NotLoadedError{edge: "programs"}
@@ -221,7 +231,7 @@ func (*InternalPolicy) scanValues(columns []string) ([]any, error) {
 			values[i] = new([]byte)
 		case internalpolicy.FieldApprovalRequired:
 			values[i] = new(sql.NullBool)
-		case internalpolicy.FieldID, internalpolicy.FieldCreatedBy, internalpolicy.FieldUpdatedBy, internalpolicy.FieldDeletedBy, internalpolicy.FieldDisplayID, internalpolicy.FieldRevision, internalpolicy.FieldOwnerID, internalpolicy.FieldName, internalpolicy.FieldStatus, internalpolicy.FieldPolicyType, internalpolicy.FieldDetails, internalpolicy.FieldReviewFrequency, internalpolicy.FieldApproverID, internalpolicy.FieldDelegateID:
+		case internalpolicy.FieldID, internalpolicy.FieldCreatedBy, internalpolicy.FieldUpdatedBy, internalpolicy.FieldDeletedBy, internalpolicy.FieldDisplayID, internalpolicy.FieldRevision, internalpolicy.FieldOwnerID, internalpolicy.FieldName, internalpolicy.FieldStatus, internalpolicy.FieldPolicyType, internalpolicy.FieldReviewFrequency, internalpolicy.FieldApproverID, internalpolicy.FieldDelegateID:
 			values[i] = new(sql.NullString)
 		case internalpolicy.FieldCreatedAt, internalpolicy.FieldUpdatedAt, internalpolicy.FieldDeletedAt, internalpolicy.FieldReviewDue:
 			values[i] = new(sql.NullTime)
@@ -330,12 +340,6 @@ func (ip *InternalPolicy) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				ip.PolicyType = value.String
 			}
-		case internalpolicy.FieldDetails:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field details", values[i])
-			} else if value.Valid {
-				ip.Details = value.String
-			}
 		case internalpolicy.FieldApprovalRequired:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field approval_required", values[i])
@@ -416,6 +420,11 @@ func (ip *InternalPolicy) QueryApprover() *GroupQuery {
 // QueryDelegate queries the "delegate" edge of the InternalPolicy entity.
 func (ip *InternalPolicy) QueryDelegate() *GroupQuery {
 	return NewInternalPolicyClient(ip.config).QueryDelegate(ip)
+}
+
+// QueryDocumentRevisions queries the "document_revisions" edge of the InternalPolicy entity.
+func (ip *InternalPolicy) QueryDocumentRevisions() *DocumentRevisionQuery {
+	return NewInternalPolicyClient(ip.config).QueryDocumentRevisions(ip)
 }
 
 // QueryControlObjectives queries the "control_objectives" edge of the InternalPolicy entity.
@@ -510,9 +519,6 @@ func (ip *InternalPolicy) String() string {
 	builder.WriteString("policy_type=")
 	builder.WriteString(ip.PolicyType)
 	builder.WriteString(", ")
-	builder.WriteString("details=")
-	builder.WriteString(ip.Details)
-	builder.WriteString(", ")
 	builder.WriteString("approval_required=")
 	builder.WriteString(fmt.Sprintf("%v", ip.ApprovalRequired))
 	builder.WriteString(", ")
@@ -576,6 +582,30 @@ func (ip *InternalPolicy) appendNamedEditors(name string, edges ...*Group) {
 		ip.Edges.namedEditors[name] = []*Group{}
 	} else {
 		ip.Edges.namedEditors[name] = append(ip.Edges.namedEditors[name], edges...)
+	}
+}
+
+// NamedDocumentRevisions returns the DocumentRevisions named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (ip *InternalPolicy) NamedDocumentRevisions(name string) ([]*DocumentRevision, error) {
+	if ip.Edges.namedDocumentRevisions == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := ip.Edges.namedDocumentRevisions[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (ip *InternalPolicy) appendNamedDocumentRevisions(name string, edges ...*DocumentRevision) {
+	if ip.Edges.namedDocumentRevisions == nil {
+		ip.Edges.namedDocumentRevisions = make(map[string][]*DocumentRevision)
+	}
+	if len(edges) == 0 {
+		ip.Edges.namedDocumentRevisions[name] = []*DocumentRevision{}
+	} else {
+		ip.Edges.namedDocumentRevisions[name] = append(ip.Edges.namedDocumentRevisions[name], edges...)
 	}
 }
 

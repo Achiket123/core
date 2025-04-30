@@ -68,7 +68,7 @@ func consoleOutput(results *openlaneclient.GlobalSearch) error {
 	// so it aligns with what is expected in the json output
 	var realResult []map[string]interface{}
 
-	for _, node := range results.GetSearch().GetNodes() {
+	for _, node := range results.GetSearch() {
 		var fullResult map[string]interface{}
 		err := mapstructure.Decode(node, &fullResult)
 		cobra.CheckErr(err)

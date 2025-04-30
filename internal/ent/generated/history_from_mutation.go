@@ -89,10 +89,6 @@ func (m *ActionPlanMutation) CreateHistoryFromCreate(ctx context.Context) error 
 		create = create.SetActionPlanType(actionPlanType)
 	}
 
-	if details, exists := m.Details(); exists {
-		create = create.SetDetails(details)
-	}
-
 	if approvalRequired, exists := m.ApprovalRequired(); exists {
 		create = create.SetApprovalRequired(approvalRequired)
 	}
@@ -225,12 +221,6 @@ func (m *ActionPlanMutation) CreateHistoryFromUpdate(ctx context.Context) error 
 			create = create.SetActionPlanType(actionplan.ActionPlanType)
 		}
 
-		if details, exists := m.Details(); exists {
-			create = create.SetDetails(details)
-		} else {
-			create = create.SetDetails(actionplan.Details)
-		}
-
 		if approvalRequired, exists := m.ApprovalRequired(); exists {
 			create = create.SetApprovalRequired(approvalRequired)
 		} else {
@@ -328,7 +318,6 @@ func (m *ActionPlanMutation) CreateHistoryFromDelete(ctx context.Context) error 
 			SetName(actionplan.Name).
 			SetStatus(actionplan.Status).
 			SetActionPlanType(actionplan.ActionPlanType).
-			SetDetails(actionplan.Details).
 			SetApprovalRequired(actionplan.ApprovalRequired).
 			SetReviewDue(actionplan.ReviewDue).
 			SetReviewFrequency(actionplan.ReviewFrequency).
@@ -1692,6 +1681,268 @@ func (m *DocumentDataMutation) CreateHistoryFromDelete(ctx context.Context) erro
 			SetOwnerID(documentdata.OwnerID).
 			SetTemplateID(documentdata.TemplateID).
 			SetData(documentdata.Data).
+			Save(ctx)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *DocumentRevisionMutation) CreateHistoryFromCreate(ctx context.Context) error {
+	client := m.Client()
+
+	id, ok := m.ID()
+	if !ok {
+		return idNotFoundError
+	}
+
+	create := client.DocumentRevisionHistory.Create()
+
+	create = create.
+		SetOperation(EntOpToHistoryOp(m.Op())).
+		SetHistoryTime(time.Now()).
+		SetRef(id)
+
+	if createdAt, exists := m.CreatedAt(); exists {
+		create = create.SetCreatedAt(createdAt)
+	}
+
+	if updatedAt, exists := m.UpdatedAt(); exists {
+		create = create.SetUpdatedAt(updatedAt)
+	}
+
+	if createdBy, exists := m.CreatedBy(); exists {
+		create = create.SetCreatedBy(createdBy)
+	}
+
+	if updatedBy, exists := m.UpdatedBy(); exists {
+		create = create.SetUpdatedBy(updatedBy)
+	}
+
+	if deletedAt, exists := m.DeletedAt(); exists {
+		create = create.SetDeletedAt(deletedAt)
+	}
+
+	if deletedBy, exists := m.DeletedBy(); exists {
+		create = create.SetDeletedBy(deletedBy)
+	}
+
+	if tags, exists := m.Tags(); exists {
+		create = create.SetTags(tags)
+	}
+
+	if revision, exists := m.Revision(); exists {
+		create = create.SetRevision(revision)
+	}
+
+	if details, exists := m.Details(); exists {
+		create = create.SetDetails(details)
+	}
+
+	if status, exists := m.Status(); exists {
+		create = create.SetStatus(status)
+	}
+
+	if approvalDate, exists := m.ApprovalDate(); exists {
+		create = create.SetNillableApprovalDate(&approvalDate)
+	}
+
+	if submittedByID, exists := m.SubmittedByID(); exists {
+		create = create.SetSubmittedByID(submittedByID)
+	}
+
+	if approvedByID, exists := m.ApprovedByID(); exists {
+		create = create.SetApprovedByID(approvedByID)
+	}
+
+	if internalPolicyID, exists := m.InternalPolicyID(); exists {
+		create = create.SetInternalPolicyID(internalPolicyID)
+	}
+
+	if procedureID, exists := m.ProcedureID(); exists {
+		create = create.SetProcedureID(procedureID)
+	}
+
+	if actionPlanID, exists := m.ActionPlanID(); exists {
+		create = create.SetActionPlanID(actionPlanID)
+	}
+
+	_, err := create.Save(ctx)
+
+	return err
+}
+
+func (m *DocumentRevisionMutation) CreateHistoryFromUpdate(ctx context.Context) error {
+	// check for soft delete operation and delete instead
+	if entx.CheckIsSoftDelete(ctx) {
+		return m.CreateHistoryFromDelete(ctx)
+	}
+	client := m.Client()
+
+	ids, err := m.IDs(ctx)
+	if err != nil {
+		return fmt.Errorf("getting ids: %w", err)
+	}
+
+	for _, id := range ids {
+		documentrevision, err := client.DocumentRevision.Get(ctx, id)
+		if err != nil {
+			return err
+		}
+
+		create := client.DocumentRevisionHistory.Create()
+
+		create = create.
+			SetOperation(EntOpToHistoryOp(m.Op())).
+			SetHistoryTime(time.Now()).
+			SetRef(id)
+
+		if createdAt, exists := m.CreatedAt(); exists {
+			create = create.SetCreatedAt(createdAt)
+		} else {
+			create = create.SetCreatedAt(documentrevision.CreatedAt)
+		}
+
+		if updatedAt, exists := m.UpdatedAt(); exists {
+			create = create.SetUpdatedAt(updatedAt)
+		} else {
+			create = create.SetUpdatedAt(documentrevision.UpdatedAt)
+		}
+
+		if createdBy, exists := m.CreatedBy(); exists {
+			create = create.SetCreatedBy(createdBy)
+		} else {
+			create = create.SetCreatedBy(documentrevision.CreatedBy)
+		}
+
+		if updatedBy, exists := m.UpdatedBy(); exists {
+			create = create.SetUpdatedBy(updatedBy)
+		} else {
+			create = create.SetUpdatedBy(documentrevision.UpdatedBy)
+		}
+
+		if deletedAt, exists := m.DeletedAt(); exists {
+			create = create.SetDeletedAt(deletedAt)
+		} else {
+			create = create.SetDeletedAt(documentrevision.DeletedAt)
+		}
+
+		if deletedBy, exists := m.DeletedBy(); exists {
+			create = create.SetDeletedBy(deletedBy)
+		} else {
+			create = create.SetDeletedBy(documentrevision.DeletedBy)
+		}
+
+		if tags, exists := m.Tags(); exists {
+			create = create.SetTags(tags)
+		} else {
+			create = create.SetTags(documentrevision.Tags)
+		}
+
+		if revision, exists := m.Revision(); exists {
+			create = create.SetRevision(revision)
+		} else {
+			create = create.SetRevision(documentrevision.Revision)
+		}
+
+		if details, exists := m.Details(); exists {
+			create = create.SetDetails(details)
+		} else {
+			create = create.SetDetails(documentrevision.Details)
+		}
+
+		if status, exists := m.Status(); exists {
+			create = create.SetStatus(status)
+		} else {
+			create = create.SetStatus(documentrevision.Status)
+		}
+
+		if approvalDate, exists := m.ApprovalDate(); exists {
+			create = create.SetNillableApprovalDate(&approvalDate)
+		} else {
+			create = create.SetNillableApprovalDate(documentrevision.ApprovalDate)
+		}
+
+		if submittedByID, exists := m.SubmittedByID(); exists {
+			create = create.SetSubmittedByID(submittedByID)
+		} else {
+			create = create.SetSubmittedByID(documentrevision.SubmittedByID)
+		}
+
+		if approvedByID, exists := m.ApprovedByID(); exists {
+			create = create.SetApprovedByID(approvedByID)
+		} else {
+			create = create.SetApprovedByID(documentrevision.ApprovedByID)
+		}
+
+		if internalPolicyID, exists := m.InternalPolicyID(); exists {
+			create = create.SetInternalPolicyID(internalPolicyID)
+		} else {
+			create = create.SetInternalPolicyID(documentrevision.InternalPolicyID)
+		}
+
+		if procedureID, exists := m.ProcedureID(); exists {
+			create = create.SetProcedureID(procedureID)
+		} else {
+			create = create.SetProcedureID(documentrevision.ProcedureID)
+		}
+
+		if actionPlanID, exists := m.ActionPlanID(); exists {
+			create = create.SetActionPlanID(actionPlanID)
+		} else {
+			create = create.SetActionPlanID(documentrevision.ActionPlanID)
+		}
+
+		if _, err := create.Save(ctx); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *DocumentRevisionMutation) CreateHistoryFromDelete(ctx context.Context) error {
+	// check for soft delete operation and skip so it happens on update
+	if entx.CheckIsSoftDelete(ctx) {
+		return nil
+	}
+	client := m.Client()
+
+	ids, err := m.IDs(ctx)
+	if err != nil {
+		return fmt.Errorf("getting ids: %w", err)
+	}
+
+	for _, id := range ids {
+		documentrevision, err := client.DocumentRevision.Get(ctx, id)
+		if err != nil {
+			return err
+		}
+
+		create := client.DocumentRevisionHistory.Create()
+
+		_, err = create.
+			SetOperation(EntOpToHistoryOp(m.Op())).
+			SetHistoryTime(time.Now()).
+			SetRef(id).
+			SetCreatedAt(documentrevision.CreatedAt).
+			SetUpdatedAt(documentrevision.UpdatedAt).
+			SetCreatedBy(documentrevision.CreatedBy).
+			SetUpdatedBy(documentrevision.UpdatedBy).
+			SetDeletedAt(documentrevision.DeletedAt).
+			SetDeletedBy(documentrevision.DeletedBy).
+			SetTags(documentrevision.Tags).
+			SetRevision(documentrevision.Revision).
+			SetDetails(documentrevision.Details).
+			SetStatus(documentrevision.Status).
+			SetNillableApprovalDate(documentrevision.ApprovalDate).
+			SetSubmittedByID(documentrevision.SubmittedByID).
+			SetApprovedByID(documentrevision.ApprovedByID).
+			SetInternalPolicyID(documentrevision.InternalPolicyID).
+			SetProcedureID(documentrevision.ProcedureID).
+			SetActionPlanID(documentrevision.ActionPlanID).
 			Save(ctx)
 		if err != nil {
 			return err
@@ -4047,10 +4298,6 @@ func (m *InternalPolicyMutation) CreateHistoryFromCreate(ctx context.Context) er
 		create = create.SetPolicyType(policyType)
 	}
 
-	if details, exists := m.Details(); exists {
-		create = create.SetDetails(details)
-	}
-
 	if approvalRequired, exists := m.ApprovalRequired(); exists {
 		create = create.SetApprovalRequired(approvalRequired)
 	}
@@ -4179,12 +4426,6 @@ func (m *InternalPolicyMutation) CreateHistoryFromUpdate(ctx context.Context) er
 			create = create.SetPolicyType(internalpolicy.PolicyType)
 		}
 
-		if details, exists := m.Details(); exists {
-			create = create.SetDetails(details)
-		} else {
-			create = create.SetDetails(internalpolicy.Details)
-		}
-
 		if approvalRequired, exists := m.ApprovalRequired(); exists {
 			create = create.SetApprovalRequired(approvalRequired)
 		} else {
@@ -4260,7 +4501,6 @@ func (m *InternalPolicyMutation) CreateHistoryFromDelete(ctx context.Context) er
 			SetName(internalpolicy.Name).
 			SetStatus(internalpolicy.Status).
 			SetPolicyType(internalpolicy.PolicyType).
-			SetDetails(internalpolicy.Details).
 			SetApprovalRequired(internalpolicy.ApprovalRequired).
 			SetReviewDue(internalpolicy.ReviewDue).
 			SetReviewFrequency(internalpolicy.ReviewFrequency).
@@ -5967,10 +6207,6 @@ func (m *ProcedureMutation) CreateHistoryFromCreate(ctx context.Context) error {
 		create = create.SetProcedureType(procedureType)
 	}
 
-	if details, exists := m.Details(); exists {
-		create = create.SetDetails(details)
-	}
-
 	if approvalRequired, exists := m.ApprovalRequired(); exists {
 		create = create.SetApprovalRequired(approvalRequired)
 	}
@@ -6099,12 +6335,6 @@ func (m *ProcedureMutation) CreateHistoryFromUpdate(ctx context.Context) error {
 			create = create.SetProcedureType(procedure.ProcedureType)
 		}
 
-		if details, exists := m.Details(); exists {
-			create = create.SetDetails(details)
-		} else {
-			create = create.SetDetails(procedure.Details)
-		}
-
 		if approvalRequired, exists := m.ApprovalRequired(); exists {
 			create = create.SetApprovalRequired(approvalRequired)
 		} else {
@@ -6180,7 +6410,6 @@ func (m *ProcedureMutation) CreateHistoryFromDelete(ctx context.Context) error {
 			SetName(procedure.Name).
 			SetStatus(procedure.Status).
 			SetProcedureType(procedure.ProcedureType).
-			SetDetails(procedure.Details).
 			SetApprovalRequired(procedure.ApprovalRequired).
 			SetReviewDue(procedure.ReviewDue).
 			SetReviewFrequency(procedure.ReviewFrequency).

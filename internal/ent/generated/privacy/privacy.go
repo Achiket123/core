@@ -423,6 +423,54 @@ func (f DocumentDataHistoryMutationRuleFunc) EvalMutation(ctx context.Context, m
 	return Denyf("generated/privacy: unexpected mutation type %T, expect *generated.DocumentDataHistoryMutation", m)
 }
 
+// The DocumentRevisionQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type DocumentRevisionQueryRuleFunc func(context.Context, *generated.DocumentRevisionQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f DocumentRevisionQueryRuleFunc) EvalQuery(ctx context.Context, q generated.Query) error {
+	if q, ok := q.(*generated.DocumentRevisionQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("generated/privacy: unexpected query type %T, expect *generated.DocumentRevisionQuery", q)
+}
+
+// The DocumentRevisionMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type DocumentRevisionMutationRuleFunc func(context.Context, *generated.DocumentRevisionMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f DocumentRevisionMutationRuleFunc) EvalMutation(ctx context.Context, m generated.Mutation) error {
+	if m, ok := m.(*generated.DocumentRevisionMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("generated/privacy: unexpected mutation type %T, expect *generated.DocumentRevisionMutation", m)
+}
+
+// The DocumentRevisionHistoryQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type DocumentRevisionHistoryQueryRuleFunc func(context.Context, *generated.DocumentRevisionHistoryQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f DocumentRevisionHistoryQueryRuleFunc) EvalQuery(ctx context.Context, q generated.Query) error {
+	if q, ok := q.(*generated.DocumentRevisionHistoryQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("generated/privacy: unexpected query type %T, expect *generated.DocumentRevisionHistoryQuery", q)
+}
+
+// The DocumentRevisionHistoryMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type DocumentRevisionHistoryMutationRuleFunc func(context.Context, *generated.DocumentRevisionHistoryMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f DocumentRevisionHistoryMutationRuleFunc) EvalMutation(ctx context.Context, m generated.Mutation) error {
+	if m, ok := m.(*generated.DocumentRevisionHistoryMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("generated/privacy: unexpected mutation type %T, expect *generated.DocumentRevisionHistoryMutation", m)
+}
+
 // The EmailVerificationTokenQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
 type EmailVerificationTokenQueryRuleFunc func(context.Context, *generated.EmailVerificationTokenQuery) error
@@ -2020,6 +2068,10 @@ func queryFilter(q generated.Query) (Filter, error) {
 		return q.Filter(), nil
 	case *generated.DocumentDataHistoryQuery:
 		return q.Filter(), nil
+	case *generated.DocumentRevisionQuery:
+		return q.Filter(), nil
+	case *generated.DocumentRevisionHistoryQuery:
+		return q.Filter(), nil
 	case *generated.EmailVerificationTokenQuery:
 		return q.Filter(), nil
 	case *generated.EntityQuery:
@@ -2180,6 +2232,10 @@ func mutationFilter(m generated.Mutation) (Filter, error) {
 	case *generated.DocumentDataMutation:
 		return m.Filter(), nil
 	case *generated.DocumentDataHistoryMutation:
+		return m.Filter(), nil
+	case *generated.DocumentRevisionMutation:
+		return m.Filter(), nil
+	case *generated.DocumentRevisionHistoryMutation:
 		return m.Filter(), nil
 	case *generated.EmailVerificationTokenMutation:
 		return m.Filter(), nil

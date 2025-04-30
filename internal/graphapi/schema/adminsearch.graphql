@@ -63,6 +63,15 @@ extend type Query{
         query: String!
     ): DocumentDataSearchResult
     """
+    Search across DocumentRevision objects
+    """
+    adminDocumentRevisionSearch(
+        """
+        Search query
+        """
+        query: String!
+    ): DocumentRevisionSearchResult
+    """
     Search across Entity objects
     """
     adminEntitySearch(

@@ -52,8 +52,6 @@ type InternalPolicyHistory struct {
 	Status enums.DocumentStatus `json:"status,omitempty"`
 	// type of the policy, e.g. compliance, operational, health and safety, etc.
 	PolicyType string `json:"policy_type,omitempty"`
-	// details of the policy
-	Details string `json:"details,omitempty"`
 	// whether approval is required for edits to the policy
 	ApprovalRequired bool `json:"approval_required,omitempty"`
 	// the date the policy should be reviewed, calculated based on the review_frequency if not directly set
@@ -78,7 +76,7 @@ func (*InternalPolicyHistory) scanValues(columns []string) ([]any, error) {
 			values[i] = new(history.OpType)
 		case internalpolicyhistory.FieldApprovalRequired:
 			values[i] = new(sql.NullBool)
-		case internalpolicyhistory.FieldID, internalpolicyhistory.FieldRef, internalpolicyhistory.FieldCreatedBy, internalpolicyhistory.FieldUpdatedBy, internalpolicyhistory.FieldDeletedBy, internalpolicyhistory.FieldDisplayID, internalpolicyhistory.FieldRevision, internalpolicyhistory.FieldOwnerID, internalpolicyhistory.FieldName, internalpolicyhistory.FieldStatus, internalpolicyhistory.FieldPolicyType, internalpolicyhistory.FieldDetails, internalpolicyhistory.FieldReviewFrequency, internalpolicyhistory.FieldApproverID, internalpolicyhistory.FieldDelegateID:
+		case internalpolicyhistory.FieldID, internalpolicyhistory.FieldRef, internalpolicyhistory.FieldCreatedBy, internalpolicyhistory.FieldUpdatedBy, internalpolicyhistory.FieldDeletedBy, internalpolicyhistory.FieldDisplayID, internalpolicyhistory.FieldRevision, internalpolicyhistory.FieldOwnerID, internalpolicyhistory.FieldName, internalpolicyhistory.FieldStatus, internalpolicyhistory.FieldPolicyType, internalpolicyhistory.FieldReviewFrequency, internalpolicyhistory.FieldApproverID, internalpolicyhistory.FieldDelegateID:
 			values[i] = new(sql.NullString)
 		case internalpolicyhistory.FieldHistoryTime, internalpolicyhistory.FieldCreatedAt, internalpolicyhistory.FieldUpdatedAt, internalpolicyhistory.FieldDeletedAt, internalpolicyhistory.FieldReviewDue:
 			values[i] = new(sql.NullTime)
@@ -201,12 +199,6 @@ func (iph *InternalPolicyHistory) assignValues(columns []string, values []any) e
 			} else if value.Valid {
 				iph.PolicyType = value.String
 			}
-		case internalpolicyhistory.FieldDetails:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field details", values[i])
-			} else if value.Valid {
-				iph.Details = value.String
-			}
 		case internalpolicyhistory.FieldApprovalRequired:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field approval_required", values[i])
@@ -320,9 +312,6 @@ func (iph *InternalPolicyHistory) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("policy_type=")
 	builder.WriteString(iph.PolicyType)
-	builder.WriteString(", ")
-	builder.WriteString("details=")
-	builder.WriteString(iph.Details)
 	builder.WriteString(", ")
 	builder.WriteString("approval_required=")
 	builder.WriteString(fmt.Sprintf("%v", iph.ApprovalRequired))

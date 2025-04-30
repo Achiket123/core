@@ -16,6 +16,7 @@ import (
 	"github.com/theopenlane/core/internal/ent/generated/controlimplementation"
 	"github.com/theopenlane/core/internal/ent/generated/controlobjective"
 	"github.com/theopenlane/core/internal/ent/generated/documentdata"
+	"github.com/theopenlane/core/internal/ent/generated/documentrevision"
 	"github.com/theopenlane/core/internal/ent/generated/entity"
 	"github.com/theopenlane/core/internal/ent/generated/entitytype"
 	"github.com/theopenlane/core/internal/ent/generated/event"
@@ -98,12 +99,11 @@ func searchActionPlans(ctx context.Context, query string) ([]*generated.ActionPl
 	return withTransactionalMutation(ctx).ActionPlan.Query().
 		Where(
 			actionplan.Or(
-				actionplan.DetailsContainsFold(query), // search by Details
-				actionplan.ID(query),                  // search equal to ID
-				actionplan.NameContainsFold(query),    // search by Name
+				actionplan.ID(query),               // search equal to ID
+				actionplan.NameContainsFold(query), // search by Name
 				func(s *sql.Selector) {
 					likeQuery := "%" + query + "%"
-					s.Where(sql.ExprP("(tags)::text LIKE $4", likeQuery)) // search by Tags
+					s.Where(sql.ExprP("(tags)::text LIKE $3", likeQuery)) // search by Tags
 				},
 			),
 		).
@@ -125,7 +125,6 @@ func adminSearchActionPlans(ctx context.Context, query string) ([]*generated.Act
 				actionplan.RevisionContainsFold(query),       // search by Revision
 				actionplan.NameContainsFold(query),           // search by Name
 				actionplan.ActionPlanTypeContainsFold(query), // search by ActionPlanType
-				actionplan.DetailsContainsFold(query),        // search by Details
 				actionplan.ApproverIDContainsFold(query),     // search by ApproverID
 				actionplan.DelegateIDContainsFold(query),     // search by DelegateID
 				actionplan.OwnerIDContainsFold(query),        // search by OwnerID
@@ -374,6 +373,47 @@ func adminSearchDocumentData(ctx context.Context, query string) ([]*generated.Do
 					likeQuery := "%" + query + "%"
 					s.Where(sql.ExprP("(data)::text LIKE $6", likeQuery)) // search by Data
 				},
+			),
+		).
+		Limit(100).
+		All(ctx)
+}
+
+// searchDocumentRevision searches for DocumentRevision based on the query string looking for matches
+func searchDocumentRevisions(ctx context.Context, query string) ([]*generated.DocumentRevision, error) {
+	return withTransactionalMutation(ctx).DocumentRevision.Query().
+		Where(
+			documentrevision.Or(
+				documentrevision.DetailsContainsFold(query), // search by Details
+				documentrevision.ID(query),                  // search equal to ID
+				func(s *sql.Selector) {
+					likeQuery := "%" + query + "%"
+					s.Where(sql.ExprP("(tags)::text LIKE $3", likeQuery)) // search by Tags
+				},
+			),
+		).
+		Limit(100).
+		All(ctx)
+}
+
+// searchDocumentRevision searches for DocumentRevision based on the query string looking for matches
+func adminSearchDocumentRevisions(ctx context.Context, query string) ([]*generated.DocumentRevision, error) {
+	return withTransactionalMutation(ctx).DocumentRevision.Query().
+		Where(
+			documentrevision.Or(
+				documentrevision.DeletedByContainsFold(query), // search by DeletedBy
+				documentrevision.ID(query),                    // search equal to ID
+				func(s *sql.Selector) {
+					likeQuery := "%" + query + "%"
+					s.Where(sql.ExprP("(tags)::text LIKE $3", likeQuery)) // search by Tags
+				},
+				documentrevision.RevisionContainsFold(query),         // search by Revision
+				documentrevision.DetailsContainsFold(query),          // search by Details
+				documentrevision.SubmittedByIDContainsFold(query),    // search by SubmittedByID
+				documentrevision.ApprovedByIDContainsFold(query),     // search by ApprovedByID
+				documentrevision.InternalPolicyIDContainsFold(query), // search by InternalPolicyID
+				documentrevision.ProcedureIDContainsFold(query),      // search by ProcedureID
+				documentrevision.ActionPlanIDContainsFold(query),     // search by ActionPlanID
 			),
 		).
 		Limit(100).
@@ -667,13 +707,12 @@ func searchInternalPolicies(ctx context.Context, query string) ([]*generated.Int
 	return withTransactionalMutation(ctx).InternalPolicy.Query().
 		Where(
 			internalpolicy.Or(
-				internalpolicy.DetailsContainsFold(query), // search by Details
-				internalpolicy.DisplayID(query),           // search equal to DisplayID
-				internalpolicy.ID(query),                  // search equal to ID
-				internalpolicy.NameContainsFold(query),    // search by Name
+				internalpolicy.DisplayID(query),        // search equal to DisplayID
+				internalpolicy.ID(query),               // search equal to ID
+				internalpolicy.NameContainsFold(query), // search by Name
 				func(s *sql.Selector) {
 					likeQuery := "%" + query + "%"
-					s.Where(sql.ExprP("(tags)::text LIKE $5", likeQuery)) // search by Tags
+					s.Where(sql.ExprP("(tags)::text LIKE $4", likeQuery)) // search by Tags
 				},
 			),
 		).
@@ -697,7 +736,6 @@ func adminSearchInternalPolicies(ctx context.Context, query string) ([]*generate
 				internalpolicy.OwnerIDContainsFold(query),    // search by OwnerID
 				internalpolicy.NameContainsFold(query),       // search by Name
 				internalpolicy.PolicyTypeContainsFold(query), // search by PolicyType
-				internalpolicy.DetailsContainsFold(query),    // search by Details
 				internalpolicy.ApproverIDContainsFold(query), // search by ApproverID
 				internalpolicy.DelegateIDContainsFold(query), // search by DelegateID
 			),
@@ -968,13 +1006,12 @@ func searchProcedures(ctx context.Context, query string) ([]*generated.Procedure
 	return withTransactionalMutation(ctx).Procedure.Query().
 		Where(
 			procedure.Or(
-				procedure.DetailsContainsFold(query), // search by Details
-				procedure.DisplayID(query),           // search equal to DisplayID
-				procedure.ID(query),                  // search equal to ID
-				procedure.NameContainsFold(query),    // search by Name
+				procedure.DisplayID(query),        // search equal to DisplayID
+				procedure.ID(query),               // search equal to ID
+				procedure.NameContainsFold(query), // search by Name
 				func(s *sql.Selector) {
 					likeQuery := "%" + query + "%"
-					s.Where(sql.ExprP("(tags)::text LIKE $5", likeQuery)) // search by Tags
+					s.Where(sql.ExprP("(tags)::text LIKE $4", likeQuery)) // search by Tags
 				},
 			),
 		).
@@ -998,7 +1035,6 @@ func adminSearchProcedures(ctx context.Context, query string) ([]*generated.Proc
 				procedure.OwnerIDContainsFold(query),       // search by OwnerID
 				procedure.NameContainsFold(query),          // search by Name
 				procedure.ProcedureTypeContainsFold(query), // search by ProcedureType
-				procedure.DetailsContainsFold(query),       // search by Details
 				procedure.ApproverIDContainsFold(query),    // search by ApproverID
 				procedure.DelegateIDContainsFold(query),    // search by DelegateID
 			),

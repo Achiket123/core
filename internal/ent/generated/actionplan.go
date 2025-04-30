@@ -43,8 +43,6 @@ type ActionPlan struct {
 	Status enums.DocumentStatus `json:"status,omitempty"`
 	// type of the action_plan, e.g. compliance, operational, health and safety, etc.
 	ActionPlanType string `json:"action_plan_type,omitempty"`
-	// details of the action_plan
-	Details string `json:"details,omitempty"`
 	// whether approval is required for edits to the action_plan
 	ApprovalRequired bool `json:"approval_required,omitempty"`
 	// the date the action_plan should be reviewed, calculated based on the review_frequency if not directly set
@@ -76,6 +74,8 @@ type ActionPlanEdges struct {
 	Approver *Group `json:"approver,omitempty"`
 	// temporary delegates for the action_plan, used for temporary approval
 	Delegate *Group `json:"delegate,omitempty"`
+	// DocumentRevisions holds the value of the document_revisions edge.
+	DocumentRevisions []*DocumentRevision `json:"document_revisions,omitempty"`
 	// Owner holds the value of the owner edge.
 	Owner *Organization `json:"owner,omitempty"`
 	// Risks holds the value of the risks edge.
@@ -88,14 +88,15 @@ type ActionPlanEdges struct {
 	Programs []*Program `json:"programs,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [7]bool
+	loadedTypes [8]bool
 	// totalCount holds the count of the edges above.
-	totalCount [7]map[string]int
+	totalCount [8]map[string]int
 
-	namedRisks    map[string][]*Risk
-	namedControls map[string][]*Control
-	namedUsers    map[string][]*User
-	namedPrograms map[string][]*Program
+	namedDocumentRevisions map[string][]*DocumentRevision
+	namedRisks             map[string][]*Risk
+	namedControls          map[string][]*Control
+	namedUsers             map[string][]*User
+	namedPrograms          map[string][]*Program
 }
 
 // ApproverOrErr returns the Approver value or an error if the edge
@@ -120,12 +121,21 @@ func (e ActionPlanEdges) DelegateOrErr() (*Group, error) {
 	return nil, &NotLoadedError{edge: "delegate"}
 }
 
+// DocumentRevisionsOrErr returns the DocumentRevisions value or an error if the edge
+// was not loaded in eager-loading.
+func (e ActionPlanEdges) DocumentRevisionsOrErr() ([]*DocumentRevision, error) {
+	if e.loadedTypes[2] {
+		return e.DocumentRevisions, nil
+	}
+	return nil, &NotLoadedError{edge: "document_revisions"}
+}
+
 // OwnerOrErr returns the Owner value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e ActionPlanEdges) OwnerOrErr() (*Organization, error) {
 	if e.Owner != nil {
 		return e.Owner, nil
-	} else if e.loadedTypes[2] {
+	} else if e.loadedTypes[3] {
 		return nil, &NotFoundError{label: organization.Label}
 	}
 	return nil, &NotLoadedError{edge: "owner"}
@@ -134,7 +144,7 @@ func (e ActionPlanEdges) OwnerOrErr() (*Organization, error) {
 // RisksOrErr returns the Risks value or an error if the edge
 // was not loaded in eager-loading.
 func (e ActionPlanEdges) RisksOrErr() ([]*Risk, error) {
-	if e.loadedTypes[3] {
+	if e.loadedTypes[4] {
 		return e.Risks, nil
 	}
 	return nil, &NotLoadedError{edge: "risks"}
@@ -143,7 +153,7 @@ func (e ActionPlanEdges) RisksOrErr() ([]*Risk, error) {
 // ControlsOrErr returns the Controls value or an error if the edge
 // was not loaded in eager-loading.
 func (e ActionPlanEdges) ControlsOrErr() ([]*Control, error) {
-	if e.loadedTypes[4] {
+	if e.loadedTypes[5] {
 		return e.Controls, nil
 	}
 	return nil, &NotLoadedError{edge: "controls"}
@@ -152,7 +162,7 @@ func (e ActionPlanEdges) ControlsOrErr() ([]*Control, error) {
 // UsersOrErr returns the Users value or an error if the edge
 // was not loaded in eager-loading.
 func (e ActionPlanEdges) UsersOrErr() ([]*User, error) {
-	if e.loadedTypes[5] {
+	if e.loadedTypes[6] {
 		return e.Users, nil
 	}
 	return nil, &NotLoadedError{edge: "users"}
@@ -161,7 +171,7 @@ func (e ActionPlanEdges) UsersOrErr() ([]*User, error) {
 // ProgramsOrErr returns the Programs value or an error if the edge
 // was not loaded in eager-loading.
 func (e ActionPlanEdges) ProgramsOrErr() ([]*Program, error) {
-	if e.loadedTypes[6] {
+	if e.loadedTypes[7] {
 		return e.Programs, nil
 	}
 	return nil, &NotLoadedError{edge: "programs"}
@@ -176,7 +186,7 @@ func (*ActionPlan) scanValues(columns []string) ([]any, error) {
 			values[i] = new([]byte)
 		case actionplan.FieldApprovalRequired:
 			values[i] = new(sql.NullBool)
-		case actionplan.FieldID, actionplan.FieldCreatedBy, actionplan.FieldUpdatedBy, actionplan.FieldDeletedBy, actionplan.FieldRevision, actionplan.FieldName, actionplan.FieldStatus, actionplan.FieldActionPlanType, actionplan.FieldDetails, actionplan.FieldReviewFrequency, actionplan.FieldApproverID, actionplan.FieldDelegateID, actionplan.FieldOwnerID, actionplan.FieldPriority, actionplan.FieldSource:
+		case actionplan.FieldID, actionplan.FieldCreatedBy, actionplan.FieldUpdatedBy, actionplan.FieldDeletedBy, actionplan.FieldRevision, actionplan.FieldName, actionplan.FieldStatus, actionplan.FieldActionPlanType, actionplan.FieldReviewFrequency, actionplan.FieldApproverID, actionplan.FieldDelegateID, actionplan.FieldOwnerID, actionplan.FieldPriority, actionplan.FieldSource:
 			values[i] = new(sql.NullString)
 		case actionplan.FieldCreatedAt, actionplan.FieldUpdatedAt, actionplan.FieldDeletedAt, actionplan.FieldReviewDue, actionplan.FieldDueDate:
 			values[i] = new(sql.NullTime)
@@ -271,12 +281,6 @@ func (ap *ActionPlan) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				ap.ActionPlanType = value.String
 			}
-		case actionplan.FieldDetails:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field details", values[i])
-			} else if value.Valid {
-				ap.Details = value.String
-			}
 		case actionplan.FieldApprovalRequired:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field approval_required", values[i])
@@ -361,6 +365,11 @@ func (ap *ActionPlan) QueryDelegate() *GroupQuery {
 	return NewActionPlanClient(ap.config).QueryDelegate(ap)
 }
 
+// QueryDocumentRevisions queries the "document_revisions" edge of the ActionPlan entity.
+func (ap *ActionPlan) QueryDocumentRevisions() *DocumentRevisionQuery {
+	return NewActionPlanClient(ap.config).QueryDocumentRevisions(ap)
+}
+
 // QueryOwner queries the "owner" edge of the ActionPlan entity.
 func (ap *ActionPlan) QueryOwner() *OrganizationQuery {
 	return NewActionPlanClient(ap.config).QueryOwner(ap)
@@ -442,9 +451,6 @@ func (ap *ActionPlan) String() string {
 	builder.WriteString("action_plan_type=")
 	builder.WriteString(ap.ActionPlanType)
 	builder.WriteString(", ")
-	builder.WriteString("details=")
-	builder.WriteString(ap.Details)
-	builder.WriteString(", ")
 	builder.WriteString("approval_required=")
 	builder.WriteString(fmt.Sprintf("%v", ap.ApprovalRequired))
 	builder.WriteString(", ")
@@ -473,6 +479,30 @@ func (ap *ActionPlan) String() string {
 	builder.WriteString(ap.Source)
 	builder.WriteByte(')')
 	return builder.String()
+}
+
+// NamedDocumentRevisions returns the DocumentRevisions named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (ap *ActionPlan) NamedDocumentRevisions(name string) ([]*DocumentRevision, error) {
+	if ap.Edges.namedDocumentRevisions == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := ap.Edges.namedDocumentRevisions[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (ap *ActionPlan) appendNamedDocumentRevisions(name string, edges ...*DocumentRevision) {
+	if ap.Edges.namedDocumentRevisions == nil {
+		ap.Edges.namedDocumentRevisions = make(map[string][]*DocumentRevision)
+	}
+	if len(edges) == 0 {
+		ap.Edges.namedDocumentRevisions[name] = []*DocumentRevision{}
+	} else {
+		ap.Edges.namedDocumentRevisions[name] = append(ap.Edges.namedDocumentRevisions[name], edges...)
+	}
 }
 
 // NamedRisks returns the Risks named value or an error if the edge was not

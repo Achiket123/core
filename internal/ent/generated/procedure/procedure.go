@@ -44,8 +44,6 @@ const (
 	FieldStatus = "status"
 	// FieldProcedureType holds the string denoting the procedure_type field in the database.
 	FieldProcedureType = "procedure_type"
-	// FieldDetails holds the string denoting the details field in the database.
-	FieldDetails = "details"
 	// FieldApprovalRequired holds the string denoting the approval_required field in the database.
 	FieldApprovalRequired = "approval_required"
 	// FieldReviewDue holds the string denoting the review_due field in the database.
@@ -66,6 +64,8 @@ const (
 	EdgeApprover = "approver"
 	// EdgeDelegate holds the string denoting the delegate edge name in mutations.
 	EdgeDelegate = "delegate"
+	// EdgeDocumentRevisions holds the string denoting the document_revisions edge name in mutations.
+	EdgeDocumentRevisions = "document_revisions"
 	// EdgeControls holds the string denoting the controls edge name in mutations.
 	EdgeControls = "controls"
 	// EdgeInternalPolicies holds the string denoting the internal_policies edge name in mutations.
@@ -111,6 +111,13 @@ const (
 	DelegateInverseTable = "groups"
 	// DelegateColumn is the table column denoting the delegate relation/edge.
 	DelegateColumn = "delegate_id"
+	// DocumentRevisionsTable is the table that holds the document_revisions relation/edge.
+	DocumentRevisionsTable = "document_revisions"
+	// DocumentRevisionsInverseTable is the table name for the DocumentRevision entity.
+	// It exists in this package in order to avoid circular dependency with the "documentrevision" package.
+	DocumentRevisionsInverseTable = "document_revisions"
+	// DocumentRevisionsColumn is the table column denoting the document_revisions relation/edge.
+	DocumentRevisionsColumn = "procedure_document_revisions"
 	// ControlsTable is the table that holds the controls relation/edge. The primary key declared below.
 	ControlsTable = "control_procedures"
 	// ControlsInverseTable is the table name for the Control entity.
@@ -161,7 +168,6 @@ var Columns = []string{
 	FieldName,
 	FieldStatus,
 	FieldProcedureType,
-	FieldDetails,
 	FieldApprovalRequired,
 	FieldReviewDue,
 	FieldReviewFrequency,
@@ -342,11 +348,6 @@ func ByProcedureType(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldProcedureType, opts...).ToFunc()
 }
 
-// ByDetails orders the results by the details field.
-func ByDetails(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldDetails, opts...).ToFunc()
-}
-
 // ByApprovalRequired orders the results by the approval_required field.
 func ByApprovalRequired(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldApprovalRequired, opts...).ToFunc()
@@ -418,6 +419,20 @@ func ByApproverField(field string, opts ...sql.OrderTermOption) OrderOption {
 func ByDelegateField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newDelegateStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByDocumentRevisionsCount orders the results by document_revisions count.
+func ByDocumentRevisionsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newDocumentRevisionsStep(), opts...)
+	}
+}
+
+// ByDocumentRevisions orders the results by document_revisions terms.
+func ByDocumentRevisions(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newDocumentRevisionsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
@@ -537,6 +552,13 @@ func newDelegateStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(DelegateInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, false, DelegateTable, DelegateColumn),
+	)
+}
+func newDocumentRevisionsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(DocumentRevisionsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, DocumentRevisionsTable, DocumentRevisionsColumn),
 	)
 }
 func newControlsStep() *sqlgraph.Step {

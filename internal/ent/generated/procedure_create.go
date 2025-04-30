@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/theopenlane/core/internal/ent/generated/control"
+	"github.com/theopenlane/core/internal/ent/generated/documentrevision"
 	"github.com/theopenlane/core/internal/ent/generated/group"
 	"github.com/theopenlane/core/internal/ent/generated/internalpolicy"
 	"github.com/theopenlane/core/internal/ent/generated/narrative"
@@ -187,20 +188,6 @@ func (pc *ProcedureCreate) SetNillableProcedureType(s *string) *ProcedureCreate 
 	return pc
 }
 
-// SetDetails sets the "details" field.
-func (pc *ProcedureCreate) SetDetails(s string) *ProcedureCreate {
-	pc.mutation.SetDetails(s)
-	return pc
-}
-
-// SetNillableDetails sets the "details" field if the given value is not nil.
-func (pc *ProcedureCreate) SetNillableDetails(s *string) *ProcedureCreate {
-	if s != nil {
-		pc.SetDetails(*s)
-	}
-	return pc
-}
-
 // SetApprovalRequired sets the "approval_required" field.
 func (pc *ProcedureCreate) SetApprovalRequired(b bool) *ProcedureCreate {
 	pc.mutation.SetApprovalRequired(b)
@@ -328,6 +315,21 @@ func (pc *ProcedureCreate) SetApprover(g *Group) *ProcedureCreate {
 // SetDelegate sets the "delegate" edge to the Group entity.
 func (pc *ProcedureCreate) SetDelegate(g *Group) *ProcedureCreate {
 	return pc.SetDelegateID(g.ID)
+}
+
+// AddDocumentRevisionIDs adds the "document_revisions" edge to the DocumentRevision entity by IDs.
+func (pc *ProcedureCreate) AddDocumentRevisionIDs(ids ...string) *ProcedureCreate {
+	pc.mutation.AddDocumentRevisionIDs(ids...)
+	return pc
+}
+
+// AddDocumentRevisions adds the "document_revisions" edges to the DocumentRevision entity.
+func (pc *ProcedureCreate) AddDocumentRevisions(d ...*DocumentRevision) *ProcedureCreate {
+	ids := make([]string, len(d))
+	for i := range d {
+		ids[i] = d[i].ID
+	}
+	return pc.AddDocumentRevisionIDs(ids...)
 }
 
 // AddControlIDs adds the "controls" edge to the Control entity by IDs.
@@ -627,10 +629,6 @@ func (pc *ProcedureCreate) createSpec() (*Procedure, *sqlgraph.CreateSpec) {
 		_spec.SetField(procedure.FieldProcedureType, field.TypeString, value)
 		_node.ProcedureType = value
 	}
-	if value, ok := pc.mutation.Details(); ok {
-		_spec.SetField(procedure.FieldDetails, field.TypeString, value)
-		_node.Details = value
-	}
 	if value, ok := pc.mutation.ApprovalRequired(); ok {
 		_spec.SetField(procedure.FieldApprovalRequired, field.TypeBool, value)
 		_node.ApprovalRequired = value
@@ -729,6 +727,23 @@ func (pc *ProcedureCreate) createSpec() (*Procedure, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.DelegateID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := pc.mutation.DocumentRevisionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   procedure.DocumentRevisionsTable,
+			Columns: []string{procedure.DocumentRevisionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(documentrevision.FieldID, field.TypeString),
+			},
+		}
+		edge.Schema = pc.schemaConfig.DocumentRevision
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := pc.mutation.ControlsIDs(); len(nodes) > 0 {

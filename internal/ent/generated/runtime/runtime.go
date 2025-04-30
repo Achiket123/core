@@ -19,6 +19,8 @@ import (
 	"github.com/theopenlane/core/internal/ent/generated/controlobjectivehistory"
 	"github.com/theopenlane/core/internal/ent/generated/documentdata"
 	"github.com/theopenlane/core/internal/ent/generated/documentdatahistory"
+	"github.com/theopenlane/core/internal/ent/generated/documentrevision"
+	"github.com/theopenlane/core/internal/ent/generated/documentrevisionhistory"
 	"github.com/theopenlane/core/internal/ent/generated/emailverificationtoken"
 	"github.com/theopenlane/core/internal/ent/generated/entity"
 	"github.com/theopenlane/core/internal/ent/generated/entityhistory"
@@ -237,11 +239,11 @@ func init() {
 	// actionplan.NameValidator is a validator for the "name" field. It is called by the builders before save.
 	actionplan.NameValidator = actionplanDescName.Validators[0].(func(string) error)
 	// actionplanDescApprovalRequired is the schema descriptor for approval_required field.
-	actionplanDescApprovalRequired := actionplanMixinFields6[4].Descriptor()
+	actionplanDescApprovalRequired := actionplanMixinFields6[3].Descriptor()
 	// actionplan.DefaultApprovalRequired holds the default value on creation for the approval_required field.
 	actionplan.DefaultApprovalRequired = actionplanDescApprovalRequired.Default.(bool)
 	// actionplanDescReviewDue is the schema descriptor for review_due field.
-	actionplanDescReviewDue := actionplanMixinFields6[5].Descriptor()
+	actionplanDescReviewDue := actionplanMixinFields6[4].Descriptor()
 	// actionplan.DefaultReviewDue holds the default value on creation for the review_due field.
 	actionplan.DefaultReviewDue = actionplanDescReviewDue.Default.(time.Time)
 	// actionplanDescOwnerID is the schema descriptor for owner_id field.
@@ -279,11 +281,11 @@ func init() {
 	// actionplanhistory.DefaultRevision holds the default value on creation for the revision field.
 	actionplanhistory.DefaultRevision = actionplanhistoryDescRevision.Default.(string)
 	// actionplanhistoryDescApprovalRequired is the schema descriptor for approval_required field.
-	actionplanhistoryDescApprovalRequired := actionplanhistoryFields[16].Descriptor()
+	actionplanhistoryDescApprovalRequired := actionplanhistoryFields[15].Descriptor()
 	// actionplanhistory.DefaultApprovalRequired holds the default value on creation for the approval_required field.
 	actionplanhistory.DefaultApprovalRequired = actionplanhistoryDescApprovalRequired.Default.(bool)
 	// actionplanhistoryDescReviewDue is the schema descriptor for review_due field.
-	actionplanhistoryDescReviewDue := actionplanhistoryFields[17].Descriptor()
+	actionplanhistoryDescReviewDue := actionplanhistoryFields[16].Descriptor()
 	// actionplanhistory.DefaultReviewDue holds the default value on creation for the review_due field.
 	actionplanhistory.DefaultReviewDue = actionplanhistoryDescReviewDue.Default.(time.Time)
 	// actionplanhistoryDescID is the schema descriptor for id field.
@@ -805,6 +807,99 @@ func init() {
 	documentdatahistoryDescID := documentdatahistoryFields[9].Descriptor()
 	// documentdatahistory.DefaultID holds the default value on creation for the id field.
 	documentdatahistory.DefaultID = documentdatahistoryDescID.Default.(func() string)
+	documentrevisionMixin := schema.DocumentRevision{}.Mixin()
+	documentrevision.Policy = privacy.NewPolicies(schema.DocumentRevision{})
+	documentrevision.Hooks[0] = func(next ent.Mutator) ent.Mutator {
+		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+			if err := documentrevision.Policy.EvalMutation(ctx, m); err != nil {
+				return nil, err
+			}
+			return next.Mutate(ctx, m)
+		})
+	}
+	documentrevisionMixinHooks0 := documentrevisionMixin[0].Hooks()
+	documentrevisionMixinHooks1 := documentrevisionMixin[1].Hooks()
+	documentrevisionMixinHooks4 := documentrevisionMixin[4].Hooks()
+
+	documentrevision.Hooks[1] = documentrevisionMixinHooks0[0]
+
+	documentrevision.Hooks[2] = documentrevisionMixinHooks1[0]
+
+	documentrevision.Hooks[3] = documentrevisionMixinHooks4[0]
+	documentrevisionMixinInters1 := documentrevisionMixin[1].Interceptors()
+	documentrevision.Interceptors[0] = documentrevisionMixinInters1[0]
+	documentrevisionMixinFields0 := documentrevisionMixin[0].Fields()
+	_ = documentrevisionMixinFields0
+	documentrevisionMixinFields2 := documentrevisionMixin[2].Fields()
+	_ = documentrevisionMixinFields2
+	documentrevisionMixinFields3 := documentrevisionMixin[3].Fields()
+	_ = documentrevisionMixinFields3
+	documentrevisionMixinFields4 := documentrevisionMixin[4].Fields()
+	_ = documentrevisionMixinFields4
+	documentrevisionFields := schema.DocumentRevision{}.Fields()
+	_ = documentrevisionFields
+	// documentrevisionDescCreatedAt is the schema descriptor for created_at field.
+	documentrevisionDescCreatedAt := documentrevisionMixinFields0[0].Descriptor()
+	// documentrevision.DefaultCreatedAt holds the default value on creation for the created_at field.
+	documentrevision.DefaultCreatedAt = documentrevisionDescCreatedAt.Default.(func() time.Time)
+	// documentrevisionDescUpdatedAt is the schema descriptor for updated_at field.
+	documentrevisionDescUpdatedAt := documentrevisionMixinFields0[1].Descriptor()
+	// documentrevision.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	documentrevision.DefaultUpdatedAt = documentrevisionDescUpdatedAt.Default.(func() time.Time)
+	// documentrevision.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	documentrevision.UpdateDefaultUpdatedAt = documentrevisionDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// documentrevisionDescTags is the schema descriptor for tags field.
+	documentrevisionDescTags := documentrevisionMixinFields3[0].Descriptor()
+	// documentrevision.DefaultTags holds the default value on creation for the tags field.
+	documentrevision.DefaultTags = documentrevisionDescTags.Default.([]string)
+	// documentrevisionDescRevision is the schema descriptor for revision field.
+	documentrevisionDescRevision := documentrevisionMixinFields4[0].Descriptor()
+	// documentrevision.DefaultRevision holds the default value on creation for the revision field.
+	documentrevision.DefaultRevision = documentrevisionDescRevision.Default.(string)
+	// documentrevision.RevisionValidator is a validator for the "revision" field. It is called by the builders before save.
+	documentrevision.RevisionValidator = documentrevisionDescRevision.Validators[0].(func(string) error)
+	// documentrevisionDescSubmittedByID is the schema descriptor for submitted_by_id field.
+	documentrevisionDescSubmittedByID := documentrevisionFields[3].Descriptor()
+	// documentrevision.SubmittedByIDValidator is a validator for the "submitted_by_id" field. It is called by the builders before save.
+	documentrevision.SubmittedByIDValidator = documentrevisionDescSubmittedByID.Validators[0].(func(string) error)
+	// documentrevisionDescApprovedByID is the schema descriptor for approved_by_id field.
+	documentrevisionDescApprovedByID := documentrevisionFields[4].Descriptor()
+	// documentrevision.ApprovedByIDValidator is a validator for the "approved_by_id" field. It is called by the builders before save.
+	documentrevision.ApprovedByIDValidator = documentrevisionDescApprovedByID.Validators[0].(func(string) error)
+	// documentrevisionDescID is the schema descriptor for id field.
+	documentrevisionDescID := documentrevisionMixinFields2[0].Descriptor()
+	// documentrevision.DefaultID holds the default value on creation for the id field.
+	documentrevision.DefaultID = documentrevisionDescID.Default.(func() string)
+	documentrevisionhistoryInters := schema.DocumentRevisionHistory{}.Interceptors()
+	documentrevisionhistory.Interceptors[0] = documentrevisionhistoryInters[0]
+	documentrevisionhistoryFields := schema.DocumentRevisionHistory{}.Fields()
+	_ = documentrevisionhistoryFields
+	// documentrevisionhistoryDescHistoryTime is the schema descriptor for history_time field.
+	documentrevisionhistoryDescHistoryTime := documentrevisionhistoryFields[0].Descriptor()
+	// documentrevisionhistory.DefaultHistoryTime holds the default value on creation for the history_time field.
+	documentrevisionhistory.DefaultHistoryTime = documentrevisionhistoryDescHistoryTime.Default.(func() time.Time)
+	// documentrevisionhistoryDescCreatedAt is the schema descriptor for created_at field.
+	documentrevisionhistoryDescCreatedAt := documentrevisionhistoryFields[3].Descriptor()
+	// documentrevisionhistory.DefaultCreatedAt holds the default value on creation for the created_at field.
+	documentrevisionhistory.DefaultCreatedAt = documentrevisionhistoryDescCreatedAt.Default.(func() time.Time)
+	// documentrevisionhistoryDescUpdatedAt is the schema descriptor for updated_at field.
+	documentrevisionhistoryDescUpdatedAt := documentrevisionhistoryFields[4].Descriptor()
+	// documentrevisionhistory.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	documentrevisionhistory.DefaultUpdatedAt = documentrevisionhistoryDescUpdatedAt.Default.(func() time.Time)
+	// documentrevisionhistory.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	documentrevisionhistory.UpdateDefaultUpdatedAt = documentrevisionhistoryDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// documentrevisionhistoryDescTags is the schema descriptor for tags field.
+	documentrevisionhistoryDescTags := documentrevisionhistoryFields[10].Descriptor()
+	// documentrevisionhistory.DefaultTags holds the default value on creation for the tags field.
+	documentrevisionhistory.DefaultTags = documentrevisionhistoryDescTags.Default.([]string)
+	// documentrevisionhistoryDescRevision is the schema descriptor for revision field.
+	documentrevisionhistoryDescRevision := documentrevisionhistoryFields[11].Descriptor()
+	// documentrevisionhistory.DefaultRevision holds the default value on creation for the revision field.
+	documentrevisionhistory.DefaultRevision = documentrevisionhistoryDescRevision.Default.(string)
+	// documentrevisionhistoryDescID is the schema descriptor for id field.
+	documentrevisionhistoryDescID := documentrevisionhistoryFields[9].Descriptor()
+	// documentrevisionhistory.DefaultID holds the default value on creation for the id field.
+	documentrevisionhistory.DefaultID = documentrevisionhistoryDescID.Default.(func() string)
 	emailverificationtokenMixin := schema.EmailVerificationToken{}.Mixin()
 	emailverificationtoken.Policy = privacy.NewPolicies(schema.EmailVerificationToken{})
 	emailverificationtoken.Hooks[0] = func(next ent.Mutator) ent.Mutator {
@@ -1905,11 +2000,11 @@ func init() {
 	// internalpolicy.NameValidator is a validator for the "name" field. It is called by the builders before save.
 	internalpolicy.NameValidator = internalpolicyDescName.Validators[0].(func(string) error)
 	// internalpolicyDescApprovalRequired is the schema descriptor for approval_required field.
-	internalpolicyDescApprovalRequired := internalpolicyMixinFields8[4].Descriptor()
+	internalpolicyDescApprovalRequired := internalpolicyMixinFields8[3].Descriptor()
 	// internalpolicy.DefaultApprovalRequired holds the default value on creation for the approval_required field.
 	internalpolicy.DefaultApprovalRequired = internalpolicyDescApprovalRequired.Default.(bool)
 	// internalpolicyDescReviewDue is the schema descriptor for review_due field.
-	internalpolicyDescReviewDue := internalpolicyMixinFields8[5].Descriptor()
+	internalpolicyDescReviewDue := internalpolicyMixinFields8[4].Descriptor()
 	// internalpolicy.DefaultReviewDue holds the default value on creation for the review_due field.
 	internalpolicy.DefaultReviewDue = internalpolicyDescReviewDue.Default.(time.Time)
 	// internalpolicyDescID is the schema descriptor for id field.
@@ -1943,11 +2038,11 @@ func init() {
 	// internalpolicyhistory.DefaultRevision holds the default value on creation for the revision field.
 	internalpolicyhistory.DefaultRevision = internalpolicyhistoryDescRevision.Default.(string)
 	// internalpolicyhistoryDescApprovalRequired is the schema descriptor for approval_required field.
-	internalpolicyhistoryDescApprovalRequired := internalpolicyhistoryFields[18].Descriptor()
+	internalpolicyhistoryDescApprovalRequired := internalpolicyhistoryFields[17].Descriptor()
 	// internalpolicyhistory.DefaultApprovalRequired holds the default value on creation for the approval_required field.
 	internalpolicyhistory.DefaultApprovalRequired = internalpolicyhistoryDescApprovalRequired.Default.(bool)
 	// internalpolicyhistoryDescReviewDue is the schema descriptor for review_due field.
-	internalpolicyhistoryDescReviewDue := internalpolicyhistoryFields[19].Descriptor()
+	internalpolicyhistoryDescReviewDue := internalpolicyhistoryFields[18].Descriptor()
 	// internalpolicyhistory.DefaultReviewDue holds the default value on creation for the review_due field.
 	internalpolicyhistory.DefaultReviewDue = internalpolicyhistoryDescReviewDue.Default.(time.Time)
 	// internalpolicyhistoryDescID is the schema descriptor for id field.
@@ -2992,11 +3087,11 @@ func init() {
 	// procedure.NameValidator is a validator for the "name" field. It is called by the builders before save.
 	procedure.NameValidator = procedureDescName.Validators[0].(func(string) error)
 	// procedureDescApprovalRequired is the schema descriptor for approval_required field.
-	procedureDescApprovalRequired := procedureMixinFields8[4].Descriptor()
+	procedureDescApprovalRequired := procedureMixinFields8[3].Descriptor()
 	// procedure.DefaultApprovalRequired holds the default value on creation for the approval_required field.
 	procedure.DefaultApprovalRequired = procedureDescApprovalRequired.Default.(bool)
 	// procedureDescReviewDue is the schema descriptor for review_due field.
-	procedureDescReviewDue := procedureMixinFields8[5].Descriptor()
+	procedureDescReviewDue := procedureMixinFields8[4].Descriptor()
 	// procedure.DefaultReviewDue holds the default value on creation for the review_due field.
 	procedure.DefaultReviewDue = procedureDescReviewDue.Default.(time.Time)
 	// procedureDescID is the schema descriptor for id field.
@@ -3030,11 +3125,11 @@ func init() {
 	// procedurehistory.DefaultRevision holds the default value on creation for the revision field.
 	procedurehistory.DefaultRevision = procedurehistoryDescRevision.Default.(string)
 	// procedurehistoryDescApprovalRequired is the schema descriptor for approval_required field.
-	procedurehistoryDescApprovalRequired := procedurehistoryFields[18].Descriptor()
+	procedurehistoryDescApprovalRequired := procedurehistoryFields[17].Descriptor()
 	// procedurehistory.DefaultApprovalRequired holds the default value on creation for the approval_required field.
 	procedurehistory.DefaultApprovalRequired = procedurehistoryDescApprovalRequired.Default.(bool)
 	// procedurehistoryDescReviewDue is the schema descriptor for review_due field.
-	procedurehistoryDescReviewDue := procedurehistoryFields[19].Descriptor()
+	procedurehistoryDescReviewDue := procedurehistoryFields[18].Descriptor()
 	// procedurehistory.DefaultReviewDue holds the default value on creation for the review_due field.
 	procedurehistory.DefaultReviewDue = procedurehistoryDescReviewDue.Default.(time.Time)
 	// procedurehistoryDescID is the schema descriptor for id field.

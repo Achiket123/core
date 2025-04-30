@@ -21,6 +21,8 @@ import (
 	"github.com/theopenlane/core/internal/ent/generated/controlobjectivehistory"
 	"github.com/theopenlane/core/internal/ent/generated/documentdata"
 	"github.com/theopenlane/core/internal/ent/generated/documentdatahistory"
+	"github.com/theopenlane/core/internal/ent/generated/documentrevision"
+	"github.com/theopenlane/core/internal/ent/generated/documentrevisionhistory"
 	"github.com/theopenlane/core/internal/ent/generated/emailverificationtoken"
 	"github.com/theopenlane/core/internal/ent/generated/entity"
 	"github.com/theopenlane/core/internal/ent/generated/entityhistory"
@@ -493,6 +495,60 @@ func (f TraverseDocumentDataHistory) Traverse(ctx context.Context, q generated.Q
 		return f(ctx, q)
 	}
 	return fmt.Errorf("unexpected query type %T. expect *generated.DocumentDataHistoryQuery", q)
+}
+
+// The DocumentRevisionFunc type is an adapter to allow the use of ordinary function as a Querier.
+type DocumentRevisionFunc func(context.Context, *generated.DocumentRevisionQuery) (generated.Value, error)
+
+// Query calls f(ctx, q).
+func (f DocumentRevisionFunc) Query(ctx context.Context, q generated.Query) (generated.Value, error) {
+	if q, ok := q.(*generated.DocumentRevisionQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *generated.DocumentRevisionQuery", q)
+}
+
+// The TraverseDocumentRevision type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseDocumentRevision func(context.Context, *generated.DocumentRevisionQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseDocumentRevision) Intercept(next generated.Querier) generated.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseDocumentRevision) Traverse(ctx context.Context, q generated.Query) error {
+	if q, ok := q.(*generated.DocumentRevisionQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *generated.DocumentRevisionQuery", q)
+}
+
+// The DocumentRevisionHistoryFunc type is an adapter to allow the use of ordinary function as a Querier.
+type DocumentRevisionHistoryFunc func(context.Context, *generated.DocumentRevisionHistoryQuery) (generated.Value, error)
+
+// Query calls f(ctx, q).
+func (f DocumentRevisionHistoryFunc) Query(ctx context.Context, q generated.Query) (generated.Value, error) {
+	if q, ok := q.(*generated.DocumentRevisionHistoryQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *generated.DocumentRevisionHistoryQuery", q)
+}
+
+// The TraverseDocumentRevisionHistory type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseDocumentRevisionHistory func(context.Context, *generated.DocumentRevisionHistoryQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseDocumentRevisionHistory) Intercept(next generated.Querier) generated.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseDocumentRevisionHistory) Traverse(ctx context.Context, q generated.Query) error {
+	if q, ok := q.(*generated.DocumentRevisionHistoryQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *generated.DocumentRevisionHistoryQuery", q)
 }
 
 // The EmailVerificationTokenFunc type is an adapter to allow the use of ordinary function as a Querier.
@@ -2252,6 +2308,10 @@ func NewQuery(q generated.Query) (Query, error) {
 		return &query[*generated.DocumentDataQuery, predicate.DocumentData, documentdata.OrderOption]{typ: generated.TypeDocumentData, tq: q}, nil
 	case *generated.DocumentDataHistoryQuery:
 		return &query[*generated.DocumentDataHistoryQuery, predicate.DocumentDataHistory, documentdatahistory.OrderOption]{typ: generated.TypeDocumentDataHistory, tq: q}, nil
+	case *generated.DocumentRevisionQuery:
+		return &query[*generated.DocumentRevisionQuery, predicate.DocumentRevision, documentrevision.OrderOption]{typ: generated.TypeDocumentRevision, tq: q}, nil
+	case *generated.DocumentRevisionHistoryQuery:
+		return &query[*generated.DocumentRevisionHistoryQuery, predicate.DocumentRevisionHistory, documentrevisionhistory.OrderOption]{typ: generated.TypeDocumentRevisionHistory, tq: q}, nil
 	case *generated.EmailVerificationTokenQuery:
 		return &query[*generated.EmailVerificationTokenQuery, predicate.EmailVerificationToken, emailverificationtoken.OrderOption]{typ: generated.TypeEmailVerificationToken, tq: q}, nil
 	case *generated.EntityQuery:

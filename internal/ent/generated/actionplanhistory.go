@@ -48,8 +48,6 @@ type ActionPlanHistory struct {
 	Status enums.DocumentStatus `json:"status,omitempty"`
 	// type of the action_plan, e.g. compliance, operational, health and safety, etc.
 	ActionPlanType string `json:"action_plan_type,omitempty"`
-	// details of the action_plan
-	Details string `json:"details,omitempty"`
 	// whether approval is required for edits to the action_plan
 	ApprovalRequired bool `json:"approval_required,omitempty"`
 	// the date the action_plan should be reviewed, calculated based on the review_frequency if not directly set
@@ -82,7 +80,7 @@ func (*ActionPlanHistory) scanValues(columns []string) ([]any, error) {
 			values[i] = new(history.OpType)
 		case actionplanhistory.FieldApprovalRequired:
 			values[i] = new(sql.NullBool)
-		case actionplanhistory.FieldID, actionplanhistory.FieldRef, actionplanhistory.FieldCreatedBy, actionplanhistory.FieldUpdatedBy, actionplanhistory.FieldDeletedBy, actionplanhistory.FieldRevision, actionplanhistory.FieldName, actionplanhistory.FieldStatus, actionplanhistory.FieldActionPlanType, actionplanhistory.FieldDetails, actionplanhistory.FieldReviewFrequency, actionplanhistory.FieldApproverID, actionplanhistory.FieldDelegateID, actionplanhistory.FieldOwnerID, actionplanhistory.FieldPriority, actionplanhistory.FieldSource:
+		case actionplanhistory.FieldID, actionplanhistory.FieldRef, actionplanhistory.FieldCreatedBy, actionplanhistory.FieldUpdatedBy, actionplanhistory.FieldDeletedBy, actionplanhistory.FieldRevision, actionplanhistory.FieldName, actionplanhistory.FieldStatus, actionplanhistory.FieldActionPlanType, actionplanhistory.FieldReviewFrequency, actionplanhistory.FieldApproverID, actionplanhistory.FieldDelegateID, actionplanhistory.FieldOwnerID, actionplanhistory.FieldPriority, actionplanhistory.FieldSource:
 			values[i] = new(sql.NullString)
 		case actionplanhistory.FieldHistoryTime, actionplanhistory.FieldCreatedAt, actionplanhistory.FieldUpdatedAt, actionplanhistory.FieldDeletedAt, actionplanhistory.FieldReviewDue, actionplanhistory.FieldDueDate:
 			values[i] = new(sql.NullTime)
@@ -192,12 +190,6 @@ func (aph *ActionPlanHistory) assignValues(columns []string, values []any) error
 				return fmt.Errorf("unexpected type %T for field action_plan_type", values[i])
 			} else if value.Valid {
 				aph.ActionPlanType = value.String
-			}
-		case actionplanhistory.FieldDetails:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field details", values[i])
-			} else if value.Valid {
-				aph.Details = value.String
 			}
 		case actionplanhistory.FieldApprovalRequired:
 			if value, ok := values[i].(*sql.NullBool); !ok {
@@ -330,9 +322,6 @@ func (aph *ActionPlanHistory) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("action_plan_type=")
 	builder.WriteString(aph.ActionPlanType)
-	builder.WriteString(", ")
-	builder.WriteString("details=")
-	builder.WriteString(aph.Details)
 	builder.WriteString(", ")
 	builder.WriteString("approval_required=")
 	builder.WriteString(fmt.Sprintf("%v", aph.ApprovalRequired))
