@@ -28,7 +28,7 @@ func (suite *GraphTestSuite) TestAuditLogList() {
 
 	for _, tc := range testCases {
 		t.Run("Audit Logs "+tc.name, func(t *testing.T) {
-			resp, err := tc.client.AuditLogs(testUser1.UserCtx)
+			resp, err := tc.client.AuditLogs(testUser1.UserCtx, nil, nil, nil)
 
 			if tc.errorMsg != "" {
 				require.Error(t, err)

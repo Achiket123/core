@@ -2628,13 +2628,13 @@ func (c Change) String(op history.OpType) string {
 	}
 }
 
-func (c *Client) Audit(ctx context.Context) ([][]string, error) {
+func (c *Client) Audit(ctx context.Context,after *Cursor, first *int, before *Cursor, last *int) ([][]string, error) {
 	records := [][]string{
 		{"Table", "Ref Id", "History Time", "Operation", "Changes", "Updated By"},
 	}
 	var record [][]string
 	var err error
-	record, err = auditActionPlanHistory(ctx, c.config)
+	record, err = auditActionPlanHistory(ctx, c.config, after, first, before, last)
 	if err != nil {
 		return nil, err
 	}
@@ -2841,7 +2841,7 @@ func (c *Client) Audit(ctx context.Context) ([][]string, error) {
 	return records, nil
 }
 
-func (c *Client) AuditWithFilter(ctx context.Context, tableName string) ([][]string, error) {
+func (c *Client) AuditWithFilter(ctx context.Context, tableName string, after *Cursor, first *int, before *Cursor, last *int) ([][]string, error) {
 	records := [][]string{
 		{"Table", "Ref Id", "History Time", "Operation", "Changes", "Updated By"},
 	}
@@ -2849,7 +2849,7 @@ func (c *Client) AuditWithFilter(ctx context.Context, tableName string) ([][]str
 	var err error
 
 	if tableName == "" || tableName == strings.TrimSuffix("ActionPlanHistory", "History") {
-		record, err = auditActionPlanHistory(ctx, c.config)
+		record, err = auditActionPlanHistory(ctx, c.config, after, first, before, last)
 		if err != nil {
 			return nil, err
 		}
@@ -3190,7 +3190,7 @@ type actionplanhistoryref struct {
 	Ref string
 }
 
-func auditActionPlanHistory(ctx context.Context, config config) ([][]string, error) {
+func auditActionPlanHistory(ctx context.Context, config config, after *Cursor, first *int, before *Cursor, last *int) ([][]string, error) {
 	var records = [][]string{}
 	var refs []actionplanhistoryref
 	client := NewActionPlanHistoryClient(config)
@@ -3199,6 +3199,10 @@ func auditActionPlanHistory(ctx context.Context, config config) ([][]string, err
 		Order(actionplanhistory.ByRef()).
 		Select(actionplanhistory.FieldRef).
 		Scan(ctx, &refs)
+	if err != nil {
+		return nil, err
+	}
+
 
 	if err != nil {
 		return nil, err
@@ -3207,13 +3211,13 @@ func auditActionPlanHistory(ctx context.Context, config config) ([][]string, err
 		histories, err := client.Query().
 			Where(actionplanhistory.Ref(currRef.Ref)).
 			Order(actionplanhistory.ByHistoryTime()).
-			All(ctx)
+			Paginate(ctx,after, first, before, last)
 		if err != nil {
 			return nil, err
 		}
 
-		for i := 0; i < len(histories); i++ {
-			curr := histories[i]
+		for i := 0; i < len(histories.Edges); i++ {
+			curr := histories.Edges[i].Node
 			record := record{
 				Table:       "ActionPlanHistory",
 				RefId:       curr.Ref,
@@ -3230,7 +3234,7 @@ func auditActionPlanHistory(ctx context.Context, config config) ([][]string, err
 				if i == 0 {
 					record.Changes = (&ActionPlanHistory{}).changes(curr)
 				} else {
-					record.Changes = histories[i-1].changes(curr)
+					record.Changes = histories.Edges[i-1].Node.changes(curr)
 				}
 			}
 			records = append(records, record.toRow())

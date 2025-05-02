@@ -21,12 +21,12 @@ func (r *queryResolver) AuditLogs(ctx context.Context, after *entgql.Cursor[stri
 	)
 
 	if where != nil && where.Table != nil {
-		auditLogs, err = withTransactionalMutation(ctx).AuditWithFilter(ctx, *where.Table)
+		auditLogs, err = withTransactionalMutation(ctx).AuditWithFilter(ctx, *where.Table, after, first, before, last)
 		if err != nil {
 			return nil, parseRequestError(err, action{action: ActionGet, object: "audit logs"})
 		}
 	} else {
-		auditLogs, err = withTransactionalMutation(ctx).Audit(ctx)
+		auditLogs, err = withTransactionalMutation(ctx).Audit(ctx, after, first, before, last)
 		if err != nil {
 			return nil, parseRequestError(err, action{action: ActionGet, object: "audit logs"})
 		}
