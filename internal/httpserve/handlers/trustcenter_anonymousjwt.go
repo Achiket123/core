@@ -5,7 +5,10 @@ import (
 	"net/url"
 
 	echo "github.com/theopenlane/echox"
+	"github.com/theopenlane/iam/auth"
+	"github.com/theopenlane/utils/contextx"
 
+	"github.com/theopenlane/core/internal/ent/generated/privacy"
 	"github.com/theopenlane/core/pkg/models"
 )
 
@@ -21,7 +24,8 @@ func (h *Handler) CreateTrustCenterAnonymousJWT(ctx echo.Context) error {
 	// 1. create the auth allowContext with the TrustCenterContext
 	reqCtx := ctx.Request().Context()
 	// Allow database queries for trust center lookup without authentication
-	// allowCtx := privacy.DecisionContext(reqCtx, privacy.Allow)
+	allowCtx := privacy.DecisionContext(reqCtx, privacy.Allow)
+	allowCtx = contextx.With(allowCtx, auth.TrustCenterContextKey{})
 
 	// 2. parse the URL out of the `in`
 	if referer == "" {
@@ -40,6 +44,7 @@ func (h *Handler) CreateTrustCenterAnonymousJWT(ctx echo.Context) error {
 
 	// var trustCenter *generated.TrustCenter
 	orgID := "01JX8AJMVHPYEREXQDWSF8P4N4"
+	trustCenterID := "abc123"
 
 	// // 3. check if the URL is the "default trust center domain"
 	// if hostname == defaultTrustCenterDomain {
@@ -76,7 +81,7 @@ func (h *Handler) CreateTrustCenterAnonymousJWT(ctx echo.Context) error {
 	// 	}
 	// }
 
-	auth, err := h.AuthManager.GenerateAnonymousAuthSession(reqCtx, ctx.Response().Writer, orgID)
+	auth, err := h.AuthManager.GenerateAnonymousTrustCenterSession(reqCtx, ctx.Response().Writer, orgID, trustCenterID)
 	if err != nil {
 		return h.InternalServerError(ctx, err)
 	}

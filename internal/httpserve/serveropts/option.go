@@ -171,6 +171,7 @@ func WithAuth() ServerOption {
 			authmw.WithJWKSEndpoint(s.Config.Settings.Auth.Token.JWKSEndpoint),
 			authmw.WithDBClient(s.Config.Handler.DBClient),
 			authmw.WithCookieConfig(s.Config.SessionConfig.CookieConfig),
+			authmw.WithAllowAnonymous(true),
 		)
 
 		s.Config.Handler.WebAuthn = webauthn.NewWithConfig(s.Config.Settings.Auth.Providers.Webauthn)

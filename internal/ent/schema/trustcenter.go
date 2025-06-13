@@ -10,6 +10,7 @@ import (
 
 	"github.com/theopenlane/core/internal/ent/generated/privacy"
 	"github.com/theopenlane/core/internal/ent/hooks"
+	"github.com/theopenlane/core/internal/ent/interceptors"
 	"github.com/theopenlane/core/internal/ent/privacy/policy"
 )
 
@@ -64,7 +65,7 @@ func (TrustCenter) Fields() []ent.Field {
 func (t TrustCenter) Mixin() []ent.Mixin {
 	return mixinConfig{
 		additionalMixins: []ent.Mixin{
-			newOrgOwnedMixin(t),
+			newOrgOwnedMixin(t, withAllowAnonymousTrustCenterAccess(true)),
 		},
 	}.getMixins()
 }
@@ -116,5 +117,11 @@ func (TrustCenter) Indexes() []ent.Index {
 			Unique().Annotations(entsql.IndexWhere("deleted_at is NULL")),
 		index.Fields(ownerFieldName).
 			Annotations(entsql.IndexWhere("deleted_at is NULL")),
+	}
+}
+
+func (TrustCenter) Interceptors() []ent.Interceptor {
+	return []ent.Interceptor{
+		interceptors.InterceptorTrustCenter(),
 	}
 }

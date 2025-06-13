@@ -66,7 +66,7 @@ func (TrustCenterSetting) Fields() []ent.Field {
 func (t TrustCenterSetting) Mixin() []ent.Mixin {
 	return mixinConfig{
 		additionalMixins: []ent.Mixin{
-			newOrgOwnedMixin(t),
+			newOrgOwnedMixin(t, withAllowAnonymousTrustCenterAccess(true)),
 		},
 	}.getMixins()
 }
