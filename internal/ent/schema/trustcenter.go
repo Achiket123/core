@@ -10,7 +10,6 @@ import (
 	"github.com/gertd/go-pluralize"
 
 	"github.com/theopenlane/core/internal/ent/generated/privacy"
-	"github.com/theopenlane/core/internal/ent/hooks"
 	"github.com/theopenlane/core/internal/ent/privacy/policy"
 	"github.com/theopenlane/entx"
 )
@@ -100,7 +99,6 @@ func (t TrustCenter) Edges() []ent.Edge {
 // Hooks of the TrustCenter
 func (TrustCenter) Hooks() []ent.Hook {
 	return []ent.Hook{
-		hooks.HookTrustCenter(),
 	}
 }
 

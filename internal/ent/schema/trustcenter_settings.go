@@ -8,7 +8,6 @@ import (
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 	"github.com/gertd/go-pluralize"
-	"github.com/theopenlane/core/internal/ent/generated"
 	"github.com/theopenlane/core/internal/ent/generated/privacy"
 	"github.com/theopenlane/core/internal/ent/interceptors"
 	"github.com/theopenlane/core/internal/ent/privacy/policy"
@@ -134,7 +133,7 @@ func (TrustCenterSetting) Policy() ent.Policy {
 			privacy.AlwaysAllowRule(),
 		),
 		policy.WithMutationRules(
-			entfga.CheckEditAccess[*generated.TrustCenterSettingMutation](),
+			//entfga.CheckEditAccess[*generated.TrustCenterSettingMutation](),
 		),
 	)
 }
