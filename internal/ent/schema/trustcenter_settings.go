@@ -12,7 +12,6 @@ import (
 	"github.com/theopenlane/core/internal/ent/interceptors"
 	"github.com/theopenlane/core/internal/ent/privacy/policy"
 	"github.com/theopenlane/core/internal/ent/validator"
-	"github.com/theopenlane/iam/entfga"
 )
 
 // TrustCenterSetting holds the schema definition for the TrustCenterSetting entity
@@ -147,6 +146,6 @@ func (TrustCenterSetting) Indexes() []ent.Index {
 
 func (TrustCenterSetting) Annotations() []schema.Annotation {
 	return []schema.Annotation{
-		entfga.SettingsChecks("trust_center"),
+		// entfga.SettingsChecks("trust_center"),
 	}
 }
