@@ -100,12 +100,12 @@ func (t TrustCenterSetting) Edges() []ent.Edge {
 			field:      "trust_center_id",
 			ref:        "setting",
 		}),
-		uniqueEdgeTo(&edgeDefinition{
-			fromSchema: t,
-			name:       "logo_file",
-			t:          File.Type,
-			field:      "logo_local_file_id",
-		}),
+		// uniqueEdgeTo(&edgeDefinition{
+		// 	fromSchema: t,
+		// 	name:       "logo_file",
+		// 	t:          File.Type,
+		// 	field:      "logo_local_file_id",
+		// }),
 		// uniqueEdgeTo(&edgeDefinition{
 		// 	fromSchema: t,
 		// 	name:       "favicon_file",
@@ -133,7 +133,7 @@ func (TrustCenterSetting) Policy() ent.Policy {
 			privacy.AlwaysAllowRule(),
 		),
 		policy.WithMutationRules(
-			//entfga.CheckEditAccess[*generated.TrustCenterSettingMutation](),
+		//entfga.CheckEditAccess[*generated.TrustCenterSettingMutation](),
 		),
 	)
 }
