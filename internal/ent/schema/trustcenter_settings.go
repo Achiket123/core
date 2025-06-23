@@ -106,12 +106,12 @@ func (t TrustCenterSetting) Edges() []ent.Edge {
 			t:          File.Type,
 			field:      "logo_local_file_id",
 		}),
-		uniqueEdgeTo(&edgeDefinition{
-			fromSchema: t,
-			name:       "favicon_file",
-			t:          File.Type,
-			field:      "favicon_local_file_id",
-		}),
+		// uniqueEdgeTo(&edgeDefinition{
+		// 	fromSchema: t,
+		// 	name:       "favicon_file",
+		// 	t:          File.Type,
+		// 	field:      "favicon_local_file_id",
+		// }),
 	}
 }
 
