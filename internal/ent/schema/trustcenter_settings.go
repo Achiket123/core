@@ -3,6 +3,8 @@ package schema
 import (
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
+	"github.com/theopenlane/iam/entfga"
+	"github.com/theopenlane/core/internal/ent/generated"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/field"
@@ -132,7 +134,7 @@ func (TrustCenterSetting) Policy() ent.Policy {
 			privacy.AlwaysAllowRule(),
 		),
 		policy.WithMutationRules(
-		//entfga.CheckEditAccess[*generated.TrustCenterSettingMutation](),
+			entfga.CheckEditAccess[*generated.TrustCenterSettingMutation](),
 		),
 	)
 }
@@ -146,6 +148,6 @@ func (TrustCenterSetting) Indexes() []ent.Index {
 
 func (TrustCenterSetting) Annotations() []schema.Annotation {
 	return []schema.Annotation{
-		// entfga.SettingsChecks("trust_center"),
+		entfga.SettingsChecks("trust_center"),
 	}
 }
