@@ -8178,13 +8178,13 @@ input CreateTrustCenterSettingInput {
   """
   overview: String
   """
-  logo url for the trust center
+  URL of the trust center's remote logo
   """
-  logoURL: String
+  logoRemoteURL: String
   """
-  favicon url for the trust center
+  URL of the trust center's remote favicon
   """
-  faviconURL: String
+  faviconRemoteURL: String
   """
   primary color for the trust center
   """
@@ -41228,13 +41228,21 @@ type TrustCenterSetting implements Node {
   """
   overview: String
   """
-  logo url for the trust center
+  URL of the trust center's remote logo
   """
-  logoURL: String
+  logoRemoteURL: String
   """
-  favicon url for the trust center
+  The trust centers's local logo file id, takes precedence over the logo remote URL
   """
-  faviconURL: String
+  logoLocalFileID: String
+  """
+  URL of the trust center's remote favicon
+  """
+  faviconRemoteURL: String
+  """
+  The trust centers's local favicon file id, takes precedence over the favicon remote URL
+  """
+  faviconLocalFileID: String
   """
   primary color for the trust center
   """
@@ -41293,13 +41301,21 @@ type TrustCenterSettingHistory implements Node {
   """
   overview: String
   """
-  logo url for the trust center
+  URL of the trust center's remote logo
   """
-  logoURL: String
+  logoRemoteURL: String
   """
-  favicon url for the trust center
+  The trust centers's local logo file id, takes precedence over the logo remote URL
   """
-  faviconURL: String
+  logoLocalFileID: String
+  """
+  URL of the trust center's remote favicon
+  """
+  faviconRemoteURL: String
+  """
+  The trust centers's local favicon file id, takes precedence over the favicon remote URL
+  """
+  faviconLocalFileID: String
   """
   primary color for the trust center
   """
@@ -41538,41 +41554,77 @@ input TrustCenterSettingHistoryWhereInput {
   overviewEqualFold: String
   overviewContainsFold: String
   """
-  logo_url field predicates
+  logo_remote_url field predicates
   """
-  logoURL: String
-  logoURLNEQ: String
-  logoURLIn: [String!]
-  logoURLNotIn: [String!]
-  logoURLGT: String
-  logoURLGTE: String
-  logoURLLT: String
-  logoURLLTE: String
-  logoURLContains: String
-  logoURLHasPrefix: String
-  logoURLHasSuffix: String
-  logoURLIsNil: Boolean
-  logoURLNotNil: Boolean
-  logoURLEqualFold: String
-  logoURLContainsFold: String
+  logoRemoteURL: String
+  logoRemoteURLNEQ: String
+  logoRemoteURLIn: [String!]
+  logoRemoteURLNotIn: [String!]
+  logoRemoteURLGT: String
+  logoRemoteURLGTE: String
+  logoRemoteURLLT: String
+  logoRemoteURLLTE: String
+  logoRemoteURLContains: String
+  logoRemoteURLHasPrefix: String
+  logoRemoteURLHasSuffix: String
+  logoRemoteURLIsNil: Boolean
+  logoRemoteURLNotNil: Boolean
+  logoRemoteURLEqualFold: String
+  logoRemoteURLContainsFold: String
   """
-  favicon_url field predicates
+  logo_local_file_id field predicates
   """
-  faviconURL: String
-  faviconURLNEQ: String
-  faviconURLIn: [String!]
-  faviconURLNotIn: [String!]
-  faviconURLGT: String
-  faviconURLGTE: String
-  faviconURLLT: String
-  faviconURLLTE: String
-  faviconURLContains: String
-  faviconURLHasPrefix: String
-  faviconURLHasSuffix: String
-  faviconURLIsNil: Boolean
-  faviconURLNotNil: Boolean
-  faviconURLEqualFold: String
-  faviconURLContainsFold: String
+  logoLocalFileID: String
+  logoLocalFileIDNEQ: String
+  logoLocalFileIDIn: [String!]
+  logoLocalFileIDNotIn: [String!]
+  logoLocalFileIDGT: String
+  logoLocalFileIDGTE: String
+  logoLocalFileIDLT: String
+  logoLocalFileIDLTE: String
+  logoLocalFileIDContains: String
+  logoLocalFileIDHasPrefix: String
+  logoLocalFileIDHasSuffix: String
+  logoLocalFileIDIsNil: Boolean
+  logoLocalFileIDNotNil: Boolean
+  logoLocalFileIDEqualFold: String
+  logoLocalFileIDContainsFold: String
+  """
+  favicon_remote_url field predicates
+  """
+  faviconRemoteURL: String
+  faviconRemoteURLNEQ: String
+  faviconRemoteURLIn: [String!]
+  faviconRemoteURLNotIn: [String!]
+  faviconRemoteURLGT: String
+  faviconRemoteURLGTE: String
+  faviconRemoteURLLT: String
+  faviconRemoteURLLTE: String
+  faviconRemoteURLContains: String
+  faviconRemoteURLHasPrefix: String
+  faviconRemoteURLHasSuffix: String
+  faviconRemoteURLIsNil: Boolean
+  faviconRemoteURLNotNil: Boolean
+  faviconRemoteURLEqualFold: String
+  faviconRemoteURLContainsFold: String
+  """
+  favicon_local_file_id field predicates
+  """
+  faviconLocalFileID: String
+  faviconLocalFileIDNEQ: String
+  faviconLocalFileIDIn: [String!]
+  faviconLocalFileIDNotIn: [String!]
+  faviconLocalFileIDGT: String
+  faviconLocalFileIDGTE: String
+  faviconLocalFileIDLT: String
+  faviconLocalFileIDLTE: String
+  faviconLocalFileIDContains: String
+  faviconLocalFileIDHasPrefix: String
+  faviconLocalFileIDHasSuffix: String
+  faviconLocalFileIDIsNil: Boolean
+  faviconLocalFileIDNotNil: Boolean
+  faviconLocalFileIDEqualFold: String
+  faviconLocalFileIDContainsFold: String
   """
   primary_color field predicates
   """
@@ -41750,41 +41802,77 @@ input TrustCenterSettingWhereInput {
   overviewEqualFold: String
   overviewContainsFold: String
   """
-  logo_url field predicates
+  logo_remote_url field predicates
   """
-  logoURL: String
-  logoURLNEQ: String
-  logoURLIn: [String!]
-  logoURLNotIn: [String!]
-  logoURLGT: String
-  logoURLGTE: String
-  logoURLLT: String
-  logoURLLTE: String
-  logoURLContains: String
-  logoURLHasPrefix: String
-  logoURLHasSuffix: String
-  logoURLIsNil: Boolean
-  logoURLNotNil: Boolean
-  logoURLEqualFold: String
-  logoURLContainsFold: String
+  logoRemoteURL: String
+  logoRemoteURLNEQ: String
+  logoRemoteURLIn: [String!]
+  logoRemoteURLNotIn: [String!]
+  logoRemoteURLGT: String
+  logoRemoteURLGTE: String
+  logoRemoteURLLT: String
+  logoRemoteURLLTE: String
+  logoRemoteURLContains: String
+  logoRemoteURLHasPrefix: String
+  logoRemoteURLHasSuffix: String
+  logoRemoteURLIsNil: Boolean
+  logoRemoteURLNotNil: Boolean
+  logoRemoteURLEqualFold: String
+  logoRemoteURLContainsFold: String
   """
-  favicon_url field predicates
+  logo_local_file_id field predicates
   """
-  faviconURL: String
-  faviconURLNEQ: String
-  faviconURLIn: [String!]
-  faviconURLNotIn: [String!]
-  faviconURLGT: String
-  faviconURLGTE: String
-  faviconURLLT: String
-  faviconURLLTE: String
-  faviconURLContains: String
-  faviconURLHasPrefix: String
-  faviconURLHasSuffix: String
-  faviconURLIsNil: Boolean
-  faviconURLNotNil: Boolean
-  faviconURLEqualFold: String
-  faviconURLContainsFold: String
+  logoLocalFileID: String
+  logoLocalFileIDNEQ: String
+  logoLocalFileIDIn: [String!]
+  logoLocalFileIDNotIn: [String!]
+  logoLocalFileIDGT: String
+  logoLocalFileIDGTE: String
+  logoLocalFileIDLT: String
+  logoLocalFileIDLTE: String
+  logoLocalFileIDContains: String
+  logoLocalFileIDHasPrefix: String
+  logoLocalFileIDHasSuffix: String
+  logoLocalFileIDIsNil: Boolean
+  logoLocalFileIDNotNil: Boolean
+  logoLocalFileIDEqualFold: String
+  logoLocalFileIDContainsFold: String
+  """
+  favicon_remote_url field predicates
+  """
+  faviconRemoteURL: String
+  faviconRemoteURLNEQ: String
+  faviconRemoteURLIn: [String!]
+  faviconRemoteURLNotIn: [String!]
+  faviconRemoteURLGT: String
+  faviconRemoteURLGTE: String
+  faviconRemoteURLLT: String
+  faviconRemoteURLLTE: String
+  faviconRemoteURLContains: String
+  faviconRemoteURLHasPrefix: String
+  faviconRemoteURLHasSuffix: String
+  faviconRemoteURLIsNil: Boolean
+  faviconRemoteURLNotNil: Boolean
+  faviconRemoteURLEqualFold: String
+  faviconRemoteURLContainsFold: String
+  """
+  favicon_local_file_id field predicates
+  """
+  faviconLocalFileID: String
+  faviconLocalFileIDNEQ: String
+  faviconLocalFileIDIn: [String!]
+  faviconLocalFileIDNotIn: [String!]
+  faviconLocalFileIDGT: String
+  faviconLocalFileIDGTE: String
+  faviconLocalFileIDLT: String
+  faviconLocalFileIDLTE: String
+  faviconLocalFileIDContains: String
+  faviconLocalFileIDHasPrefix: String
+  faviconLocalFileIDHasSuffix: String
+  faviconLocalFileIDIsNil: Boolean
+  faviconLocalFileIDNotNil: Boolean
+  faviconLocalFileIDEqualFold: String
+  faviconLocalFileIDContainsFold: String
   """
   primary_color field predicates
   """
@@ -44502,15 +44590,15 @@ input UpdateTrustCenterSettingInput {
   overview: String
   clearOverview: Boolean
   """
-  logo url for the trust center
+  URL of the trust center's remote logo
   """
-  logoURL: String
-  clearLogoURL: Boolean
+  logoRemoteURL: String
+  clearLogoRemoteURL: Boolean
   """
-  favicon url for the trust center
+  URL of the trust center's remote favicon
   """
-  faviconURL: String
-  clearFaviconURL: Boolean
+  faviconRemoteURL: String
+  clearFaviconRemoteURL: Boolean
   """
   primary color for the trust center
   """

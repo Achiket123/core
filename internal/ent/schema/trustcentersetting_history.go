@@ -14,7 +14,6 @@ import (
 	"github.com/theopenlane/core/internal/ent/interceptors"
 	"github.com/theopenlane/entx"
 	"github.com/theopenlane/entx/history"
-	"github.com/theopenlane/iam/entfga"
 )
 
 // TrustCenterSettingHistory holds the schema definition for the TrustCenterSettingHistory entity.
@@ -26,6 +25,7 @@ type TrustCenterSettingHistory struct {
 func (TrustCenterSettingHistory) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entx.SchemaGenSkip(true),
+		entx.Features(entx.ModuleAuditLog),
 		entsql.Annotation{
 			Table: "trust_center_setting_history",
 		},
@@ -35,11 +35,6 @@ func (TrustCenterSettingHistory) Annotations() []schema.Annotation {
 		},
 		entgql.QueryField(),
 		entgql.RelayConnection(),
-		entfga.Annotations{
-			ObjectType:   "trust_center",
-			IDField:      "TrustCenterID",
-			IncludeHooks: false,
-		},
 	}
 }
 
@@ -102,6 +97,6 @@ func (TrustCenterSettingHistory) Indexes() []ent.Index {
 // Interceptors of the TrustCenterSettingHistory
 func (TrustCenterSettingHistory) Interceptors() []ent.Interceptor {
 	return []ent.Interceptor{
-		interceptors.HistoryAccess("audit_log_viewer", false, false, "trust_center"),
+		interceptors.HistoryAccess("audit_log_viewer", false, false, ""),
 	}
 }

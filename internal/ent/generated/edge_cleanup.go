@@ -14,7 +14,6 @@ import (
 	"github.com/theopenlane/core/internal/ent/generated/controlimplementation"
 	"github.com/theopenlane/core/internal/ent/generated/controlobjective"
 	"github.com/theopenlane/core/internal/ent/generated/controlscheduledjob"
-	"github.com/theopenlane/core/internal/ent/generated/customdomain"
 	"github.com/theopenlane/core/internal/ent/generated/dnsverification"
 	"github.com/theopenlane/core/internal/ent/generated/documentdata"
 	"github.com/theopenlane/core/internal/ent/generated/emailverificationtoken"
@@ -57,6 +56,8 @@ import (
 	"github.com/theopenlane/core/internal/ent/generated/task"
 	"github.com/theopenlane/core/internal/ent/generated/template"
 	"github.com/theopenlane/core/internal/ent/generated/tfasetting"
+	"github.com/theopenlane/core/internal/ent/generated/trustcenter"
+	"github.com/theopenlane/core/internal/ent/generated/trustcentersetting"
 	"github.com/theopenlane/core/internal/ent/generated/user"
 	"github.com/theopenlane/core/internal/ent/generated/usersetting"
 	"github.com/theopenlane/core/internal/ent/generated/webauthn"
@@ -768,6 +769,13 @@ func OrganizationEdgeCleanup(ctx context.Context, id string) error {
 		}
 	}
 
+	if exists, err := FromContext(ctx).TrustCenter.Query().Where((trustcenter.HasOwnerWith(organization.ID(id)))).Exist(ctx); err == nil && exists {
+		if trustcenterCount, err := FromContext(ctx).TrustCenter.Delete().Where(trustcenter.HasOwnerWith(organization.ID(id))).Exec(ctx); err != nil {
+			log.Debug().Err(err).Int("count", trustcenterCount).Msg("deleting trustcenter")
+			return err
+		}
+	}
+
 	if exists, err := FromContext(ctx).OrgMembership.Query().Where((orgmembership.HasOrganizationWith(organization.ID(id)))).Exist(ctx); err == nil && exists {
 		if orgmembershipCount, err := FromContext(ctx).OrgMembership.Delete().Where(orgmembership.HasOrganizationWith(organization.ID(id))).Exec(ctx); err != nil {
 			log.Debug().Err(err).Int("count", orgmembershipCount).Msg("deleting orgmembership")
@@ -944,6 +952,44 @@ func TemplateEdgeCleanup(ctx context.Context, id string) error {
 
 func TemplateHistoryEdgeCleanup(ctx context.Context, id string) error {
 	ctx = contextx.With(privacy.DecisionContext(ctx, privacy.Allowf("cleanup templatehistory edge")), entfga.DeleteTuplesFirstKey{})
+
+	return nil
+}
+
+func TrustCenterEdgeCleanup(ctx context.Context, id string) error {
+	ctx = contextx.With(privacy.DecisionContext(ctx, privacy.Allowf("cleanup trustcenter edge")), entfga.DeleteTuplesFirstKey{})
+
+	if exists, err := FromContext(ctx).CustomDomain.Query().Where((customdomain.HasTrustCenterWith(trustcenter.ID(id)))).Exist(ctx); err == nil && exists {
+		if customdomainCount, err := FromContext(ctx).CustomDomain.Delete().Where(customdomain.HasTrustCenterWith(trustcenter.ID(id))).Exec(ctx); err != nil {
+			log.Debug().Err(err).Int("count", customdomainCount).Msg("deleting customdomain")
+			return err
+		}
+	}
+
+	if exists, err := FromContext(ctx).TrustCenterSetting.Query().Where((trustcentersetting.HasTrustCenterWith(trustcenter.ID(id)))).Exist(ctx); err == nil && exists {
+		if trustcentersettingCount, err := FromContext(ctx).TrustCenterSetting.Delete().Where(trustcentersetting.HasTrustCenterWith(trustcenter.ID(id))).Exec(ctx); err != nil {
+			log.Debug().Err(err).Int("count", trustcentersettingCount).Msg("deleting trustcentersetting")
+			return err
+		}
+	}
+
+	return nil
+}
+
+func TrustCenterHistoryEdgeCleanup(ctx context.Context, id string) error {
+	ctx = contextx.With(privacy.DecisionContext(ctx, privacy.Allowf("cleanup trustcenterhistory edge")), entfga.DeleteTuplesFirstKey{})
+
+	return nil
+}
+
+func TrustCenterSettingEdgeCleanup(ctx context.Context, id string) error {
+	ctx = contextx.With(privacy.DecisionContext(ctx, privacy.Allowf("cleanup trustcentersetting edge")), entfga.DeleteTuplesFirstKey{})
+
+	return nil
+}
+
+func TrustCenterSettingHistoryEdgeCleanup(ctx context.Context, id string) error {
+	ctx = contextx.With(privacy.DecisionContext(ctx, privacy.Allowf("cleanup trustcentersettinghistory edge")), entfga.DeleteTuplesFirstKey{})
 
 	return nil
 }
