@@ -1,6 +1,7 @@
 package schema
 
 import (
+	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
@@ -50,16 +51,34 @@ func (TrustCenterSetting) Fields() []ent.Field {
 			Comment("overview of the trust center").
 			MaxLen(trustCenterDescriptionMaxLen).
 			Optional(),
-		field.String("logo_url").
-			Comment("logo url for the trust center").
-			MaxLen(trustCenterURLMaxLen).
+		field.String("logo_remote_url").
+			Comment("URL of the trust center's remote logo").
+			MaxLen(urlMaxLen).
 			Validate(validator.ValidateURL()).
-			Optional(),
-		field.String("favicon_url").
-			Comment("favicon url for the trust center").
-			MaxLen(trustCenterURLMaxLen).
+			Optional().
+			Nillable(),
+		field.String("logo_local_file_id").
+			Comment("The trust centers's local logo file id, takes precedence over the logo remote URL").
+			Optional().
+			Annotations(
+				// this field is not exposed to the graphql schema, it is set by the file upload handler
+				entgql.Skip(entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput),
+			).
+			Nillable(),
+		field.String("favicon_remote_url").
+			Comment("URL of the trust center's remote favicon").
+			MaxLen(urlMaxLen).
 			Validate(validator.ValidateURL()).
-			Optional(),
+			Optional().
+			Nillable(),
+		field.String("favicon_local_file_id").
+			Comment("The trust centers's local favicon file id, takes precedence over the favicon remote URL").
+			Optional().
+			Annotations(
+				// this field is not exposed to the graphql schema, it is set by the file upload handler
+				entgql.Skip(entgql.SkipMutationCreateInput, entgql.SkipMutationUpdateInput),
+			).
+			Nillable(),
 		field.String("primary_color").
 			Comment("primary color for the trust center").
 			Optional(),
@@ -81,6 +100,18 @@ func (t TrustCenterSetting) Edges() []ent.Edge {
 			edgeSchema: TrustCenter{},
 			field:      "trust_center_id",
 			ref:        "setting",
+		}),
+		uniqueEdgeTo(&edgeDefinition{
+			fromSchema: t,
+			name:       "logo_file",
+			t:          File.Type,
+			field:      "logo_local_file_id",
+		}),
+		uniqueEdgeTo(&edgeDefinition{
+			fromSchema: t,
+			name:       "favicon_file",
+			t:          File.Type,
+			field:      "favicon_local_file_id",
 		}),
 	}
 }

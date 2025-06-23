@@ -99,6 +99,7 @@ func (f File) Edges() []ent.Edge {
 		defaultEdgeFrom(f, DocumentData{}),
 		defaultEdgeFrom(f, Program{}),
 		defaultEdgeFrom(f, Evidence{}),
+		defaultEdgeFrom(f, TrustCenterSetting{}),
 		defaultEdgeToWithPagination(f, Event{}),
 	}
 }

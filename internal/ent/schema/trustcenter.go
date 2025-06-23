@@ -82,6 +82,9 @@ func (t TrustCenter) Edges() []ent.Edge {
 			field:      "custom_domain_id",
 			required:   false,
 			immutable:  false,
+			annotations: []schema.Annotation{
+				entx.CascadeAnnotationField("TrustCenter"),
+			},
 		}),
 		uniqueEdgeTo(&edgeDefinition{
 			fromSchema: t,
