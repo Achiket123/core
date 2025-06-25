@@ -30,10 +30,14 @@ const (
 	FieldDeletedAt = "deleted_at"
 	// FieldDeletedBy holds the string denoting the deleted_by field in the database.
 	FieldDeletedBy = "deleted_by"
+	// FieldDisplayID holds the string denoting the display_id field in the database.
+	FieldDisplayID = "display_id"
 	// FieldTags holds the string denoting the tags field in the database.
 	FieldTags = "tags"
 	// FieldOwnerID holds the string denoting the owner_id field in the database.
 	FieldOwnerID = "owner_id"
+	// FieldSystemOwned holds the string denoting the system_owned field in the database.
+	FieldSystemOwned = "system_owned"
 	// FieldMappingType holds the string denoting the mapping_type field in the database.
 	FieldMappingType = "mapping_type"
 	// FieldRelation holds the string denoting the relation field in the database.
@@ -42,6 +46,8 @@ const (
 	FieldConfidence = "confidence"
 	// FieldSource holds the string denoting the source field in the database.
 	FieldSource = "source"
+	// FieldSourceReference holds the string denoting the source_reference field in the database.
+	FieldSourceReference = "source_reference"
 	// EdgeOwner holds the string denoting the owner edge name in mutations.
 	EdgeOwner = "owner"
 	// EdgeBlockedGroups holds the string denoting the blocked_groups edge name in mutations.
@@ -106,12 +112,15 @@ var Columns = []string{
 	FieldUpdatedBy,
 	FieldDeletedAt,
 	FieldDeletedBy,
+	FieldDisplayID,
 	FieldTags,
 	FieldOwnerID,
+	FieldSystemOwned,
 	FieldMappingType,
 	FieldRelation,
 	FieldConfidence,
 	FieldSource,
+	FieldSourceReference,
 }
 
 var (
@@ -151,7 +160,7 @@ func ValidColumn(column string) bool {
 //
 //	import _ "github.com/theopenlane/core/internal/ent/generated/runtime"
 var (
-	Hooks        [7]ent.Hook
+	Hooks        [9]ent.Hook
 	Interceptors [3]ent.Interceptor
 	Policy       ent.Policy
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
@@ -160,10 +169,12 @@ var (
 	DefaultUpdatedAt func() time.Time
 	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
 	UpdateDefaultUpdatedAt func() time.Time
+	// DisplayIDValidator is a validator for the "display_id" field. It is called by the builders before save.
+	DisplayIDValidator func(string) error
 	// DefaultTags holds the default value on creation for the "tags" field.
 	DefaultTags []string
-	// OwnerIDValidator is a validator for the "owner_id" field. It is called by the builders before save.
-	OwnerIDValidator func(string) error
+	// DefaultSystemOwned holds the default value on creation for the "system_owned" field.
+	DefaultSystemOwned bool
 	// ConfidenceValidator is a validator for the "confidence" field. It is called by the builders before save.
 	ConfidenceValidator func(int) error
 	// DefaultID holds the default value on creation for the "id" field.
@@ -232,9 +243,19 @@ func ByDeletedBy(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDeletedBy, opts...).ToFunc()
 }
 
+// ByDisplayID orders the results by the display_id field.
+func ByDisplayID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDisplayID, opts...).ToFunc()
+}
+
 // ByOwnerID orders the results by the owner_id field.
 func ByOwnerID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldOwnerID, opts...).ToFunc()
+}
+
+// BySystemOwned orders the results by the system_owned field.
+func BySystemOwned(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldSystemOwned, opts...).ToFunc()
 }
 
 // ByMappingType orders the results by the mapping_type field.
@@ -255,6 +276,11 @@ func ByConfidence(opts ...sql.OrderTermOption) OrderOption {
 // BySource orders the results by the source field.
 func BySource(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldSource, opts...).ToFunc()
+}
+
+// BySourceReference orders the results by the source_reference field.
+func BySourceReference(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldSourceReference, opts...).ToFunc()
 }
 
 // ByOwnerField orders the results by owner field.

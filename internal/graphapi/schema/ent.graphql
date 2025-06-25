@@ -8405,6 +8405,10 @@ input CreateMappedControlInput {
   source of the mapping, e.g. manual, suggested, etc.
   """
   source: MappedControlMappingSource
+  """
+  reference material for the source of the mapping, e.g. a URL or organization name the mapping was sourced from
+  """
+  sourceReference: String
   ownerID: ID
   blockedGroupIDs: [ID!]
   editorIDs: [ID!]
@@ -22320,6 +22324,10 @@ type MappedControl implements Node {
   createdBy: String
   updatedBy: String
   """
+  a shortened prefixed id field to use as a human readable identifier
+  """
+  displayID: String!
+  """
   tags associated with the object
   """
   tags: [String!]
@@ -22327,6 +22335,10 @@ type MappedControl implements Node {
   the organization id that owns the object
   """
   ownerID: ID
+  """
+  indicates if the record is owned by the the openlane system and not by an organization
+  """
+  systemOwned: Boolean
   """
   the type of mapping between the two controls, e.g. subset, intersect, equal, superset
   """
@@ -22343,6 +22355,10 @@ type MappedControl implements Node {
   source of the mapping, e.g. manual, suggested, etc.
   """
   source: MappedControlMappingSource
+  """
+  reference material for the source of the mapping, e.g. a URL or organization name the mapping was sourced from
+  """
+  sourceReference: String
   owner: Organization
   blockedGroups(
     """
@@ -22571,6 +22587,10 @@ type MappedControlHistory implements Node {
   createdBy: String
   updatedBy: String
   """
+  a shortened prefixed id field to use as a human readable identifier
+  """
+  displayID: String!
+  """
   tags associated with the object
   """
   tags: [String!]
@@ -22578,6 +22598,10 @@ type MappedControlHistory implements Node {
   the organization id that owns the object
   """
   ownerID: String
+  """
+  indicates if the record is owned by the the openlane system and not by an organization
+  """
+  systemOwned: Boolean
   """
   the type of mapping between the two controls, e.g. subset, intersect, equal, superset
   """
@@ -22594,6 +22618,10 @@ type MappedControlHistory implements Node {
   source of the mapping, e.g. manual, suggested, etc.
   """
   source: MappedControlHistoryMappingSource
+  """
+  reference material for the source of the mapping, e.g. a URL or organization name the mapping was sourced from
+  """
+  sourceReference: String
 }
 """
 A connection to a list of items.
@@ -22794,6 +22822,22 @@ input MappedControlHistoryWhereInput {
   updatedByEqualFold: String
   updatedByContainsFold: String
   """
+  display_id field predicates
+  """
+  displayID: String
+  displayIDNEQ: String
+  displayIDIn: [String!]
+  displayIDNotIn: [String!]
+  displayIDGT: String
+  displayIDGTE: String
+  displayIDLT: String
+  displayIDLTE: String
+  displayIDContains: String
+  displayIDHasPrefix: String
+  displayIDHasSuffix: String
+  displayIDEqualFold: String
+  displayIDContainsFold: String
+  """
   owner_id field predicates
   """
   ownerID: String
@@ -22811,6 +22855,13 @@ input MappedControlHistoryWhereInput {
   ownerIDNotNil: Boolean
   ownerIDEqualFold: String
   ownerIDContainsFold: String
+  """
+  system_owned field predicates
+  """
+  systemOwned: Boolean
+  systemOwnedNEQ: Boolean
+  systemOwnedIsNil: Boolean
+  systemOwnedNotNil: Boolean
   """
   mapping_type field predicates
   """
@@ -22858,6 +22909,24 @@ input MappedControlHistoryWhereInput {
   sourceNotIn: [MappedControlHistoryMappingSource!]
   sourceIsNil: Boolean
   sourceNotNil: Boolean
+  """
+  source_reference field predicates
+  """
+  sourceReference: String
+  sourceReferenceNEQ: String
+  sourceReferenceIn: [String!]
+  sourceReferenceNotIn: [String!]
+  sourceReferenceGT: String
+  sourceReferenceGTE: String
+  sourceReferenceLT: String
+  sourceReferenceLTE: String
+  sourceReferenceContains: String
+  sourceReferenceHasPrefix: String
+  sourceReferenceHasSuffix: String
+  sourceReferenceIsNil: Boolean
+  sourceReferenceNotNil: Boolean
+  sourceReferenceEqualFold: String
+  sourceReferenceContainsFold: String
 }
 """
 MappedControlMappingSource is enum for the field source
@@ -22983,6 +23052,22 @@ input MappedControlWhereInput {
   updatedByEqualFold: String
   updatedByContainsFold: String
   """
+  display_id field predicates
+  """
+  displayID: String
+  displayIDNEQ: String
+  displayIDIn: [String!]
+  displayIDNotIn: [String!]
+  displayIDGT: String
+  displayIDGTE: String
+  displayIDLT: String
+  displayIDLTE: String
+  displayIDContains: String
+  displayIDHasPrefix: String
+  displayIDHasSuffix: String
+  displayIDEqualFold: String
+  displayIDContainsFold: String
+  """
   owner_id field predicates
   """
   ownerID: ID
@@ -23000,6 +23085,13 @@ input MappedControlWhereInput {
   ownerIDNotNil: Boolean
   ownerIDEqualFold: ID
   ownerIDContainsFold: ID
+  """
+  system_owned field predicates
+  """
+  systemOwned: Boolean
+  systemOwnedNEQ: Boolean
+  systemOwnedIsNil: Boolean
+  systemOwnedNotNil: Boolean
   """
   mapping_type field predicates
   """
@@ -23047,6 +23139,24 @@ input MappedControlWhereInput {
   sourceNotIn: [MappedControlMappingSource!]
   sourceIsNil: Boolean
   sourceNotNil: Boolean
+  """
+  source_reference field predicates
+  """
+  sourceReference: String
+  sourceReferenceNEQ: String
+  sourceReferenceIn: [String!]
+  sourceReferenceNotIn: [String!]
+  sourceReferenceGT: String
+  sourceReferenceGTE: String
+  sourceReferenceLT: String
+  sourceReferenceLTE: String
+  sourceReferenceContains: String
+  sourceReferenceHasPrefix: String
+  sourceReferenceHasSuffix: String
+  sourceReferenceIsNil: Boolean
+  sourceReferenceNotNil: Boolean
+  sourceReferenceEqualFold: String
+  sourceReferenceContainsFold: String
   """
   owner edge predicates
   """
@@ -46167,6 +46277,11 @@ input UpdateMappedControlInput {
   """
   source: MappedControlMappingSource
   clearSource: Boolean
+  """
+  reference material for the source of the mapping, e.g. a URL or organization name the mapping was sourced from
+  """
+  sourceReference: String
+  clearSourceReference: Boolean
   ownerID: ID
   clearOwner: Boolean
   addBlockedGroupIDs: [ID!]

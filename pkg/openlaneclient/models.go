@@ -5272,14 +5272,16 @@ type CreateMappedControlInput struct {
 	// percentage (0-100) of confidence in the mapping
 	Confidence *int64 `json:"confidence,omitempty"`
 	// source of the mapping, e.g. manual, suggested, etc.
-	Source            *enums.MappingSource `json:"source,omitempty"`
-	OwnerID           *string              `json:"ownerID,omitempty"`
-	BlockedGroupIDs   []string             `json:"blockedGroupIDs,omitempty"`
-	EditorIDs         []string             `json:"editorIDs,omitempty"`
-	FromControlIDs    []string             `json:"fromControlIDs,omitempty"`
-	ToControlIDs      []string             `json:"toControlIDs,omitempty"`
-	FromSubcontrolIDs []string             `json:"fromSubcontrolIDs,omitempty"`
-	ToSubcontrolIDs   []string             `json:"toSubcontrolIDs,omitempty"`
+	Source *enums.MappingSource `json:"source,omitempty"`
+	// reference material for the source of the mapping, e.g. a URL or organization name the mapping was sourced from
+	SourceReference   *string  `json:"sourceReference,omitempty"`
+	OwnerID           *string  `json:"ownerID,omitempty"`
+	BlockedGroupIDs   []string `json:"blockedGroupIDs,omitempty"`
+	EditorIDs         []string `json:"editorIDs,omitempty"`
+	FromControlIDs    []string `json:"fromControlIDs,omitempty"`
+	ToControlIDs      []string `json:"toControlIDs,omitempty"`
+	FromSubcontrolIDs []string `json:"fromSubcontrolIDs,omitempty"`
+	ToSubcontrolIDs   []string `json:"toSubcontrolIDs,omitempty"`
 }
 
 type CreateMemberWithProgramInput struct {
@@ -14154,10 +14156,14 @@ type MappedControl struct {
 	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
 	CreatedBy *string    `json:"createdBy,omitempty"`
 	UpdatedBy *string    `json:"updatedBy,omitempty"`
+	// a shortened prefixed id field to use as a human readable identifier
+	DisplayID string `json:"displayID"`
 	// tags associated with the object
 	Tags []string `json:"tags,omitempty"`
 	// the organization id that owns the object
 	OwnerID *string `json:"ownerID,omitempty"`
+	// indicates if the record is owned by the the openlane system and not by an organization
+	SystemOwned *bool `json:"systemOwned,omitempty"`
 	// the type of mapping between the two controls, e.g. subset, intersect, equal, superset
 	MappingType enums.MappingType `json:"mappingType"`
 	// description of how the two controls are related
@@ -14165,7 +14171,9 @@ type MappedControl struct {
 	// percentage (0-100) of confidence in the mapping
 	Confidence *int64 `json:"confidence,omitempty"`
 	// source of the mapping, e.g. manual, suggested, etc.
-	Source          *enums.MappingSource  `json:"source,omitempty"`
+	Source *enums.MappingSource `json:"source,omitempty"`
+	// reference material for the source of the mapping, e.g. a URL or organization name the mapping was sourced from
+	SourceReference *string               `json:"sourceReference,omitempty"`
 	Owner           *Organization         `json:"owner,omitempty"`
 	BlockedGroups   *GroupConnection      `json:"blockedGroups"`
 	Editors         *GroupConnection      `json:"editors"`
@@ -14222,10 +14230,14 @@ type MappedControlHistory struct {
 	UpdatedAt   *time.Time     `json:"updatedAt,omitempty"`
 	CreatedBy   *string        `json:"createdBy,omitempty"`
 	UpdatedBy   *string        `json:"updatedBy,omitempty"`
+	// a shortened prefixed id field to use as a human readable identifier
+	DisplayID string `json:"displayID"`
 	// tags associated with the object
 	Tags []string `json:"tags,omitempty"`
 	// the organization id that owns the object
 	OwnerID *string `json:"ownerID,omitempty"`
+	// indicates if the record is owned by the the openlane system and not by an organization
+	SystemOwned *bool `json:"systemOwned,omitempty"`
 	// the type of mapping between the two controls, e.g. subset, intersect, equal, superset
 	MappingType enums.MappingType `json:"mappingType"`
 	// description of how the two controls are related
@@ -14234,6 +14246,8 @@ type MappedControlHistory struct {
 	Confidence *int64 `json:"confidence,omitempty"`
 	// source of the mapping, e.g. manual, suggested, etc.
 	Source *enums.MappingSource `json:"source,omitempty"`
+	// reference material for the source of the mapping, e.g. a URL or organization name the mapping was sourced from
+	SourceReference *string `json:"sourceReference,omitempty"`
 }
 
 func (MappedControlHistory) IsNode() {}
@@ -14365,6 +14379,20 @@ type MappedControlHistoryWhereInput struct {
 	UpdatedByNotNil       *bool    `json:"updatedByNotNil,omitempty"`
 	UpdatedByEqualFold    *string  `json:"updatedByEqualFold,omitempty"`
 	UpdatedByContainsFold *string  `json:"updatedByContainsFold,omitempty"`
+	// display_id field predicates
+	DisplayID             *string  `json:"displayID,omitempty"`
+	DisplayIdneq          *string  `json:"displayIDNEQ,omitempty"`
+	DisplayIDIn           []string `json:"displayIDIn,omitempty"`
+	DisplayIDNotIn        []string `json:"displayIDNotIn,omitempty"`
+	DisplayIdgt           *string  `json:"displayIDGT,omitempty"`
+	DisplayIdgte          *string  `json:"displayIDGTE,omitempty"`
+	DisplayIdlt           *string  `json:"displayIDLT,omitempty"`
+	DisplayIdlte          *string  `json:"displayIDLTE,omitempty"`
+	DisplayIDContains     *string  `json:"displayIDContains,omitempty"`
+	DisplayIDHasPrefix    *string  `json:"displayIDHasPrefix,omitempty"`
+	DisplayIDHasSuffix    *string  `json:"displayIDHasSuffix,omitempty"`
+	DisplayIDEqualFold    *string  `json:"displayIDEqualFold,omitempty"`
+	DisplayIDContainsFold *string  `json:"displayIDContainsFold,omitempty"`
 	// owner_id field predicates
 	OwnerID             *string  `json:"ownerID,omitempty"`
 	OwnerIdneq          *string  `json:"ownerIDNEQ,omitempty"`
@@ -14381,6 +14409,11 @@ type MappedControlHistoryWhereInput struct {
 	OwnerIDNotNil       *bool    `json:"ownerIDNotNil,omitempty"`
 	OwnerIDEqualFold    *string  `json:"ownerIDEqualFold,omitempty"`
 	OwnerIDContainsFold *string  `json:"ownerIDContainsFold,omitempty"`
+	// system_owned field predicates
+	SystemOwned       *bool `json:"systemOwned,omitempty"`
+	SystemOwnedNeq    *bool `json:"systemOwnedNEQ,omitempty"`
+	SystemOwnedIsNil  *bool `json:"systemOwnedIsNil,omitempty"`
+	SystemOwnedNotNil *bool `json:"systemOwnedNotNil,omitempty"`
 	// mapping_type field predicates
 	MappingType      *enums.MappingType  `json:"mappingType,omitempty"`
 	MappingTypeNeq   *enums.MappingType  `json:"mappingTypeNEQ,omitempty"`
@@ -14420,6 +14453,22 @@ type MappedControlHistoryWhereInput struct {
 	SourceNotIn  []enums.MappingSource `json:"sourceNotIn,omitempty"`
 	SourceIsNil  *bool                 `json:"sourceIsNil,omitempty"`
 	SourceNotNil *bool                 `json:"sourceNotNil,omitempty"`
+	// source_reference field predicates
+	SourceReference             *string  `json:"sourceReference,omitempty"`
+	SourceReferenceNeq          *string  `json:"sourceReferenceNEQ,omitempty"`
+	SourceReferenceIn           []string `json:"sourceReferenceIn,omitempty"`
+	SourceReferenceNotIn        []string `json:"sourceReferenceNotIn,omitempty"`
+	SourceReferenceGt           *string  `json:"sourceReferenceGT,omitempty"`
+	SourceReferenceGte          *string  `json:"sourceReferenceGTE,omitempty"`
+	SourceReferenceLt           *string  `json:"sourceReferenceLT,omitempty"`
+	SourceReferenceLte          *string  `json:"sourceReferenceLTE,omitempty"`
+	SourceReferenceContains     *string  `json:"sourceReferenceContains,omitempty"`
+	SourceReferenceHasPrefix    *string  `json:"sourceReferenceHasPrefix,omitempty"`
+	SourceReferenceHasSuffix    *string  `json:"sourceReferenceHasSuffix,omitempty"`
+	SourceReferenceIsNil        *bool    `json:"sourceReferenceIsNil,omitempty"`
+	SourceReferenceNotNil       *bool    `json:"sourceReferenceNotNil,omitempty"`
+	SourceReferenceEqualFold    *string  `json:"sourceReferenceEqualFold,omitempty"`
+	SourceReferenceContainsFold *string  `json:"sourceReferenceContainsFold,omitempty"`
 }
 
 // Ordering options for MappedControl connections
@@ -14507,6 +14556,20 @@ type MappedControlWhereInput struct {
 	UpdatedByNotNil       *bool    `json:"updatedByNotNil,omitempty"`
 	UpdatedByEqualFold    *string  `json:"updatedByEqualFold,omitempty"`
 	UpdatedByContainsFold *string  `json:"updatedByContainsFold,omitempty"`
+	// display_id field predicates
+	DisplayID             *string  `json:"displayID,omitempty"`
+	DisplayIdneq          *string  `json:"displayIDNEQ,omitempty"`
+	DisplayIDIn           []string `json:"displayIDIn,omitempty"`
+	DisplayIDNotIn        []string `json:"displayIDNotIn,omitempty"`
+	DisplayIdgt           *string  `json:"displayIDGT,omitempty"`
+	DisplayIdgte          *string  `json:"displayIDGTE,omitempty"`
+	DisplayIdlt           *string  `json:"displayIDLT,omitempty"`
+	DisplayIdlte          *string  `json:"displayIDLTE,omitempty"`
+	DisplayIDContains     *string  `json:"displayIDContains,omitempty"`
+	DisplayIDHasPrefix    *string  `json:"displayIDHasPrefix,omitempty"`
+	DisplayIDHasSuffix    *string  `json:"displayIDHasSuffix,omitempty"`
+	DisplayIDEqualFold    *string  `json:"displayIDEqualFold,omitempty"`
+	DisplayIDContainsFold *string  `json:"displayIDContainsFold,omitempty"`
 	// owner_id field predicates
 	OwnerID             *string  `json:"ownerID,omitempty"`
 	OwnerIdneq          *string  `json:"ownerIDNEQ,omitempty"`
@@ -14523,6 +14586,11 @@ type MappedControlWhereInput struct {
 	OwnerIDNotNil       *bool    `json:"ownerIDNotNil,omitempty"`
 	OwnerIDEqualFold    *string  `json:"ownerIDEqualFold,omitempty"`
 	OwnerIDContainsFold *string  `json:"ownerIDContainsFold,omitempty"`
+	// system_owned field predicates
+	SystemOwned       *bool `json:"systemOwned,omitempty"`
+	SystemOwnedNeq    *bool `json:"systemOwnedNEQ,omitempty"`
+	SystemOwnedIsNil  *bool `json:"systemOwnedIsNil,omitempty"`
+	SystemOwnedNotNil *bool `json:"systemOwnedNotNil,omitempty"`
 	// mapping_type field predicates
 	MappingType      *enums.MappingType  `json:"mappingType,omitempty"`
 	MappingTypeNeq   *enums.MappingType  `json:"mappingTypeNEQ,omitempty"`
@@ -14562,6 +14630,22 @@ type MappedControlWhereInput struct {
 	SourceNotIn  []enums.MappingSource `json:"sourceNotIn,omitempty"`
 	SourceIsNil  *bool                 `json:"sourceIsNil,omitempty"`
 	SourceNotNil *bool                 `json:"sourceNotNil,omitempty"`
+	// source_reference field predicates
+	SourceReference             *string  `json:"sourceReference,omitempty"`
+	SourceReferenceNeq          *string  `json:"sourceReferenceNEQ,omitempty"`
+	SourceReferenceIn           []string `json:"sourceReferenceIn,omitempty"`
+	SourceReferenceNotIn        []string `json:"sourceReferenceNotIn,omitempty"`
+	SourceReferenceGt           *string  `json:"sourceReferenceGT,omitempty"`
+	SourceReferenceGte          *string  `json:"sourceReferenceGTE,omitempty"`
+	SourceReferenceLt           *string  `json:"sourceReferenceLT,omitempty"`
+	SourceReferenceLte          *string  `json:"sourceReferenceLTE,omitempty"`
+	SourceReferenceContains     *string  `json:"sourceReferenceContains,omitempty"`
+	SourceReferenceHasPrefix    *string  `json:"sourceReferenceHasPrefix,omitempty"`
+	SourceReferenceHasSuffix    *string  `json:"sourceReferenceHasSuffix,omitempty"`
+	SourceReferenceIsNil        *bool    `json:"sourceReferenceIsNil,omitempty"`
+	SourceReferenceNotNil       *bool    `json:"sourceReferenceNotNil,omitempty"`
+	SourceReferenceEqualFold    *string  `json:"sourceReferenceEqualFold,omitempty"`
+	SourceReferenceContainsFold *string  `json:"sourceReferenceContainsFold,omitempty"`
 	// owner edge predicates
 	HasOwner     *bool                     `json:"hasOwner,omitempty"`
 	HasOwnerWith []*OrganizationWhereInput `json:"hasOwnerWith,omitempty"`
@@ -26809,28 +26893,31 @@ type UpdateMappedControlInput struct {
 	Confidence      *int64 `json:"confidence,omitempty"`
 	ClearConfidence *bool  `json:"clearConfidence,omitempty"`
 	// source of the mapping, e.g. manual, suggested, etc.
-	Source                  *enums.MappingSource `json:"source,omitempty"`
-	ClearSource             *bool                `json:"clearSource,omitempty"`
-	OwnerID                 *string              `json:"ownerID,omitempty"`
-	ClearOwner              *bool                `json:"clearOwner,omitempty"`
-	AddBlockedGroupIDs      []string             `json:"addBlockedGroupIDs,omitempty"`
-	RemoveBlockedGroupIDs   []string             `json:"removeBlockedGroupIDs,omitempty"`
-	ClearBlockedGroups      *bool                `json:"clearBlockedGroups,omitempty"`
-	AddEditorIDs            []string             `json:"addEditorIDs,omitempty"`
-	RemoveEditorIDs         []string             `json:"removeEditorIDs,omitempty"`
-	ClearEditors            *bool                `json:"clearEditors,omitempty"`
-	AddFromControlIDs       []string             `json:"addFromControlIDs,omitempty"`
-	RemoveFromControlIDs    []string             `json:"removeFromControlIDs,omitempty"`
-	ClearFromControls       *bool                `json:"clearFromControls,omitempty"`
-	AddToControlIDs         []string             `json:"addToControlIDs,omitempty"`
-	RemoveToControlIDs      []string             `json:"removeToControlIDs,omitempty"`
-	ClearToControls         *bool                `json:"clearToControls,omitempty"`
-	AddFromSubcontrolIDs    []string             `json:"addFromSubcontrolIDs,omitempty"`
-	RemoveFromSubcontrolIDs []string             `json:"removeFromSubcontrolIDs,omitempty"`
-	ClearFromSubcontrols    *bool                `json:"clearFromSubcontrols,omitempty"`
-	AddToSubcontrolIDs      []string             `json:"addToSubcontrolIDs,omitempty"`
-	RemoveToSubcontrolIDs   []string             `json:"removeToSubcontrolIDs,omitempty"`
-	ClearToSubcontrols      *bool                `json:"clearToSubcontrols,omitempty"`
+	Source      *enums.MappingSource `json:"source,omitempty"`
+	ClearSource *bool                `json:"clearSource,omitempty"`
+	// reference material for the source of the mapping, e.g. a URL or organization name the mapping was sourced from
+	SourceReference         *string  `json:"sourceReference,omitempty"`
+	ClearSourceReference    *bool    `json:"clearSourceReference,omitempty"`
+	OwnerID                 *string  `json:"ownerID,omitempty"`
+	ClearOwner              *bool    `json:"clearOwner,omitempty"`
+	AddBlockedGroupIDs      []string `json:"addBlockedGroupIDs,omitempty"`
+	RemoveBlockedGroupIDs   []string `json:"removeBlockedGroupIDs,omitempty"`
+	ClearBlockedGroups      *bool    `json:"clearBlockedGroups,omitempty"`
+	AddEditorIDs            []string `json:"addEditorIDs,omitempty"`
+	RemoveEditorIDs         []string `json:"removeEditorIDs,omitempty"`
+	ClearEditors            *bool    `json:"clearEditors,omitempty"`
+	AddFromControlIDs       []string `json:"addFromControlIDs,omitempty"`
+	RemoveFromControlIDs    []string `json:"removeFromControlIDs,omitempty"`
+	ClearFromControls       *bool    `json:"clearFromControls,omitempty"`
+	AddToControlIDs         []string `json:"addToControlIDs,omitempty"`
+	RemoveToControlIDs      []string `json:"removeToControlIDs,omitempty"`
+	ClearToControls         *bool    `json:"clearToControls,omitempty"`
+	AddFromSubcontrolIDs    []string `json:"addFromSubcontrolIDs,omitempty"`
+	RemoveFromSubcontrolIDs []string `json:"removeFromSubcontrolIDs,omitempty"`
+	ClearFromSubcontrols    *bool    `json:"clearFromSubcontrols,omitempty"`
+	AddToSubcontrolIDs      []string `json:"addToSubcontrolIDs,omitempty"`
+	RemoveToSubcontrolIDs   []string `json:"removeToSubcontrolIDs,omitempty"`
+	ClearToSubcontrols      *bool    `json:"clearToSubcontrols,omitempty"`
 }
 
 // UpdateNarrativeInput is used for update Narrative object.

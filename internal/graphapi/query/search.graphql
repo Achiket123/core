@@ -384,6 +384,7 @@ query GlobalSearch($query: String!) {
       }
       edges {
         node {
+          displayID
           id
           tags
         }

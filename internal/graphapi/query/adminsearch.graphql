@@ -499,9 +499,11 @@ query AdminSearch($query: String!) {
       edges {
         node {
           id
+          displayID
           tags
           ownerID
           relation
+          sourceReference
         }
       }
     }

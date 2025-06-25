@@ -109,6 +109,12 @@ func (mcc *MappedControlCreate) SetNillableDeletedBy(s *string) *MappedControlCr
 	return mcc
 }
 
+// SetDisplayID sets the "display_id" field.
+func (mcc *MappedControlCreate) SetDisplayID(s string) *MappedControlCreate {
+	mcc.mutation.SetDisplayID(s)
+	return mcc
+}
+
 // SetTags sets the "tags" field.
 func (mcc *MappedControlCreate) SetTags(s []string) *MappedControlCreate {
 	mcc.mutation.SetTags(s)
@@ -125,6 +131,20 @@ func (mcc *MappedControlCreate) SetOwnerID(s string) *MappedControlCreate {
 func (mcc *MappedControlCreate) SetNillableOwnerID(s *string) *MappedControlCreate {
 	if s != nil {
 		mcc.SetOwnerID(*s)
+	}
+	return mcc
+}
+
+// SetSystemOwned sets the "system_owned" field.
+func (mcc *MappedControlCreate) SetSystemOwned(b bool) *MappedControlCreate {
+	mcc.mutation.SetSystemOwned(b)
+	return mcc
+}
+
+// SetNillableSystemOwned sets the "system_owned" field if the given value is not nil.
+func (mcc *MappedControlCreate) SetNillableSystemOwned(b *bool) *MappedControlCreate {
+	if b != nil {
+		mcc.SetSystemOwned(*b)
 	}
 	return mcc
 }
@@ -181,6 +201,20 @@ func (mcc *MappedControlCreate) SetSource(es enums.MappingSource) *MappedControl
 func (mcc *MappedControlCreate) SetNillableSource(es *enums.MappingSource) *MappedControlCreate {
 	if es != nil {
 		mcc.SetSource(*es)
+	}
+	return mcc
+}
+
+// SetSourceReference sets the "source_reference" field.
+func (mcc *MappedControlCreate) SetSourceReference(s string) *MappedControlCreate {
+	mcc.mutation.SetSourceReference(s)
+	return mcc
+}
+
+// SetNillableSourceReference sets the "source_reference" field if the given value is not nil.
+func (mcc *MappedControlCreate) SetNillableSourceReference(s *string) *MappedControlCreate {
+	if s != nil {
+		mcc.SetSourceReference(*s)
 	}
 	return mcc
 }
@@ -349,6 +383,10 @@ func (mcc *MappedControlCreate) defaults() error {
 		v := mappedcontrol.DefaultTags
 		mcc.mutation.SetTags(v)
 	}
+	if _, ok := mcc.mutation.SystemOwned(); !ok {
+		v := mappedcontrol.DefaultSystemOwned
+		mcc.mutation.SetSystemOwned(v)
+	}
 	if _, ok := mcc.mutation.MappingType(); !ok {
 		v := mappedcontrol.DefaultMappingType
 		mcc.mutation.SetMappingType(v)
@@ -369,9 +407,12 @@ func (mcc *MappedControlCreate) defaults() error {
 
 // check runs all checks and user-defined validators on the builder.
 func (mcc *MappedControlCreate) check() error {
-	if v, ok := mcc.mutation.OwnerID(); ok {
-		if err := mappedcontrol.OwnerIDValidator(v); err != nil {
-			return &ValidationError{Name: "owner_id", err: fmt.Errorf(`generated: validator failed for field "MappedControl.owner_id": %w`, err)}
+	if _, ok := mcc.mutation.DisplayID(); !ok {
+		return &ValidationError{Name: "display_id", err: errors.New(`generated: missing required field "MappedControl.display_id"`)}
+	}
+	if v, ok := mcc.mutation.DisplayID(); ok {
+		if err := mappedcontrol.DisplayIDValidator(v); err != nil {
+			return &ValidationError{Name: "display_id", err: fmt.Errorf(`generated: validator failed for field "MappedControl.display_id": %w`, err)}
 		}
 	}
 	if _, ok := mcc.mutation.MappingType(); !ok {
@@ -452,9 +493,17 @@ func (mcc *MappedControlCreate) createSpec() (*MappedControl, *sqlgraph.CreateSp
 		_spec.SetField(mappedcontrol.FieldDeletedBy, field.TypeString, value)
 		_node.DeletedBy = value
 	}
+	if value, ok := mcc.mutation.DisplayID(); ok {
+		_spec.SetField(mappedcontrol.FieldDisplayID, field.TypeString, value)
+		_node.DisplayID = value
+	}
 	if value, ok := mcc.mutation.Tags(); ok {
 		_spec.SetField(mappedcontrol.FieldTags, field.TypeJSON, value)
 		_node.Tags = value
+	}
+	if value, ok := mcc.mutation.SystemOwned(); ok {
+		_spec.SetField(mappedcontrol.FieldSystemOwned, field.TypeBool, value)
+		_node.SystemOwned = value
 	}
 	if value, ok := mcc.mutation.MappingType(); ok {
 		_spec.SetField(mappedcontrol.FieldMappingType, field.TypeEnum, value)
@@ -471,6 +520,10 @@ func (mcc *MappedControlCreate) createSpec() (*MappedControl, *sqlgraph.CreateSp
 	if value, ok := mcc.mutation.Source(); ok {
 		_spec.SetField(mappedcontrol.FieldSource, field.TypeEnum, value)
 		_node.Source = value
+	}
+	if value, ok := mcc.mutation.SourceReference(); ok {
+		_spec.SetField(mappedcontrol.FieldSourceReference, field.TypeString, value)
+		_node.SourceReference = value
 	}
 	if nodes := mcc.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

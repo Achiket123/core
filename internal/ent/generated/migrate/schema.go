@@ -2526,11 +2526,14 @@ var (
 		{Name: "updated_by", Type: field.TypeString, Nullable: true},
 		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 		{Name: "deleted_by", Type: field.TypeString, Nullable: true},
+		{Name: "display_id", Type: field.TypeString},
 		{Name: "tags", Type: field.TypeJSON, Nullable: true},
+		{Name: "system_owned", Type: field.TypeBool, Nullable: true, Default: false},
 		{Name: "mapping_type", Type: field.TypeEnum, Enums: []string{"EQUAL", "SUPERSET", "SUBSET", "INTERSECT", "PARTIAL"}, Default: "EQUAL"},
 		{Name: "relation", Type: field.TypeString, Nullable: true},
 		{Name: "confidence", Type: field.TypeInt, Nullable: true},
 		{Name: "source", Type: field.TypeEnum, Nullable: true, Enums: []string{"MANUAL", "SUGGESTED", "IMPORTED"}, Default: "MANUAL"},
+		{Name: "source_reference", Type: field.TypeString, Nullable: true},
 		{Name: "owner_id", Type: field.TypeString, Nullable: true},
 	}
 	// MappedControlsTable holds the schema information for the "mapped_controls" table.
@@ -2541,7 +2544,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "mapped_controls_organizations_mapped_controls",
-				Columns:    []*schema.Column{MappedControlsColumns[12]},
+				Columns:    []*schema.Column{MappedControlsColumns[15]},
 				RefColumns: []*schema.Column{OrganizationsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -2553,9 +2556,14 @@ var (
 				Columns: []*schema.Column{MappedControlsColumns[0]},
 			},
 			{
+				Name:    "mappedcontrol_display_id_owner_id",
+				Unique:  true,
+				Columns: []*schema.Column{MappedControlsColumns[7], MappedControlsColumns[15]},
+			},
+			{
 				Name:    "mappedcontrol_owner_id",
 				Unique:  false,
-				Columns: []*schema.Column{MappedControlsColumns[12]},
+				Columns: []*schema.Column{MappedControlsColumns[15]},
 				Annotation: &entsql.IndexAnnotation{
 					Where: "deleted_at is NULL",
 				},
@@ -2574,12 +2582,15 @@ var (
 		{Name: "updated_by", Type: field.TypeString, Nullable: true},
 		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 		{Name: "deleted_by", Type: field.TypeString, Nullable: true},
+		{Name: "display_id", Type: field.TypeString},
 		{Name: "tags", Type: field.TypeJSON, Nullable: true},
 		{Name: "owner_id", Type: field.TypeString, Nullable: true},
+		{Name: "system_owned", Type: field.TypeBool, Nullable: true, Default: false},
 		{Name: "mapping_type", Type: field.TypeEnum, Enums: []string{"EQUAL", "SUPERSET", "SUBSET", "INTERSECT", "PARTIAL"}, Default: "EQUAL"},
 		{Name: "relation", Type: field.TypeString, Nullable: true},
 		{Name: "confidence", Type: field.TypeInt, Nullable: true},
 		{Name: "source", Type: field.TypeEnum, Nullable: true, Enums: []string{"MANUAL", "SUGGESTED", "IMPORTED"}, Default: "MANUAL"},
+		{Name: "source_reference", Type: field.TypeString, Nullable: true},
 	}
 	// MappedControlHistoryTable holds the schema information for the "mapped_control_history" table.
 	MappedControlHistoryTable = &schema.Table{

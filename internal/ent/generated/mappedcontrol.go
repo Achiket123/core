@@ -32,10 +32,14 @@ type MappedControl struct {
 	DeletedAt time.Time `json:"deleted_at,omitempty"`
 	// DeletedBy holds the value of the "deleted_by" field.
 	DeletedBy string `json:"deleted_by,omitempty"`
+	// a shortened prefixed id field to use as a human readable identifier
+	DisplayID string `json:"display_id,omitempty"`
 	// tags associated with the object
 	Tags []string `json:"tags,omitempty"`
 	// the organization id that owns the object
 	OwnerID string `json:"owner_id,omitempty"`
+	// indicates if the record is owned by the the openlane system and not by an organization
+	SystemOwned bool `json:"system_owned,omitempty"`
 	// the type of mapping between the two controls, e.g. subset, intersect, equal, superset
 	MappingType enums.MappingType `json:"mapping_type,omitempty"`
 	// description of how the two controls are related
@@ -44,6 +48,8 @@ type MappedControl struct {
 	Confidence *int `json:"confidence,omitempty"`
 	// source of the mapping, e.g. manual, suggested, etc.
 	Source enums.MappingSource `json:"source,omitempty"`
+	// reference material for the source of the mapping, e.g. a URL or organization name the mapping was sourced from
+	SourceReference string `json:"source_reference,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the MappedControlQuery when eager-loading is set.
 	Edges        MappedControlEdges `json:"edges"`
@@ -152,9 +158,11 @@ func (*MappedControl) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case mappedcontrol.FieldTags:
 			values[i] = new([]byte)
+		case mappedcontrol.FieldSystemOwned:
+			values[i] = new(sql.NullBool)
 		case mappedcontrol.FieldConfidence:
 			values[i] = new(sql.NullInt64)
-		case mappedcontrol.FieldID, mappedcontrol.FieldCreatedBy, mappedcontrol.FieldUpdatedBy, mappedcontrol.FieldDeletedBy, mappedcontrol.FieldOwnerID, mappedcontrol.FieldMappingType, mappedcontrol.FieldRelation, mappedcontrol.FieldSource:
+		case mappedcontrol.FieldID, mappedcontrol.FieldCreatedBy, mappedcontrol.FieldUpdatedBy, mappedcontrol.FieldDeletedBy, mappedcontrol.FieldDisplayID, mappedcontrol.FieldOwnerID, mappedcontrol.FieldMappingType, mappedcontrol.FieldRelation, mappedcontrol.FieldSource, mappedcontrol.FieldSourceReference:
 			values[i] = new(sql.NullString)
 		case mappedcontrol.FieldCreatedAt, mappedcontrol.FieldUpdatedAt, mappedcontrol.FieldDeletedAt:
 			values[i] = new(sql.NullTime)
@@ -215,6 +223,12 @@ func (mc *MappedControl) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				mc.DeletedBy = value.String
 			}
+		case mappedcontrol.FieldDisplayID:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field display_id", values[i])
+			} else if value.Valid {
+				mc.DisplayID = value.String
+			}
 		case mappedcontrol.FieldTags:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field tags", values[i])
@@ -228,6 +242,12 @@ func (mc *MappedControl) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field owner_id", values[i])
 			} else if value.Valid {
 				mc.OwnerID = value.String
+			}
+		case mappedcontrol.FieldSystemOwned:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field system_owned", values[i])
+			} else if value.Valid {
+				mc.SystemOwned = value.Bool
 			}
 		case mappedcontrol.FieldMappingType:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -253,6 +273,12 @@ func (mc *MappedControl) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field source", values[i])
 			} else if value.Valid {
 				mc.Source = enums.MappingSource(value.String)
+			}
+		case mappedcontrol.FieldSourceReference:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field source_reference", values[i])
+			} else if value.Valid {
+				mc.SourceReference = value.String
 			}
 		default:
 			mc.selectValues.Set(columns[i], values[i])
@@ -343,11 +369,17 @@ func (mc *MappedControl) String() string {
 	builder.WriteString("deleted_by=")
 	builder.WriteString(mc.DeletedBy)
 	builder.WriteString(", ")
+	builder.WriteString("display_id=")
+	builder.WriteString(mc.DisplayID)
+	builder.WriteString(", ")
 	builder.WriteString("tags=")
 	builder.WriteString(fmt.Sprintf("%v", mc.Tags))
 	builder.WriteString(", ")
 	builder.WriteString("owner_id=")
 	builder.WriteString(mc.OwnerID)
+	builder.WriteString(", ")
+	builder.WriteString("system_owned=")
+	builder.WriteString(fmt.Sprintf("%v", mc.SystemOwned))
 	builder.WriteString(", ")
 	builder.WriteString("mapping_type=")
 	builder.WriteString(fmt.Sprintf("%v", mc.MappingType))
@@ -362,6 +394,9 @@ func (mc *MappedControl) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("source=")
 	builder.WriteString(fmt.Sprintf("%v", mc.Source))
+	builder.WriteString(", ")
+	builder.WriteString("source_reference=")
+	builder.WriteString(mc.SourceReference)
 	builder.WriteByte(')')
 	return builder.String()
 }

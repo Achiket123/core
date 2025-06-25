@@ -2133,6 +2133,7 @@ type ComplexityRoot struct {
 		Confidence      func(childComplexity int) int
 		CreatedAt       func(childComplexity int) int
 		CreatedBy       func(childComplexity int) int
+		DisplayID       func(childComplexity int) int
 		Editors         func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.GroupOrder, where *generated.GroupWhereInput) int
 		FromControls    func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.ControlOrder, where *generated.ControlWhereInput) int
 		FromSubcontrols func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.SubcontrolOrder, where *generated.SubcontrolWhereInput) int
@@ -2142,6 +2143,8 @@ type ComplexityRoot struct {
 		OwnerID         func(childComplexity int) int
 		Relation        func(childComplexity int) int
 		Source          func(childComplexity int) int
+		SourceReference func(childComplexity int) int
+		SystemOwned     func(childComplexity int) int
 		Tags            func(childComplexity int) int
 		ToControls      func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.ControlOrder, where *generated.ControlWhereInput) int
 		ToSubcontrols   func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.SubcontrolOrder, where *generated.SubcontrolWhereInput) int
@@ -2173,20 +2176,23 @@ type ComplexityRoot struct {
 	}
 
 	MappedControlHistory struct {
-		Confidence  func(childComplexity int) int
-		CreatedAt   func(childComplexity int) int
-		CreatedBy   func(childComplexity int) int
-		HistoryTime func(childComplexity int) int
-		ID          func(childComplexity int) int
-		MappingType func(childComplexity int) int
-		Operation   func(childComplexity int) int
-		OwnerID     func(childComplexity int) int
-		Ref         func(childComplexity int) int
-		Relation    func(childComplexity int) int
-		Source      func(childComplexity int) int
-		Tags        func(childComplexity int) int
-		UpdatedAt   func(childComplexity int) int
-		UpdatedBy   func(childComplexity int) int
+		Confidence      func(childComplexity int) int
+		CreatedAt       func(childComplexity int) int
+		CreatedBy       func(childComplexity int) int
+		DisplayID       func(childComplexity int) int
+		HistoryTime     func(childComplexity int) int
+		ID              func(childComplexity int) int
+		MappingType     func(childComplexity int) int
+		Operation       func(childComplexity int) int
+		OwnerID         func(childComplexity int) int
+		Ref             func(childComplexity int) int
+		Relation        func(childComplexity int) int
+		Source          func(childComplexity int) int
+		SourceReference func(childComplexity int) int
+		SystemOwned     func(childComplexity int) int
+		Tags            func(childComplexity int) int
+		UpdatedAt       func(childComplexity int) int
+		UpdatedBy       func(childComplexity int) int
 	}
 
 	MappedControlHistoryConnection struct {
@@ -14496,6 +14502,13 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.MappedControl.CreatedBy(childComplexity), true
 
+	case "MappedControl.displayID":
+		if e.complexity.MappedControl.DisplayID == nil {
+			break
+		}
+
+		return e.complexity.MappedControl.DisplayID(childComplexity), true
+
 	case "MappedControl.editors":
 		if e.complexity.MappedControl.Editors == nil {
 			break
@@ -14573,6 +14586,20 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.MappedControl.Source(childComplexity), true
+
+	case "MappedControl.sourceReference":
+		if e.complexity.MappedControl.SourceReference == nil {
+			break
+		}
+
+		return e.complexity.MappedControl.SourceReference(childComplexity), true
+
+	case "MappedControl.systemOwned":
+		if e.complexity.MappedControl.SystemOwned == nil {
+			break
+		}
+
+		return e.complexity.MappedControl.SystemOwned(childComplexity), true
 
 	case "MappedControl.tags":
 		if e.complexity.MappedControl.Tags == nil {
@@ -14696,6 +14723,13 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.MappedControlHistory.CreatedBy(childComplexity), true
 
+	case "MappedControlHistory.displayID":
+		if e.complexity.MappedControlHistory.DisplayID == nil {
+			break
+		}
+
+		return e.complexity.MappedControlHistory.DisplayID(childComplexity), true
+
 	case "MappedControlHistory.historyTime":
 		if e.complexity.MappedControlHistory.HistoryTime == nil {
 			break
@@ -14751,6 +14785,20 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.MappedControlHistory.Source(childComplexity), true
+
+	case "MappedControlHistory.sourceReference":
+		if e.complexity.MappedControlHistory.SourceReference == nil {
+			break
+		}
+
+		return e.complexity.MappedControlHistory.SourceReference(childComplexity), true
+
+	case "MappedControlHistory.systemOwned":
+		if e.complexity.MappedControlHistory.SystemOwned == nil {
+			break
+		}
+
+		return e.complexity.MappedControlHistory.SystemOwned(childComplexity), true
 
 	case "MappedControlHistory.tags":
 		if e.complexity.MappedControlHistory.Tags == nil {
@@ -41602,6 +41650,10 @@ input CreateMappedControlInput {
   source of the mapping, e.g. manual, suggested, etc.
   """
   source: MappedControlMappingSource
+  """
+  reference material for the source of the mapping, e.g. a URL or organization name the mapping was sourced from
+  """
+  sourceReference: String
   ownerID: ID
   blockedGroupIDs: [ID!]
   editorIDs: [ID!]
@@ -55517,6 +55569,10 @@ type MappedControl implements Node {
   createdBy: String
   updatedBy: String
   """
+  a shortened prefixed id field to use as a human readable identifier
+  """
+  displayID: String!
+  """
   tags associated with the object
   """
   tags: [String!]
@@ -55524,6 +55580,10 @@ type MappedControl implements Node {
   the organization id that owns the object
   """
   ownerID: ID
+  """
+  indicates if the record is owned by the the openlane system and not by an organization
+  """
+  systemOwned: Boolean
   """
   the type of mapping between the two controls, e.g. subset, intersect, equal, superset
   """
@@ -55540,6 +55600,10 @@ type MappedControl implements Node {
   source of the mapping, e.g. manual, suggested, etc.
   """
   source: MappedControlMappingSource
+  """
+  reference material for the source of the mapping, e.g. a URL or organization name the mapping was sourced from
+  """
+  sourceReference: String
   owner: Organization
   blockedGroups(
     """
@@ -55768,6 +55832,10 @@ type MappedControlHistory implements Node {
   createdBy: String
   updatedBy: String
   """
+  a shortened prefixed id field to use as a human readable identifier
+  """
+  displayID: String!
+  """
   tags associated with the object
   """
   tags: [String!]
@@ -55775,6 +55843,10 @@ type MappedControlHistory implements Node {
   the organization id that owns the object
   """
   ownerID: String
+  """
+  indicates if the record is owned by the the openlane system and not by an organization
+  """
+  systemOwned: Boolean
   """
   the type of mapping between the two controls, e.g. subset, intersect, equal, superset
   """
@@ -55791,6 +55863,10 @@ type MappedControlHistory implements Node {
   source of the mapping, e.g. manual, suggested, etc.
   """
   source: MappedControlHistoryMappingSource
+  """
+  reference material for the source of the mapping, e.g. a URL or organization name the mapping was sourced from
+  """
+  sourceReference: String
 }
 """
 A connection to a list of items.
@@ -55991,6 +56067,22 @@ input MappedControlHistoryWhereInput {
   updatedByEqualFold: String
   updatedByContainsFold: String
   """
+  display_id field predicates
+  """
+  displayID: String
+  displayIDNEQ: String
+  displayIDIn: [String!]
+  displayIDNotIn: [String!]
+  displayIDGT: String
+  displayIDGTE: String
+  displayIDLT: String
+  displayIDLTE: String
+  displayIDContains: String
+  displayIDHasPrefix: String
+  displayIDHasSuffix: String
+  displayIDEqualFold: String
+  displayIDContainsFold: String
+  """
   owner_id field predicates
   """
   ownerID: String
@@ -56008,6 +56100,13 @@ input MappedControlHistoryWhereInput {
   ownerIDNotNil: Boolean
   ownerIDEqualFold: String
   ownerIDContainsFold: String
+  """
+  system_owned field predicates
+  """
+  systemOwned: Boolean
+  systemOwnedNEQ: Boolean
+  systemOwnedIsNil: Boolean
+  systemOwnedNotNil: Boolean
   """
   mapping_type field predicates
   """
@@ -56055,6 +56154,24 @@ input MappedControlHistoryWhereInput {
   sourceNotIn: [MappedControlHistoryMappingSource!]
   sourceIsNil: Boolean
   sourceNotNil: Boolean
+  """
+  source_reference field predicates
+  """
+  sourceReference: String
+  sourceReferenceNEQ: String
+  sourceReferenceIn: [String!]
+  sourceReferenceNotIn: [String!]
+  sourceReferenceGT: String
+  sourceReferenceGTE: String
+  sourceReferenceLT: String
+  sourceReferenceLTE: String
+  sourceReferenceContains: String
+  sourceReferenceHasPrefix: String
+  sourceReferenceHasSuffix: String
+  sourceReferenceIsNil: Boolean
+  sourceReferenceNotNil: Boolean
+  sourceReferenceEqualFold: String
+  sourceReferenceContainsFold: String
 }
 """
 MappedControlMappingSource is enum for the field source
@@ -56180,6 +56297,22 @@ input MappedControlWhereInput {
   updatedByEqualFold: String
   updatedByContainsFold: String
   """
+  display_id field predicates
+  """
+  displayID: String
+  displayIDNEQ: String
+  displayIDIn: [String!]
+  displayIDNotIn: [String!]
+  displayIDGT: String
+  displayIDGTE: String
+  displayIDLT: String
+  displayIDLTE: String
+  displayIDContains: String
+  displayIDHasPrefix: String
+  displayIDHasSuffix: String
+  displayIDEqualFold: String
+  displayIDContainsFold: String
+  """
   owner_id field predicates
   """
   ownerID: ID
@@ -56197,6 +56330,13 @@ input MappedControlWhereInput {
   ownerIDNotNil: Boolean
   ownerIDEqualFold: ID
   ownerIDContainsFold: ID
+  """
+  system_owned field predicates
+  """
+  systemOwned: Boolean
+  systemOwnedNEQ: Boolean
+  systemOwnedIsNil: Boolean
+  systemOwnedNotNil: Boolean
   """
   mapping_type field predicates
   """
@@ -56244,6 +56384,24 @@ input MappedControlWhereInput {
   sourceNotIn: [MappedControlMappingSource!]
   sourceIsNil: Boolean
   sourceNotNil: Boolean
+  """
+  source_reference field predicates
+  """
+  sourceReference: String
+  sourceReferenceNEQ: String
+  sourceReferenceIn: [String!]
+  sourceReferenceNotIn: [String!]
+  sourceReferenceGT: String
+  sourceReferenceGTE: String
+  sourceReferenceLT: String
+  sourceReferenceLTE: String
+  sourceReferenceContains: String
+  sourceReferenceHasPrefix: String
+  sourceReferenceHasSuffix: String
+  sourceReferenceIsNil: Boolean
+  sourceReferenceNotNil: Boolean
+  sourceReferenceEqualFold: String
+  sourceReferenceContainsFold: String
   """
   owner edge predicates
   """
@@ -79364,6 +79522,11 @@ input UpdateMappedControlInput {
   """
   source: MappedControlMappingSource
   clearSource: Boolean
+  """
+  reference material for the source of the mapping, e.g. a URL or organization name the mapping was sourced from
+  """
+  sourceReference: String
+  clearSourceReference: Boolean
   ownerID: ID
   clearOwner: Boolean
   addBlockedGroupIDs: [ID!]

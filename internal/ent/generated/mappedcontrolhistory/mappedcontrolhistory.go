@@ -36,10 +36,14 @@ const (
 	FieldDeletedAt = "deleted_at"
 	// FieldDeletedBy holds the string denoting the deleted_by field in the database.
 	FieldDeletedBy = "deleted_by"
+	// FieldDisplayID holds the string denoting the display_id field in the database.
+	FieldDisplayID = "display_id"
 	// FieldTags holds the string denoting the tags field in the database.
 	FieldTags = "tags"
 	// FieldOwnerID holds the string denoting the owner_id field in the database.
 	FieldOwnerID = "owner_id"
+	// FieldSystemOwned holds the string denoting the system_owned field in the database.
+	FieldSystemOwned = "system_owned"
 	// FieldMappingType holds the string denoting the mapping_type field in the database.
 	FieldMappingType = "mapping_type"
 	// FieldRelation holds the string denoting the relation field in the database.
@@ -48,6 +52,8 @@ const (
 	FieldConfidence = "confidence"
 	// FieldSource holds the string denoting the source field in the database.
 	FieldSource = "source"
+	// FieldSourceReference holds the string denoting the source_reference field in the database.
+	FieldSourceReference = "source_reference"
 	// Table holds the table name of the mappedcontrolhistory in the database.
 	Table = "mapped_control_history"
 )
@@ -64,12 +70,15 @@ var Columns = []string{
 	FieldUpdatedBy,
 	FieldDeletedAt,
 	FieldDeletedBy,
+	FieldDisplayID,
 	FieldTags,
 	FieldOwnerID,
+	FieldSystemOwned,
 	FieldMappingType,
 	FieldRelation,
 	FieldConfidence,
 	FieldSource,
+	FieldSourceReference,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -99,6 +108,8 @@ var (
 	UpdateDefaultUpdatedAt func() time.Time
 	// DefaultTags holds the default value on creation for the "tags" field.
 	DefaultTags []string
+	// DefaultSystemOwned holds the default value on creation for the "system_owned" field.
+	DefaultSystemOwned bool
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() string
 )
@@ -190,9 +201,19 @@ func ByDeletedBy(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDeletedBy, opts...).ToFunc()
 }
 
+// ByDisplayID orders the results by the display_id field.
+func ByDisplayID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDisplayID, opts...).ToFunc()
+}
+
 // ByOwnerID orders the results by the owner_id field.
 func ByOwnerID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldOwnerID, opts...).ToFunc()
+}
+
+// BySystemOwned orders the results by the system_owned field.
+func BySystemOwned(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldSystemOwned, opts...).ToFunc()
 }
 
 // ByMappingType orders the results by the mapping_type field.
@@ -213,6 +234,11 @@ func ByConfidence(opts ...sql.OrderTermOption) OrderOption {
 // BySource orders the results by the source field.
 func BySource(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldSource, opts...).ToFunc()
+}
+
+// BySourceReference orders the results by the source_reference field.
+func BySourceReference(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldSourceReference, opts...).ToFunc()
 }
 
 var (

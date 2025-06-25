@@ -224,6 +224,26 @@ func (mchu *MappedControlHistoryUpdate) ClearSource() *MappedControlHistoryUpdat
 	return mchu
 }
 
+// SetSourceReference sets the "source_reference" field.
+func (mchu *MappedControlHistoryUpdate) SetSourceReference(s string) *MappedControlHistoryUpdate {
+	mchu.mutation.SetSourceReference(s)
+	return mchu
+}
+
+// SetNillableSourceReference sets the "source_reference" field if the given value is not nil.
+func (mchu *MappedControlHistoryUpdate) SetNillableSourceReference(s *string) *MappedControlHistoryUpdate {
+	if s != nil {
+		mchu.SetSourceReference(*s)
+	}
+	return mchu
+}
+
+// ClearSourceReference clears the value of the "source_reference" field.
+func (mchu *MappedControlHistoryUpdate) ClearSourceReference() *MappedControlHistoryUpdate {
+	mchu.mutation.ClearSourceReference()
+	return mchu
+}
+
 // Mutation returns the MappedControlHistoryMutation object of the builder.
 func (mchu *MappedControlHistoryUpdate) Mutation() *MappedControlHistoryMutation {
 	return mchu.mutation
@@ -348,6 +368,9 @@ func (mchu *MappedControlHistoryUpdate) sqlSave(ctx context.Context) (n int, err
 	if mchu.mutation.OwnerIDCleared() {
 		_spec.ClearField(mappedcontrolhistory.FieldOwnerID, field.TypeString)
 	}
+	if mchu.mutation.SystemOwnedCleared() {
+		_spec.ClearField(mappedcontrolhistory.FieldSystemOwned, field.TypeBool)
+	}
 	if value, ok := mchu.mutation.MappingType(); ok {
 		_spec.SetField(mappedcontrolhistory.FieldMappingType, field.TypeEnum, value)
 	}
@@ -371,6 +394,12 @@ func (mchu *MappedControlHistoryUpdate) sqlSave(ctx context.Context) (n int, err
 	}
 	if mchu.mutation.SourceCleared() {
 		_spec.ClearField(mappedcontrolhistory.FieldSource, field.TypeEnum)
+	}
+	if value, ok := mchu.mutation.SourceReference(); ok {
+		_spec.SetField(mappedcontrolhistory.FieldSourceReference, field.TypeString, value)
+	}
+	if mchu.mutation.SourceReferenceCleared() {
+		_spec.ClearField(mappedcontrolhistory.FieldSourceReference, field.TypeString)
 	}
 	_spec.Node.Schema = mchu.schemaConfig.MappedControlHistory
 	ctx = internal.NewSchemaConfigContext(ctx, mchu.schemaConfig)
@@ -587,6 +616,26 @@ func (mchuo *MappedControlHistoryUpdateOne) ClearSource() *MappedControlHistoryU
 	return mchuo
 }
 
+// SetSourceReference sets the "source_reference" field.
+func (mchuo *MappedControlHistoryUpdateOne) SetSourceReference(s string) *MappedControlHistoryUpdateOne {
+	mchuo.mutation.SetSourceReference(s)
+	return mchuo
+}
+
+// SetNillableSourceReference sets the "source_reference" field if the given value is not nil.
+func (mchuo *MappedControlHistoryUpdateOne) SetNillableSourceReference(s *string) *MappedControlHistoryUpdateOne {
+	if s != nil {
+		mchuo.SetSourceReference(*s)
+	}
+	return mchuo
+}
+
+// ClearSourceReference clears the value of the "source_reference" field.
+func (mchuo *MappedControlHistoryUpdateOne) ClearSourceReference() *MappedControlHistoryUpdateOne {
+	mchuo.mutation.ClearSourceReference()
+	return mchuo
+}
+
 // Mutation returns the MappedControlHistoryMutation object of the builder.
 func (mchuo *MappedControlHistoryUpdateOne) Mutation() *MappedControlHistoryMutation {
 	return mchuo.mutation
@@ -741,6 +790,9 @@ func (mchuo *MappedControlHistoryUpdateOne) sqlSave(ctx context.Context) (_node 
 	if mchuo.mutation.OwnerIDCleared() {
 		_spec.ClearField(mappedcontrolhistory.FieldOwnerID, field.TypeString)
 	}
+	if mchuo.mutation.SystemOwnedCleared() {
+		_spec.ClearField(mappedcontrolhistory.FieldSystemOwned, field.TypeBool)
+	}
 	if value, ok := mchuo.mutation.MappingType(); ok {
 		_spec.SetField(mappedcontrolhistory.FieldMappingType, field.TypeEnum, value)
 	}
@@ -764,6 +816,12 @@ func (mchuo *MappedControlHistoryUpdateOne) sqlSave(ctx context.Context) (_node 
 	}
 	if mchuo.mutation.SourceCleared() {
 		_spec.ClearField(mappedcontrolhistory.FieldSource, field.TypeEnum)
+	}
+	if value, ok := mchuo.mutation.SourceReference(); ok {
+		_spec.SetField(mappedcontrolhistory.FieldSourceReference, field.TypeString, value)
+	}
+	if mchuo.mutation.SourceReferenceCleared() {
+		_spec.ClearField(mappedcontrolhistory.FieldSourceReference, field.TypeString)
 	}
 	_spec.Node.Schema = mchuo.schemaConfig.MappedControlHistory
 	ctx = internal.NewSchemaConfigContext(ctx, mchuo.schemaConfig)

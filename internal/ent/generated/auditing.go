@@ -1773,11 +1773,17 @@ func (mch *MappedControlHistory) changes(new *MappedControlHistory) []Change {
 	if !reflect.DeepEqual(mch.DeletedBy, new.DeletedBy) {
 		changes = append(changes, NewChange(mappedcontrolhistory.FieldDeletedBy, mch.DeletedBy, new.DeletedBy))
 	}
+	if !reflect.DeepEqual(mch.DisplayID, new.DisplayID) {
+		changes = append(changes, NewChange(mappedcontrolhistory.FieldDisplayID, mch.DisplayID, new.DisplayID))
+	}
 	if !reflect.DeepEqual(mch.Tags, new.Tags) {
 		changes = append(changes, NewChange(mappedcontrolhistory.FieldTags, mch.Tags, new.Tags))
 	}
 	if !reflect.DeepEqual(mch.OwnerID, new.OwnerID) {
 		changes = append(changes, NewChange(mappedcontrolhistory.FieldOwnerID, mch.OwnerID, new.OwnerID))
+	}
+	if !reflect.DeepEqual(mch.SystemOwned, new.SystemOwned) {
+		changes = append(changes, NewChange(mappedcontrolhistory.FieldSystemOwned, mch.SystemOwned, new.SystemOwned))
 	}
 	if !reflect.DeepEqual(mch.MappingType, new.MappingType) {
 		changes = append(changes, NewChange(mappedcontrolhistory.FieldMappingType, mch.MappingType, new.MappingType))
@@ -1790,6 +1796,9 @@ func (mch *MappedControlHistory) changes(new *MappedControlHistory) []Change {
 	}
 	if !reflect.DeepEqual(mch.Source, new.Source) {
 		changes = append(changes, NewChange(mappedcontrolhistory.FieldSource, mch.Source, new.Source))
+	}
+	if !reflect.DeepEqual(mch.SourceReference, new.SourceReference) {
+		changes = append(changes, NewChange(mappedcontrolhistory.FieldSourceReference, mch.SourceReference, new.SourceReference))
 	}
 	return changes
 }

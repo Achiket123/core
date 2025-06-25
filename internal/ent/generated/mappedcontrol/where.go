@@ -98,9 +98,19 @@ func DeletedBy(v string) predicate.MappedControl {
 	return predicate.MappedControl(sql.FieldEQ(FieldDeletedBy, v))
 }
 
+// DisplayID applies equality check predicate on the "display_id" field. It's identical to DisplayIDEQ.
+func DisplayID(v string) predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldEQ(FieldDisplayID, v))
+}
+
 // OwnerID applies equality check predicate on the "owner_id" field. It's identical to OwnerIDEQ.
 func OwnerID(v string) predicate.MappedControl {
 	return predicate.MappedControl(sql.FieldEQ(FieldOwnerID, v))
+}
+
+// SystemOwned applies equality check predicate on the "system_owned" field. It's identical to SystemOwnedEQ.
+func SystemOwned(v bool) predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldEQ(FieldSystemOwned, v))
 }
 
 // Relation applies equality check predicate on the "relation" field. It's identical to RelationEQ.
@@ -111,6 +121,11 @@ func Relation(v string) predicate.MappedControl {
 // Confidence applies equality check predicate on the "confidence" field. It's identical to ConfidenceEQ.
 func Confidence(v int) predicate.MappedControl {
 	return predicate.MappedControl(sql.FieldEQ(FieldConfidence, v))
+}
+
+// SourceReference applies equality check predicate on the "source_reference" field. It's identical to SourceReferenceEQ.
+func SourceReference(v string) predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldEQ(FieldSourceReference, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
@@ -488,6 +503,71 @@ func DeletedByContainsFold(v string) predicate.MappedControl {
 	return predicate.MappedControl(sql.FieldContainsFold(FieldDeletedBy, v))
 }
 
+// DisplayIDEQ applies the EQ predicate on the "display_id" field.
+func DisplayIDEQ(v string) predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldEQ(FieldDisplayID, v))
+}
+
+// DisplayIDNEQ applies the NEQ predicate on the "display_id" field.
+func DisplayIDNEQ(v string) predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldNEQ(FieldDisplayID, v))
+}
+
+// DisplayIDIn applies the In predicate on the "display_id" field.
+func DisplayIDIn(vs ...string) predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldIn(FieldDisplayID, vs...))
+}
+
+// DisplayIDNotIn applies the NotIn predicate on the "display_id" field.
+func DisplayIDNotIn(vs ...string) predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldNotIn(FieldDisplayID, vs...))
+}
+
+// DisplayIDGT applies the GT predicate on the "display_id" field.
+func DisplayIDGT(v string) predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldGT(FieldDisplayID, v))
+}
+
+// DisplayIDGTE applies the GTE predicate on the "display_id" field.
+func DisplayIDGTE(v string) predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldGTE(FieldDisplayID, v))
+}
+
+// DisplayIDLT applies the LT predicate on the "display_id" field.
+func DisplayIDLT(v string) predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldLT(FieldDisplayID, v))
+}
+
+// DisplayIDLTE applies the LTE predicate on the "display_id" field.
+func DisplayIDLTE(v string) predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldLTE(FieldDisplayID, v))
+}
+
+// DisplayIDContains applies the Contains predicate on the "display_id" field.
+func DisplayIDContains(v string) predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldContains(FieldDisplayID, v))
+}
+
+// DisplayIDHasPrefix applies the HasPrefix predicate on the "display_id" field.
+func DisplayIDHasPrefix(v string) predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldHasPrefix(FieldDisplayID, v))
+}
+
+// DisplayIDHasSuffix applies the HasSuffix predicate on the "display_id" field.
+func DisplayIDHasSuffix(v string) predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldHasSuffix(FieldDisplayID, v))
+}
+
+// DisplayIDEqualFold applies the EqualFold predicate on the "display_id" field.
+func DisplayIDEqualFold(v string) predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldEqualFold(FieldDisplayID, v))
+}
+
+// DisplayIDContainsFold applies the ContainsFold predicate on the "display_id" field.
+func DisplayIDContainsFold(v string) predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldContainsFold(FieldDisplayID, v))
+}
+
 // TagsIsNil applies the IsNil predicate on the "tags" field.
 func TagsIsNil() predicate.MappedControl {
 	return predicate.MappedControl(sql.FieldIsNull(FieldTags))
@@ -571,6 +651,26 @@ func OwnerIDEqualFold(v string) predicate.MappedControl {
 // OwnerIDContainsFold applies the ContainsFold predicate on the "owner_id" field.
 func OwnerIDContainsFold(v string) predicate.MappedControl {
 	return predicate.MappedControl(sql.FieldContainsFold(FieldOwnerID, v))
+}
+
+// SystemOwnedEQ applies the EQ predicate on the "system_owned" field.
+func SystemOwnedEQ(v bool) predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldEQ(FieldSystemOwned, v))
+}
+
+// SystemOwnedNEQ applies the NEQ predicate on the "system_owned" field.
+func SystemOwnedNEQ(v bool) predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldNEQ(FieldSystemOwned, v))
+}
+
+// SystemOwnedIsNil applies the IsNil predicate on the "system_owned" field.
+func SystemOwnedIsNil() predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldIsNull(FieldSystemOwned))
+}
+
+// SystemOwnedNotNil applies the NotNil predicate on the "system_owned" field.
+func SystemOwnedNotNil() predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldNotNull(FieldSystemOwned))
 }
 
 // MappingTypeEQ applies the EQ predicate on the "mapping_type" field.
@@ -766,6 +866,81 @@ func SourceIsNil() predicate.MappedControl {
 // SourceNotNil applies the NotNil predicate on the "source" field.
 func SourceNotNil() predicate.MappedControl {
 	return predicate.MappedControl(sql.FieldNotNull(FieldSource))
+}
+
+// SourceReferenceEQ applies the EQ predicate on the "source_reference" field.
+func SourceReferenceEQ(v string) predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldEQ(FieldSourceReference, v))
+}
+
+// SourceReferenceNEQ applies the NEQ predicate on the "source_reference" field.
+func SourceReferenceNEQ(v string) predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldNEQ(FieldSourceReference, v))
+}
+
+// SourceReferenceIn applies the In predicate on the "source_reference" field.
+func SourceReferenceIn(vs ...string) predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldIn(FieldSourceReference, vs...))
+}
+
+// SourceReferenceNotIn applies the NotIn predicate on the "source_reference" field.
+func SourceReferenceNotIn(vs ...string) predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldNotIn(FieldSourceReference, vs...))
+}
+
+// SourceReferenceGT applies the GT predicate on the "source_reference" field.
+func SourceReferenceGT(v string) predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldGT(FieldSourceReference, v))
+}
+
+// SourceReferenceGTE applies the GTE predicate on the "source_reference" field.
+func SourceReferenceGTE(v string) predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldGTE(FieldSourceReference, v))
+}
+
+// SourceReferenceLT applies the LT predicate on the "source_reference" field.
+func SourceReferenceLT(v string) predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldLT(FieldSourceReference, v))
+}
+
+// SourceReferenceLTE applies the LTE predicate on the "source_reference" field.
+func SourceReferenceLTE(v string) predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldLTE(FieldSourceReference, v))
+}
+
+// SourceReferenceContains applies the Contains predicate on the "source_reference" field.
+func SourceReferenceContains(v string) predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldContains(FieldSourceReference, v))
+}
+
+// SourceReferenceHasPrefix applies the HasPrefix predicate on the "source_reference" field.
+func SourceReferenceHasPrefix(v string) predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldHasPrefix(FieldSourceReference, v))
+}
+
+// SourceReferenceHasSuffix applies the HasSuffix predicate on the "source_reference" field.
+func SourceReferenceHasSuffix(v string) predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldHasSuffix(FieldSourceReference, v))
+}
+
+// SourceReferenceIsNil applies the IsNil predicate on the "source_reference" field.
+func SourceReferenceIsNil() predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldIsNull(FieldSourceReference))
+}
+
+// SourceReferenceNotNil applies the NotNil predicate on the "source_reference" field.
+func SourceReferenceNotNil() predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldNotNull(FieldSourceReference))
+}
+
+// SourceReferenceEqualFold applies the EqualFold predicate on the "source_reference" field.
+func SourceReferenceEqualFold(v string) predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldEqualFold(FieldSourceReference, v))
+}
+
+// SourceReferenceContainsFold applies the ContainsFold predicate on the "source_reference" field.
+func SourceReferenceContainsFold(v string) predicate.MappedControl {
+	return predicate.MappedControl(sql.FieldContainsFold(FieldSourceReference, v))
 }
 
 // HasOwner applies the HasEdge predicate on the "owner" edge.

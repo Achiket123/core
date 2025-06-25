@@ -1588,18 +1588,21 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "MappedControl",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			mappedcontrol.FieldCreatedAt:   {Type: field.TypeTime, Column: mappedcontrol.FieldCreatedAt},
-			mappedcontrol.FieldUpdatedAt:   {Type: field.TypeTime, Column: mappedcontrol.FieldUpdatedAt},
-			mappedcontrol.FieldCreatedBy:   {Type: field.TypeString, Column: mappedcontrol.FieldCreatedBy},
-			mappedcontrol.FieldUpdatedBy:   {Type: field.TypeString, Column: mappedcontrol.FieldUpdatedBy},
-			mappedcontrol.FieldDeletedAt:   {Type: field.TypeTime, Column: mappedcontrol.FieldDeletedAt},
-			mappedcontrol.FieldDeletedBy:   {Type: field.TypeString, Column: mappedcontrol.FieldDeletedBy},
-			mappedcontrol.FieldTags:        {Type: field.TypeJSON, Column: mappedcontrol.FieldTags},
-			mappedcontrol.FieldOwnerID:     {Type: field.TypeString, Column: mappedcontrol.FieldOwnerID},
-			mappedcontrol.FieldMappingType: {Type: field.TypeEnum, Column: mappedcontrol.FieldMappingType},
-			mappedcontrol.FieldRelation:    {Type: field.TypeString, Column: mappedcontrol.FieldRelation},
-			mappedcontrol.FieldConfidence:  {Type: field.TypeInt, Column: mappedcontrol.FieldConfidence},
-			mappedcontrol.FieldSource:      {Type: field.TypeEnum, Column: mappedcontrol.FieldSource},
+			mappedcontrol.FieldCreatedAt:       {Type: field.TypeTime, Column: mappedcontrol.FieldCreatedAt},
+			mappedcontrol.FieldUpdatedAt:       {Type: field.TypeTime, Column: mappedcontrol.FieldUpdatedAt},
+			mappedcontrol.FieldCreatedBy:       {Type: field.TypeString, Column: mappedcontrol.FieldCreatedBy},
+			mappedcontrol.FieldUpdatedBy:       {Type: field.TypeString, Column: mappedcontrol.FieldUpdatedBy},
+			mappedcontrol.FieldDeletedAt:       {Type: field.TypeTime, Column: mappedcontrol.FieldDeletedAt},
+			mappedcontrol.FieldDeletedBy:       {Type: field.TypeString, Column: mappedcontrol.FieldDeletedBy},
+			mappedcontrol.FieldDisplayID:       {Type: field.TypeString, Column: mappedcontrol.FieldDisplayID},
+			mappedcontrol.FieldTags:            {Type: field.TypeJSON, Column: mappedcontrol.FieldTags},
+			mappedcontrol.FieldOwnerID:         {Type: field.TypeString, Column: mappedcontrol.FieldOwnerID},
+			mappedcontrol.FieldSystemOwned:     {Type: field.TypeBool, Column: mappedcontrol.FieldSystemOwned},
+			mappedcontrol.FieldMappingType:     {Type: field.TypeEnum, Column: mappedcontrol.FieldMappingType},
+			mappedcontrol.FieldRelation:        {Type: field.TypeString, Column: mappedcontrol.FieldRelation},
+			mappedcontrol.FieldConfidence:      {Type: field.TypeInt, Column: mappedcontrol.FieldConfidence},
+			mappedcontrol.FieldSource:          {Type: field.TypeEnum, Column: mappedcontrol.FieldSource},
+			mappedcontrol.FieldSourceReference: {Type: field.TypeString, Column: mappedcontrol.FieldSourceReference},
 		},
 	}
 	graph.Nodes[51] = &sqlgraph.Node{
@@ -1613,21 +1616,24 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "MappedControlHistory",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			mappedcontrolhistory.FieldHistoryTime: {Type: field.TypeTime, Column: mappedcontrolhistory.FieldHistoryTime},
-			mappedcontrolhistory.FieldRef:         {Type: field.TypeString, Column: mappedcontrolhistory.FieldRef},
-			mappedcontrolhistory.FieldOperation:   {Type: field.TypeEnum, Column: mappedcontrolhistory.FieldOperation},
-			mappedcontrolhistory.FieldCreatedAt:   {Type: field.TypeTime, Column: mappedcontrolhistory.FieldCreatedAt},
-			mappedcontrolhistory.FieldUpdatedAt:   {Type: field.TypeTime, Column: mappedcontrolhistory.FieldUpdatedAt},
-			mappedcontrolhistory.FieldCreatedBy:   {Type: field.TypeString, Column: mappedcontrolhistory.FieldCreatedBy},
-			mappedcontrolhistory.FieldUpdatedBy:   {Type: field.TypeString, Column: mappedcontrolhistory.FieldUpdatedBy},
-			mappedcontrolhistory.FieldDeletedAt:   {Type: field.TypeTime, Column: mappedcontrolhistory.FieldDeletedAt},
-			mappedcontrolhistory.FieldDeletedBy:   {Type: field.TypeString, Column: mappedcontrolhistory.FieldDeletedBy},
-			mappedcontrolhistory.FieldTags:        {Type: field.TypeJSON, Column: mappedcontrolhistory.FieldTags},
-			mappedcontrolhistory.FieldOwnerID:     {Type: field.TypeString, Column: mappedcontrolhistory.FieldOwnerID},
-			mappedcontrolhistory.FieldMappingType: {Type: field.TypeEnum, Column: mappedcontrolhistory.FieldMappingType},
-			mappedcontrolhistory.FieldRelation:    {Type: field.TypeString, Column: mappedcontrolhistory.FieldRelation},
-			mappedcontrolhistory.FieldConfidence:  {Type: field.TypeInt, Column: mappedcontrolhistory.FieldConfidence},
-			mappedcontrolhistory.FieldSource:      {Type: field.TypeEnum, Column: mappedcontrolhistory.FieldSource},
+			mappedcontrolhistory.FieldHistoryTime:     {Type: field.TypeTime, Column: mappedcontrolhistory.FieldHistoryTime},
+			mappedcontrolhistory.FieldRef:             {Type: field.TypeString, Column: mappedcontrolhistory.FieldRef},
+			mappedcontrolhistory.FieldOperation:       {Type: field.TypeEnum, Column: mappedcontrolhistory.FieldOperation},
+			mappedcontrolhistory.FieldCreatedAt:       {Type: field.TypeTime, Column: mappedcontrolhistory.FieldCreatedAt},
+			mappedcontrolhistory.FieldUpdatedAt:       {Type: field.TypeTime, Column: mappedcontrolhistory.FieldUpdatedAt},
+			mappedcontrolhistory.FieldCreatedBy:       {Type: field.TypeString, Column: mappedcontrolhistory.FieldCreatedBy},
+			mappedcontrolhistory.FieldUpdatedBy:       {Type: field.TypeString, Column: mappedcontrolhistory.FieldUpdatedBy},
+			mappedcontrolhistory.FieldDeletedAt:       {Type: field.TypeTime, Column: mappedcontrolhistory.FieldDeletedAt},
+			mappedcontrolhistory.FieldDeletedBy:       {Type: field.TypeString, Column: mappedcontrolhistory.FieldDeletedBy},
+			mappedcontrolhistory.FieldDisplayID:       {Type: field.TypeString, Column: mappedcontrolhistory.FieldDisplayID},
+			mappedcontrolhistory.FieldTags:            {Type: field.TypeJSON, Column: mappedcontrolhistory.FieldTags},
+			mappedcontrolhistory.FieldOwnerID:         {Type: field.TypeString, Column: mappedcontrolhistory.FieldOwnerID},
+			mappedcontrolhistory.FieldSystemOwned:     {Type: field.TypeBool, Column: mappedcontrolhistory.FieldSystemOwned},
+			mappedcontrolhistory.FieldMappingType:     {Type: field.TypeEnum, Column: mappedcontrolhistory.FieldMappingType},
+			mappedcontrolhistory.FieldRelation:        {Type: field.TypeString, Column: mappedcontrolhistory.FieldRelation},
+			mappedcontrolhistory.FieldConfidence:      {Type: field.TypeInt, Column: mappedcontrolhistory.FieldConfidence},
+			mappedcontrolhistory.FieldSource:          {Type: field.TypeEnum, Column: mappedcontrolhistory.FieldSource},
+			mappedcontrolhistory.FieldSourceReference: {Type: field.TypeString, Column: mappedcontrolhistory.FieldSourceReference},
 		},
 	}
 	graph.Nodes[52] = &sqlgraph.Node{
@@ -16969,6 +16975,11 @@ func (f *MappedControlFilter) WhereDeletedBy(p entql.StringP) {
 	f.Where(p.Field(mappedcontrol.FieldDeletedBy))
 }
 
+// WhereDisplayID applies the entql string predicate on the display_id field.
+func (f *MappedControlFilter) WhereDisplayID(p entql.StringP) {
+	f.Where(p.Field(mappedcontrol.FieldDisplayID))
+}
+
 // WhereTags applies the entql json.RawMessage predicate on the tags field.
 func (f *MappedControlFilter) WhereTags(p entql.BytesP) {
 	f.Where(p.Field(mappedcontrol.FieldTags))
@@ -16977,6 +16988,11 @@ func (f *MappedControlFilter) WhereTags(p entql.BytesP) {
 // WhereOwnerID applies the entql string predicate on the owner_id field.
 func (f *MappedControlFilter) WhereOwnerID(p entql.StringP) {
 	f.Where(p.Field(mappedcontrol.FieldOwnerID))
+}
+
+// WhereSystemOwned applies the entql bool predicate on the system_owned field.
+func (f *MappedControlFilter) WhereSystemOwned(p entql.BoolP) {
+	f.Where(p.Field(mappedcontrol.FieldSystemOwned))
 }
 
 // WhereMappingType applies the entql string predicate on the mapping_type field.
@@ -16997,6 +17013,11 @@ func (f *MappedControlFilter) WhereConfidence(p entql.IntP) {
 // WhereSource applies the entql string predicate on the source field.
 func (f *MappedControlFilter) WhereSource(p entql.StringP) {
 	f.Where(p.Field(mappedcontrol.FieldSource))
+}
+
+// WhereSourceReference applies the entql string predicate on the source_reference field.
+func (f *MappedControlFilter) WhereSourceReference(p entql.StringP) {
+	f.Where(p.Field(mappedcontrol.FieldSourceReference))
 }
 
 // WhereHasOwner applies a predicate to check if query has an edge owner.
@@ -17182,6 +17203,11 @@ func (f *MappedControlHistoryFilter) WhereDeletedBy(p entql.StringP) {
 	f.Where(p.Field(mappedcontrolhistory.FieldDeletedBy))
 }
 
+// WhereDisplayID applies the entql string predicate on the display_id field.
+func (f *MappedControlHistoryFilter) WhereDisplayID(p entql.StringP) {
+	f.Where(p.Field(mappedcontrolhistory.FieldDisplayID))
+}
+
 // WhereTags applies the entql json.RawMessage predicate on the tags field.
 func (f *MappedControlHistoryFilter) WhereTags(p entql.BytesP) {
 	f.Where(p.Field(mappedcontrolhistory.FieldTags))
@@ -17190,6 +17216,11 @@ func (f *MappedControlHistoryFilter) WhereTags(p entql.BytesP) {
 // WhereOwnerID applies the entql string predicate on the owner_id field.
 func (f *MappedControlHistoryFilter) WhereOwnerID(p entql.StringP) {
 	f.Where(p.Field(mappedcontrolhistory.FieldOwnerID))
+}
+
+// WhereSystemOwned applies the entql bool predicate on the system_owned field.
+func (f *MappedControlHistoryFilter) WhereSystemOwned(p entql.BoolP) {
+	f.Where(p.Field(mappedcontrolhistory.FieldSystemOwned))
 }
 
 // WhereMappingType applies the entql string predicate on the mapping_type field.
@@ -17210,6 +17241,11 @@ func (f *MappedControlHistoryFilter) WhereConfidence(p entql.IntP) {
 // WhereSource applies the entql string predicate on the source field.
 func (f *MappedControlHistoryFilter) WhereSource(p entql.StringP) {
 	f.Where(p.Field(mappedcontrolhistory.FieldSource))
+}
+
+// WhereSourceReference applies the entql string predicate on the source_reference field.
+func (f *MappedControlHistoryFilter) WhereSourceReference(p entql.StringP) {
+	f.Where(p.Field(mappedcontrolhistory.FieldSourceReference))
 }
 
 // addPredicate implements the predicateAdder interface.

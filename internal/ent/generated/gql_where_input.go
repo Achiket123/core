@@ -40075,6 +40075,21 @@ type MappedControlWhereInput struct {
 	UpdatedByEqualFold    *string  `json:"updatedByEqualFold,omitempty"`
 	UpdatedByContainsFold *string  `json:"updatedByContainsFold,omitempty"`
 
+	// "display_id" field predicates.
+	DisplayID             *string  `json:"displayID,omitempty"`
+	DisplayIDNEQ          *string  `json:"displayIDNEQ,omitempty"`
+	DisplayIDIn           []string `json:"displayIDIn,omitempty"`
+	DisplayIDNotIn        []string `json:"displayIDNotIn,omitempty"`
+	DisplayIDGT           *string  `json:"displayIDGT,omitempty"`
+	DisplayIDGTE          *string  `json:"displayIDGTE,omitempty"`
+	DisplayIDLT           *string  `json:"displayIDLT,omitempty"`
+	DisplayIDLTE          *string  `json:"displayIDLTE,omitempty"`
+	DisplayIDContains     *string  `json:"displayIDContains,omitempty"`
+	DisplayIDHasPrefix    *string  `json:"displayIDHasPrefix,omitempty"`
+	DisplayIDHasSuffix    *string  `json:"displayIDHasSuffix,omitempty"`
+	DisplayIDEqualFold    *string  `json:"displayIDEqualFold,omitempty"`
+	DisplayIDContainsFold *string  `json:"displayIDContainsFold,omitempty"`
+
 	// "owner_id" field predicates.
 	OwnerID             *string  `json:"ownerID,omitempty"`
 	OwnerIDNEQ          *string  `json:"ownerIDNEQ,omitempty"`
@@ -40091,6 +40106,12 @@ type MappedControlWhereInput struct {
 	OwnerIDNotNil       bool     `json:"ownerIDNotNil,omitempty"`
 	OwnerIDEqualFold    *string  `json:"ownerIDEqualFold,omitempty"`
 	OwnerIDContainsFold *string  `json:"ownerIDContainsFold,omitempty"`
+
+	// "system_owned" field predicates.
+	SystemOwned       *bool `json:"systemOwned,omitempty"`
+	SystemOwnedNEQ    *bool `json:"systemOwnedNEQ,omitempty"`
+	SystemOwnedIsNil  bool  `json:"systemOwnedIsNil,omitempty"`
+	SystemOwnedNotNil bool  `json:"systemOwnedNotNil,omitempty"`
 
 	// "mapping_type" field predicates.
 	MappingType      *enums.MappingType  `json:"mappingType,omitempty"`
@@ -40134,6 +40155,23 @@ type MappedControlWhereInput struct {
 	SourceNotIn  []enums.MappingSource `json:"sourceNotIn,omitempty"`
 	SourceIsNil  bool                  `json:"sourceIsNil,omitempty"`
 	SourceNotNil bool                  `json:"sourceNotNil,omitempty"`
+
+	// "source_reference" field predicates.
+	SourceReference             *string  `json:"sourceReference,omitempty"`
+	SourceReferenceNEQ          *string  `json:"sourceReferenceNEQ,omitempty"`
+	SourceReferenceIn           []string `json:"sourceReferenceIn,omitempty"`
+	SourceReferenceNotIn        []string `json:"sourceReferenceNotIn,omitempty"`
+	SourceReferenceGT           *string  `json:"sourceReferenceGT,omitempty"`
+	SourceReferenceGTE          *string  `json:"sourceReferenceGTE,omitempty"`
+	SourceReferenceLT           *string  `json:"sourceReferenceLT,omitempty"`
+	SourceReferenceLTE          *string  `json:"sourceReferenceLTE,omitempty"`
+	SourceReferenceContains     *string  `json:"sourceReferenceContains,omitempty"`
+	SourceReferenceHasPrefix    *string  `json:"sourceReferenceHasPrefix,omitempty"`
+	SourceReferenceHasSuffix    *string  `json:"sourceReferenceHasSuffix,omitempty"`
+	SourceReferenceIsNil        bool     `json:"sourceReferenceIsNil,omitempty"`
+	SourceReferenceNotNil       bool     `json:"sourceReferenceNotNil,omitempty"`
+	SourceReferenceEqualFold    *string  `json:"sourceReferenceEqualFold,omitempty"`
+	SourceReferenceContainsFold *string  `json:"sourceReferenceContainsFold,omitempty"`
 
 	// "owner" edge predicates.
 	HasOwner     *bool                     `json:"hasOwner,omitempty"`
@@ -40415,6 +40453,45 @@ func (i *MappedControlWhereInput) P() (predicate.MappedControl, error) {
 	if i.UpdatedByContainsFold != nil {
 		predicates = append(predicates, mappedcontrol.UpdatedByContainsFold(*i.UpdatedByContainsFold))
 	}
+	if i.DisplayID != nil {
+		predicates = append(predicates, mappedcontrol.DisplayIDEQ(*i.DisplayID))
+	}
+	if i.DisplayIDNEQ != nil {
+		predicates = append(predicates, mappedcontrol.DisplayIDNEQ(*i.DisplayIDNEQ))
+	}
+	if len(i.DisplayIDIn) > 0 {
+		predicates = append(predicates, mappedcontrol.DisplayIDIn(i.DisplayIDIn...))
+	}
+	if len(i.DisplayIDNotIn) > 0 {
+		predicates = append(predicates, mappedcontrol.DisplayIDNotIn(i.DisplayIDNotIn...))
+	}
+	if i.DisplayIDGT != nil {
+		predicates = append(predicates, mappedcontrol.DisplayIDGT(*i.DisplayIDGT))
+	}
+	if i.DisplayIDGTE != nil {
+		predicates = append(predicates, mappedcontrol.DisplayIDGTE(*i.DisplayIDGTE))
+	}
+	if i.DisplayIDLT != nil {
+		predicates = append(predicates, mappedcontrol.DisplayIDLT(*i.DisplayIDLT))
+	}
+	if i.DisplayIDLTE != nil {
+		predicates = append(predicates, mappedcontrol.DisplayIDLTE(*i.DisplayIDLTE))
+	}
+	if i.DisplayIDContains != nil {
+		predicates = append(predicates, mappedcontrol.DisplayIDContains(*i.DisplayIDContains))
+	}
+	if i.DisplayIDHasPrefix != nil {
+		predicates = append(predicates, mappedcontrol.DisplayIDHasPrefix(*i.DisplayIDHasPrefix))
+	}
+	if i.DisplayIDHasSuffix != nil {
+		predicates = append(predicates, mappedcontrol.DisplayIDHasSuffix(*i.DisplayIDHasSuffix))
+	}
+	if i.DisplayIDEqualFold != nil {
+		predicates = append(predicates, mappedcontrol.DisplayIDEqualFold(*i.DisplayIDEqualFold))
+	}
+	if i.DisplayIDContainsFold != nil {
+		predicates = append(predicates, mappedcontrol.DisplayIDContainsFold(*i.DisplayIDContainsFold))
+	}
 	if i.OwnerID != nil {
 		predicates = append(predicates, mappedcontrol.OwnerIDEQ(*i.OwnerID))
 	}
@@ -40459,6 +40536,18 @@ func (i *MappedControlWhereInput) P() (predicate.MappedControl, error) {
 	}
 	if i.OwnerIDContainsFold != nil {
 		predicates = append(predicates, mappedcontrol.OwnerIDContainsFold(*i.OwnerIDContainsFold))
+	}
+	if i.SystemOwned != nil {
+		predicates = append(predicates, mappedcontrol.SystemOwnedEQ(*i.SystemOwned))
+	}
+	if i.SystemOwnedNEQ != nil {
+		predicates = append(predicates, mappedcontrol.SystemOwnedNEQ(*i.SystemOwnedNEQ))
+	}
+	if i.SystemOwnedIsNil {
+		predicates = append(predicates, mappedcontrol.SystemOwnedIsNil())
+	}
+	if i.SystemOwnedNotNil {
+		predicates = append(predicates, mappedcontrol.SystemOwnedNotNil())
 	}
 	if i.MappingType != nil {
 		predicates = append(predicates, mappedcontrol.MappingTypeEQ(*i.MappingType))
@@ -40564,6 +40653,51 @@ func (i *MappedControlWhereInput) P() (predicate.MappedControl, error) {
 	}
 	if i.SourceNotNil {
 		predicates = append(predicates, mappedcontrol.SourceNotNil())
+	}
+	if i.SourceReference != nil {
+		predicates = append(predicates, mappedcontrol.SourceReferenceEQ(*i.SourceReference))
+	}
+	if i.SourceReferenceNEQ != nil {
+		predicates = append(predicates, mappedcontrol.SourceReferenceNEQ(*i.SourceReferenceNEQ))
+	}
+	if len(i.SourceReferenceIn) > 0 {
+		predicates = append(predicates, mappedcontrol.SourceReferenceIn(i.SourceReferenceIn...))
+	}
+	if len(i.SourceReferenceNotIn) > 0 {
+		predicates = append(predicates, mappedcontrol.SourceReferenceNotIn(i.SourceReferenceNotIn...))
+	}
+	if i.SourceReferenceGT != nil {
+		predicates = append(predicates, mappedcontrol.SourceReferenceGT(*i.SourceReferenceGT))
+	}
+	if i.SourceReferenceGTE != nil {
+		predicates = append(predicates, mappedcontrol.SourceReferenceGTE(*i.SourceReferenceGTE))
+	}
+	if i.SourceReferenceLT != nil {
+		predicates = append(predicates, mappedcontrol.SourceReferenceLT(*i.SourceReferenceLT))
+	}
+	if i.SourceReferenceLTE != nil {
+		predicates = append(predicates, mappedcontrol.SourceReferenceLTE(*i.SourceReferenceLTE))
+	}
+	if i.SourceReferenceContains != nil {
+		predicates = append(predicates, mappedcontrol.SourceReferenceContains(*i.SourceReferenceContains))
+	}
+	if i.SourceReferenceHasPrefix != nil {
+		predicates = append(predicates, mappedcontrol.SourceReferenceHasPrefix(*i.SourceReferenceHasPrefix))
+	}
+	if i.SourceReferenceHasSuffix != nil {
+		predicates = append(predicates, mappedcontrol.SourceReferenceHasSuffix(*i.SourceReferenceHasSuffix))
+	}
+	if i.SourceReferenceIsNil {
+		predicates = append(predicates, mappedcontrol.SourceReferenceIsNil())
+	}
+	if i.SourceReferenceNotNil {
+		predicates = append(predicates, mappedcontrol.SourceReferenceNotNil())
+	}
+	if i.SourceReferenceEqualFold != nil {
+		predicates = append(predicates, mappedcontrol.SourceReferenceEqualFold(*i.SourceReferenceEqualFold))
+	}
+	if i.SourceReferenceContainsFold != nil {
+		predicates = append(predicates, mappedcontrol.SourceReferenceContainsFold(*i.SourceReferenceContainsFold))
 	}
 
 	if i.HasOwner != nil {
@@ -40812,6 +40946,21 @@ type MappedControlHistoryWhereInput struct {
 	UpdatedByEqualFold    *string  `json:"updatedByEqualFold,omitempty"`
 	UpdatedByContainsFold *string  `json:"updatedByContainsFold,omitempty"`
 
+	// "display_id" field predicates.
+	DisplayID             *string  `json:"displayID,omitempty"`
+	DisplayIDNEQ          *string  `json:"displayIDNEQ,omitempty"`
+	DisplayIDIn           []string `json:"displayIDIn,omitempty"`
+	DisplayIDNotIn        []string `json:"displayIDNotIn,omitempty"`
+	DisplayIDGT           *string  `json:"displayIDGT,omitempty"`
+	DisplayIDGTE          *string  `json:"displayIDGTE,omitempty"`
+	DisplayIDLT           *string  `json:"displayIDLT,omitempty"`
+	DisplayIDLTE          *string  `json:"displayIDLTE,omitempty"`
+	DisplayIDContains     *string  `json:"displayIDContains,omitempty"`
+	DisplayIDHasPrefix    *string  `json:"displayIDHasPrefix,omitempty"`
+	DisplayIDHasSuffix    *string  `json:"displayIDHasSuffix,omitempty"`
+	DisplayIDEqualFold    *string  `json:"displayIDEqualFold,omitempty"`
+	DisplayIDContainsFold *string  `json:"displayIDContainsFold,omitempty"`
+
 	// "owner_id" field predicates.
 	OwnerID             *string  `json:"ownerID,omitempty"`
 	OwnerIDNEQ          *string  `json:"ownerIDNEQ,omitempty"`
@@ -40828,6 +40977,12 @@ type MappedControlHistoryWhereInput struct {
 	OwnerIDNotNil       bool     `json:"ownerIDNotNil,omitempty"`
 	OwnerIDEqualFold    *string  `json:"ownerIDEqualFold,omitempty"`
 	OwnerIDContainsFold *string  `json:"ownerIDContainsFold,omitempty"`
+
+	// "system_owned" field predicates.
+	SystemOwned       *bool `json:"systemOwned,omitempty"`
+	SystemOwnedNEQ    *bool `json:"systemOwnedNEQ,omitempty"`
+	SystemOwnedIsNil  bool  `json:"systemOwnedIsNil,omitempty"`
+	SystemOwnedNotNil bool  `json:"systemOwnedNotNil,omitempty"`
 
 	// "mapping_type" field predicates.
 	MappingType      *enums.MappingType  `json:"mappingType,omitempty"`
@@ -40871,6 +41026,23 @@ type MappedControlHistoryWhereInput struct {
 	SourceNotIn  []enums.MappingSource `json:"sourceNotIn,omitempty"`
 	SourceIsNil  bool                  `json:"sourceIsNil,omitempty"`
 	SourceNotNil bool                  `json:"sourceNotNil,omitempty"`
+
+	// "source_reference" field predicates.
+	SourceReference             *string  `json:"sourceReference,omitempty"`
+	SourceReferenceNEQ          *string  `json:"sourceReferenceNEQ,omitempty"`
+	SourceReferenceIn           []string `json:"sourceReferenceIn,omitempty"`
+	SourceReferenceNotIn        []string `json:"sourceReferenceNotIn,omitempty"`
+	SourceReferenceGT           *string  `json:"sourceReferenceGT,omitempty"`
+	SourceReferenceGTE          *string  `json:"sourceReferenceGTE,omitempty"`
+	SourceReferenceLT           *string  `json:"sourceReferenceLT,omitempty"`
+	SourceReferenceLTE          *string  `json:"sourceReferenceLTE,omitempty"`
+	SourceReferenceContains     *string  `json:"sourceReferenceContains,omitempty"`
+	SourceReferenceHasPrefix    *string  `json:"sourceReferenceHasPrefix,omitempty"`
+	SourceReferenceHasSuffix    *string  `json:"sourceReferenceHasSuffix,omitempty"`
+	SourceReferenceIsNil        bool     `json:"sourceReferenceIsNil,omitempty"`
+	SourceReferenceNotNil       bool     `json:"sourceReferenceNotNil,omitempty"`
+	SourceReferenceEqualFold    *string  `json:"sourceReferenceEqualFold,omitempty"`
+	SourceReferenceContainsFold *string  `json:"sourceReferenceContainsFold,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -41205,6 +41377,45 @@ func (i *MappedControlHistoryWhereInput) P() (predicate.MappedControlHistory, er
 	if i.UpdatedByContainsFold != nil {
 		predicates = append(predicates, mappedcontrolhistory.UpdatedByContainsFold(*i.UpdatedByContainsFold))
 	}
+	if i.DisplayID != nil {
+		predicates = append(predicates, mappedcontrolhistory.DisplayIDEQ(*i.DisplayID))
+	}
+	if i.DisplayIDNEQ != nil {
+		predicates = append(predicates, mappedcontrolhistory.DisplayIDNEQ(*i.DisplayIDNEQ))
+	}
+	if len(i.DisplayIDIn) > 0 {
+		predicates = append(predicates, mappedcontrolhistory.DisplayIDIn(i.DisplayIDIn...))
+	}
+	if len(i.DisplayIDNotIn) > 0 {
+		predicates = append(predicates, mappedcontrolhistory.DisplayIDNotIn(i.DisplayIDNotIn...))
+	}
+	if i.DisplayIDGT != nil {
+		predicates = append(predicates, mappedcontrolhistory.DisplayIDGT(*i.DisplayIDGT))
+	}
+	if i.DisplayIDGTE != nil {
+		predicates = append(predicates, mappedcontrolhistory.DisplayIDGTE(*i.DisplayIDGTE))
+	}
+	if i.DisplayIDLT != nil {
+		predicates = append(predicates, mappedcontrolhistory.DisplayIDLT(*i.DisplayIDLT))
+	}
+	if i.DisplayIDLTE != nil {
+		predicates = append(predicates, mappedcontrolhistory.DisplayIDLTE(*i.DisplayIDLTE))
+	}
+	if i.DisplayIDContains != nil {
+		predicates = append(predicates, mappedcontrolhistory.DisplayIDContains(*i.DisplayIDContains))
+	}
+	if i.DisplayIDHasPrefix != nil {
+		predicates = append(predicates, mappedcontrolhistory.DisplayIDHasPrefix(*i.DisplayIDHasPrefix))
+	}
+	if i.DisplayIDHasSuffix != nil {
+		predicates = append(predicates, mappedcontrolhistory.DisplayIDHasSuffix(*i.DisplayIDHasSuffix))
+	}
+	if i.DisplayIDEqualFold != nil {
+		predicates = append(predicates, mappedcontrolhistory.DisplayIDEqualFold(*i.DisplayIDEqualFold))
+	}
+	if i.DisplayIDContainsFold != nil {
+		predicates = append(predicates, mappedcontrolhistory.DisplayIDContainsFold(*i.DisplayIDContainsFold))
+	}
 	if i.OwnerID != nil {
 		predicates = append(predicates, mappedcontrolhistory.OwnerIDEQ(*i.OwnerID))
 	}
@@ -41249,6 +41460,18 @@ func (i *MappedControlHistoryWhereInput) P() (predicate.MappedControlHistory, er
 	}
 	if i.OwnerIDContainsFold != nil {
 		predicates = append(predicates, mappedcontrolhistory.OwnerIDContainsFold(*i.OwnerIDContainsFold))
+	}
+	if i.SystemOwned != nil {
+		predicates = append(predicates, mappedcontrolhistory.SystemOwnedEQ(*i.SystemOwned))
+	}
+	if i.SystemOwnedNEQ != nil {
+		predicates = append(predicates, mappedcontrolhistory.SystemOwnedNEQ(*i.SystemOwnedNEQ))
+	}
+	if i.SystemOwnedIsNil {
+		predicates = append(predicates, mappedcontrolhistory.SystemOwnedIsNil())
+	}
+	if i.SystemOwnedNotNil {
+		predicates = append(predicates, mappedcontrolhistory.SystemOwnedNotNil())
 	}
 	if i.MappingType != nil {
 		predicates = append(predicates, mappedcontrolhistory.MappingTypeEQ(*i.MappingType))
@@ -41354,6 +41577,51 @@ func (i *MappedControlHistoryWhereInput) P() (predicate.MappedControlHistory, er
 	}
 	if i.SourceNotNil {
 		predicates = append(predicates, mappedcontrolhistory.SourceNotNil())
+	}
+	if i.SourceReference != nil {
+		predicates = append(predicates, mappedcontrolhistory.SourceReferenceEQ(*i.SourceReference))
+	}
+	if i.SourceReferenceNEQ != nil {
+		predicates = append(predicates, mappedcontrolhistory.SourceReferenceNEQ(*i.SourceReferenceNEQ))
+	}
+	if len(i.SourceReferenceIn) > 0 {
+		predicates = append(predicates, mappedcontrolhistory.SourceReferenceIn(i.SourceReferenceIn...))
+	}
+	if len(i.SourceReferenceNotIn) > 0 {
+		predicates = append(predicates, mappedcontrolhistory.SourceReferenceNotIn(i.SourceReferenceNotIn...))
+	}
+	if i.SourceReferenceGT != nil {
+		predicates = append(predicates, mappedcontrolhistory.SourceReferenceGT(*i.SourceReferenceGT))
+	}
+	if i.SourceReferenceGTE != nil {
+		predicates = append(predicates, mappedcontrolhistory.SourceReferenceGTE(*i.SourceReferenceGTE))
+	}
+	if i.SourceReferenceLT != nil {
+		predicates = append(predicates, mappedcontrolhistory.SourceReferenceLT(*i.SourceReferenceLT))
+	}
+	if i.SourceReferenceLTE != nil {
+		predicates = append(predicates, mappedcontrolhistory.SourceReferenceLTE(*i.SourceReferenceLTE))
+	}
+	if i.SourceReferenceContains != nil {
+		predicates = append(predicates, mappedcontrolhistory.SourceReferenceContains(*i.SourceReferenceContains))
+	}
+	if i.SourceReferenceHasPrefix != nil {
+		predicates = append(predicates, mappedcontrolhistory.SourceReferenceHasPrefix(*i.SourceReferenceHasPrefix))
+	}
+	if i.SourceReferenceHasSuffix != nil {
+		predicates = append(predicates, mappedcontrolhistory.SourceReferenceHasSuffix(*i.SourceReferenceHasSuffix))
+	}
+	if i.SourceReferenceIsNil {
+		predicates = append(predicates, mappedcontrolhistory.SourceReferenceIsNil())
+	}
+	if i.SourceReferenceNotNil {
+		predicates = append(predicates, mappedcontrolhistory.SourceReferenceNotNil())
+	}
+	if i.SourceReferenceEqualFold != nil {
+		predicates = append(predicates, mappedcontrolhistory.SourceReferenceEqualFold(*i.SourceReferenceEqualFold))
+	}
+	if i.SourceReferenceContainsFold != nil {
+		predicates = append(predicates, mappedcontrolhistory.SourceReferenceContainsFold(*i.SourceReferenceContainsFold))
 	}
 
 	switch len(predicates) {

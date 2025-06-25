@@ -21399,6 +21399,11 @@ func (mc *MappedControlQuery) collectField(ctx context.Context, oneNode bool, op
 				selectedFields = append(selectedFields, mappedcontrol.FieldUpdatedBy)
 				fieldSeen[mappedcontrol.FieldUpdatedBy] = struct{}{}
 			}
+		case "displayID":
+			if _, ok := fieldSeen[mappedcontrol.FieldDisplayID]; !ok {
+				selectedFields = append(selectedFields, mappedcontrol.FieldDisplayID)
+				fieldSeen[mappedcontrol.FieldDisplayID] = struct{}{}
+			}
 		case "tags":
 			if _, ok := fieldSeen[mappedcontrol.FieldTags]; !ok {
 				selectedFields = append(selectedFields, mappedcontrol.FieldTags)
@@ -21408,6 +21413,11 @@ func (mc *MappedControlQuery) collectField(ctx context.Context, oneNode bool, op
 			if _, ok := fieldSeen[mappedcontrol.FieldOwnerID]; !ok {
 				selectedFields = append(selectedFields, mappedcontrol.FieldOwnerID)
 				fieldSeen[mappedcontrol.FieldOwnerID] = struct{}{}
+			}
+		case "systemOwned":
+			if _, ok := fieldSeen[mappedcontrol.FieldSystemOwned]; !ok {
+				selectedFields = append(selectedFields, mappedcontrol.FieldSystemOwned)
+				fieldSeen[mappedcontrol.FieldSystemOwned] = struct{}{}
 			}
 		case "mappingType":
 			if _, ok := fieldSeen[mappedcontrol.FieldMappingType]; !ok {
@@ -21428,6 +21438,11 @@ func (mc *MappedControlQuery) collectField(ctx context.Context, oneNode bool, op
 			if _, ok := fieldSeen[mappedcontrol.FieldSource]; !ok {
 				selectedFields = append(selectedFields, mappedcontrol.FieldSource)
 				fieldSeen[mappedcontrol.FieldSource] = struct{}{}
+			}
+		case "sourceReference":
+			if _, ok := fieldSeen[mappedcontrol.FieldSourceReference]; !ok {
+				selectedFields = append(selectedFields, mappedcontrol.FieldSourceReference)
+				fieldSeen[mappedcontrol.FieldSourceReference] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -21554,6 +21569,11 @@ func (mch *MappedControlHistoryQuery) collectField(ctx context.Context, oneNode 
 				selectedFields = append(selectedFields, mappedcontrolhistory.FieldUpdatedBy)
 				fieldSeen[mappedcontrolhistory.FieldUpdatedBy] = struct{}{}
 			}
+		case "displayID":
+			if _, ok := fieldSeen[mappedcontrolhistory.FieldDisplayID]; !ok {
+				selectedFields = append(selectedFields, mappedcontrolhistory.FieldDisplayID)
+				fieldSeen[mappedcontrolhistory.FieldDisplayID] = struct{}{}
+			}
 		case "tags":
 			if _, ok := fieldSeen[mappedcontrolhistory.FieldTags]; !ok {
 				selectedFields = append(selectedFields, mappedcontrolhistory.FieldTags)
@@ -21563,6 +21583,11 @@ func (mch *MappedControlHistoryQuery) collectField(ctx context.Context, oneNode 
 			if _, ok := fieldSeen[mappedcontrolhistory.FieldOwnerID]; !ok {
 				selectedFields = append(selectedFields, mappedcontrolhistory.FieldOwnerID)
 				fieldSeen[mappedcontrolhistory.FieldOwnerID] = struct{}{}
+			}
+		case "systemOwned":
+			if _, ok := fieldSeen[mappedcontrolhistory.FieldSystemOwned]; !ok {
+				selectedFields = append(selectedFields, mappedcontrolhistory.FieldSystemOwned)
+				fieldSeen[mappedcontrolhistory.FieldSystemOwned] = struct{}{}
 			}
 		case "mappingType":
 			if _, ok := fieldSeen[mappedcontrolhistory.FieldMappingType]; !ok {
@@ -21583,6 +21608,11 @@ func (mch *MappedControlHistoryQuery) collectField(ctx context.Context, oneNode 
 			if _, ok := fieldSeen[mappedcontrolhistory.FieldSource]; !ok {
 				selectedFields = append(selectedFields, mappedcontrolhistory.FieldSource)
 				fieldSeen[mappedcontrolhistory.FieldSource] = struct{}{}
+			}
+		case "sourceReference":
+			if _, ok := fieldSeen[mappedcontrolhistory.FieldSourceReference]; !ok {
+				selectedFields = append(selectedFields, mappedcontrolhistory.FieldSourceReference)
+				fieldSeen[mappedcontrolhistory.FieldSourceReference] = struct{}{}
 			}
 		case "id":
 		case "__typename":

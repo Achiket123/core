@@ -4774,12 +4774,20 @@ func (t *AdminSearch_AdminSearch_MappedControls_PageInfo) GetStartCursor() *stri
 }
 
 type AdminSearch_AdminSearch_MappedControls_Edges_Node struct {
-	ID       string   "json:\"id\" graphql:\"id\""
-	OwnerID  *string  "json:\"ownerID,omitempty\" graphql:\"ownerID\""
-	Relation *string  "json:\"relation,omitempty\" graphql:\"relation\""
-	Tags     []string "json:\"tags,omitempty\" graphql:\"tags\""
+	DisplayID       string   "json:\"displayID\" graphql:\"displayID\""
+	ID              string   "json:\"id\" graphql:\"id\""
+	OwnerID         *string  "json:\"ownerID,omitempty\" graphql:\"ownerID\""
+	Relation        *string  "json:\"relation,omitempty\" graphql:\"relation\""
+	SourceReference *string  "json:\"sourceReference,omitempty\" graphql:\"sourceReference\""
+	Tags            []string "json:\"tags,omitempty\" graphql:\"tags\""
 }
 
+func (t *AdminSearch_AdminSearch_MappedControls_Edges_Node) GetDisplayID() string {
+	if t == nil {
+		t = &AdminSearch_AdminSearch_MappedControls_Edges_Node{}
+	}
+	return t.DisplayID
+}
 func (t *AdminSearch_AdminSearch_MappedControls_Edges_Node) GetID() string {
 	if t == nil {
 		t = &AdminSearch_AdminSearch_MappedControls_Edges_Node{}
@@ -4797,6 +4805,12 @@ func (t *AdminSearch_AdminSearch_MappedControls_Edges_Node) GetRelation() *strin
 		t = &AdminSearch_AdminSearch_MappedControls_Edges_Node{}
 	}
 	return t.Relation
+}
+func (t *AdminSearch_AdminSearch_MappedControls_Edges_Node) GetSourceReference() *string {
+	if t == nil {
+		t = &AdminSearch_AdminSearch_MappedControls_Edges_Node{}
+	}
+	return t.SourceReference
 }
 func (t *AdminSearch_AdminSearch_MappedControls_Edges_Node) GetTags() []string {
 	if t == nil {
@@ -68026,10 +68040,17 @@ func (t *GlobalSearch_Search_MappedControls_PageInfo) GetStartCursor() *string {
 }
 
 type GlobalSearch_Search_MappedControls_Edges_Node struct {
-	ID   string   "json:\"id\" graphql:\"id\""
-	Tags []string "json:\"tags,omitempty\" graphql:\"tags\""
+	DisplayID string   "json:\"displayID\" graphql:\"displayID\""
+	ID        string   "json:\"id\" graphql:\"id\""
+	Tags      []string "json:\"tags,omitempty\" graphql:\"tags\""
 }
 
+func (t *GlobalSearch_Search_MappedControls_Edges_Node) GetDisplayID() string {
+	if t == nil {
+		t = &GlobalSearch_Search_MappedControls_Edges_Node{}
+	}
+	return t.DisplayID
+}
 func (t *GlobalSearch_Search_MappedControls_Edges_Node) GetID() string {
 	if t == nil {
 		t = &GlobalSearch_Search_MappedControls_Edges_Node{}
@@ -89279,9 +89300,11 @@ const AdminSearchDocument = `query AdminSearch ($query: String!) {
 			edges {
 				node {
 					id
+					displayID
 					tags
 					ownerID
 					relation
+					sourceReference
 				}
 			}
 		}
@@ -107071,6 +107094,7 @@ const GlobalSearchDocument = `query GlobalSearch ($query: String!) {
 			}
 			edges {
 				node {
+					displayID
 					id
 					tags
 				}

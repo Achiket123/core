@@ -75,10 +75,14 @@ func (ec *executionContext) fieldContext_MappedControlBulkCreatePayload_mappedCo
 				return ec.fieldContext_MappedControl_createdBy(ctx, field)
 			case "updatedBy":
 				return ec.fieldContext_MappedControl_updatedBy(ctx, field)
+			case "displayID":
+				return ec.fieldContext_MappedControl_displayID(ctx, field)
 			case "tags":
 				return ec.fieldContext_MappedControl_tags(ctx, field)
 			case "ownerID":
 				return ec.fieldContext_MappedControl_ownerID(ctx, field)
+			case "systemOwned":
+				return ec.fieldContext_MappedControl_systemOwned(ctx, field)
 			case "mappingType":
 				return ec.fieldContext_MappedControl_mappingType(ctx, field)
 			case "relation":
@@ -87,6 +91,8 @@ func (ec *executionContext) fieldContext_MappedControlBulkCreatePayload_mappedCo
 				return ec.fieldContext_MappedControl_confidence(ctx, field)
 			case "source":
 				return ec.fieldContext_MappedControl_source(ctx, field)
+			case "sourceReference":
+				return ec.fieldContext_MappedControl_sourceReference(ctx, field)
 			case "owner":
 				return ec.fieldContext_MappedControl_owner(ctx, field)
 			case "blockedGroups":
@@ -157,10 +163,14 @@ func (ec *executionContext) fieldContext_MappedControlCreatePayload_mappedContro
 				return ec.fieldContext_MappedControl_createdBy(ctx, field)
 			case "updatedBy":
 				return ec.fieldContext_MappedControl_updatedBy(ctx, field)
+			case "displayID":
+				return ec.fieldContext_MappedControl_displayID(ctx, field)
 			case "tags":
 				return ec.fieldContext_MappedControl_tags(ctx, field)
 			case "ownerID":
 				return ec.fieldContext_MappedControl_ownerID(ctx, field)
+			case "systemOwned":
+				return ec.fieldContext_MappedControl_systemOwned(ctx, field)
 			case "mappingType":
 				return ec.fieldContext_MappedControl_mappingType(ctx, field)
 			case "relation":
@@ -169,6 +179,8 @@ func (ec *executionContext) fieldContext_MappedControlCreatePayload_mappedContro
 				return ec.fieldContext_MappedControl_confidence(ctx, field)
 			case "source":
 				return ec.fieldContext_MappedControl_source(ctx, field)
+			case "sourceReference":
+				return ec.fieldContext_MappedControl_sourceReference(ctx, field)
 			case "owner":
 				return ec.fieldContext_MappedControl_owner(ctx, field)
 			case "blockedGroups":
@@ -283,10 +295,14 @@ func (ec *executionContext) fieldContext_MappedControlUpdatePayload_mappedContro
 				return ec.fieldContext_MappedControl_createdBy(ctx, field)
 			case "updatedBy":
 				return ec.fieldContext_MappedControl_updatedBy(ctx, field)
+			case "displayID":
+				return ec.fieldContext_MappedControl_displayID(ctx, field)
 			case "tags":
 				return ec.fieldContext_MappedControl_tags(ctx, field)
 			case "ownerID":
 				return ec.fieldContext_MappedControl_ownerID(ctx, field)
+			case "systemOwned":
+				return ec.fieldContext_MappedControl_systemOwned(ctx, field)
 			case "mappingType":
 				return ec.fieldContext_MappedControl_mappingType(ctx, field)
 			case "relation":
@@ -295,6 +311,8 @@ func (ec *executionContext) fieldContext_MappedControlUpdatePayload_mappedContro
 				return ec.fieldContext_MappedControl_confidence(ctx, field)
 			case "source":
 				return ec.fieldContext_MappedControl_source(ctx, field)
+			case "sourceReference":
+				return ec.fieldContext_MappedControl_sourceReference(ctx, field)
 			case "owner":
 				return ec.fieldContext_MappedControl_owner(ctx, field)
 			case "blockedGroups":

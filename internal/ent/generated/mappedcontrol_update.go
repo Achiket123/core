@@ -228,6 +228,26 @@ func (mcu *MappedControlUpdate) ClearSource() *MappedControlUpdate {
 	return mcu
 }
 
+// SetSourceReference sets the "source_reference" field.
+func (mcu *MappedControlUpdate) SetSourceReference(s string) *MappedControlUpdate {
+	mcu.mutation.SetSourceReference(s)
+	return mcu
+}
+
+// SetNillableSourceReference sets the "source_reference" field if the given value is not nil.
+func (mcu *MappedControlUpdate) SetNillableSourceReference(s *string) *MappedControlUpdate {
+	if s != nil {
+		mcu.SetSourceReference(*s)
+	}
+	return mcu
+}
+
+// ClearSourceReference clears the value of the "source_reference" field.
+func (mcu *MappedControlUpdate) ClearSourceReference() *MappedControlUpdate {
+	mcu.mutation.ClearSourceReference()
+	return mcu
+}
+
 // SetOwner sets the "owner" edge to the Organization entity.
 func (mcu *MappedControlUpdate) SetOwner(o *Organization) *MappedControlUpdate {
 	return mcu.SetOwnerID(o.ID)
@@ -504,11 +524,6 @@ func (mcu *MappedControlUpdate) defaults() error {
 
 // check runs all checks and user-defined validators on the builder.
 func (mcu *MappedControlUpdate) check() error {
-	if v, ok := mcu.mutation.OwnerID(); ok {
-		if err := mappedcontrol.OwnerIDValidator(v); err != nil {
-			return &ValidationError{Name: "owner_id", err: fmt.Errorf(`generated: validator failed for field "MappedControl.owner_id": %w`, err)}
-		}
-	}
 	if v, ok := mcu.mutation.MappingType(); ok {
 		if err := mappedcontrol.MappingTypeValidator(v); err != nil {
 			return &ValidationError{Name: "mapping_type", err: fmt.Errorf(`generated: validator failed for field "MappedControl.mapping_type": %w`, err)}
@@ -586,6 +601,9 @@ func (mcu *MappedControlUpdate) sqlSave(ctx context.Context) (n int, err error) 
 	if mcu.mutation.TagsCleared() {
 		_spec.ClearField(mappedcontrol.FieldTags, field.TypeJSON)
 	}
+	if mcu.mutation.SystemOwnedCleared() {
+		_spec.ClearField(mappedcontrol.FieldSystemOwned, field.TypeBool)
+	}
 	if value, ok := mcu.mutation.MappingType(); ok {
 		_spec.SetField(mappedcontrol.FieldMappingType, field.TypeEnum, value)
 	}
@@ -609,6 +627,12 @@ func (mcu *MappedControlUpdate) sqlSave(ctx context.Context) (n int, err error) 
 	}
 	if mcu.mutation.SourceCleared() {
 		_spec.ClearField(mappedcontrol.FieldSource, field.TypeEnum)
+	}
+	if value, ok := mcu.mutation.SourceReference(); ok {
+		_spec.SetField(mappedcontrol.FieldSourceReference, field.TypeString, value)
+	}
+	if mcu.mutation.SourceReferenceCleared() {
+		_spec.ClearField(mappedcontrol.FieldSourceReference, field.TypeString)
 	}
 	if mcu.mutation.OwnerCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -1144,6 +1168,26 @@ func (mcuo *MappedControlUpdateOne) ClearSource() *MappedControlUpdateOne {
 	return mcuo
 }
 
+// SetSourceReference sets the "source_reference" field.
+func (mcuo *MappedControlUpdateOne) SetSourceReference(s string) *MappedControlUpdateOne {
+	mcuo.mutation.SetSourceReference(s)
+	return mcuo
+}
+
+// SetNillableSourceReference sets the "source_reference" field if the given value is not nil.
+func (mcuo *MappedControlUpdateOne) SetNillableSourceReference(s *string) *MappedControlUpdateOne {
+	if s != nil {
+		mcuo.SetSourceReference(*s)
+	}
+	return mcuo
+}
+
+// ClearSourceReference clears the value of the "source_reference" field.
+func (mcuo *MappedControlUpdateOne) ClearSourceReference() *MappedControlUpdateOne {
+	mcuo.mutation.ClearSourceReference()
+	return mcuo
+}
+
 // SetOwner sets the "owner" edge to the Organization entity.
 func (mcuo *MappedControlUpdateOne) SetOwner(o *Organization) *MappedControlUpdateOne {
 	return mcuo.SetOwnerID(o.ID)
@@ -1433,11 +1477,6 @@ func (mcuo *MappedControlUpdateOne) defaults() error {
 
 // check runs all checks and user-defined validators on the builder.
 func (mcuo *MappedControlUpdateOne) check() error {
-	if v, ok := mcuo.mutation.OwnerID(); ok {
-		if err := mappedcontrol.OwnerIDValidator(v); err != nil {
-			return &ValidationError{Name: "owner_id", err: fmt.Errorf(`generated: validator failed for field "MappedControl.owner_id": %w`, err)}
-		}
-	}
 	if v, ok := mcuo.mutation.MappingType(); ok {
 		if err := mappedcontrol.MappingTypeValidator(v); err != nil {
 			return &ValidationError{Name: "mapping_type", err: fmt.Errorf(`generated: validator failed for field "MappedControl.mapping_type": %w`, err)}
@@ -1532,6 +1571,9 @@ func (mcuo *MappedControlUpdateOne) sqlSave(ctx context.Context) (_node *MappedC
 	if mcuo.mutation.TagsCleared() {
 		_spec.ClearField(mappedcontrol.FieldTags, field.TypeJSON)
 	}
+	if mcuo.mutation.SystemOwnedCleared() {
+		_spec.ClearField(mappedcontrol.FieldSystemOwned, field.TypeBool)
+	}
 	if value, ok := mcuo.mutation.MappingType(); ok {
 		_spec.SetField(mappedcontrol.FieldMappingType, field.TypeEnum, value)
 	}
@@ -1555,6 +1597,12 @@ func (mcuo *MappedControlUpdateOne) sqlSave(ctx context.Context) (_node *MappedC
 	}
 	if mcuo.mutation.SourceCleared() {
 		_spec.ClearField(mappedcontrol.FieldSource, field.TypeEnum)
+	}
+	if value, ok := mcuo.mutation.SourceReference(); ok {
+		_spec.SetField(mappedcontrol.FieldSourceReference, field.TypeString, value)
+	}
+	if mcuo.mutation.SourceReferenceCleared() {
+		_spec.ClearField(mappedcontrol.FieldSourceReference, field.TypeString)
 	}
 	if mcuo.mutation.OwnerCleared() {
 		edge := &sqlgraph.EdgeSpec{

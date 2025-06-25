@@ -12,6 +12,7 @@ import (
 	"github.com/theopenlane/core/internal/ent/generated/privacy"
 	"github.com/theopenlane/core/internal/ent/hooks"
 	"github.com/theopenlane/core/internal/ent/interceptors"
+	"github.com/theopenlane/core/internal/ent/mixin"
 	"github.com/theopenlane/core/internal/ent/privacy/policy"
 	"github.com/theopenlane/core/pkg/enums"
 	"github.com/theopenlane/entx"
@@ -66,6 +67,9 @@ func (MappedControl) Fields() []ent.Field {
 			).
 			Default(enums.MappingSourceManual.String()).
 			Comment("source of the mapping, e.g. manual, suggested, etc."),
+		field.String("source_reference").
+			Comment("reference material for the source of the mapping, e.g. a URL or organization name the mapping was sourced from").
+			Optional(),
 	}
 }
 
@@ -102,10 +106,12 @@ func (m MappedControl) Edges() []ent.Edge {
 // Mixin of the MappedControl
 func (m MappedControl) Mixin() []ent.Mixin {
 	return mixinConfig{
+		prefix: "MC",
 		additionalMixins: []ent.Mixin{
-			newOrgOwnedMixin(m),
+			newOrgOwnedMixin(m, withSkipForSystemAdmin(true)), // allow empty owner_id for system admin
 			// add group edit permissions to the mapped control
 			newGroupPermissionsMixin(withSkipViewPermissions()),
+			mixin.SystemOwnedMixin{},
 		},
 	}.getMixins()
 }

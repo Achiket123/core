@@ -140,6 +140,12 @@ func (mchc *MappedControlHistoryCreate) SetNillableDeletedBy(s *string) *MappedC
 	return mchc
 }
 
+// SetDisplayID sets the "display_id" field.
+func (mchc *MappedControlHistoryCreate) SetDisplayID(s string) *MappedControlHistoryCreate {
+	mchc.mutation.SetDisplayID(s)
+	return mchc
+}
+
 // SetTags sets the "tags" field.
 func (mchc *MappedControlHistoryCreate) SetTags(s []string) *MappedControlHistoryCreate {
 	mchc.mutation.SetTags(s)
@@ -156,6 +162,20 @@ func (mchc *MappedControlHistoryCreate) SetOwnerID(s string) *MappedControlHisto
 func (mchc *MappedControlHistoryCreate) SetNillableOwnerID(s *string) *MappedControlHistoryCreate {
 	if s != nil {
 		mchc.SetOwnerID(*s)
+	}
+	return mchc
+}
+
+// SetSystemOwned sets the "system_owned" field.
+func (mchc *MappedControlHistoryCreate) SetSystemOwned(b bool) *MappedControlHistoryCreate {
+	mchc.mutation.SetSystemOwned(b)
+	return mchc
+}
+
+// SetNillableSystemOwned sets the "system_owned" field if the given value is not nil.
+func (mchc *MappedControlHistoryCreate) SetNillableSystemOwned(b *bool) *MappedControlHistoryCreate {
+	if b != nil {
+		mchc.SetSystemOwned(*b)
 	}
 	return mchc
 }
@@ -212,6 +232,20 @@ func (mchc *MappedControlHistoryCreate) SetSource(es enums.MappingSource) *Mappe
 func (mchc *MappedControlHistoryCreate) SetNillableSource(es *enums.MappingSource) *MappedControlHistoryCreate {
 	if es != nil {
 		mchc.SetSource(*es)
+	}
+	return mchc
+}
+
+// SetSourceReference sets the "source_reference" field.
+func (mchc *MappedControlHistoryCreate) SetSourceReference(s string) *MappedControlHistoryCreate {
+	mchc.mutation.SetSourceReference(s)
+	return mchc
+}
+
+// SetNillableSourceReference sets the "source_reference" field if the given value is not nil.
+func (mchc *MappedControlHistoryCreate) SetNillableSourceReference(s *string) *MappedControlHistoryCreate {
+	if s != nil {
+		mchc.SetSourceReference(*s)
 	}
 	return mchc
 }
@@ -281,6 +315,10 @@ func (mchc *MappedControlHistoryCreate) defaults() {
 		v := mappedcontrolhistory.DefaultTags
 		mchc.mutation.SetTags(v)
 	}
+	if _, ok := mchc.mutation.SystemOwned(); !ok {
+		v := mappedcontrolhistory.DefaultSystemOwned
+		mchc.mutation.SetSystemOwned(v)
+	}
 	if _, ok := mchc.mutation.MappingType(); !ok {
 		v := mappedcontrolhistory.DefaultMappingType
 		mchc.mutation.SetMappingType(v)
@@ -307,6 +345,9 @@ func (mchc *MappedControlHistoryCreate) check() error {
 		if err := mappedcontrolhistory.OperationValidator(v); err != nil {
 			return &ValidationError{Name: "operation", err: fmt.Errorf(`generated: validator failed for field "MappedControlHistory.operation": %w`, err)}
 		}
+	}
+	if _, ok := mchc.mutation.DisplayID(); !ok {
+		return &ValidationError{Name: "display_id", err: errors.New(`generated: missing required field "MappedControlHistory.display_id"`)}
 	}
 	if _, ok := mchc.mutation.MappingType(); !ok {
 		return &ValidationError{Name: "mapping_type", err: errors.New(`generated: missing required field "MappedControlHistory.mapping_type"`)}
@@ -393,6 +434,10 @@ func (mchc *MappedControlHistoryCreate) createSpec() (*MappedControlHistory, *sq
 		_spec.SetField(mappedcontrolhistory.FieldDeletedBy, field.TypeString, value)
 		_node.DeletedBy = value
 	}
+	if value, ok := mchc.mutation.DisplayID(); ok {
+		_spec.SetField(mappedcontrolhistory.FieldDisplayID, field.TypeString, value)
+		_node.DisplayID = value
+	}
 	if value, ok := mchc.mutation.Tags(); ok {
 		_spec.SetField(mappedcontrolhistory.FieldTags, field.TypeJSON, value)
 		_node.Tags = value
@@ -400,6 +445,10 @@ func (mchc *MappedControlHistoryCreate) createSpec() (*MappedControlHistory, *sq
 	if value, ok := mchc.mutation.OwnerID(); ok {
 		_spec.SetField(mappedcontrolhistory.FieldOwnerID, field.TypeString, value)
 		_node.OwnerID = value
+	}
+	if value, ok := mchc.mutation.SystemOwned(); ok {
+		_spec.SetField(mappedcontrolhistory.FieldSystemOwned, field.TypeBool, value)
+		_node.SystemOwned = value
 	}
 	if value, ok := mchc.mutation.MappingType(); ok {
 		_spec.SetField(mappedcontrolhistory.FieldMappingType, field.TypeEnum, value)
@@ -416,6 +465,10 @@ func (mchc *MappedControlHistoryCreate) createSpec() (*MappedControlHistory, *sq
 	if value, ok := mchc.mutation.Source(); ok {
 		_spec.SetField(mappedcontrolhistory.FieldSource, field.TypeEnum, value)
 		_node.Source = value
+	}
+	if value, ok := mchc.mutation.SourceReference(); ok {
+		_spec.SetField(mappedcontrolhistory.FieldSourceReference, field.TypeString, value)
+		_node.SourceReference = value
 	}
 	return _node, _spec
 }

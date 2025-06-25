@@ -2944,21 +2944,27 @@ func init() {
 	}
 	mappedcontrolMixinHooks0 := mappedcontrolMixin[0].Hooks()
 	mappedcontrolMixinHooks1 := mappedcontrolMixin[1].Hooks()
+	mappedcontrolMixinHooks2 := mappedcontrolMixin[2].Hooks()
 	mappedcontrolMixinHooks5 := mappedcontrolMixin[5].Hooks()
 	mappedcontrolMixinHooks6 := mappedcontrolMixin[6].Hooks()
+	mappedcontrolMixinHooks7 := mappedcontrolMixin[7].Hooks()
 	mappedcontrolHooks := schema.MappedControl{}.Hooks()
 
 	mappedcontrol.Hooks[1] = mappedcontrolMixinHooks0[0]
 
 	mappedcontrol.Hooks[2] = mappedcontrolMixinHooks1[0]
 
-	mappedcontrol.Hooks[3] = mappedcontrolMixinHooks5[0]
+	mappedcontrol.Hooks[3] = mappedcontrolMixinHooks2[0]
 
-	mappedcontrol.Hooks[4] = mappedcontrolMixinHooks6[0]
+	mappedcontrol.Hooks[4] = mappedcontrolMixinHooks5[0]
 
-	mappedcontrol.Hooks[5] = mappedcontrolMixinHooks6[1]
+	mappedcontrol.Hooks[5] = mappedcontrolMixinHooks6[0]
 
-	mappedcontrol.Hooks[6] = mappedcontrolHooks[0]
+	mappedcontrol.Hooks[6] = mappedcontrolMixinHooks6[1]
+
+	mappedcontrol.Hooks[7] = mappedcontrolMixinHooks7[0]
+
+	mappedcontrol.Hooks[8] = mappedcontrolHooks[0]
 	mappedcontrolMixinInters1 := mappedcontrolMixin[1].Interceptors()
 	mappedcontrolMixinInters5 := mappedcontrolMixin[5].Interceptors()
 	mappedcontrolInters := schema.MappedControl{}.Interceptors()
@@ -2971,8 +2977,8 @@ func init() {
 	_ = mappedcontrolMixinFields2
 	mappedcontrolMixinFields3 := mappedcontrolMixin[3].Fields()
 	_ = mappedcontrolMixinFields3
-	mappedcontrolMixinFields5 := mappedcontrolMixin[5].Fields()
-	_ = mappedcontrolMixinFields5
+	mappedcontrolMixinFields7 := mappedcontrolMixin[7].Fields()
+	_ = mappedcontrolMixinFields7
 	mappedcontrolFields := schema.MappedControl{}.Fields()
 	_ = mappedcontrolFields
 	// mappedcontrolDescCreatedAt is the schema descriptor for created_at field.
@@ -2985,14 +2991,18 @@ func init() {
 	mappedcontrol.DefaultUpdatedAt = mappedcontrolDescUpdatedAt.Default.(func() time.Time)
 	// mappedcontrol.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	mappedcontrol.UpdateDefaultUpdatedAt = mappedcontrolDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// mappedcontrolDescDisplayID is the schema descriptor for display_id field.
+	mappedcontrolDescDisplayID := mappedcontrolMixinFields2[1].Descriptor()
+	// mappedcontrol.DisplayIDValidator is a validator for the "display_id" field. It is called by the builders before save.
+	mappedcontrol.DisplayIDValidator = mappedcontrolDescDisplayID.Validators[0].(func(string) error)
 	// mappedcontrolDescTags is the schema descriptor for tags field.
 	mappedcontrolDescTags := mappedcontrolMixinFields3[0].Descriptor()
 	// mappedcontrol.DefaultTags holds the default value on creation for the tags field.
 	mappedcontrol.DefaultTags = mappedcontrolDescTags.Default.([]string)
-	// mappedcontrolDescOwnerID is the schema descriptor for owner_id field.
-	mappedcontrolDescOwnerID := mappedcontrolMixinFields5[0].Descriptor()
-	// mappedcontrol.OwnerIDValidator is a validator for the "owner_id" field. It is called by the builders before save.
-	mappedcontrol.OwnerIDValidator = mappedcontrolDescOwnerID.Validators[0].(func(string) error)
+	// mappedcontrolDescSystemOwned is the schema descriptor for system_owned field.
+	mappedcontrolDescSystemOwned := mappedcontrolMixinFields7[0].Descriptor()
+	// mappedcontrol.DefaultSystemOwned holds the default value on creation for the system_owned field.
+	mappedcontrol.DefaultSystemOwned = mappedcontrolDescSystemOwned.Default.(bool)
 	// mappedcontrolDescConfidence is the schema descriptor for confidence field.
 	mappedcontrolDescConfidence := mappedcontrolFields[2].Descriptor()
 	// mappedcontrol.ConfidenceValidator is a validator for the "confidence" field. It is called by the builders before save.
@@ -3034,9 +3044,13 @@ func init() {
 	// mappedcontrolhistory.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	mappedcontrolhistory.UpdateDefaultUpdatedAt = mappedcontrolhistoryDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// mappedcontrolhistoryDescTags is the schema descriptor for tags field.
-	mappedcontrolhistoryDescTags := mappedcontrolhistoryFields[10].Descriptor()
+	mappedcontrolhistoryDescTags := mappedcontrolhistoryFields[11].Descriptor()
 	// mappedcontrolhistory.DefaultTags holds the default value on creation for the tags field.
 	mappedcontrolhistory.DefaultTags = mappedcontrolhistoryDescTags.Default.([]string)
+	// mappedcontrolhistoryDescSystemOwned is the schema descriptor for system_owned field.
+	mappedcontrolhistoryDescSystemOwned := mappedcontrolhistoryFields[13].Descriptor()
+	// mappedcontrolhistory.DefaultSystemOwned holds the default value on creation for the system_owned field.
+	mappedcontrolhistory.DefaultSystemOwned = mappedcontrolhistoryDescSystemOwned.Default.(bool)
 	// mappedcontrolhistoryDescID is the schema descriptor for id field.
 	mappedcontrolhistoryDescID := mappedcontrolhistoryFields[9].Descriptor()
 	// mappedcontrolhistory.DefaultID holds the default value on creation for the id field.

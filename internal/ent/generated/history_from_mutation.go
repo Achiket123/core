@@ -5406,12 +5406,20 @@ func (m *MappedControlMutation) CreateHistoryFromCreate(ctx context.Context) err
 		create = create.SetDeletedBy(deletedBy)
 	}
 
+	if displayID, exists := m.DisplayID(); exists {
+		create = create.SetDisplayID(displayID)
+	}
+
 	if tags, exists := m.Tags(); exists {
 		create = create.SetTags(tags)
 	}
 
 	if ownerID, exists := m.OwnerID(); exists {
 		create = create.SetOwnerID(ownerID)
+	}
+
+	if systemOwned, exists := m.SystemOwned(); exists {
+		create = create.SetSystemOwned(systemOwned)
 	}
 
 	if mappingType, exists := m.MappingType(); exists {
@@ -5428,6 +5436,10 @@ func (m *MappedControlMutation) CreateHistoryFromCreate(ctx context.Context) err
 
 	if source, exists := m.Source(); exists {
 		create = create.SetSource(source)
+	}
+
+	if sourceReference, exists := m.SourceReference(); exists {
+		create = create.SetSourceReference(sourceReference)
 	}
 
 	_, err := create.Save(ctx)
@@ -5496,6 +5508,12 @@ func (m *MappedControlMutation) CreateHistoryFromUpdate(ctx context.Context) err
 			create = create.SetDeletedBy(mappedcontrol.DeletedBy)
 		}
 
+		if displayID, exists := m.DisplayID(); exists {
+			create = create.SetDisplayID(displayID)
+		} else {
+			create = create.SetDisplayID(mappedcontrol.DisplayID)
+		}
+
 		if tags, exists := m.Tags(); exists {
 			create = create.SetTags(tags)
 		} else {
@@ -5506,6 +5524,12 @@ func (m *MappedControlMutation) CreateHistoryFromUpdate(ctx context.Context) err
 			create = create.SetOwnerID(ownerID)
 		} else {
 			create = create.SetOwnerID(mappedcontrol.OwnerID)
+		}
+
+		if systemOwned, exists := m.SystemOwned(); exists {
+			create = create.SetSystemOwned(systemOwned)
+		} else {
+			create = create.SetSystemOwned(mappedcontrol.SystemOwned)
 		}
 
 		if mappingType, exists := m.MappingType(); exists {
@@ -5530,6 +5554,12 @@ func (m *MappedControlMutation) CreateHistoryFromUpdate(ctx context.Context) err
 			create = create.SetSource(source)
 		} else {
 			create = create.SetSource(mappedcontrol.Source)
+		}
+
+		if sourceReference, exists := m.SourceReference(); exists {
+			create = create.SetSourceReference(sourceReference)
+		} else {
+			create = create.SetSourceReference(mappedcontrol.SourceReference)
 		}
 
 		if _, err := create.Save(ctx); err != nil {
@@ -5570,12 +5600,15 @@ func (m *MappedControlMutation) CreateHistoryFromDelete(ctx context.Context) err
 			SetUpdatedBy(mappedcontrol.UpdatedBy).
 			SetDeletedAt(mappedcontrol.DeletedAt).
 			SetDeletedBy(mappedcontrol.DeletedBy).
+			SetDisplayID(mappedcontrol.DisplayID).
 			SetTags(mappedcontrol.Tags).
 			SetOwnerID(mappedcontrol.OwnerID).
+			SetSystemOwned(mappedcontrol.SystemOwned).
 			SetMappingType(mappedcontrol.MappingType).
 			SetRelation(mappedcontrol.Relation).
 			SetNillableConfidence(mappedcontrol.Confidence).
 			SetSource(mappedcontrol.Source).
+			SetSourceReference(mappedcontrol.SourceReference).
 			Save(ctx)
 		if err != nil {
 			return err

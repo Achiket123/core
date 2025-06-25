@@ -1045,10 +1045,11 @@ func searchMappedControls(ctx context.Context, query string, after *entgql.Curso
 	request := withTransactionalMutation(ctx).MappedControl.Query().
 		Where(
 			mappedcontrol.Or(
-				mappedcontrol.ID(query), // search equal to ID
+				mappedcontrol.DisplayID(query), // search equal to DisplayID
+				mappedcontrol.ID(query),        // search equal to ID
 				func(s *sql.Selector) {
 					likeQuery := "%" + query + "%"
-					s.Where(sql.ExprP("(tags)::text LIKE $2", likeQuery)) // search by Tags
+					s.Where(sql.ExprP("(tags)::text LIKE $3", likeQuery)) // search by Tags
 				},
 			),
 		)
@@ -1061,13 +1062,15 @@ func adminSearchMappedControls(ctx context.Context, query string, after *entgql.
 	request := withTransactionalMutation(ctx).MappedControl.Query().
 		Where(
 			mappedcontrol.Or(
-				mappedcontrol.ID(query), // search equal to ID
+				mappedcontrol.ID(query),        // search equal to ID
+				mappedcontrol.DisplayID(query), // search equal to DisplayID
 				func(s *sql.Selector) {
 					likeQuery := "%" + query + "%"
-					s.Where(sql.ExprP("(tags)::text LIKE $2", likeQuery)) // search by Tags
+					s.Where(sql.ExprP("(tags)::text LIKE $3", likeQuery)) // search by Tags
 				},
-				mappedcontrol.OwnerIDContainsFold(query),  // search by OwnerID
-				mappedcontrol.RelationContainsFold(query), // search by Relation
+				mappedcontrol.OwnerIDContainsFold(query),         // search by OwnerID
+				mappedcontrol.RelationContainsFold(query),        // search by Relation
+				mappedcontrol.SourceReferenceContainsFold(query), // search by SourceReference
 			),
 		)
 
