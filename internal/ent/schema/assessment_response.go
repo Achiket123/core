@@ -11,9 +11,13 @@ import (
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 	"github.com/gertd/go-pluralize"
+	"github.com/theopenlane/iam/entfga"
 
+	"github.com/theopenlane/core/internal/ent/generated"
 	"github.com/theopenlane/core/internal/ent/generated/privacy"
+	"github.com/theopenlane/core/internal/ent/interceptors"
 	"github.com/theopenlane/core/internal/ent/privacy/policy"
+	"github.com/theopenlane/core/internal/ent/privacy/rule"
 	"github.com/theopenlane/core/pkg/enums"
 	"github.com/theopenlane/entx"
 )
@@ -106,12 +110,12 @@ func (ar AssessmentResponse) Edges() []ent.Edge {
 func (AssessmentResponse) Policy() ent.Policy {
 	return policy.NewPolicy(
 		policy.WithQueryRules(
-			// rule.AllowIfAssessmentResponseQueryOwner(),
+			rule.AllowIfAssessmentResponseQueryOwner(),
 			// fga checks this already
 			privacy.AlwaysAllowRule(),
 		),
 		policy.WithMutationRules(
-			// rule.AllowIfAssessmentResponseOwner(),
+			rule.AllowIfAssessmentResponseOwner(),
 			policy.CheckCreateAccess(),
 			policy.CheckOrgWriteAccess(),
 		),
@@ -122,14 +126,14 @@ func (AssessmentResponse) Policy() ent.Policy {
 func (AssessmentResponse) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entx.Features(entx.ModuleBase),
-		// entfga.SelfAccessChecks(),
+		entfga.SelfAccessChecks(),
 	}
 }
 
 // Interceptors of the AssessmentResponse
 func (AssessmentResponse) Interceptors() []ent.Interceptor {
 	return []ent.Interceptor{
-		// interceptors.FilterQueryResults[generated.AssessmentResponse](), // Filter results based on FGA permissions
+		interceptors.FilterQueryResults[generated.AssessmentResponse](), // Filter results based on FGA permissions
 	}
 }
 

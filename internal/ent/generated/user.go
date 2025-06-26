@@ -65,9 +65,8 @@ type User struct {
 	Role enums.Role `json:"role,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the UserQuery when eager-loading is set.
-	Edges            UserEdges `json:"edges"`
-	assessment_users *string
-	selectValues     sql.SelectValues
+	Edges        UserEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // UserEdges holds the relations/edges for other nodes in the graph.
@@ -104,6 +103,8 @@ type UserEdges struct {
 	AssigneeTasks []*Task `json:"assignee_tasks,omitempty"`
 	// Programs holds the value of the programs edge.
 	Programs []*Program `json:"programs,omitempty"`
+	// Assessments holds the value of the assessments edge.
+	Assessments []*Assessment `json:"assessments,omitempty"`
 	// GroupMemberships holds the value of the group_memberships edge.
 	GroupMemberships []*GroupMembership `json:"group_memberships,omitempty"`
 	// OrgMemberships holds the value of the org_memberships edge.
@@ -112,9 +113,9 @@ type UserEdges struct {
 	ProgramMemberships []*ProgramMembership `json:"program_memberships,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [19]bool
+	loadedTypes [20]bool
 	// totalCount holds the count of the edges above.
-	totalCount [17]map[string]int
+	totalCount [18]map[string]int
 
 	namedPersonalAccessTokens    map[string][]*PersonalAccessToken
 	namedTfaSettings             map[string][]*TFASetting
@@ -130,6 +131,7 @@ type UserEdges struct {
 	namedAssignerTasks           map[string][]*Task
 	namedAssigneeTasks           map[string][]*Task
 	namedPrograms                map[string][]*Program
+	namedAssessments             map[string][]*Assessment
 	namedGroupMemberships        map[string][]*GroupMembership
 	namedOrgMemberships          map[string][]*OrgMembership
 	namedProgramMemberships      map[string][]*ProgramMembership
@@ -283,10 +285,19 @@ func (e UserEdges) ProgramsOrErr() ([]*Program, error) {
 	return nil, &NotLoadedError{edge: "programs"}
 }
 
+// AssessmentsOrErr returns the Assessments value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) AssessmentsOrErr() ([]*Assessment, error) {
+	if e.loadedTypes[16] {
+		return e.Assessments, nil
+	}
+	return nil, &NotLoadedError{edge: "assessments"}
+}
+
 // GroupMembershipsOrErr returns the GroupMemberships value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) GroupMembershipsOrErr() ([]*GroupMembership, error) {
-	if e.loadedTypes[16] {
+	if e.loadedTypes[17] {
 		return e.GroupMemberships, nil
 	}
 	return nil, &NotLoadedError{edge: "group_memberships"}
@@ -295,7 +306,7 @@ func (e UserEdges) GroupMembershipsOrErr() ([]*GroupMembership, error) {
 // OrgMembershipsOrErr returns the OrgMemberships value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) OrgMembershipsOrErr() ([]*OrgMembership, error) {
-	if e.loadedTypes[17] {
+	if e.loadedTypes[18] {
 		return e.OrgMemberships, nil
 	}
 	return nil, &NotLoadedError{edge: "org_memberships"}
@@ -304,7 +315,7 @@ func (e UserEdges) OrgMembershipsOrErr() ([]*OrgMembership, error) {
 // ProgramMembershipsOrErr returns the ProgramMemberships value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) ProgramMembershipsOrErr() ([]*ProgramMembership, error) {
-	if e.loadedTypes[18] {
+	if e.loadedTypes[19] {
 		return e.ProgramMemberships, nil
 	}
 	return nil, &NotLoadedError{edge: "program_memberships"}
@@ -321,8 +332,6 @@ func (*User) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullString)
 		case user.FieldCreatedAt, user.FieldUpdatedAt, user.FieldDeletedAt, user.FieldAvatarUpdatedAt, user.FieldLastSeen:
 			values[i] = new(sql.NullTime)
-		case user.ForeignKeys[0]: // assessment_users
-			values[i] = new(sql.NullString)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -477,13 +486,6 @@ func (u *User) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				u.Role = enums.Role(value.String)
 			}
-		case user.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field assessment_users", values[i])
-			} else if value.Valid {
-				u.assessment_users = new(string)
-				*u.assessment_users = value.String
-			}
 		default:
 			u.selectValues.Set(columns[i], values[i])
 		}
@@ -575,6 +577,11 @@ func (u *User) QueryAssigneeTasks() *TaskQuery {
 // QueryPrograms queries the "programs" edge of the User entity.
 func (u *User) QueryPrograms() *ProgramQuery {
 	return NewUserClient(u.config).QueryPrograms(u)
+}
+
+// QueryAssessments queries the "assessments" edge of the User entity.
+func (u *User) QueryAssessments() *AssessmentQuery {
+	return NewUserClient(u.config).QueryAssessments(u)
 }
 
 // QueryGroupMemberships queries the "group_memberships" edge of the User entity.
@@ -1021,6 +1028,30 @@ func (u *User) appendNamedPrograms(name string, edges ...*Program) {
 		u.Edges.namedPrograms[name] = []*Program{}
 	} else {
 		u.Edges.namedPrograms[name] = append(u.Edges.namedPrograms[name], edges...)
+	}
+}
+
+// NamedAssessments returns the Assessments named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (u *User) NamedAssessments(name string) ([]*Assessment, error) {
+	if u.Edges.namedAssessments == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := u.Edges.namedAssessments[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (u *User) appendNamedAssessments(name string, edges ...*Assessment) {
+	if u.Edges.namedAssessments == nil {
+		u.Edges.namedAssessments = make(map[string][]*Assessment)
+	}
+	if len(edges) == 0 {
+		u.Edges.namedAssessments[name] = []*Assessment{}
+	} else {
+		u.Edges.namedAssessments[name] = append(u.Edges.namedAssessments[name], edges...)
 	}
 }
 

@@ -80396,6 +80396,10 @@ type UserWhereInput struct {
 	HasPrograms     *bool                `json:"hasPrograms,omitempty"`
 	HasProgramsWith []*ProgramWhereInput `json:"hasProgramsWith,omitempty"`
 
+	// "assessments" edge predicates.
+	HasAssessments     *bool                   `json:"hasAssessments,omitempty"`
+	HasAssessmentsWith []*AssessmentWhereInput `json:"hasAssessmentsWith,omitempty"`
+
 	// "group_memberships" edge predicates.
 	HasGroupMemberships     *bool                        `json:"hasGroupMemberships,omitempty"`
 	HasGroupMembershipsWith []*GroupMembershipWhereInput `json:"hasGroupMembershipsWith,omitempty"`
@@ -81407,6 +81411,24 @@ func (i *UserWhereInput) P() (predicate.User, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, user.HasProgramsWith(with...))
+	}
+	if i.HasAssessments != nil {
+		p := user.HasAssessments()
+		if !*i.HasAssessments {
+			p = user.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasAssessmentsWith) > 0 {
+		with := make([]predicate.Assessment, 0, len(i.HasAssessmentsWith))
+		for _, w := range i.HasAssessmentsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasAssessmentsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, user.HasAssessmentsWith(with...))
 	}
 	if i.HasGroupMemberships != nil {
 		p := user.HasGroupMemberships()

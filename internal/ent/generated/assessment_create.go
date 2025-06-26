@@ -533,16 +533,16 @@ func (ac *AssessmentCreate) createSpec() (*Assessment, *sqlgraph.CreateSpec) {
 	}
 	if nodes := ac.mutation.UsersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
 			Table:   assessment.UsersTable,
-			Columns: []string{assessment.UsersColumn},
+			Columns: assessment.UsersPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeString),
 			},
 		}
-		edge.Schema = ac.schemaConfig.User
+		edge.Schema = ac.schemaConfig.AssessmentUsers
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}

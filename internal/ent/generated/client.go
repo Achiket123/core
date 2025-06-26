@@ -2049,11 +2049,11 @@ func (c *AssessmentClient) QueryUsers(a *Assessment) *UserQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(assessment.Table, assessment.FieldID, id),
 			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, assessment.UsersTable, assessment.UsersColumn),
+			sqlgraph.Edge(sqlgraph.M2M, false, assessment.UsersTable, assessment.UsersPrimaryKey...),
 		)
 		schemaConfig := a.schemaConfig
 		step.To.Schema = schemaConfig.User
-		step.Edge.Schema = schemaConfig.User
+		step.Edge.Schema = schemaConfig.AssessmentUsers
 		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
 		return fromV, nil
 	}
@@ -23068,6 +23068,25 @@ func (c *UserClient) QueryPrograms(u *User) *ProgramQuery {
 		schemaConfig := u.schemaConfig
 		step.To.Schema = schemaConfig.Program
 		step.Edge.Schema = schemaConfig.ProgramMembership
+		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryAssessments queries the assessments edge of a User.
+func (c *UserClient) QueryAssessments(u *User) *AssessmentQuery {
+	query := (&AssessmentClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := u.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(assessment.Table, assessment.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, user.AssessmentsTable, user.AssessmentsPrimaryKey...),
+		)
+		schemaConfig := u.schemaConfig
+		step.To.Schema = schemaConfig.Assessment
+		step.Edge.Schema = schemaConfig.AssessmentUsers
 		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
 		return fromV, nil
 	}

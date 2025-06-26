@@ -95,13 +95,11 @@ const (
 	TemplateInverseTable = "templates"
 	// TemplateColumn is the table column denoting the template relation/edge.
 	TemplateColumn = "template_id"
-	// UsersTable is the table that holds the users relation/edge.
-	UsersTable = "users"
+	// UsersTable is the table that holds the users relation/edge. The primary key declared below.
+	UsersTable = "assessment_users"
 	// UsersInverseTable is the table name for the User entity.
 	// It exists in this package in order to avoid circular dependency with the "user" package.
 	UsersInverseTable = "users"
-	// UsersColumn is the table column denoting the users relation/edge.
-	UsersColumn = "assessment_users"
 	// AssessmentResponsesTable is the table that holds the assessment_responses relation/edge.
 	AssessmentResponsesTable = "assessment_responses"
 	// AssessmentResponsesInverseTable is the table name for the AssessmentResponse entity.
@@ -135,6 +133,12 @@ var Columns = []string{
 	FieldAssessmentOwnerID,
 }
 
+var (
+	// UsersPrimaryKey and UsersColumn2 are the table columns denoting the
+	// primary key for the users relation (M2M).
+	UsersPrimaryKey = []string{"assessment_id", "user_id"}
+)
+
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
@@ -152,7 +156,7 @@ func ValidColumn(column string) bool {
 //	import _ "github.com/theopenlane/core/internal/ent/generated/runtime"
 var (
 	Hooks        [8]ent.Hook
-	Interceptors [2]ent.Interceptor
+	Interceptors [3]ent.Interceptor
 	Policy       ent.Policy
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
@@ -374,7 +378,7 @@ func newUsersStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(UsersInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, UsersTable, UsersColumn),
+		sqlgraph.Edge(sqlgraph.M2M, false, UsersTable, UsersPrimaryKey...),
 	)
 }
 func newAssessmentResponsesStep() *sqlgraph.Step {

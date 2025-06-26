@@ -11236,6 +11236,7 @@ type CreateUserInput struct {
 	AssignerTaskIDs        []string
 	AssigneeTaskIDs        []string
 	ProgramIDs             []string
+	AssessmentIDs          []string
 }
 
 // Mutate applies the CreateUserInput on the UserMutation builder.
@@ -11315,6 +11316,9 @@ func (i *CreateUserInput) Mutate(m *UserMutation) {
 	if v := i.ProgramIDs; len(v) > 0 {
 		m.AddProgramIDs(v...)
 	}
+	if v := i.AssessmentIDs; len(v) > 0 {
+		m.AddAssessmentIDs(v...)
+	}
 }
 
 // SetInput applies the change-set in the CreateUserInput on the UserCreate builder.
@@ -11388,6 +11392,9 @@ type UpdateUserInput struct {
 	ClearPrograms                bool
 	AddProgramIDs                []string
 	RemoveProgramIDs             []string
+	ClearAssessments             bool
+	AddAssessmentIDs             []string
+	RemoveAssessmentIDs          []string
 }
 
 // Mutate applies the UpdateUserInput on the UserMutation builder.
@@ -11580,6 +11587,15 @@ func (i *UpdateUserInput) Mutate(m *UserMutation) {
 	}
 	if v := i.RemoveProgramIDs; len(v) > 0 {
 		m.RemoveProgramIDs(v...)
+	}
+	if i.ClearAssessments {
+		m.ClearAssessments()
+	}
+	if v := i.AddAssessmentIDs; len(v) > 0 {
+		m.AddAssessmentIDs(v...)
+	}
+	if v := i.RemoveAssessmentIDs; len(v) > 0 {
+		m.RemoveAssessmentIDs(v...)
 	}
 }
 

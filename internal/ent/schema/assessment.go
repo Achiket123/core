@@ -8,10 +8,14 @@ import (
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 	"github.com/gertd/go-pluralize"
+	"github.com/theopenlane/iam/entfga"
 
+	"github.com/theopenlane/core/internal/ent/generated"
 	"github.com/theopenlane/core/internal/ent/generated/hook"
 	"github.com/theopenlane/core/internal/ent/hooks"
+	"github.com/theopenlane/core/internal/ent/interceptors"
 	"github.com/theopenlane/core/internal/ent/privacy/policy"
+	"github.com/theopenlane/core/internal/ent/privacy/rule"
 	"github.com/theopenlane/core/pkg/enums"
 	"github.com/theopenlane/entx"
 )
@@ -88,11 +92,11 @@ func (a Assessment) Edges() []ent.Edge {
 func (Assessment) Policy() ent.Policy {
 	return policy.NewPolicy(
 		policy.WithQueryRules(
-		// rule.AllowIfAssessmentQueryCreatedBy(),
+			rule.AllowIfAssessmentQueryCreatedBy(),
 		),
 		policy.WithMutationRules(
 			policy.CheckCreateAccess(),
-			// rule.AllowIfAssessmentCreatedBy(),
+			rule.AllowIfAssessmentCreatedBy(),
 			policy.CheckOrgWriteAccess(),
 		),
 	)
@@ -102,7 +106,7 @@ func (Assessment) Policy() ent.Policy {
 func (Assessment) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entx.Features(entx.ModuleBase),
-		// entfga.SelfAccessChecks(),
+		entfga.SelfAccessChecks(),
 	}
 }
 
@@ -117,7 +121,7 @@ func (Assessment) Indexes() []ent.Index {
 // Interceptors of the Assessment
 func (Assessment) Interceptors() []ent.Interceptor {
 	return []ent.Interceptor{
-		// interceptors.FilterQueryResults[generated.Assessment](),
+		interceptors.FilterQueryResults[generated.Assessment](),
 	}
 }
 

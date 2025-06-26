@@ -6930,6 +6930,7 @@ type CreateUserInput struct {
 	AssignerTaskIDs        []string    `json:"assignerTaskIDs,omitempty"`
 	AssigneeTaskIDs        []string    `json:"assigneeTaskIDs,omitempty"`
 	ProgramIDs             []string    `json:"programIDs,omitempty"`
+	AssessmentIDs          []string    `json:"assessmentIDs,omitempty"`
 }
 
 // CreateUserSettingInput is used for create UserSetting object.
@@ -28987,6 +28988,9 @@ type UpdateUserInput struct {
 	AddProgramIDs                []string    `json:"addProgramIDs,omitempty"`
 	RemoveProgramIDs             []string    `json:"removeProgramIDs,omitempty"`
 	ClearPrograms                *bool       `json:"clearPrograms,omitempty"`
+	AddAssessmentIDs             []string    `json:"addAssessmentIDs,omitempty"`
+	RemoveAssessmentIDs          []string    `json:"removeAssessmentIDs,omitempty"`
+	ClearAssessments             *bool       `json:"clearAssessments,omitempty"`
 }
 
 // UpdateUserSettingInput is used for update UserSetting object.
@@ -29065,6 +29069,7 @@ type User struct {
 	AssignerTasks        *TaskConnection                `json:"assignerTasks"`
 	AssigneeTasks        *TaskConnection                `json:"assigneeTasks"`
 	Programs             *ProgramConnection             `json:"programs"`
+	Assessments          *AssessmentConnection          `json:"assessments"`
 	GroupMemberships     *GroupMembershipConnection     `json:"groupMemberships"`
 	OrgMemberships       *OrgMembershipConnection       `json:"orgMemberships"`
 	ProgramMemberships   *ProgramMembershipConnection   `json:"programMemberships"`
@@ -30152,6 +30157,9 @@ type UserWhereInput struct {
 	// programs edge predicates
 	HasPrograms     *bool                `json:"hasPrograms,omitempty"`
 	HasProgramsWith []*ProgramWhereInput `json:"hasProgramsWith,omitempty"`
+	// assessments edge predicates
+	HasAssessments     *bool                   `json:"hasAssessments,omitempty"`
+	HasAssessmentsWith []*AssessmentWhereInput `json:"hasAssessmentsWith,omitempty"`
 	// group_memberships edge predicates
 	HasGroupMemberships     *bool                        `json:"hasGroupMemberships,omitempty"`
 	HasGroupMembershipsWith []*GroupMembershipWhereInput `json:"hasGroupMembershipsWith,omitempty"`

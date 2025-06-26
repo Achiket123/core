@@ -3426,10 +3426,10 @@ var schemaGraph = func() *sqlgraph.Schema {
 	graph.MustAddE(
 		"users",
 		&sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
 			Table:   assessment.UsersTable,
-			Columns: []string{assessment.UsersColumn},
+			Columns: assessment.UsersPrimaryKey,
 			Bidi:    false,
 		},
 		"Assessment",
@@ -8378,6 +8378,18 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		"User",
 		"Program",
+	)
+	graph.MustAddE(
+		"assessments",
+		&sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   user.AssessmentsTable,
+			Columns: user.AssessmentsPrimaryKey,
+			Bidi:    false,
+		},
+		"User",
+		"Assessment",
 	)
 	graph.MustAddE(
 		"group_memberships",
@@ -26980,6 +26992,20 @@ func (f *UserFilter) WhereHasPrograms() {
 // WhereHasProgramsWith applies a predicate to check if query has an edge programs with a given conditions (other predicates).
 func (f *UserFilter) WhereHasProgramsWith(preds ...predicate.Program) {
 	f.Where(entql.HasEdgeWith("programs", sqlgraph.WrapFunc(func(s *sql.Selector) {
+		for _, p := range preds {
+			p(s)
+		}
+	})))
+}
+
+// WhereHasAssessments applies a predicate to check if query has an edge assessments.
+func (f *UserFilter) WhereHasAssessments() {
+	f.Where(entql.HasEdge("assessments"))
+}
+
+// WhereHasAssessmentsWith applies a predicate to check if query has an edge assessments with a given conditions (other predicates).
+func (f *UserFilter) WhereHasAssessmentsWith(preds ...predicate.Assessment) {
+	f.Where(entql.HasEdgeWith("assessments", sqlgraph.WrapFunc(func(s *sql.Selector) {
 		for _, p := range preds {
 			p(s)
 		}

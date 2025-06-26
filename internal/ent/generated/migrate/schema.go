@@ -5077,7 +5077,6 @@ var (
 		{Name: "sub", Type: field.TypeString, Unique: true, Nullable: true},
 		{Name: "auth_provider", Type: field.TypeEnum, Enums: []string{"CREDENTIALS", "GOOGLE", "GITHUB", "WEBAUTHN"}, Default: "CREDENTIALS"},
 		{Name: "role", Type: field.TypeEnum, Nullable: true, Enums: []string{"ADMIN", "MEMBER", "USER"}, Default: "USER"},
-		{Name: "assessment_users", Type: field.TypeString, Nullable: true},
 		{Name: "avatar_local_file_id", Type: field.TypeString, Nullable: true},
 	}
 	// UsersTable holds the schema information for the "users" table.
@@ -5087,14 +5086,8 @@ var (
 		PrimaryKey: []*schema.Column{UsersColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "users_assessments_users",
-				Columns:    []*schema.Column{UsersColumns[21]},
-				RefColumns: []*schema.Column{AssessmentsColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
-			{
 				Symbol:     "users_files_avatar_file",
-				Columns:    []*schema.Column{UsersColumns[22]},
+				Columns:    []*schema.Column{UsersColumns[21]},
 				RefColumns: []*schema.Column{FilesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -5278,6 +5271,31 @@ var (
 				Name:    "webauthn_id",
 				Unique:  true,
 				Columns: []*schema.Column{WebauthnsColumns[0]},
+			},
+		},
+	}
+	// AssessmentUsersColumns holds the columns for the "assessment_users" table.
+	AssessmentUsersColumns = []*schema.Column{
+		{Name: "assessment_id", Type: field.TypeString},
+		{Name: "user_id", Type: field.TypeString},
+	}
+	// AssessmentUsersTable holds the schema information for the "assessment_users" table.
+	AssessmentUsersTable = &schema.Table{
+		Name:       "assessment_users",
+		Columns:    AssessmentUsersColumns,
+		PrimaryKey: []*schema.Column{AssessmentUsersColumns[0], AssessmentUsersColumns[1]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "assessment_users_assessment_id",
+				Columns:    []*schema.Column{AssessmentUsersColumns[0]},
+				RefColumns: []*schema.Column{AssessmentsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+			{
+				Symbol:     "assessment_users_user_id",
+				Columns:    []*schema.Column{AssessmentUsersColumns[1]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -8014,6 +8032,7 @@ var (
 		UserSettingsTable,
 		UserSettingHistoryTable,
 		WebauthnsTable,
+		AssessmentUsersTable,
 		ContactFilesTable,
 		ControlControlObjectivesTable,
 		ControlTasksTable,
@@ -8392,8 +8411,7 @@ func init() {
 	TrustCenterSettingHistoryTable.Annotation = &entsql.Annotation{
 		Table: "trust_center_setting_history",
 	}
-	UsersTable.ForeignKeys[0].RefTable = AssessmentsTable
-	UsersTable.ForeignKeys[1].RefTable = FilesTable
+	UsersTable.ForeignKeys[0].RefTable = FilesTable
 	UserHistoryTable.Annotation = &entsql.Annotation{
 		Table: "user_history",
 	}
@@ -8403,6 +8421,8 @@ func init() {
 		Table: "user_setting_history",
 	}
 	WebauthnsTable.ForeignKeys[0].RefTable = UsersTable
+	AssessmentUsersTable.ForeignKeys[0].RefTable = AssessmentsTable
+	AssessmentUsersTable.ForeignKeys[1].RefTable = UsersTable
 	ContactFilesTable.ForeignKeys[0].RefTable = ContactsTable
 	ContactFilesTable.ForeignKeys[1].RefTable = FilesTable
 	ControlControlObjectivesTable.ForeignKeys[0].RefTable = ControlsTable

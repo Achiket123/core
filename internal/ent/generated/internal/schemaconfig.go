@@ -11,6 +11,7 @@ type SchemaConfig struct {
 	ActionPlan                         string // ActionPlan table.
 	ActionPlanHistory                  string // ActionPlanHistory table.
 	Assessment                         string // Assessment table.
+	AssessmentUsers                    string // Assessment-users->User table.
 	AssessmentHistory                  string // AssessmentHistory table.
 	AssessmentResponse                 string // AssessmentResponse table.
 	AssessmentResponseHistory          string // AssessmentResponseHistory table.

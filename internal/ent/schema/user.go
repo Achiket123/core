@@ -243,6 +243,11 @@ func (u User) Edges() []ent.Edge {
 				entgql.RelayConnection(),
 				entgql.QueryField(),
 				entgql.MultiOrder()),
+
+		edgeFromWithPagination(&edgeDefinition{
+			fromSchema: u,
+			edgeSchema: Assessment{},
+		}),
 	}
 }
 
