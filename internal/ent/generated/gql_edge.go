@@ -124,6 +124,159 @@ func (ap *ActionPlan) Programs(
 	return ap.QueryPrograms().Paginate(ctx, after, first, before, last, opts...)
 }
 
+func (a *Assessment) Owner(ctx context.Context) (*Organization, error) {
+	result, err := a.Edges.OwnerOrErr()
+	if IsNotLoaded(err) {
+		result, err = a.QueryOwner().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (a *Assessment) BlockedGroups(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy []*GroupOrder, where *GroupWhereInput,
+) (*GroupConnection, error) {
+	opts := []GroupPaginateOption{
+		WithGroupOrder(orderBy),
+		WithGroupFilter(where.Filter),
+	}
+	alias := graphql.GetFieldContext(ctx).Field.Alias
+	totalCount, hasTotalCount := a.Edges.totalCount[1][alias]
+	if nodes, err := a.NamedBlockedGroups(alias); err == nil || hasTotalCount {
+		pager, err := newGroupPager(opts, last != nil)
+		if err != nil {
+			return nil, err
+		}
+		conn := &GroupConnection{Edges: []*GroupEdge{}, TotalCount: totalCount}
+		conn.build(nodes, pager, after, first, before, last)
+		return conn, nil
+	}
+	return a.QueryBlockedGroups().Paginate(ctx, after, first, before, last, opts...)
+}
+
+func (a *Assessment) Editors(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy []*GroupOrder, where *GroupWhereInput,
+) (*GroupConnection, error) {
+	opts := []GroupPaginateOption{
+		WithGroupOrder(orderBy),
+		WithGroupFilter(where.Filter),
+	}
+	alias := graphql.GetFieldContext(ctx).Field.Alias
+	totalCount, hasTotalCount := a.Edges.totalCount[2][alias]
+	if nodes, err := a.NamedEditors(alias); err == nil || hasTotalCount {
+		pager, err := newGroupPager(opts, last != nil)
+		if err != nil {
+			return nil, err
+		}
+		conn := &GroupConnection{Edges: []*GroupEdge{}, TotalCount: totalCount}
+		conn.build(nodes, pager, after, first, before, last)
+		return conn, nil
+	}
+	return a.QueryEditors().Paginate(ctx, after, first, before, last, opts...)
+}
+
+func (a *Assessment) Viewers(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy []*GroupOrder, where *GroupWhereInput,
+) (*GroupConnection, error) {
+	opts := []GroupPaginateOption{
+		WithGroupOrder(orderBy),
+		WithGroupFilter(where.Filter),
+	}
+	alias := graphql.GetFieldContext(ctx).Field.Alias
+	totalCount, hasTotalCount := a.Edges.totalCount[3][alias]
+	if nodes, err := a.NamedViewers(alias); err == nil || hasTotalCount {
+		pager, err := newGroupPager(opts, last != nil)
+		if err != nil {
+			return nil, err
+		}
+		conn := &GroupConnection{Edges: []*GroupEdge{}, TotalCount: totalCount}
+		conn.build(nodes, pager, after, first, before, last)
+		return conn, nil
+	}
+	return a.QueryViewers().Paginate(ctx, after, first, before, last, opts...)
+}
+
+func (a *Assessment) Template(ctx context.Context) (*Template, error) {
+	result, err := a.Edges.TemplateOrErr()
+	if IsNotLoaded(err) {
+		result, err = a.QueryTemplate().Only(ctx)
+	}
+	return result, err
+}
+
+func (a *Assessment) Users(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy []*UserOrder, where *UserWhereInput,
+) (*UserConnection, error) {
+	opts := []UserPaginateOption{
+		WithUserOrder(orderBy),
+		WithUserFilter(where.Filter),
+	}
+	alias := graphql.GetFieldContext(ctx).Field.Alias
+	totalCount, hasTotalCount := a.Edges.totalCount[5][alias]
+	if nodes, err := a.NamedUsers(alias); err == nil || hasTotalCount {
+		pager, err := newUserPager(opts, last != nil)
+		if err != nil {
+			return nil, err
+		}
+		conn := &UserConnection{Edges: []*UserEdge{}, TotalCount: totalCount}
+		conn.build(nodes, pager, after, first, before, last)
+		return conn, nil
+	}
+	return a.QueryUsers().Paginate(ctx, after, first, before, last, opts...)
+}
+
+func (a *Assessment) AssessmentResponses(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy []*AssessmentResponseOrder, where *AssessmentResponseWhereInput,
+) (*AssessmentResponseConnection, error) {
+	opts := []AssessmentResponsePaginateOption{
+		WithAssessmentResponseOrder(orderBy),
+		WithAssessmentResponseFilter(where.Filter),
+	}
+	alias := graphql.GetFieldContext(ctx).Field.Alias
+	totalCount, hasTotalCount := a.Edges.totalCount[6][alias]
+	if nodes, err := a.NamedAssessmentResponses(alias); err == nil || hasTotalCount {
+		pager, err := newAssessmentResponsePager(opts, last != nil)
+		if err != nil {
+			return nil, err
+		}
+		conn := &AssessmentResponseConnection{Edges: []*AssessmentResponseEdge{}, TotalCount: totalCount}
+		conn.build(nodes, pager, after, first, before, last)
+		return conn, nil
+	}
+	return a.QueryAssessmentResponses().Paginate(ctx, after, first, before, last, opts...)
+}
+
+func (a *Assessment) AssessmentOwner(ctx context.Context) (*Group, error) {
+	result, err := a.Edges.AssessmentOwnerOrErr()
+	if IsNotLoaded(err) {
+		result, err = a.QueryAssessmentOwner().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (ar *AssessmentResponse) Assessment(ctx context.Context) (*Assessment, error) {
+	result, err := ar.Edges.AssessmentOrErr()
+	if IsNotLoaded(err) {
+		result, err = ar.QueryAssessment().Only(ctx)
+	}
+	return result, err
+}
+
+func (ar *AssessmentResponse) User(ctx context.Context) (*User, error) {
+	result, err := ar.Edges.UserOrErr()
+	if IsNotLoaded(err) {
+		result, err = ar.QueryUser().Only(ctx)
+	}
+	return result, err
+}
+
+func (ar *AssessmentResponse) Document(ctx context.Context) (*DocumentData, error) {
+	result, err := ar.Edges.DocumentOrErr()
+	if IsNotLoaded(err) {
+		result, err = ar.QueryDocument().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (a *Asset) Owner(ctx context.Context) (*Organization, error) {
 	result, err := a.Edges.OwnerOrErr()
 	if IsNotLoaded(err) {
@@ -4856,6 +5009,27 @@ func (o *Organization) Scans(
 	return o.QueryScans().Paginate(ctx, after, first, before, last, opts...)
 }
 
+func (o *Organization) Assessments(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy []*AssessmentOrder, where *AssessmentWhereInput,
+) (*AssessmentConnection, error) {
+	opts := []AssessmentPaginateOption{
+		WithAssessmentOrder(orderBy),
+		WithAssessmentFilter(where.Filter),
+	}
+	alias := graphql.GetFieldContext(ctx).Field.Alias
+	totalCount, hasTotalCount := o.Edges.totalCount[61][alias]
+	if nodes, err := o.NamedAssessments(alias); err == nil || hasTotalCount {
+		pager, err := newAssessmentPager(opts, last != nil)
+		if err != nil {
+			return nil, err
+		}
+		conn := &AssessmentConnection{Edges: []*AssessmentEdge{}, TotalCount: totalCount}
+		conn.build(nodes, pager, after, first, before, last)
+		return conn, nil
+	}
+	return o.QueryAssessments().Paginate(ctx, after, first, before, last, opts...)
+}
+
 func (o *Organization) Members(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy []*OrgMembershipOrder, where *OrgMembershipWhereInput,
 ) (*OrgMembershipConnection, error) {
@@ -4864,7 +5038,7 @@ func (o *Organization) Members(
 		WithOrgMembershipFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := o.Edges.totalCount[61][alias]
+	totalCount, hasTotalCount := o.Edges.totalCount[62][alias]
 	if nodes, err := o.NamedMembers(alias); err == nil || hasTotalCount {
 		pager, err := newOrgMembershipPager(opts, last != nil)
 		if err != nil {
