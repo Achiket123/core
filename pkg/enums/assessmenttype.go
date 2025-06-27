@@ -52,7 +52,7 @@ func (r AssessmentType) MarshalGQL(w io.Writer) {
 func (r *AssessmentType) UnmarshalGQL(v interface{}) error {
 	str, ok := v.(string)
 	if !ok {
-		return fmt.Errorf("wrong type for AssessmentType, got: %T", v)  //nolint:err113
+		return fmt.Errorf("wrong type for AssessmentType, got: %T", v) //nolint:err113
 	}
 
 	*r = AssessmentType(str)
