@@ -123,6 +123,26 @@ func (arhu *AssessmentResponseHistoryUpdate) ClearTags() *AssessmentResponseHist
 	return arhu
 }
 
+// SetOwnerID sets the "owner_id" field.
+func (arhu *AssessmentResponseHistoryUpdate) SetOwnerID(s string) *AssessmentResponseHistoryUpdate {
+	arhu.mutation.SetOwnerID(s)
+	return arhu
+}
+
+// SetNillableOwnerID sets the "owner_id" field if the given value is not nil.
+func (arhu *AssessmentResponseHistoryUpdate) SetNillableOwnerID(s *string) *AssessmentResponseHistoryUpdate {
+	if s != nil {
+		arhu.SetOwnerID(*s)
+	}
+	return arhu
+}
+
+// ClearOwnerID clears the value of the "owner_id" field.
+func (arhu *AssessmentResponseHistoryUpdate) ClearOwnerID() *AssessmentResponseHistoryUpdate {
+	arhu.mutation.ClearOwnerID()
+	return arhu
+}
+
 // SetAssessmentID sets the "assessment_id" field.
 func (arhu *AssessmentResponseHistoryUpdate) SetAssessmentID(s string) *AssessmentResponseHistoryUpdate {
 	arhu.mutation.SetAssessmentID(s)
@@ -372,6 +392,12 @@ func (arhu *AssessmentResponseHistoryUpdate) sqlSave(ctx context.Context) (n int
 	if arhu.mutation.TagsCleared() {
 		_spec.ClearField(assessmentresponsehistory.FieldTags, field.TypeJSON)
 	}
+	if value, ok := arhu.mutation.OwnerID(); ok {
+		_spec.SetField(assessmentresponsehistory.FieldOwnerID, field.TypeString, value)
+	}
+	if arhu.mutation.OwnerIDCleared() {
+		_spec.ClearField(assessmentresponsehistory.FieldOwnerID, field.TypeString)
+	}
 	if value, ok := arhu.mutation.AssessmentID(); ok {
 		_spec.SetField(assessmentresponsehistory.FieldAssessmentID, field.TypeString, value)
 	}
@@ -519,6 +545,26 @@ func (arhuo *AssessmentResponseHistoryUpdateOne) AppendTags(s []string) *Assessm
 // ClearTags clears the value of the "tags" field.
 func (arhuo *AssessmentResponseHistoryUpdateOne) ClearTags() *AssessmentResponseHistoryUpdateOne {
 	arhuo.mutation.ClearTags()
+	return arhuo
+}
+
+// SetOwnerID sets the "owner_id" field.
+func (arhuo *AssessmentResponseHistoryUpdateOne) SetOwnerID(s string) *AssessmentResponseHistoryUpdateOne {
+	arhuo.mutation.SetOwnerID(s)
+	return arhuo
+}
+
+// SetNillableOwnerID sets the "owner_id" field if the given value is not nil.
+func (arhuo *AssessmentResponseHistoryUpdateOne) SetNillableOwnerID(s *string) *AssessmentResponseHistoryUpdateOne {
+	if s != nil {
+		arhuo.SetOwnerID(*s)
+	}
+	return arhuo
+}
+
+// ClearOwnerID clears the value of the "owner_id" field.
+func (arhuo *AssessmentResponseHistoryUpdateOne) ClearOwnerID() *AssessmentResponseHistoryUpdateOne {
+	arhuo.mutation.ClearOwnerID()
 	return arhuo
 }
 
@@ -800,6 +846,12 @@ func (arhuo *AssessmentResponseHistoryUpdateOne) sqlSave(ctx context.Context) (_
 	}
 	if arhuo.mutation.TagsCleared() {
 		_spec.ClearField(assessmentresponsehistory.FieldTags, field.TypeJSON)
+	}
+	if value, ok := arhuo.mutation.OwnerID(); ok {
+		_spec.SetField(assessmentresponsehistory.FieldOwnerID, field.TypeString, value)
+	}
+	if arhuo.mutation.OwnerIDCleared() {
+		_spec.ClearField(assessmentresponsehistory.FieldOwnerID, field.TypeString)
 	}
 	if value, ok := arhuo.mutation.AssessmentID(); ok {
 		_spec.SetField(assessmentresponsehistory.FieldAssessmentID, field.TypeString, value)

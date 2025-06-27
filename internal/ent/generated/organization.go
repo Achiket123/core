@@ -190,13 +190,15 @@ type OrganizationEdges struct {
 	Scans []*Scan `json:"scans,omitempty"`
 	// Assessments holds the value of the assessments edge.
 	Assessments []*Assessment `json:"assessments,omitempty"`
+	// AssessmentResponses holds the value of the assessment_responses edge.
+	AssessmentResponses []*AssessmentResponse `json:"assessment_responses,omitempty"`
 	// Members holds the value of the members edge.
 	Members []*OrgMembership `json:"members,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [66]bool
+	loadedTypes [67]bool
 	// totalCount holds the count of the edges above.
-	totalCount [63]map[string]int
+	totalCount [64]map[string]int
 
 	namedControlCreators               map[string][]*Group
 	namedControlImplementationCreators map[string][]*Group
@@ -260,6 +262,7 @@ type OrganizationEdges struct {
 	namedAssets                        map[string][]*Asset
 	namedScans                         map[string][]*Scan
 	namedAssessments                   map[string][]*Assessment
+	namedAssessmentResponses           map[string][]*AssessmentResponse
 	namedMembers                       map[string][]*OrgMembership
 }
 
@@ -854,10 +857,19 @@ func (e OrganizationEdges) AssessmentsOrErr() ([]*Assessment, error) {
 	return nil, &NotLoadedError{edge: "assessments"}
 }
 
+// AssessmentResponsesOrErr returns the AssessmentResponses value or an error if the edge
+// was not loaded in eager-loading.
+func (e OrganizationEdges) AssessmentResponsesOrErr() ([]*AssessmentResponse, error) {
+	if e.loadedTypes[65] {
+		return e.AssessmentResponses, nil
+	}
+	return nil, &NotLoadedError{edge: "assessment_responses"}
+}
+
 // MembersOrErr returns the Members value or an error if the edge
 // was not loaded in eager-loading.
 func (e OrganizationEdges) MembersOrErr() ([]*OrgMembership, error) {
-	if e.loadedTypes[65] {
+	if e.loadedTypes[66] {
 		return e.Members, nil
 	}
 	return nil, &NotLoadedError{edge: "members"}
@@ -1334,6 +1346,11 @@ func (o *Organization) QueryScans() *ScanQuery {
 // QueryAssessments queries the "assessments" edge of the Organization entity.
 func (o *Organization) QueryAssessments() *AssessmentQuery {
 	return NewOrganizationClient(o.config).QueryAssessments(o)
+}
+
+// QueryAssessmentResponses queries the "assessment_responses" edge of the Organization entity.
+func (o *Organization) QueryAssessmentResponses() *AssessmentResponseQuery {
+	return NewOrganizationClient(o.config).QueryAssessmentResponses(o)
 }
 
 // QueryMembers queries the "members" edge of the Organization entity.
@@ -2906,6 +2923,30 @@ func (o *Organization) appendNamedAssessments(name string, edges ...*Assessment)
 		o.Edges.namedAssessments[name] = []*Assessment{}
 	} else {
 		o.Edges.namedAssessments[name] = append(o.Edges.namedAssessments[name], edges...)
+	}
+}
+
+// NamedAssessmentResponses returns the AssessmentResponses named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (o *Organization) NamedAssessmentResponses(name string) ([]*AssessmentResponse, error) {
+	if o.Edges.namedAssessmentResponses == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := o.Edges.namedAssessmentResponses[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (o *Organization) appendNamedAssessmentResponses(name string, edges ...*AssessmentResponse) {
+	if o.Edges.namedAssessmentResponses == nil {
+		o.Edges.namedAssessmentResponses = make(map[string][]*AssessmentResponse)
+	}
+	if len(edges) == 0 {
+		o.Edges.namedAssessmentResponses[name] = []*AssessmentResponse{}
+	} else {
+		o.Edges.namedAssessmentResponses[name] = append(o.Edges.namedAssessmentResponses[name], edges...)
 	}
 }
 

@@ -591,30 +591,30 @@ func (au *AssessmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if au.mutation.BlockedGroupsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
 			Table:   assessment.BlockedGroupsTable,
-			Columns: []string{assessment.BlockedGroupsColumn},
+			Columns: assessment.BlockedGroupsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
 			},
 		}
-		edge.Schema = au.schemaConfig.Group
+		edge.Schema = au.schemaConfig.AssessmentBlockedGroups
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := au.mutation.RemovedBlockedGroupsIDs(); len(nodes) > 0 && !au.mutation.BlockedGroupsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
 			Table:   assessment.BlockedGroupsTable,
-			Columns: []string{assessment.BlockedGroupsColumn},
+			Columns: assessment.BlockedGroupsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
 			},
 		}
-		edge.Schema = au.schemaConfig.Group
+		edge.Schema = au.schemaConfig.AssessmentBlockedGroups
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
@@ -622,16 +622,16 @@ func (au *AssessmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if nodes := au.mutation.BlockedGroupsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
 			Table:   assessment.BlockedGroupsTable,
-			Columns: []string{assessment.BlockedGroupsColumn},
+			Columns: assessment.BlockedGroupsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
 			},
 		}
-		edge.Schema = au.schemaConfig.Group
+		edge.Schema = au.schemaConfig.AssessmentBlockedGroups
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
@@ -639,30 +639,30 @@ func (au *AssessmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if au.mutation.EditorsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
 			Table:   assessment.EditorsTable,
-			Columns: []string{assessment.EditorsColumn},
+			Columns: assessment.EditorsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
 			},
 		}
-		edge.Schema = au.schemaConfig.Group
+		edge.Schema = au.schemaConfig.AssessmentEditors
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := au.mutation.RemovedEditorsIDs(); len(nodes) > 0 && !au.mutation.EditorsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
 			Table:   assessment.EditorsTable,
-			Columns: []string{assessment.EditorsColumn},
+			Columns: assessment.EditorsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
 			},
 		}
-		edge.Schema = au.schemaConfig.Group
+		edge.Schema = au.schemaConfig.AssessmentEditors
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
@@ -670,16 +670,16 @@ func (au *AssessmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if nodes := au.mutation.EditorsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
 			Table:   assessment.EditorsTable,
-			Columns: []string{assessment.EditorsColumn},
+			Columns: assessment.EditorsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
 			},
 		}
-		edge.Schema = au.schemaConfig.Group
+		edge.Schema = au.schemaConfig.AssessmentEditors
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
@@ -687,30 +687,30 @@ func (au *AssessmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if au.mutation.ViewersCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
 			Table:   assessment.ViewersTable,
-			Columns: []string{assessment.ViewersColumn},
+			Columns: assessment.ViewersPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
 			},
 		}
-		edge.Schema = au.schemaConfig.Group
+		edge.Schema = au.schemaConfig.AssessmentViewers
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := au.mutation.RemovedViewersIDs(); len(nodes) > 0 && !au.mutation.ViewersCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
 			Table:   assessment.ViewersTable,
-			Columns: []string{assessment.ViewersColumn},
+			Columns: assessment.ViewersPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
 			},
 		}
-		edge.Schema = au.schemaConfig.Group
+		edge.Schema = au.schemaConfig.AssessmentViewers
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
@@ -718,16 +718,16 @@ func (au *AssessmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if nodes := au.mutation.ViewersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
 			Table:   assessment.ViewersTable,
-			Columns: []string{assessment.ViewersColumn},
+			Columns: assessment.ViewersPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
 			},
 		}
-		edge.Schema = au.schemaConfig.Group
+		edge.Schema = au.schemaConfig.AssessmentViewers
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
@@ -1498,30 +1498,30 @@ func (auo *AssessmentUpdateOne) sqlSave(ctx context.Context) (_node *Assessment,
 	}
 	if auo.mutation.BlockedGroupsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
 			Table:   assessment.BlockedGroupsTable,
-			Columns: []string{assessment.BlockedGroupsColumn},
+			Columns: assessment.BlockedGroupsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
 			},
 		}
-		edge.Schema = auo.schemaConfig.Group
+		edge.Schema = auo.schemaConfig.AssessmentBlockedGroups
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := auo.mutation.RemovedBlockedGroupsIDs(); len(nodes) > 0 && !auo.mutation.BlockedGroupsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
 			Table:   assessment.BlockedGroupsTable,
-			Columns: []string{assessment.BlockedGroupsColumn},
+			Columns: assessment.BlockedGroupsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
 			},
 		}
-		edge.Schema = auo.schemaConfig.Group
+		edge.Schema = auo.schemaConfig.AssessmentBlockedGroups
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
@@ -1529,16 +1529,16 @@ func (auo *AssessmentUpdateOne) sqlSave(ctx context.Context) (_node *Assessment,
 	}
 	if nodes := auo.mutation.BlockedGroupsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
 			Table:   assessment.BlockedGroupsTable,
-			Columns: []string{assessment.BlockedGroupsColumn},
+			Columns: assessment.BlockedGroupsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
 			},
 		}
-		edge.Schema = auo.schemaConfig.Group
+		edge.Schema = auo.schemaConfig.AssessmentBlockedGroups
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
@@ -1546,30 +1546,30 @@ func (auo *AssessmentUpdateOne) sqlSave(ctx context.Context) (_node *Assessment,
 	}
 	if auo.mutation.EditorsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
 			Table:   assessment.EditorsTable,
-			Columns: []string{assessment.EditorsColumn},
+			Columns: assessment.EditorsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
 			},
 		}
-		edge.Schema = auo.schemaConfig.Group
+		edge.Schema = auo.schemaConfig.AssessmentEditors
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := auo.mutation.RemovedEditorsIDs(); len(nodes) > 0 && !auo.mutation.EditorsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
 			Table:   assessment.EditorsTable,
-			Columns: []string{assessment.EditorsColumn},
+			Columns: assessment.EditorsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
 			},
 		}
-		edge.Schema = auo.schemaConfig.Group
+		edge.Schema = auo.schemaConfig.AssessmentEditors
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
@@ -1577,16 +1577,16 @@ func (auo *AssessmentUpdateOne) sqlSave(ctx context.Context) (_node *Assessment,
 	}
 	if nodes := auo.mutation.EditorsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
 			Table:   assessment.EditorsTable,
-			Columns: []string{assessment.EditorsColumn},
+			Columns: assessment.EditorsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
 			},
 		}
-		edge.Schema = auo.schemaConfig.Group
+		edge.Schema = auo.schemaConfig.AssessmentEditors
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
@@ -1594,30 +1594,30 @@ func (auo *AssessmentUpdateOne) sqlSave(ctx context.Context) (_node *Assessment,
 	}
 	if auo.mutation.ViewersCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
 			Table:   assessment.ViewersTable,
-			Columns: []string{assessment.ViewersColumn},
+			Columns: assessment.ViewersPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
 			},
 		}
-		edge.Schema = auo.schemaConfig.Group
+		edge.Schema = auo.schemaConfig.AssessmentViewers
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := auo.mutation.RemovedViewersIDs(); len(nodes) > 0 && !auo.mutation.ViewersCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
 			Table:   assessment.ViewersTable,
-			Columns: []string{assessment.ViewersColumn},
+			Columns: assessment.ViewersPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
 			},
 		}
-		edge.Schema = auo.schemaConfig.Group
+		edge.Schema = auo.schemaConfig.AssessmentViewers
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
@@ -1625,16 +1625,16 @@ func (auo *AssessmentUpdateOne) sqlSave(ctx context.Context) (_node *Assessment,
 	}
 	if nodes := auo.mutation.ViewersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
 			Table:   assessment.ViewersTable,
-			Columns: []string{assessment.ViewersColumn},
+			Columns: assessment.ViewersPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
 			},
 		}
-		edge.Schema = auo.schemaConfig.Group
+		edge.Schema = auo.schemaConfig.AssessmentViewers
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}

@@ -11,9 +11,15 @@ type SchemaConfig struct {
 	ActionPlan                         string // ActionPlan table.
 	ActionPlanHistory                  string // ActionPlanHistory table.
 	Assessment                         string // Assessment table.
+	AssessmentBlockedGroups            string // Assessment-blocked_groups->Group table.
+	AssessmentEditors                  string // Assessment-editors->Group table.
+	AssessmentViewers                  string // Assessment-viewers->Group table.
 	AssessmentUsers                    string // Assessment-users->User table.
 	AssessmentHistory                  string // AssessmentHistory table.
 	AssessmentResponse                 string // AssessmentResponse table.
+	AssessmentResponseBlockedGroups    string // AssessmentResponse-blocked_groups->Group table.
+	AssessmentResponseEditors          string // AssessmentResponse-editors->Group table.
+	AssessmentResponseViewers          string // AssessmentResponse-viewers->Group table.
 	AssessmentResponseHistory          string // AssessmentResponseHistory table.
 	Asset                              string // Asset table.
 	AssetHistory                       string // AssetHistory table.

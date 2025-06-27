@@ -77,6 +77,8 @@ func (ec *executionContext) fieldContext_AssessmentResponseBulkCreatePayload_ass
 				return ec.fieldContext_AssessmentResponse_updatedBy(ctx, field)
 			case "tags":
 				return ec.fieldContext_AssessmentResponse_tags(ctx, field)
+			case "ownerID":
+				return ec.fieldContext_AssessmentResponse_ownerID(ctx, field)
 			case "assessmentID":
 				return ec.fieldContext_AssessmentResponse_assessmentID(ctx, field)
 			case "userID":
@@ -93,6 +95,14 @@ func (ec *executionContext) fieldContext_AssessmentResponseBulkCreatePayload_ass
 				return ec.fieldContext_AssessmentResponse_dueDate(ctx, field)
 			case "responseDataID":
 				return ec.fieldContext_AssessmentResponse_responseDataID(ctx, field)
+			case "owner":
+				return ec.fieldContext_AssessmentResponse_owner(ctx, field)
+			case "blockedGroups":
+				return ec.fieldContext_AssessmentResponse_blockedGroups(ctx, field)
+			case "editors":
+				return ec.fieldContext_AssessmentResponse_editors(ctx, field)
+			case "viewers":
+				return ec.fieldContext_AssessmentResponse_viewers(ctx, field)
 			case "assessment":
 				return ec.fieldContext_AssessmentResponse_assessment(ctx, field)
 			case "user":
@@ -157,6 +167,8 @@ func (ec *executionContext) fieldContext_AssessmentResponseCreatePayload_assessm
 				return ec.fieldContext_AssessmentResponse_updatedBy(ctx, field)
 			case "tags":
 				return ec.fieldContext_AssessmentResponse_tags(ctx, field)
+			case "ownerID":
+				return ec.fieldContext_AssessmentResponse_ownerID(ctx, field)
 			case "assessmentID":
 				return ec.fieldContext_AssessmentResponse_assessmentID(ctx, field)
 			case "userID":
@@ -173,6 +185,14 @@ func (ec *executionContext) fieldContext_AssessmentResponseCreatePayload_assessm
 				return ec.fieldContext_AssessmentResponse_dueDate(ctx, field)
 			case "responseDataID":
 				return ec.fieldContext_AssessmentResponse_responseDataID(ctx, field)
+			case "owner":
+				return ec.fieldContext_AssessmentResponse_owner(ctx, field)
+			case "blockedGroups":
+				return ec.fieldContext_AssessmentResponse_blockedGroups(ctx, field)
+			case "editors":
+				return ec.fieldContext_AssessmentResponse_editors(ctx, field)
+			case "viewers":
+				return ec.fieldContext_AssessmentResponse_viewers(ctx, field)
 			case "assessment":
 				return ec.fieldContext_AssessmentResponse_assessment(ctx, field)
 			case "user":
@@ -281,6 +301,8 @@ func (ec *executionContext) fieldContext_AssessmentResponseUpdatePayload_assessm
 				return ec.fieldContext_AssessmentResponse_updatedBy(ctx, field)
 			case "tags":
 				return ec.fieldContext_AssessmentResponse_tags(ctx, field)
+			case "ownerID":
+				return ec.fieldContext_AssessmentResponse_ownerID(ctx, field)
 			case "assessmentID":
 				return ec.fieldContext_AssessmentResponse_assessmentID(ctx, field)
 			case "userID":
@@ -297,6 +319,14 @@ func (ec *executionContext) fieldContext_AssessmentResponseUpdatePayload_assessm
 				return ec.fieldContext_AssessmentResponse_dueDate(ctx, field)
 			case "responseDataID":
 				return ec.fieldContext_AssessmentResponse_responseDataID(ctx, field)
+			case "owner":
+				return ec.fieldContext_AssessmentResponse_owner(ctx, field)
+			case "blockedGroups":
+				return ec.fieldContext_AssessmentResponse_blockedGroups(ctx, field)
+			case "editors":
+				return ec.fieldContext_AssessmentResponse_editors(ctx, field)
+			case "viewers":
+				return ec.fieldContext_AssessmentResponse_viewers(ctx, field)
 			case "assessment":
 				return ec.fieldContext_AssessmentResponse_assessment(ctx, field)
 			case "user":

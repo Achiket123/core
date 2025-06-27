@@ -40,6 +40,8 @@ type AssessmentResponseHistory struct {
 	DeletedBy string `json:"deleted_by,omitempty"`
 	// tags associated with the object
 	Tags []string `json:"tags,omitempty"`
+	// the organization id that owns the object
+	OwnerID string `json:"owner_id,omitempty"`
 	// the assessment this response is for
 	AssessmentID string `json:"assessment_id,omitempty"`
 	// the user who is responding to the assessment
@@ -68,7 +70,7 @@ func (*AssessmentResponseHistory) scanValues(columns []string) ([]any, error) {
 			values[i] = new([]byte)
 		case assessmentresponsehistory.FieldOperation:
 			values[i] = new(history.OpType)
-		case assessmentresponsehistory.FieldID, assessmentresponsehistory.FieldRef, assessmentresponsehistory.FieldCreatedBy, assessmentresponsehistory.FieldUpdatedBy, assessmentresponsehistory.FieldDeletedBy, assessmentresponsehistory.FieldAssessmentID, assessmentresponsehistory.FieldUserID, assessmentresponsehistory.FieldStatus, assessmentresponsehistory.FieldResponseDataID:
+		case assessmentresponsehistory.FieldID, assessmentresponsehistory.FieldRef, assessmentresponsehistory.FieldCreatedBy, assessmentresponsehistory.FieldUpdatedBy, assessmentresponsehistory.FieldDeletedBy, assessmentresponsehistory.FieldOwnerID, assessmentresponsehistory.FieldAssessmentID, assessmentresponsehistory.FieldUserID, assessmentresponsehistory.FieldStatus, assessmentresponsehistory.FieldResponseDataID:
 			values[i] = new(sql.NullString)
 		case assessmentresponsehistory.FieldHistoryTime, assessmentresponsehistory.FieldCreatedAt, assessmentresponsehistory.FieldUpdatedAt, assessmentresponsehistory.FieldDeletedAt, assessmentresponsehistory.FieldAssignedAt, assessmentresponsehistory.FieldStartedAt, assessmentresponsehistory.FieldCompletedAt, assessmentresponsehistory.FieldDueDate:
 			values[i] = new(sql.NullTime)
@@ -154,6 +156,12 @@ func (arh *AssessmentResponseHistory) assignValues(columns []string, values []an
 				if err := json.Unmarshal(*value, &arh.Tags); err != nil {
 					return fmt.Errorf("unmarshal field tags: %w", err)
 				}
+			}
+		case assessmentresponsehistory.FieldOwnerID:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field owner_id", values[i])
+			} else if value.Valid {
+				arh.OwnerID = value.String
 			}
 		case assessmentresponsehistory.FieldAssessmentID:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -268,6 +276,9 @@ func (arh *AssessmentResponseHistory) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("tags=")
 	builder.WriteString(fmt.Sprintf("%v", arh.Tags))
+	builder.WriteString(", ")
+	builder.WriteString("owner_id=")
+	builder.WriteString(arh.OwnerID)
 	builder.WriteString(", ")
 	builder.WriteString("assessment_id=")
 	builder.WriteString(arh.AssessmentID)

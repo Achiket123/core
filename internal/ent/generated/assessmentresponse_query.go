@@ -4,6 +4,7 @@ package generated
 
 import (
 	"context"
+	"database/sql/driver"
 	"errors"
 	"fmt"
 	"math"
@@ -15,6 +16,8 @@ import (
 	"github.com/theopenlane/core/internal/ent/generated/assessment"
 	"github.com/theopenlane/core/internal/ent/generated/assessmentresponse"
 	"github.com/theopenlane/core/internal/ent/generated/documentdata"
+	"github.com/theopenlane/core/internal/ent/generated/group"
+	"github.com/theopenlane/core/internal/ent/generated/organization"
 	"github.com/theopenlane/core/internal/ent/generated/predicate"
 	"github.com/theopenlane/core/internal/ent/generated/user"
 
@@ -24,15 +27,22 @@ import (
 // AssessmentResponseQuery is the builder for querying AssessmentResponse entities.
 type AssessmentResponseQuery struct {
 	config
-	ctx            *QueryContext
-	order          []assessmentresponse.OrderOption
-	inters         []Interceptor
-	predicates     []predicate.AssessmentResponse
-	withAssessment *AssessmentQuery
-	withUser       *UserQuery
-	withDocument   *DocumentDataQuery
-	loadTotal      []func(context.Context, []*AssessmentResponse) error
-	modifiers      []func(*sql.Selector)
+	ctx                    *QueryContext
+	order                  []assessmentresponse.OrderOption
+	inters                 []Interceptor
+	predicates             []predicate.AssessmentResponse
+	withOwner              *OrganizationQuery
+	withBlockedGroups      *GroupQuery
+	withEditors            *GroupQuery
+	withViewers            *GroupQuery
+	withAssessment         *AssessmentQuery
+	withUser               *UserQuery
+	withDocument           *DocumentDataQuery
+	loadTotal              []func(context.Context, []*AssessmentResponse) error
+	modifiers              []func(*sql.Selector)
+	withNamedBlockedGroups map[string]*GroupQuery
+	withNamedEditors       map[string]*GroupQuery
+	withNamedViewers       map[string]*GroupQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -67,6 +77,106 @@ func (arq *AssessmentResponseQuery) Unique(unique bool) *AssessmentResponseQuery
 func (arq *AssessmentResponseQuery) Order(o ...assessmentresponse.OrderOption) *AssessmentResponseQuery {
 	arq.order = append(arq.order, o...)
 	return arq
+}
+
+// QueryOwner chains the current query on the "owner" edge.
+func (arq *AssessmentResponseQuery) QueryOwner() *OrganizationQuery {
+	query := (&OrganizationClient{config: arq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := arq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := arq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(assessmentresponse.Table, assessmentresponse.FieldID, selector),
+			sqlgraph.To(organization.Table, organization.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, assessmentresponse.OwnerTable, assessmentresponse.OwnerColumn),
+		)
+		schemaConfig := arq.schemaConfig
+		step.To.Schema = schemaConfig.Organization
+		step.Edge.Schema = schemaConfig.AssessmentResponse
+		fromU = sqlgraph.SetNeighbors(arq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryBlockedGroups chains the current query on the "blocked_groups" edge.
+func (arq *AssessmentResponseQuery) QueryBlockedGroups() *GroupQuery {
+	query := (&GroupClient{config: arq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := arq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := arq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(assessmentresponse.Table, assessmentresponse.FieldID, selector),
+			sqlgraph.To(group.Table, group.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, assessmentresponse.BlockedGroupsTable, assessmentresponse.BlockedGroupsPrimaryKey...),
+		)
+		schemaConfig := arq.schemaConfig
+		step.To.Schema = schemaConfig.Group
+		step.Edge.Schema = schemaConfig.AssessmentResponseBlockedGroups
+		fromU = sqlgraph.SetNeighbors(arq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryEditors chains the current query on the "editors" edge.
+func (arq *AssessmentResponseQuery) QueryEditors() *GroupQuery {
+	query := (&GroupClient{config: arq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := arq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := arq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(assessmentresponse.Table, assessmentresponse.FieldID, selector),
+			sqlgraph.To(group.Table, group.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, assessmentresponse.EditorsTable, assessmentresponse.EditorsPrimaryKey...),
+		)
+		schemaConfig := arq.schemaConfig
+		step.To.Schema = schemaConfig.Group
+		step.Edge.Schema = schemaConfig.AssessmentResponseEditors
+		fromU = sqlgraph.SetNeighbors(arq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryViewers chains the current query on the "viewers" edge.
+func (arq *AssessmentResponseQuery) QueryViewers() *GroupQuery {
+	query := (&GroupClient{config: arq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := arq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := arq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(assessmentresponse.Table, assessmentresponse.FieldID, selector),
+			sqlgraph.To(group.Table, group.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, assessmentresponse.ViewersTable, assessmentresponse.ViewersPrimaryKey...),
+		)
+		schemaConfig := arq.schemaConfig
+		step.To.Schema = schemaConfig.Group
+		step.Edge.Schema = schemaConfig.AssessmentResponseViewers
+		fromU = sqlgraph.SetNeighbors(arq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // QueryAssessment chains the current query on the "assessment" edge.
@@ -331,19 +441,67 @@ func (arq *AssessmentResponseQuery) Clone() *AssessmentResponseQuery {
 		return nil
 	}
 	return &AssessmentResponseQuery{
-		config:         arq.config,
-		ctx:            arq.ctx.Clone(),
-		order:          append([]assessmentresponse.OrderOption{}, arq.order...),
-		inters:         append([]Interceptor{}, arq.inters...),
-		predicates:     append([]predicate.AssessmentResponse{}, arq.predicates...),
-		withAssessment: arq.withAssessment.Clone(),
-		withUser:       arq.withUser.Clone(),
-		withDocument:   arq.withDocument.Clone(),
+		config:            arq.config,
+		ctx:               arq.ctx.Clone(),
+		order:             append([]assessmentresponse.OrderOption{}, arq.order...),
+		inters:            append([]Interceptor{}, arq.inters...),
+		predicates:        append([]predicate.AssessmentResponse{}, arq.predicates...),
+		withOwner:         arq.withOwner.Clone(),
+		withBlockedGroups: arq.withBlockedGroups.Clone(),
+		withEditors:       arq.withEditors.Clone(),
+		withViewers:       arq.withViewers.Clone(),
+		withAssessment:    arq.withAssessment.Clone(),
+		withUser:          arq.withUser.Clone(),
+		withDocument:      arq.withDocument.Clone(),
 		// clone intermediate query.
 		sql:       arq.sql.Clone(),
 		path:      arq.path,
 		modifiers: append([]func(*sql.Selector){}, arq.modifiers...),
 	}
+}
+
+// WithOwner tells the query-builder to eager-load the nodes that are connected to
+// the "owner" edge. The optional arguments are used to configure the query builder of the edge.
+func (arq *AssessmentResponseQuery) WithOwner(opts ...func(*OrganizationQuery)) *AssessmentResponseQuery {
+	query := (&OrganizationClient{config: arq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	arq.withOwner = query
+	return arq
+}
+
+// WithBlockedGroups tells the query-builder to eager-load the nodes that are connected to
+// the "blocked_groups" edge. The optional arguments are used to configure the query builder of the edge.
+func (arq *AssessmentResponseQuery) WithBlockedGroups(opts ...func(*GroupQuery)) *AssessmentResponseQuery {
+	query := (&GroupClient{config: arq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	arq.withBlockedGroups = query
+	return arq
+}
+
+// WithEditors tells the query-builder to eager-load the nodes that are connected to
+// the "editors" edge. The optional arguments are used to configure the query builder of the edge.
+func (arq *AssessmentResponseQuery) WithEditors(opts ...func(*GroupQuery)) *AssessmentResponseQuery {
+	query := (&GroupClient{config: arq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	arq.withEditors = query
+	return arq
+}
+
+// WithViewers tells the query-builder to eager-load the nodes that are connected to
+// the "viewers" edge. The optional arguments are used to configure the query builder of the edge.
+func (arq *AssessmentResponseQuery) WithViewers(opts ...func(*GroupQuery)) *AssessmentResponseQuery {
+	query := (&GroupClient{config: arq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	arq.withViewers = query
+	return arq
 }
 
 // WithAssessment tells the query-builder to eager-load the nodes that are connected to
@@ -463,7 +621,11 @@ func (arq *AssessmentResponseQuery) sqlAll(ctx context.Context, hooks ...queryHo
 	var (
 		nodes       = []*AssessmentResponse{}
 		_spec       = arq.querySpec()
-		loadedTypes = [3]bool{
+		loadedTypes = [7]bool{
+			arq.withOwner != nil,
+			arq.withBlockedGroups != nil,
+			arq.withEditors != nil,
+			arq.withViewers != nil,
 			arq.withAssessment != nil,
 			arq.withUser != nil,
 			arq.withDocument != nil,
@@ -492,6 +654,33 @@ func (arq *AssessmentResponseQuery) sqlAll(ctx context.Context, hooks ...queryHo
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := arq.withOwner; query != nil {
+		if err := arq.loadOwner(ctx, query, nodes, nil,
+			func(n *AssessmentResponse, e *Organization) { n.Edges.Owner = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := arq.withBlockedGroups; query != nil {
+		if err := arq.loadBlockedGroups(ctx, query, nodes,
+			func(n *AssessmentResponse) { n.Edges.BlockedGroups = []*Group{} },
+			func(n *AssessmentResponse, e *Group) { n.Edges.BlockedGroups = append(n.Edges.BlockedGroups, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := arq.withEditors; query != nil {
+		if err := arq.loadEditors(ctx, query, nodes,
+			func(n *AssessmentResponse) { n.Edges.Editors = []*Group{} },
+			func(n *AssessmentResponse, e *Group) { n.Edges.Editors = append(n.Edges.Editors, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := arq.withViewers; query != nil {
+		if err := arq.loadViewers(ctx, query, nodes,
+			func(n *AssessmentResponse) { n.Edges.Viewers = []*Group{} },
+			func(n *AssessmentResponse, e *Group) { n.Edges.Viewers = append(n.Edges.Viewers, e) }); err != nil {
+			return nil, err
+		}
+	}
 	if query := arq.withAssessment; query != nil {
 		if err := arq.loadAssessment(ctx, query, nodes, nil,
 			func(n *AssessmentResponse, e *Assessment) { n.Edges.Assessment = e }); err != nil {
@@ -510,6 +699,27 @@ func (arq *AssessmentResponseQuery) sqlAll(ctx context.Context, hooks ...queryHo
 			return nil, err
 		}
 	}
+	for name, query := range arq.withNamedBlockedGroups {
+		if err := arq.loadBlockedGroups(ctx, query, nodes,
+			func(n *AssessmentResponse) { n.appendNamedBlockedGroups(name) },
+			func(n *AssessmentResponse, e *Group) { n.appendNamedBlockedGroups(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range arq.withNamedEditors {
+		if err := arq.loadEditors(ctx, query, nodes,
+			func(n *AssessmentResponse) { n.appendNamedEditors(name) },
+			func(n *AssessmentResponse, e *Group) { n.appendNamedEditors(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range arq.withNamedViewers {
+		if err := arq.loadViewers(ctx, query, nodes,
+			func(n *AssessmentResponse) { n.appendNamedViewers(name) },
+			func(n *AssessmentResponse, e *Group) { n.appendNamedViewers(name, e) }); err != nil {
+			return nil, err
+		}
+	}
 	for i := range arq.loadTotal {
 		if err := arq.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
@@ -518,6 +728,221 @@ func (arq *AssessmentResponseQuery) sqlAll(ctx context.Context, hooks ...queryHo
 	return nodes, nil
 }
 
+func (arq *AssessmentResponseQuery) loadOwner(ctx context.Context, query *OrganizationQuery, nodes []*AssessmentResponse, init func(*AssessmentResponse), assign func(*AssessmentResponse, *Organization)) error {
+	ids := make([]string, 0, len(nodes))
+	nodeids := make(map[string][]*AssessmentResponse)
+	for i := range nodes {
+		fk := nodes[i].OwnerID
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(organization.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "owner_id" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
+func (arq *AssessmentResponseQuery) loadBlockedGroups(ctx context.Context, query *GroupQuery, nodes []*AssessmentResponse, init func(*AssessmentResponse), assign func(*AssessmentResponse, *Group)) error {
+	edgeIDs := make([]driver.Value, len(nodes))
+	byID := make(map[string]*AssessmentResponse)
+	nids := make(map[string]map[*AssessmentResponse]struct{})
+	for i, node := range nodes {
+		edgeIDs[i] = node.ID
+		byID[node.ID] = node
+		if init != nil {
+			init(node)
+		}
+	}
+	query.Where(func(s *sql.Selector) {
+		joinT := sql.Table(assessmentresponse.BlockedGroupsTable)
+		joinT.Schema(arq.schemaConfig.AssessmentResponseBlockedGroups)
+		s.Join(joinT).On(s.C(group.FieldID), joinT.C(assessmentresponse.BlockedGroupsPrimaryKey[1]))
+		s.Where(sql.InValues(joinT.C(assessmentresponse.BlockedGroupsPrimaryKey[0]), edgeIDs...))
+		columns := s.SelectedColumns()
+		s.Select(joinT.C(assessmentresponse.BlockedGroupsPrimaryKey[0]))
+		s.AppendSelect(columns...)
+		s.SetDistinct(false)
+	})
+	if err := query.prepareQuery(ctx); err != nil {
+		return err
+	}
+	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
+		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
+			assign := spec.Assign
+			values := spec.ScanValues
+			spec.ScanValues = func(columns []string) ([]any, error) {
+				values, err := values(columns[1:])
+				if err != nil {
+					return nil, err
+				}
+				return append([]any{new(sql.NullString)}, values...), nil
+			}
+			spec.Assign = func(columns []string, values []any) error {
+				outValue := values[0].(*sql.NullString).String
+				inValue := values[1].(*sql.NullString).String
+				if nids[inValue] == nil {
+					nids[inValue] = map[*AssessmentResponse]struct{}{byID[outValue]: {}}
+					return assign(columns[1:], values[1:])
+				}
+				nids[inValue][byID[outValue]] = struct{}{}
+				return nil
+			}
+		})
+	})
+	neighbors, err := withInterceptors[[]*Group](ctx, query, qr, query.inters)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected "blocked_groups" node returned %v`, n.ID)
+		}
+		for kn := range nodes {
+			assign(kn, n)
+		}
+	}
+	return nil
+}
+func (arq *AssessmentResponseQuery) loadEditors(ctx context.Context, query *GroupQuery, nodes []*AssessmentResponse, init func(*AssessmentResponse), assign func(*AssessmentResponse, *Group)) error {
+	edgeIDs := make([]driver.Value, len(nodes))
+	byID := make(map[string]*AssessmentResponse)
+	nids := make(map[string]map[*AssessmentResponse]struct{})
+	for i, node := range nodes {
+		edgeIDs[i] = node.ID
+		byID[node.ID] = node
+		if init != nil {
+			init(node)
+		}
+	}
+	query.Where(func(s *sql.Selector) {
+		joinT := sql.Table(assessmentresponse.EditorsTable)
+		joinT.Schema(arq.schemaConfig.AssessmentResponseEditors)
+		s.Join(joinT).On(s.C(group.FieldID), joinT.C(assessmentresponse.EditorsPrimaryKey[1]))
+		s.Where(sql.InValues(joinT.C(assessmentresponse.EditorsPrimaryKey[0]), edgeIDs...))
+		columns := s.SelectedColumns()
+		s.Select(joinT.C(assessmentresponse.EditorsPrimaryKey[0]))
+		s.AppendSelect(columns...)
+		s.SetDistinct(false)
+	})
+	if err := query.prepareQuery(ctx); err != nil {
+		return err
+	}
+	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
+		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
+			assign := spec.Assign
+			values := spec.ScanValues
+			spec.ScanValues = func(columns []string) ([]any, error) {
+				values, err := values(columns[1:])
+				if err != nil {
+					return nil, err
+				}
+				return append([]any{new(sql.NullString)}, values...), nil
+			}
+			spec.Assign = func(columns []string, values []any) error {
+				outValue := values[0].(*sql.NullString).String
+				inValue := values[1].(*sql.NullString).String
+				if nids[inValue] == nil {
+					nids[inValue] = map[*AssessmentResponse]struct{}{byID[outValue]: {}}
+					return assign(columns[1:], values[1:])
+				}
+				nids[inValue][byID[outValue]] = struct{}{}
+				return nil
+			}
+		})
+	})
+	neighbors, err := withInterceptors[[]*Group](ctx, query, qr, query.inters)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected "editors" node returned %v`, n.ID)
+		}
+		for kn := range nodes {
+			assign(kn, n)
+		}
+	}
+	return nil
+}
+func (arq *AssessmentResponseQuery) loadViewers(ctx context.Context, query *GroupQuery, nodes []*AssessmentResponse, init func(*AssessmentResponse), assign func(*AssessmentResponse, *Group)) error {
+	edgeIDs := make([]driver.Value, len(nodes))
+	byID := make(map[string]*AssessmentResponse)
+	nids := make(map[string]map[*AssessmentResponse]struct{})
+	for i, node := range nodes {
+		edgeIDs[i] = node.ID
+		byID[node.ID] = node
+		if init != nil {
+			init(node)
+		}
+	}
+	query.Where(func(s *sql.Selector) {
+		joinT := sql.Table(assessmentresponse.ViewersTable)
+		joinT.Schema(arq.schemaConfig.AssessmentResponseViewers)
+		s.Join(joinT).On(s.C(group.FieldID), joinT.C(assessmentresponse.ViewersPrimaryKey[1]))
+		s.Where(sql.InValues(joinT.C(assessmentresponse.ViewersPrimaryKey[0]), edgeIDs...))
+		columns := s.SelectedColumns()
+		s.Select(joinT.C(assessmentresponse.ViewersPrimaryKey[0]))
+		s.AppendSelect(columns...)
+		s.SetDistinct(false)
+	})
+	if err := query.prepareQuery(ctx); err != nil {
+		return err
+	}
+	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
+		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
+			assign := spec.Assign
+			values := spec.ScanValues
+			spec.ScanValues = func(columns []string) ([]any, error) {
+				values, err := values(columns[1:])
+				if err != nil {
+					return nil, err
+				}
+				return append([]any{new(sql.NullString)}, values...), nil
+			}
+			spec.Assign = func(columns []string, values []any) error {
+				outValue := values[0].(*sql.NullString).String
+				inValue := values[1].(*sql.NullString).String
+				if nids[inValue] == nil {
+					nids[inValue] = map[*AssessmentResponse]struct{}{byID[outValue]: {}}
+					return assign(columns[1:], values[1:])
+				}
+				nids[inValue][byID[outValue]] = struct{}{}
+				return nil
+			}
+		})
+	})
+	neighbors, err := withInterceptors[[]*Group](ctx, query, qr, query.inters)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected "viewers" node returned %v`, n.ID)
+		}
+		for kn := range nodes {
+			assign(kn, n)
+		}
+	}
+	return nil
+}
 func (arq *AssessmentResponseQuery) loadAssessment(ctx context.Context, query *AssessmentQuery, nodes []*AssessmentResponse, init func(*AssessmentResponse), assign func(*AssessmentResponse, *Assessment)) error {
 	ids := make([]string, 0, len(nodes))
 	nodeids := make(map[string][]*AssessmentResponse)
@@ -636,6 +1061,9 @@ func (arq *AssessmentResponseQuery) querySpec() *sqlgraph.QuerySpec {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
+		if arq.withOwner != nil {
+			_spec.Node.AddColumnOnce(assessmentresponse.FieldOwnerID)
+		}
 		if arq.withAssessment != nil {
 			_spec.Node.AddColumnOnce(assessmentresponse.FieldAssessmentID)
 		}
@@ -711,6 +1139,48 @@ func (arq *AssessmentResponseQuery) sqlQuery(ctx context.Context) *sql.Selector 
 func (arq *AssessmentResponseQuery) Modify(modifiers ...func(s *sql.Selector)) *AssessmentResponseSelect {
 	arq.modifiers = append(arq.modifiers, modifiers...)
 	return arq.Select()
+}
+
+// WithNamedBlockedGroups tells the query-builder to eager-load the nodes that are connected to the "blocked_groups"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (arq *AssessmentResponseQuery) WithNamedBlockedGroups(name string, opts ...func(*GroupQuery)) *AssessmentResponseQuery {
+	query := (&GroupClient{config: arq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if arq.withNamedBlockedGroups == nil {
+		arq.withNamedBlockedGroups = make(map[string]*GroupQuery)
+	}
+	arq.withNamedBlockedGroups[name] = query
+	return arq
+}
+
+// WithNamedEditors tells the query-builder to eager-load the nodes that are connected to the "editors"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (arq *AssessmentResponseQuery) WithNamedEditors(name string, opts ...func(*GroupQuery)) *AssessmentResponseQuery {
+	query := (&GroupClient{config: arq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if arq.withNamedEditors == nil {
+		arq.withNamedEditors = make(map[string]*GroupQuery)
+	}
+	arq.withNamedEditors[name] = query
+	return arq
+}
+
+// WithNamedViewers tells the query-builder to eager-load the nodes that are connected to the "viewers"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (arq *AssessmentResponseQuery) WithNamedViewers(name string, opts ...func(*GroupQuery)) *AssessmentResponseQuery {
+	query := (&GroupClient{config: arq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if arq.withNamedViewers == nil {
+		arq.withNamedViewers = make(map[string]*GroupQuery)
+	}
+	arq.withNamedViewers[name] = query
+	return arq
 }
 
 // CountIDs returns the count of ids and allows for filtering of the query post retrieval by IDs

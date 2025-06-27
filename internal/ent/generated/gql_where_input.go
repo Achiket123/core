@@ -4691,6 +4691,23 @@ type AssessmentResponseWhereInput struct {
 	UpdatedByEqualFold    *string  `json:"updatedByEqualFold,omitempty"`
 	UpdatedByContainsFold *string  `json:"updatedByContainsFold,omitempty"`
 
+	// "owner_id" field predicates.
+	OwnerID             *string  `json:"ownerID,omitempty"`
+	OwnerIDNEQ          *string  `json:"ownerIDNEQ,omitempty"`
+	OwnerIDIn           []string `json:"ownerIDIn,omitempty"`
+	OwnerIDNotIn        []string `json:"ownerIDNotIn,omitempty"`
+	OwnerIDGT           *string  `json:"ownerIDGT,omitempty"`
+	OwnerIDGTE          *string  `json:"ownerIDGTE,omitempty"`
+	OwnerIDLT           *string  `json:"ownerIDLT,omitempty"`
+	OwnerIDLTE          *string  `json:"ownerIDLTE,omitempty"`
+	OwnerIDContains     *string  `json:"ownerIDContains,omitempty"`
+	OwnerIDHasPrefix    *string  `json:"ownerIDHasPrefix,omitempty"`
+	OwnerIDHasSuffix    *string  `json:"ownerIDHasSuffix,omitempty"`
+	OwnerIDIsNil        bool     `json:"ownerIDIsNil,omitempty"`
+	OwnerIDNotNil       bool     `json:"ownerIDNotNil,omitempty"`
+	OwnerIDEqualFold    *string  `json:"ownerIDEqualFold,omitempty"`
+	OwnerIDContainsFold *string  `json:"ownerIDContainsFold,omitempty"`
+
 	// "assessment_id" field predicates.
 	AssessmentID             *string  `json:"assessmentID,omitempty"`
 	AssessmentIDNEQ          *string  `json:"assessmentIDNEQ,omitempty"`
@@ -4789,6 +4806,22 @@ type AssessmentResponseWhereInput struct {
 	ResponseDataIDNotNil       bool     `json:"responseDataIDNotNil,omitempty"`
 	ResponseDataIDEqualFold    *string  `json:"responseDataIDEqualFold,omitempty"`
 	ResponseDataIDContainsFold *string  `json:"responseDataIDContainsFold,omitempty"`
+
+	// "owner" edge predicates.
+	HasOwner     *bool                     `json:"hasOwner,omitempty"`
+	HasOwnerWith []*OrganizationWhereInput `json:"hasOwnerWith,omitempty"`
+
+	// "blocked_groups" edge predicates.
+	HasBlockedGroups     *bool              `json:"hasBlockedGroups,omitempty"`
+	HasBlockedGroupsWith []*GroupWhereInput `json:"hasBlockedGroupsWith,omitempty"`
+
+	// "editors" edge predicates.
+	HasEditors     *bool              `json:"hasEditors,omitempty"`
+	HasEditorsWith []*GroupWhereInput `json:"hasEditorsWith,omitempty"`
+
+	// "viewers" edge predicates.
+	HasViewers     *bool              `json:"hasViewers,omitempty"`
+	HasViewersWith []*GroupWhereInput `json:"hasViewersWith,omitempty"`
 
 	// "assessment" edge predicates.
 	HasAssessment     *bool                   `json:"hasAssessment,omitempty"`
@@ -5054,6 +5087,51 @@ func (i *AssessmentResponseWhereInput) P() (predicate.AssessmentResponse, error)
 	if i.UpdatedByContainsFold != nil {
 		predicates = append(predicates, assessmentresponse.UpdatedByContainsFold(*i.UpdatedByContainsFold))
 	}
+	if i.OwnerID != nil {
+		predicates = append(predicates, assessmentresponse.OwnerIDEQ(*i.OwnerID))
+	}
+	if i.OwnerIDNEQ != nil {
+		predicates = append(predicates, assessmentresponse.OwnerIDNEQ(*i.OwnerIDNEQ))
+	}
+	if len(i.OwnerIDIn) > 0 {
+		predicates = append(predicates, assessmentresponse.OwnerIDIn(i.OwnerIDIn...))
+	}
+	if len(i.OwnerIDNotIn) > 0 {
+		predicates = append(predicates, assessmentresponse.OwnerIDNotIn(i.OwnerIDNotIn...))
+	}
+	if i.OwnerIDGT != nil {
+		predicates = append(predicates, assessmentresponse.OwnerIDGT(*i.OwnerIDGT))
+	}
+	if i.OwnerIDGTE != nil {
+		predicates = append(predicates, assessmentresponse.OwnerIDGTE(*i.OwnerIDGTE))
+	}
+	if i.OwnerIDLT != nil {
+		predicates = append(predicates, assessmentresponse.OwnerIDLT(*i.OwnerIDLT))
+	}
+	if i.OwnerIDLTE != nil {
+		predicates = append(predicates, assessmentresponse.OwnerIDLTE(*i.OwnerIDLTE))
+	}
+	if i.OwnerIDContains != nil {
+		predicates = append(predicates, assessmentresponse.OwnerIDContains(*i.OwnerIDContains))
+	}
+	if i.OwnerIDHasPrefix != nil {
+		predicates = append(predicates, assessmentresponse.OwnerIDHasPrefix(*i.OwnerIDHasPrefix))
+	}
+	if i.OwnerIDHasSuffix != nil {
+		predicates = append(predicates, assessmentresponse.OwnerIDHasSuffix(*i.OwnerIDHasSuffix))
+	}
+	if i.OwnerIDIsNil {
+		predicates = append(predicates, assessmentresponse.OwnerIDIsNil())
+	}
+	if i.OwnerIDNotNil {
+		predicates = append(predicates, assessmentresponse.OwnerIDNotNil())
+	}
+	if i.OwnerIDEqualFold != nil {
+		predicates = append(predicates, assessmentresponse.OwnerIDEqualFold(*i.OwnerIDEqualFold))
+	}
+	if i.OwnerIDContainsFold != nil {
+		predicates = append(predicates, assessmentresponse.OwnerIDContainsFold(*i.OwnerIDContainsFold))
+	}
 	if i.AssessmentID != nil {
 		predicates = append(predicates, assessmentresponse.AssessmentIDEQ(*i.AssessmentID))
 	}
@@ -5304,6 +5382,78 @@ func (i *AssessmentResponseWhereInput) P() (predicate.AssessmentResponse, error)
 		predicates = append(predicates, assessmentresponse.ResponseDataIDContainsFold(*i.ResponseDataIDContainsFold))
 	}
 
+	if i.HasOwner != nil {
+		p := assessmentresponse.HasOwner()
+		if !*i.HasOwner {
+			p = assessmentresponse.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasOwnerWith) > 0 {
+		with := make([]predicate.Organization, 0, len(i.HasOwnerWith))
+		for _, w := range i.HasOwnerWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasOwnerWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, assessmentresponse.HasOwnerWith(with...))
+	}
+	if i.HasBlockedGroups != nil {
+		p := assessmentresponse.HasBlockedGroups()
+		if !*i.HasBlockedGroups {
+			p = assessmentresponse.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasBlockedGroupsWith) > 0 {
+		with := make([]predicate.Group, 0, len(i.HasBlockedGroupsWith))
+		for _, w := range i.HasBlockedGroupsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasBlockedGroupsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, assessmentresponse.HasBlockedGroupsWith(with...))
+	}
+	if i.HasEditors != nil {
+		p := assessmentresponse.HasEditors()
+		if !*i.HasEditors {
+			p = assessmentresponse.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasEditorsWith) > 0 {
+		with := make([]predicate.Group, 0, len(i.HasEditorsWith))
+		for _, w := range i.HasEditorsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasEditorsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, assessmentresponse.HasEditorsWith(with...))
+	}
+	if i.HasViewers != nil {
+		p := assessmentresponse.HasViewers()
+		if !*i.HasViewers {
+			p = assessmentresponse.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasViewersWith) > 0 {
+		with := make([]predicate.Group, 0, len(i.HasViewersWith))
+		for _, w := range i.HasViewersWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasViewersWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, assessmentresponse.HasViewersWith(with...))
+	}
 	if i.HasAssessment != nil {
 		p := assessmentresponse.HasAssessment()
 		if !*i.HasAssessment {
@@ -5477,6 +5627,23 @@ type AssessmentResponseHistoryWhereInput struct {
 	UpdatedByNotNil       bool     `json:"updatedByNotNil,omitempty"`
 	UpdatedByEqualFold    *string  `json:"updatedByEqualFold,omitempty"`
 	UpdatedByContainsFold *string  `json:"updatedByContainsFold,omitempty"`
+
+	// "owner_id" field predicates.
+	OwnerID             *string  `json:"ownerID,omitempty"`
+	OwnerIDNEQ          *string  `json:"ownerIDNEQ,omitempty"`
+	OwnerIDIn           []string `json:"ownerIDIn,omitempty"`
+	OwnerIDNotIn        []string `json:"ownerIDNotIn,omitempty"`
+	OwnerIDGT           *string  `json:"ownerIDGT,omitempty"`
+	OwnerIDGTE          *string  `json:"ownerIDGTE,omitempty"`
+	OwnerIDLT           *string  `json:"ownerIDLT,omitempty"`
+	OwnerIDLTE          *string  `json:"ownerIDLTE,omitempty"`
+	OwnerIDContains     *string  `json:"ownerIDContains,omitempty"`
+	OwnerIDHasPrefix    *string  `json:"ownerIDHasPrefix,omitempty"`
+	OwnerIDHasSuffix    *string  `json:"ownerIDHasSuffix,omitempty"`
+	OwnerIDIsNil        bool     `json:"ownerIDIsNil,omitempty"`
+	OwnerIDNotNil       bool     `json:"ownerIDNotNil,omitempty"`
+	OwnerIDEqualFold    *string  `json:"ownerIDEqualFold,omitempty"`
+	OwnerIDContainsFold *string  `json:"ownerIDContainsFold,omitempty"`
 
 	// "assessment_id" field predicates.
 	AssessmentID             *string  `json:"assessmentID,omitempty"`
@@ -5909,6 +6076,51 @@ func (i *AssessmentResponseHistoryWhereInput) P() (predicate.AssessmentResponseH
 	}
 	if i.UpdatedByContainsFold != nil {
 		predicates = append(predicates, assessmentresponsehistory.UpdatedByContainsFold(*i.UpdatedByContainsFold))
+	}
+	if i.OwnerID != nil {
+		predicates = append(predicates, assessmentresponsehistory.OwnerIDEQ(*i.OwnerID))
+	}
+	if i.OwnerIDNEQ != nil {
+		predicates = append(predicates, assessmentresponsehistory.OwnerIDNEQ(*i.OwnerIDNEQ))
+	}
+	if len(i.OwnerIDIn) > 0 {
+		predicates = append(predicates, assessmentresponsehistory.OwnerIDIn(i.OwnerIDIn...))
+	}
+	if len(i.OwnerIDNotIn) > 0 {
+		predicates = append(predicates, assessmentresponsehistory.OwnerIDNotIn(i.OwnerIDNotIn...))
+	}
+	if i.OwnerIDGT != nil {
+		predicates = append(predicates, assessmentresponsehistory.OwnerIDGT(*i.OwnerIDGT))
+	}
+	if i.OwnerIDGTE != nil {
+		predicates = append(predicates, assessmentresponsehistory.OwnerIDGTE(*i.OwnerIDGTE))
+	}
+	if i.OwnerIDLT != nil {
+		predicates = append(predicates, assessmentresponsehistory.OwnerIDLT(*i.OwnerIDLT))
+	}
+	if i.OwnerIDLTE != nil {
+		predicates = append(predicates, assessmentresponsehistory.OwnerIDLTE(*i.OwnerIDLTE))
+	}
+	if i.OwnerIDContains != nil {
+		predicates = append(predicates, assessmentresponsehistory.OwnerIDContains(*i.OwnerIDContains))
+	}
+	if i.OwnerIDHasPrefix != nil {
+		predicates = append(predicates, assessmentresponsehistory.OwnerIDHasPrefix(*i.OwnerIDHasPrefix))
+	}
+	if i.OwnerIDHasSuffix != nil {
+		predicates = append(predicates, assessmentresponsehistory.OwnerIDHasSuffix(*i.OwnerIDHasSuffix))
+	}
+	if i.OwnerIDIsNil {
+		predicates = append(predicates, assessmentresponsehistory.OwnerIDIsNil())
+	}
+	if i.OwnerIDNotNil {
+		predicates = append(predicates, assessmentresponsehistory.OwnerIDNotNil())
+	}
+	if i.OwnerIDEqualFold != nil {
+		predicates = append(predicates, assessmentresponsehistory.OwnerIDEqualFold(*i.OwnerIDEqualFold))
+	}
+	if i.OwnerIDContainsFold != nil {
+		predicates = append(predicates, assessmentresponsehistory.OwnerIDContainsFold(*i.OwnerIDContainsFold))
 	}
 	if i.AssessmentID != nil {
 		predicates = append(predicates, assessmentresponsehistory.AssessmentIDEQ(*i.AssessmentID))
@@ -29897,6 +30109,30 @@ type GroupWhereInput struct {
 	HasScanViewers     *bool             `json:"hasScanViewers,omitempty"`
 	HasScanViewersWith []*ScanWhereInput `json:"hasScanViewersWith,omitempty"`
 
+	// "assessment_editors" edge predicates.
+	HasAssessmentEditors     *bool                   `json:"hasAssessmentEditors,omitempty"`
+	HasAssessmentEditorsWith []*AssessmentWhereInput `json:"hasAssessmentEditorsWith,omitempty"`
+
+	// "assessment_blocked_groups" edge predicates.
+	HasAssessmentBlockedGroups     *bool                   `json:"hasAssessmentBlockedGroups,omitempty"`
+	HasAssessmentBlockedGroupsWith []*AssessmentWhereInput `json:"hasAssessmentBlockedGroupsWith,omitempty"`
+
+	// "assessment_viewers" edge predicates.
+	HasAssessmentViewers     *bool                   `json:"hasAssessmentViewers,omitempty"`
+	HasAssessmentViewersWith []*AssessmentWhereInput `json:"hasAssessmentViewersWith,omitempty"`
+
+	// "assessment_response_editors" edge predicates.
+	HasAssessmentResponseEditors     *bool                           `json:"hasAssessmentResponseEditors,omitempty"`
+	HasAssessmentResponseEditorsWith []*AssessmentResponseWhereInput `json:"hasAssessmentResponseEditorsWith,omitempty"`
+
+	// "assessment_response_blocked_groups" edge predicates.
+	HasAssessmentResponseBlockedGroups     *bool                           `json:"hasAssessmentResponseBlockedGroups,omitempty"`
+	HasAssessmentResponseBlockedGroupsWith []*AssessmentResponseWhereInput `json:"hasAssessmentResponseBlockedGroupsWith,omitempty"`
+
+	// "assessment_response_viewers" edge predicates.
+	HasAssessmentResponseViewers     *bool                           `json:"hasAssessmentResponseViewers,omitempty"`
+	HasAssessmentResponseViewersWith []*AssessmentResponseWhereInput `json:"hasAssessmentResponseViewersWith,omitempty"`
+
 	// "procedure_editors" edge predicates.
 	HasProcedureEditors     *bool                  `json:"hasProcedureEditors,omitempty"`
 	HasProcedureEditorsWith []*ProcedureWhereInput `json:"hasProcedureEditorsWith,omitempty"`
@@ -30725,6 +30961,114 @@ func (i *GroupWhereInput) P() (predicate.Group, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, group.HasScanViewersWith(with...))
+	}
+	if i.HasAssessmentEditors != nil {
+		p := group.HasAssessmentEditors()
+		if !*i.HasAssessmentEditors {
+			p = group.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasAssessmentEditorsWith) > 0 {
+		with := make([]predicate.Assessment, 0, len(i.HasAssessmentEditorsWith))
+		for _, w := range i.HasAssessmentEditorsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasAssessmentEditorsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, group.HasAssessmentEditorsWith(with...))
+	}
+	if i.HasAssessmentBlockedGroups != nil {
+		p := group.HasAssessmentBlockedGroups()
+		if !*i.HasAssessmentBlockedGroups {
+			p = group.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasAssessmentBlockedGroupsWith) > 0 {
+		with := make([]predicate.Assessment, 0, len(i.HasAssessmentBlockedGroupsWith))
+		for _, w := range i.HasAssessmentBlockedGroupsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasAssessmentBlockedGroupsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, group.HasAssessmentBlockedGroupsWith(with...))
+	}
+	if i.HasAssessmentViewers != nil {
+		p := group.HasAssessmentViewers()
+		if !*i.HasAssessmentViewers {
+			p = group.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasAssessmentViewersWith) > 0 {
+		with := make([]predicate.Assessment, 0, len(i.HasAssessmentViewersWith))
+		for _, w := range i.HasAssessmentViewersWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasAssessmentViewersWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, group.HasAssessmentViewersWith(with...))
+	}
+	if i.HasAssessmentResponseEditors != nil {
+		p := group.HasAssessmentResponseEditors()
+		if !*i.HasAssessmentResponseEditors {
+			p = group.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasAssessmentResponseEditorsWith) > 0 {
+		with := make([]predicate.AssessmentResponse, 0, len(i.HasAssessmentResponseEditorsWith))
+		for _, w := range i.HasAssessmentResponseEditorsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasAssessmentResponseEditorsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, group.HasAssessmentResponseEditorsWith(with...))
+	}
+	if i.HasAssessmentResponseBlockedGroups != nil {
+		p := group.HasAssessmentResponseBlockedGroups()
+		if !*i.HasAssessmentResponseBlockedGroups {
+			p = group.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasAssessmentResponseBlockedGroupsWith) > 0 {
+		with := make([]predicate.AssessmentResponse, 0, len(i.HasAssessmentResponseBlockedGroupsWith))
+		for _, w := range i.HasAssessmentResponseBlockedGroupsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasAssessmentResponseBlockedGroupsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, group.HasAssessmentResponseBlockedGroupsWith(with...))
+	}
+	if i.HasAssessmentResponseViewers != nil {
+		p := group.HasAssessmentResponseViewers()
+		if !*i.HasAssessmentResponseViewers {
+			p = group.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasAssessmentResponseViewersWith) > 0 {
+		with := make([]predicate.AssessmentResponse, 0, len(i.HasAssessmentResponseViewersWith))
+		for _, w := range i.HasAssessmentResponseViewersWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasAssessmentResponseViewersWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, group.HasAssessmentResponseViewersWith(with...))
 	}
 	if i.HasProcedureEditors != nil {
 		p := group.HasProcedureEditors()
@@ -50875,6 +51219,10 @@ type OrganizationWhereInput struct {
 	HasAssessments     *bool                   `json:"hasAssessments,omitempty"`
 	HasAssessmentsWith []*AssessmentWhereInput `json:"hasAssessmentsWith,omitempty"`
 
+	// "assessment_responses" edge predicates.
+	HasAssessmentResponses     *bool                           `json:"hasAssessmentResponses,omitempty"`
+	HasAssessmentResponsesWith []*AssessmentResponseWhereInput `json:"hasAssessmentResponsesWith,omitempty"`
+
 	// "members" edge predicates.
 	HasMembers     *bool                      `json:"hasMembers,omitempty"`
 	HasMembersWith []*OrgMembershipWhereInput `json:"hasMembersWith,omitempty"`
@@ -52463,6 +52811,24 @@ func (i *OrganizationWhereInput) P() (predicate.Organization, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, organization.HasAssessmentsWith(with...))
+	}
+	if i.HasAssessmentResponses != nil {
+		p := organization.HasAssessmentResponses()
+		if !*i.HasAssessmentResponses {
+			p = organization.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasAssessmentResponsesWith) > 0 {
+		with := make([]predicate.AssessmentResponse, 0, len(i.HasAssessmentResponsesWith))
+		for _, w := range i.HasAssessmentResponsesWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasAssessmentResponsesWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, organization.HasAssessmentResponsesWith(with...))
 	}
 	if i.HasMembers != nil {
 		p := organization.HasMembers()

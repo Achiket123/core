@@ -2129,6 +2129,10 @@ type AssessmentResponse implements Node {
 	"""
 	tags: [String!]
 	"""
+	the organization id that owns the object
+	"""
+	ownerID: ID
+	"""
 	the assessment this response is for
 	"""
 	assessmentID: ID!
@@ -2160,6 +2164,100 @@ type AssessmentResponse implements Node {
 	the document containing the user's response data
 	"""
 	responseDataID: ID
+	owner: Organization
+	blockedGroups(
+		"""
+		Returns the elements in the list that come after the specified cursor.
+		"""
+		after: Cursor
+
+		"""
+		Returns the first _n_ elements from the list.
+		"""
+		first: Int
+
+		"""
+		Returns the elements in the list that come before the specified cursor.
+		"""
+		before: Cursor
+
+		"""
+		Returns the last _n_ elements from the list.
+		"""
+		last: Int
+
+		"""
+		Ordering options for Groups returned from the connection.
+		"""
+		orderBy: [GroupOrder!]
+
+		"""
+		Filtering options for Groups returned from the connection.
+		"""
+		where: GroupWhereInput
+	): GroupConnection!
+	editors(
+		"""
+		Returns the elements in the list that come after the specified cursor.
+		"""
+		after: Cursor
+
+		"""
+		Returns the first _n_ elements from the list.
+		"""
+		first: Int
+
+		"""
+		Returns the elements in the list that come before the specified cursor.
+		"""
+		before: Cursor
+
+		"""
+		Returns the last _n_ elements from the list.
+		"""
+		last: Int
+
+		"""
+		Ordering options for Groups returned from the connection.
+		"""
+		orderBy: [GroupOrder!]
+
+		"""
+		Filtering options for Groups returned from the connection.
+		"""
+		where: GroupWhereInput
+	): GroupConnection!
+	viewers(
+		"""
+		Returns the elements in the list that come after the specified cursor.
+		"""
+		after: Cursor
+
+		"""
+		Returns the first _n_ elements from the list.
+		"""
+		first: Int
+
+		"""
+		Returns the elements in the list that come before the specified cursor.
+		"""
+		before: Cursor
+
+		"""
+		Returns the last _n_ elements from the list.
+		"""
+		last: Int
+
+		"""
+		Ordering options for Groups returned from the connection.
+		"""
+		orderBy: [GroupOrder!]
+
+		"""
+		Filtering options for Groups returned from the connection.
+		"""
+		where: GroupWhereInput
+	): GroupConnection!
 	assessment: Assessment!
 	user: User!
 	"""
@@ -2246,6 +2344,10 @@ type AssessmentResponseHistory implements Node {
 	tags associated with the object
 	"""
 	tags: [String!]
+	"""
+	the organization id that owns the object
+	"""
+	ownerID: String
 	"""
 	the assessment this response is for
 	"""
@@ -2472,6 +2574,24 @@ input AssessmentResponseHistoryWhereInput {
 	updatedByEqualFold: String
 	updatedByContainsFold: String
 	"""
+	owner_id field predicates
+	"""
+	ownerID: String
+	ownerIDNEQ: String
+	ownerIDIn: [String!]
+	ownerIDNotIn: [String!]
+	ownerIDGT: String
+	ownerIDGTE: String
+	ownerIDLT: String
+	ownerIDLTE: String
+	ownerIDContains: String
+	ownerIDHasPrefix: String
+	ownerIDHasSuffix: String
+	ownerIDIsNil: Boolean
+	ownerIDNotNil: Boolean
+	ownerIDEqualFold: String
+	ownerIDContainsFold: String
+	"""
 	assessment_id field predicates
 	"""
 	assessmentID: String
@@ -2697,6 +2817,24 @@ input AssessmentResponseWhereInput {
 	updatedByEqualFold: String
 	updatedByContainsFold: String
 	"""
+	owner_id field predicates
+	"""
+	ownerID: ID
+	ownerIDNEQ: ID
+	ownerIDIn: [ID!]
+	ownerIDNotIn: [ID!]
+	ownerIDGT: ID
+	ownerIDGTE: ID
+	ownerIDLT: ID
+	ownerIDLTE: ID
+	ownerIDContains: ID
+	ownerIDHasPrefix: ID
+	ownerIDHasSuffix: ID
+	ownerIDIsNil: Boolean
+	ownerIDNotNil: Boolean
+	ownerIDEqualFold: ID
+	ownerIDContainsFold: ID
+	"""
 	assessment_id field predicates
 	"""
 	assessmentID: ID
@@ -2803,6 +2941,26 @@ input AssessmentResponseWhereInput {
 	responseDataIDNotNil: Boolean
 	responseDataIDEqualFold: ID
 	responseDataIDContainsFold: ID
+	"""
+	owner edge predicates
+	"""
+	hasOwner: Boolean
+	hasOwnerWith: [OrganizationWhereInput!]
+	"""
+	blocked_groups edge predicates
+	"""
+	hasBlockedGroups: Boolean
+	hasBlockedGroupsWith: [GroupWhereInput!]
+	"""
+	editors edge predicates
+	"""
+	hasEditors: Boolean
+	hasEditorsWith: [GroupWhereInput!]
+	"""
+	viewers edge predicates
+	"""
+	hasViewers: Boolean
+	hasViewersWith: [GroupWhereInput!]
 	"""
 	assessment edge predicates
 	"""
@@ -9396,6 +9554,10 @@ input CreateAssessmentResponseInput {
 	when the assessment is due
 	"""
 	dueDate: Time
+	ownerID: ID
+	blockedGroupIDs: [ID!]
+	editorIDs: [ID!]
+	viewerIDs: [ID!]
 	assessmentID: ID!
 	userID: ID!
 	documentID: ID
@@ -10037,6 +10199,12 @@ input CreateGroupInput {
 	scanEditorIDs: [ID!]
 	scanBlockedGroupIDs: [ID!]
 	scanViewerIDs: [ID!]
+	assessmentEditorIDs: [ID!]
+	assessmentBlockedGroupIDs: [ID!]
+	assessmentViewerIDs: [ID!]
+	assessmentResponseEditorIDs: [ID!]
+	assessmentResponseBlockedGroupIDs: [ID!]
+	assessmentResponseViewerIDs: [ID!]
 	procedureEditorIDs: [ID!]
 	procedureBlockedGroupIDs: [ID!]
 	internalPolicyEditorIDs: [ID!]
@@ -10568,6 +10736,7 @@ input CreateOrganizationInput {
 	assetIDs: [ID!]
 	scanIDs: [ID!]
 	assessmentIDs: [ID!]
+	assessmentResponseIDs: [ID!]
 	createOrgSettings: CreateOrganizationSettingInput
 }
 """
@@ -18207,6 +18376,192 @@ type Group implements Node {
 		"""
 		where: ScanWhereInput
 	): ScanConnection!
+	assessmentEditors(
+		"""
+		Returns the elements in the list that come after the specified cursor.
+		"""
+		after: Cursor
+
+		"""
+		Returns the first _n_ elements from the list.
+		"""
+		first: Int
+
+		"""
+		Returns the elements in the list that come before the specified cursor.
+		"""
+		before: Cursor
+
+		"""
+		Returns the last _n_ elements from the list.
+		"""
+		last: Int
+
+		"""
+		Ordering options for Assessments returned from the connection.
+		"""
+		orderBy: [AssessmentOrder!]
+
+		"""
+		Filtering options for Assessments returned from the connection.
+		"""
+		where: AssessmentWhereInput
+	): AssessmentConnection!
+	assessmentBlockedGroups(
+		"""
+		Returns the elements in the list that come after the specified cursor.
+		"""
+		after: Cursor
+
+		"""
+		Returns the first _n_ elements from the list.
+		"""
+		first: Int
+
+		"""
+		Returns the elements in the list that come before the specified cursor.
+		"""
+		before: Cursor
+
+		"""
+		Returns the last _n_ elements from the list.
+		"""
+		last: Int
+
+		"""
+		Ordering options for Assessments returned from the connection.
+		"""
+		orderBy: [AssessmentOrder!]
+
+		"""
+		Filtering options for Assessments returned from the connection.
+		"""
+		where: AssessmentWhereInput
+	): AssessmentConnection!
+	assessmentViewers(
+		"""
+		Returns the elements in the list that come after the specified cursor.
+		"""
+		after: Cursor
+
+		"""
+		Returns the first _n_ elements from the list.
+		"""
+		first: Int
+
+		"""
+		Returns the elements in the list that come before the specified cursor.
+		"""
+		before: Cursor
+
+		"""
+		Returns the last _n_ elements from the list.
+		"""
+		last: Int
+
+		"""
+		Ordering options for Assessments returned from the connection.
+		"""
+		orderBy: [AssessmentOrder!]
+
+		"""
+		Filtering options for Assessments returned from the connection.
+		"""
+		where: AssessmentWhereInput
+	): AssessmentConnection!
+	assessmentResponseEditors(
+		"""
+		Returns the elements in the list that come after the specified cursor.
+		"""
+		after: Cursor
+
+		"""
+		Returns the first _n_ elements from the list.
+		"""
+		first: Int
+
+		"""
+		Returns the elements in the list that come before the specified cursor.
+		"""
+		before: Cursor
+
+		"""
+		Returns the last _n_ elements from the list.
+		"""
+		last: Int
+
+		"""
+		Ordering options for AssessmentResponses returned from the connection.
+		"""
+		orderBy: [AssessmentResponseOrder!]
+
+		"""
+		Filtering options for AssessmentResponses returned from the connection.
+		"""
+		where: AssessmentResponseWhereInput
+	): AssessmentResponseConnection!
+	assessmentResponseBlockedGroups(
+		"""
+		Returns the elements in the list that come after the specified cursor.
+		"""
+		after: Cursor
+
+		"""
+		Returns the first _n_ elements from the list.
+		"""
+		first: Int
+
+		"""
+		Returns the elements in the list that come before the specified cursor.
+		"""
+		before: Cursor
+
+		"""
+		Returns the last _n_ elements from the list.
+		"""
+		last: Int
+
+		"""
+		Ordering options for AssessmentResponses returned from the connection.
+		"""
+		orderBy: [AssessmentResponseOrder!]
+
+		"""
+		Filtering options for AssessmentResponses returned from the connection.
+		"""
+		where: AssessmentResponseWhereInput
+	): AssessmentResponseConnection!
+	assessmentResponseViewers(
+		"""
+		Returns the elements in the list that come after the specified cursor.
+		"""
+		after: Cursor
+
+		"""
+		Returns the first _n_ elements from the list.
+		"""
+		first: Int
+
+		"""
+		Returns the elements in the list that come before the specified cursor.
+		"""
+		before: Cursor
+
+		"""
+		Returns the last _n_ elements from the list.
+		"""
+		last: Int
+
+		"""
+		Ordering options for AssessmentResponses returned from the connection.
+		"""
+		orderBy: [AssessmentResponseOrder!]
+
+		"""
+		Filtering options for AssessmentResponses returned from the connection.
+		"""
+		where: AssessmentResponseWhereInput
+	): AssessmentResponseConnection!
 	procedureEditors(
 		"""
 		Returns the elements in the list that come after the specified cursor.
@@ -20457,6 +20812,36 @@ input GroupWhereInput {
 	"""
 	hasScanViewers: Boolean
 	hasScanViewersWith: [ScanWhereInput!]
+	"""
+	assessment_editors edge predicates
+	"""
+	hasAssessmentEditors: Boolean
+	hasAssessmentEditorsWith: [AssessmentWhereInput!]
+	"""
+	assessment_blocked_groups edge predicates
+	"""
+	hasAssessmentBlockedGroups: Boolean
+	hasAssessmentBlockedGroupsWith: [AssessmentWhereInput!]
+	"""
+	assessment_viewers edge predicates
+	"""
+	hasAssessmentViewers: Boolean
+	hasAssessmentViewersWith: [AssessmentWhereInput!]
+	"""
+	assessment_response_editors edge predicates
+	"""
+	hasAssessmentResponseEditors: Boolean
+	hasAssessmentResponseEditorsWith: [AssessmentResponseWhereInput!]
+	"""
+	assessment_response_blocked_groups edge predicates
+	"""
+	hasAssessmentResponseBlockedGroups: Boolean
+	hasAssessmentResponseBlockedGroupsWith: [AssessmentResponseWhereInput!]
+	"""
+	assessment_response_viewers edge predicates
+	"""
+	hasAssessmentResponseViewers: Boolean
+	hasAssessmentResponseViewersWith: [AssessmentResponseWhereInput!]
 	"""
 	procedure_editors edge predicates
 	"""
@@ -32930,6 +33315,37 @@ type Organization implements Node {
 		"""
 		where: AssessmentWhereInput
 	): AssessmentConnection!
+	assessmentResponses(
+		"""
+		Returns the elements in the list that come after the specified cursor.
+		"""
+		after: Cursor
+
+		"""
+		Returns the first _n_ elements from the list.
+		"""
+		first: Int
+
+		"""
+		Returns the elements in the list that come before the specified cursor.
+		"""
+		before: Cursor
+
+		"""
+		Returns the last _n_ elements from the list.
+		"""
+		last: Int
+
+		"""
+		Ordering options for AssessmentResponses returned from the connection.
+		"""
+		orderBy: [AssessmentResponseOrder!]
+
+		"""
+		Filtering options for AssessmentResponses returned from the connection.
+		"""
+		where: AssessmentResponseWhereInput
+	): AssessmentResponseConnection!
 	members(
 		"""
 		Returns the elements in the list that come after the specified cursor.
@@ -34812,6 +35228,11 @@ input OrganizationWhereInput {
 	"""
 	hasAssessments: Boolean
 	hasAssessmentsWith: [AssessmentWhereInput!]
+	"""
+	assessment_responses edge predicates
+	"""
+	hasAssessmentResponses: Boolean
+	hasAssessmentResponsesWith: [AssessmentResponseWhereInput!]
 	"""
 	members edge predicates
 	"""
@@ -54228,6 +54649,17 @@ input UpdateAssessmentResponseInput {
 	"""
 	dueDate: Time
 	clearDueDate: Boolean
+	ownerID: ID
+	clearOwner: Boolean
+	addBlockedGroupIDs: [ID!]
+	removeBlockedGroupIDs: [ID!]
+	clearBlockedGroups: Boolean
+	addEditorIDs: [ID!]
+	removeEditorIDs: [ID!]
+	clearEditors: Boolean
+	addViewerIDs: [ID!]
+	removeViewerIDs: [ID!]
+	clearViewers: Boolean
 	assessmentID: ID
 	userID: ID
 	documentID: ID
@@ -55174,6 +55606,24 @@ input UpdateGroupInput {
 	addScanViewerIDs: [ID!]
 	removeScanViewerIDs: [ID!]
 	clearScanViewers: Boolean
+	addAssessmentEditorIDs: [ID!]
+	removeAssessmentEditorIDs: [ID!]
+	clearAssessmentEditors: Boolean
+	addAssessmentBlockedGroupIDs: [ID!]
+	removeAssessmentBlockedGroupIDs: [ID!]
+	clearAssessmentBlockedGroups: Boolean
+	addAssessmentViewerIDs: [ID!]
+	removeAssessmentViewerIDs: [ID!]
+	clearAssessmentViewers: Boolean
+	addAssessmentResponseEditorIDs: [ID!]
+	removeAssessmentResponseEditorIDs: [ID!]
+	clearAssessmentResponseEditors: Boolean
+	addAssessmentResponseBlockedGroupIDs: [ID!]
+	removeAssessmentResponseBlockedGroupIDs: [ID!]
+	clearAssessmentResponseBlockedGroups: Boolean
+	addAssessmentResponseViewerIDs: [ID!]
+	removeAssessmentResponseViewerIDs: [ID!]
+	clearAssessmentResponseViewers: Boolean
 	addProcedureEditorIDs: [ID!]
 	removeProcedureEditorIDs: [ID!]
 	clearProcedureEditors: Boolean
@@ -55904,6 +56354,9 @@ input UpdateOrganizationInput {
 	addAssessmentIDs: [ID!]
 	removeAssessmentIDs: [ID!]
 	clearAssessments: Boolean
+	addAssessmentResponseIDs: [ID!]
+	removeAssessmentResponseIDs: [ID!]
+	clearAssessmentResponses: Boolean
 	addOrgMembers: [CreateOrgMembershipInput!]
 	removeOrgMembers: [ID!]
 	updateOrgSettings: UpdateOrganizationSettingInput

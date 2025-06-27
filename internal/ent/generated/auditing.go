@@ -422,6 +422,9 @@ func (arh *AssessmentResponseHistory) changes(new *AssessmentResponseHistory) []
 	if !reflect.DeepEqual(arh.Tags, new.Tags) {
 		changes = append(changes, NewChange(assessmentresponsehistory.FieldTags, arh.Tags, new.Tags))
 	}
+	if !reflect.DeepEqual(arh.OwnerID, new.OwnerID) {
+		changes = append(changes, NewChange(assessmentresponsehistory.FieldOwnerID, arh.OwnerID, new.OwnerID))
+	}
 	if !reflect.DeepEqual(arh.AssessmentID, new.AssessmentID) {
 		changes = append(changes, NewChange(assessmentresponsehistory.FieldAssessmentID, arh.AssessmentID, new.AssessmentID))
 	}

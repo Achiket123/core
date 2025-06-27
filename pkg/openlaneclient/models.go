@@ -1317,6 +1317,8 @@ type AssessmentResponse struct {
 	UpdatedBy *string    `json:"updatedBy,omitempty"`
 	// tags associated with the object
 	Tags []string `json:"tags,omitempty"`
+	// the organization id that owns the object
+	OwnerID *string `json:"ownerID,omitempty"`
 	// the assessment this response is for
 	AssessmentID string `json:"assessmentID"`
 	// the user who is responding to the assessment
@@ -1332,9 +1334,13 @@ type AssessmentResponse struct {
 	// when the assessment is due
 	DueDate *time.Time `json:"dueDate,omitempty"`
 	// the document containing the user's response data
-	ResponseDataID *string     `json:"responseDataID,omitempty"`
-	Assessment     *Assessment `json:"assessment"`
-	User           *User       `json:"user"`
+	ResponseDataID *string          `json:"responseDataID,omitempty"`
+	Owner          *Organization    `json:"owner,omitempty"`
+	BlockedGroups  *GroupConnection `json:"blockedGroups"`
+	Editors        *GroupConnection `json:"editors"`
+	Viewers        *GroupConnection `json:"viewers"`
+	Assessment     *Assessment      `json:"assessment"`
+	User           *User            `json:"user"`
 	// the document containing the user's response data
 	Document *DocumentData `json:"document,omitempty"`
 }
@@ -1388,6 +1394,8 @@ type AssessmentResponseHistory struct {
 	UpdatedBy   *string        `json:"updatedBy,omitempty"`
 	// tags associated with the object
 	Tags []string `json:"tags,omitempty"`
+	// the organization id that owns the object
+	OwnerID *string `json:"ownerID,omitempty"`
 	// the assessment this response is for
 	AssessmentID string `json:"assessmentID"`
 	// the user who is responding to the assessment
@@ -1535,6 +1543,22 @@ type AssessmentResponseHistoryWhereInput struct {
 	UpdatedByNotNil       *bool    `json:"updatedByNotNil,omitempty"`
 	UpdatedByEqualFold    *string  `json:"updatedByEqualFold,omitempty"`
 	UpdatedByContainsFold *string  `json:"updatedByContainsFold,omitempty"`
+	// owner_id field predicates
+	OwnerID             *string  `json:"ownerID,omitempty"`
+	OwnerIdneq          *string  `json:"ownerIDNEQ,omitempty"`
+	OwnerIDIn           []string `json:"ownerIDIn,omitempty"`
+	OwnerIDNotIn        []string `json:"ownerIDNotIn,omitempty"`
+	OwnerIdgt           *string  `json:"ownerIDGT,omitempty"`
+	OwnerIdgte          *string  `json:"ownerIDGTE,omitempty"`
+	OwnerIdlt           *string  `json:"ownerIDLT,omitempty"`
+	OwnerIdlte          *string  `json:"ownerIDLTE,omitempty"`
+	OwnerIDContains     *string  `json:"ownerIDContains,omitempty"`
+	OwnerIDHasPrefix    *string  `json:"ownerIDHasPrefix,omitempty"`
+	OwnerIDHasSuffix    *string  `json:"ownerIDHasSuffix,omitempty"`
+	OwnerIDIsNil        *bool    `json:"ownerIDIsNil,omitempty"`
+	OwnerIDNotNil       *bool    `json:"ownerIDNotNil,omitempty"`
+	OwnerIDEqualFold    *string  `json:"ownerIDEqualFold,omitempty"`
+	OwnerIDContainsFold *string  `json:"ownerIDContainsFold,omitempty"`
 	// assessment_id field predicates
 	AssessmentID             *string  `json:"assessmentID,omitempty"`
 	AssessmentIdneq          *string  `json:"assessmentIDNEQ,omitempty"`
@@ -1713,6 +1737,22 @@ type AssessmentResponseWhereInput struct {
 	UpdatedByNotNil       *bool    `json:"updatedByNotNil,omitempty"`
 	UpdatedByEqualFold    *string  `json:"updatedByEqualFold,omitempty"`
 	UpdatedByContainsFold *string  `json:"updatedByContainsFold,omitempty"`
+	// owner_id field predicates
+	OwnerID             *string  `json:"ownerID,omitempty"`
+	OwnerIdneq          *string  `json:"ownerIDNEQ,omitempty"`
+	OwnerIDIn           []string `json:"ownerIDIn,omitempty"`
+	OwnerIDNotIn        []string `json:"ownerIDNotIn,omitempty"`
+	OwnerIdgt           *string  `json:"ownerIDGT,omitempty"`
+	OwnerIdgte          *string  `json:"ownerIDGTE,omitempty"`
+	OwnerIdlt           *string  `json:"ownerIDLT,omitempty"`
+	OwnerIdlte          *string  `json:"ownerIDLTE,omitempty"`
+	OwnerIDContains     *string  `json:"ownerIDContains,omitempty"`
+	OwnerIDHasPrefix    *string  `json:"ownerIDHasPrefix,omitempty"`
+	OwnerIDHasSuffix    *string  `json:"ownerIDHasSuffix,omitempty"`
+	OwnerIDIsNil        *bool    `json:"ownerIDIsNil,omitempty"`
+	OwnerIDNotNil       *bool    `json:"ownerIDNotNil,omitempty"`
+	OwnerIDEqualFold    *string  `json:"ownerIDEqualFold,omitempty"`
+	OwnerIDContainsFold *string  `json:"ownerIDContainsFold,omitempty"`
 	// assessment_id field predicates
 	AssessmentID             *string  `json:"assessmentID,omitempty"`
 	AssessmentIdneq          *string  `json:"assessmentIDNEQ,omitempty"`
@@ -1804,6 +1844,18 @@ type AssessmentResponseWhereInput struct {
 	ResponseDataIDNotNil       *bool    `json:"responseDataIDNotNil,omitempty"`
 	ResponseDataIDEqualFold    *string  `json:"responseDataIDEqualFold,omitempty"`
 	ResponseDataIDContainsFold *string  `json:"responseDataIDContainsFold,omitempty"`
+	// owner edge predicates
+	HasOwner     *bool                     `json:"hasOwner,omitempty"`
+	HasOwnerWith []*OrganizationWhereInput `json:"hasOwnerWith,omitempty"`
+	// blocked_groups edge predicates
+	HasBlockedGroups     *bool              `json:"hasBlockedGroups,omitempty"`
+	HasBlockedGroupsWith []*GroupWhereInput `json:"hasBlockedGroupsWith,omitempty"`
+	// editors edge predicates
+	HasEditors     *bool              `json:"hasEditors,omitempty"`
+	HasEditorsWith []*GroupWhereInput `json:"hasEditorsWith,omitempty"`
+	// viewers edge predicates
+	HasViewers     *bool              `json:"hasViewers,omitempty"`
+	HasViewersWith []*GroupWhereInput `json:"hasViewersWith,omitempty"`
 	// assessment edge predicates
 	HasAssessment     *bool                   `json:"hasAssessment,omitempty"`
 	HasAssessmentWith []*AssessmentWhereInput `json:"hasAssessmentWith,omitempty"`
@@ -5628,10 +5680,14 @@ type CreateAssessmentResponseInput struct {
 	// when the user completed the assessment
 	CompletedAt *time.Time `json:"completedAt,omitempty"`
 	// when the assessment is due
-	DueDate      *time.Time `json:"dueDate,omitempty"`
-	AssessmentID string     `json:"assessmentID"`
-	UserID       string     `json:"userID"`
-	DocumentID   *string    `json:"documentID,omitempty"`
+	DueDate         *time.Time `json:"dueDate,omitempty"`
+	OwnerID         *string    `json:"ownerID,omitempty"`
+	BlockedGroupIDs []string   `json:"blockedGroupIDs,omitempty"`
+	EditorIDs       []string   `json:"editorIDs,omitempty"`
+	ViewerIDs       []string   `json:"viewerIDs,omitempty"`
+	AssessmentID    string     `json:"assessmentID"`
+	UserID          string     `json:"userID"`
+	DocumentID      *string    `json:"documentID,omitempty"`
 }
 
 // CreateAssetInput is used for create Asset object.
@@ -6055,6 +6111,12 @@ type CreateGroupInput struct {
 	ScanEditorIDs                        []string                 `json:"scanEditorIDs,omitempty"`
 	ScanBlockedGroupIDs                  []string                 `json:"scanBlockedGroupIDs,omitempty"`
 	ScanViewerIDs                        []string                 `json:"scanViewerIDs,omitempty"`
+	AssessmentEditorIDs                  []string                 `json:"assessmentEditorIDs,omitempty"`
+	AssessmentBlockedGroupIDs            []string                 `json:"assessmentBlockedGroupIDs,omitempty"`
+	AssessmentViewerIDs                  []string                 `json:"assessmentViewerIDs,omitempty"`
+	AssessmentResponseEditorIDs          []string                 `json:"assessmentResponseEditorIDs,omitempty"`
+	AssessmentResponseBlockedGroupIDs    []string                 `json:"assessmentResponseBlockedGroupIDs,omitempty"`
+	AssessmentResponseViewerIDs          []string                 `json:"assessmentResponseViewerIDs,omitempty"`
 	ProcedureEditorIDs                   []string                 `json:"procedureEditorIDs,omitempty"`
 	ProcedureBlockedGroupIDs             []string                 `json:"procedureBlockedGroupIDs,omitempty"`
 	InternalPolicyEditorIDs              []string                 `json:"internalPolicyEditorIDs,omitempty"`
@@ -6426,6 +6488,7 @@ type CreateOrganizationInput struct {
 	AssetIDs                        []string                        `json:"assetIDs,omitempty"`
 	ScanIDs                         []string                        `json:"scanIDs,omitempty"`
 	AssessmentIDs                   []string                        `json:"assessmentIDs,omitempty"`
+	AssessmentResponseIDs           []string                        `json:"assessmentResponseIDs,omitempty"`
 	CreateOrgSettings               *CreateOrganizationSettingInput `json:"createOrgSettings,omitempty"`
 }
 
@@ -10857,6 +10920,12 @@ type Group struct {
 	ScanEditors                        *ScanConnection                  `json:"scanEditors"`
 	ScanBlockedGroups                  *ScanConnection                  `json:"scanBlockedGroups"`
 	ScanViewers                        *ScanConnection                  `json:"scanViewers"`
+	AssessmentEditors                  *AssessmentConnection            `json:"assessmentEditors"`
+	AssessmentBlockedGroups            *AssessmentConnection            `json:"assessmentBlockedGroups"`
+	AssessmentViewers                  *AssessmentConnection            `json:"assessmentViewers"`
+	AssessmentResponseEditors          *AssessmentResponseConnection    `json:"assessmentResponseEditors"`
+	AssessmentResponseBlockedGroups    *AssessmentResponseConnection    `json:"assessmentResponseBlockedGroups"`
+	AssessmentResponseViewers          *AssessmentResponseConnection    `json:"assessmentResponseViewers"`
 	ProcedureEditors                   *ProcedureConnection             `json:"procedureEditors"`
 	ProcedureBlockedGroups             *ProcedureConnection             `json:"procedureBlockedGroups"`
 	InternalPolicyEditors              *InternalPolicyConnection        `json:"internalPolicyEditors"`
@@ -12141,6 +12210,24 @@ type GroupWhereInput struct {
 	// scan_viewers edge predicates
 	HasScanViewers     *bool             `json:"hasScanViewers,omitempty"`
 	HasScanViewersWith []*ScanWhereInput `json:"hasScanViewersWith,omitempty"`
+	// assessment_editors edge predicates
+	HasAssessmentEditors     *bool                   `json:"hasAssessmentEditors,omitempty"`
+	HasAssessmentEditorsWith []*AssessmentWhereInput `json:"hasAssessmentEditorsWith,omitempty"`
+	// assessment_blocked_groups edge predicates
+	HasAssessmentBlockedGroups     *bool                   `json:"hasAssessmentBlockedGroups,omitempty"`
+	HasAssessmentBlockedGroupsWith []*AssessmentWhereInput `json:"hasAssessmentBlockedGroupsWith,omitempty"`
+	// assessment_viewers edge predicates
+	HasAssessmentViewers     *bool                   `json:"hasAssessmentViewers,omitempty"`
+	HasAssessmentViewersWith []*AssessmentWhereInput `json:"hasAssessmentViewersWith,omitempty"`
+	// assessment_response_editors edge predicates
+	HasAssessmentResponseEditors     *bool                           `json:"hasAssessmentResponseEditors,omitempty"`
+	HasAssessmentResponseEditorsWith []*AssessmentResponseWhereInput `json:"hasAssessmentResponseEditorsWith,omitempty"`
+	// assessment_response_blocked_groups edge predicates
+	HasAssessmentResponseBlockedGroups     *bool                           `json:"hasAssessmentResponseBlockedGroups,omitempty"`
+	HasAssessmentResponseBlockedGroupsWith []*AssessmentResponseWhereInput `json:"hasAssessmentResponseBlockedGroupsWith,omitempty"`
+	// assessment_response_viewers edge predicates
+	HasAssessmentResponseViewers     *bool                           `json:"hasAssessmentResponseViewers,omitempty"`
+	HasAssessmentResponseViewersWith []*AssessmentResponseWhereInput `json:"hasAssessmentResponseViewersWith,omitempty"`
 	// procedure_editors edge predicates
 	HasProcedureEditors     *bool                  `json:"hasProcedureEditors,omitempty"`
 	HasProcedureEditorsWith []*ProcedureWhereInput `json:"hasProcedureEditorsWith,omitempty"`
@@ -17540,6 +17627,7 @@ type Organization struct {
 	Assets                        *AssetConnection                      `json:"assets"`
 	Scans                         *ScanConnection                       `json:"scans"`
 	Assessments                   *AssessmentConnection                 `json:"assessments"`
+	AssessmentResponses           *AssessmentResponseConnection         `json:"assessmentResponses"`
 	Members                       *OrgMembershipConnection              `json:"members"`
 }
 
@@ -18847,6 +18935,9 @@ type OrganizationWhereInput struct {
 	// assessments edge predicates
 	HasAssessments     *bool                   `json:"hasAssessments,omitempty"`
 	HasAssessmentsWith []*AssessmentWhereInput `json:"hasAssessmentsWith,omitempty"`
+	// assessment_responses edge predicates
+	HasAssessmentResponses     *bool                           `json:"hasAssessmentResponses,omitempty"`
+	HasAssessmentResponsesWith []*AssessmentResponseWhereInput `json:"hasAssessmentResponsesWith,omitempty"`
 	// members edge predicates
 	HasMembers     *bool                      `json:"hasMembers,omitempty"`
 	HasMembersWith []*OrgMembershipWhereInput `json:"hasMembersWith,omitempty"`
@@ -26820,12 +26911,23 @@ type UpdateAssessmentResponseInput struct {
 	CompletedAt      *time.Time `json:"completedAt,omitempty"`
 	ClearCompletedAt *bool      `json:"clearCompletedAt,omitempty"`
 	// when the assessment is due
-	DueDate       *time.Time `json:"dueDate,omitempty"`
-	ClearDueDate  *bool      `json:"clearDueDate,omitempty"`
-	AssessmentID  *string    `json:"assessmentID,omitempty"`
-	UserID        *string    `json:"userID,omitempty"`
-	DocumentID    *string    `json:"documentID,omitempty"`
-	ClearDocument *bool      `json:"clearDocument,omitempty"`
+	DueDate               *time.Time `json:"dueDate,omitempty"`
+	ClearDueDate          *bool      `json:"clearDueDate,omitempty"`
+	OwnerID               *string    `json:"ownerID,omitempty"`
+	ClearOwner            *bool      `json:"clearOwner,omitempty"`
+	AddBlockedGroupIDs    []string   `json:"addBlockedGroupIDs,omitempty"`
+	RemoveBlockedGroupIDs []string   `json:"removeBlockedGroupIDs,omitempty"`
+	ClearBlockedGroups    *bool      `json:"clearBlockedGroups,omitempty"`
+	AddEditorIDs          []string   `json:"addEditorIDs,omitempty"`
+	RemoveEditorIDs       []string   `json:"removeEditorIDs,omitempty"`
+	ClearEditors          *bool      `json:"clearEditors,omitempty"`
+	AddViewerIDs          []string   `json:"addViewerIDs,omitempty"`
+	RemoveViewerIDs       []string   `json:"removeViewerIDs,omitempty"`
+	ClearViewers          *bool      `json:"clearViewers,omitempty"`
+	AssessmentID          *string    `json:"assessmentID,omitempty"`
+	UserID                *string    `json:"userID,omitempty"`
+	DocumentID            *string    `json:"documentID,omitempty"`
+	ClearDocument         *bool      `json:"clearDocument,omitempty"`
 }
 
 // UpdateAssetInput is used for update Asset object.
@@ -27553,6 +27655,24 @@ type UpdateGroupInput struct {
 	AddScanViewerIDs                           []string                      `json:"addScanViewerIDs,omitempty"`
 	RemoveScanViewerIDs                        []string                      `json:"removeScanViewerIDs,omitempty"`
 	ClearScanViewers                           *bool                         `json:"clearScanViewers,omitempty"`
+	AddAssessmentEditorIDs                     []string                      `json:"addAssessmentEditorIDs,omitempty"`
+	RemoveAssessmentEditorIDs                  []string                      `json:"removeAssessmentEditorIDs,omitempty"`
+	ClearAssessmentEditors                     *bool                         `json:"clearAssessmentEditors,omitempty"`
+	AddAssessmentBlockedGroupIDs               []string                      `json:"addAssessmentBlockedGroupIDs,omitempty"`
+	RemoveAssessmentBlockedGroupIDs            []string                      `json:"removeAssessmentBlockedGroupIDs,omitempty"`
+	ClearAssessmentBlockedGroups               *bool                         `json:"clearAssessmentBlockedGroups,omitempty"`
+	AddAssessmentViewerIDs                     []string                      `json:"addAssessmentViewerIDs,omitempty"`
+	RemoveAssessmentViewerIDs                  []string                      `json:"removeAssessmentViewerIDs,omitempty"`
+	ClearAssessmentViewers                     *bool                         `json:"clearAssessmentViewers,omitempty"`
+	AddAssessmentResponseEditorIDs             []string                      `json:"addAssessmentResponseEditorIDs,omitempty"`
+	RemoveAssessmentResponseEditorIDs          []string                      `json:"removeAssessmentResponseEditorIDs,omitempty"`
+	ClearAssessmentResponseEditors             *bool                         `json:"clearAssessmentResponseEditors,omitempty"`
+	AddAssessmentResponseBlockedGroupIDs       []string                      `json:"addAssessmentResponseBlockedGroupIDs,omitempty"`
+	RemoveAssessmentResponseBlockedGroupIDs    []string                      `json:"removeAssessmentResponseBlockedGroupIDs,omitempty"`
+	ClearAssessmentResponseBlockedGroups       *bool                         `json:"clearAssessmentResponseBlockedGroups,omitempty"`
+	AddAssessmentResponseViewerIDs             []string                      `json:"addAssessmentResponseViewerIDs,omitempty"`
+	RemoveAssessmentResponseViewerIDs          []string                      `json:"removeAssessmentResponseViewerIDs,omitempty"`
+	ClearAssessmentResponseViewers             *bool                         `json:"clearAssessmentResponseViewers,omitempty"`
 	AddProcedureEditorIDs                      []string                      `json:"addProcedureEditorIDs,omitempty"`
 	RemoveProcedureEditorIDs                   []string                      `json:"removeProcedureEditorIDs,omitempty"`
 	ClearProcedureEditors                      *bool                         `json:"clearProcedureEditors,omitempty"`
@@ -28157,6 +28277,9 @@ type UpdateOrganizationInput struct {
 	AddAssessmentIDs                      []string                        `json:"addAssessmentIDs,omitempty"`
 	RemoveAssessmentIDs                   []string                        `json:"removeAssessmentIDs,omitempty"`
 	ClearAssessments                      *bool                           `json:"clearAssessments,omitempty"`
+	AddAssessmentResponseIDs              []string                        `json:"addAssessmentResponseIDs,omitempty"`
+	RemoveAssessmentResponseIDs           []string                        `json:"removeAssessmentResponseIDs,omitempty"`
+	ClearAssessmentResponses              *bool                           `json:"clearAssessmentResponses,omitempty"`
 	AddOrgMembers                         []*CreateOrgMembershipInput     `json:"addOrgMembers,omitempty"`
 	RemoveOrgMembers                      []string                        `json:"removeOrgMembers,omitempty"`
 	UpdateOrgSettings                     *UpdateOrganizationSettingInput `json:"updateOrgSettings,omitempty"`

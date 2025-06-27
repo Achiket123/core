@@ -15,6 +15,7 @@ import (
 	"github.com/theopenlane/core/internal/ent/generated/actionplan"
 	"github.com/theopenlane/core/internal/ent/generated/apitoken"
 	"github.com/theopenlane/core/internal/ent/generated/assessment"
+	"github.com/theopenlane/core/internal/ent/generated/assessmentresponse"
 	"github.com/theopenlane/core/internal/ent/generated/asset"
 	"github.com/theopenlane/core/internal/ent/generated/contact"
 	"github.com/theopenlane/core/internal/ent/generated/control"
@@ -1251,6 +1252,21 @@ func (ou *OrganizationUpdate) AddAssessments(a ...*Assessment) *OrganizationUpda
 		ids[i] = a[i].ID
 	}
 	return ou.AddAssessmentIDs(ids...)
+}
+
+// AddAssessmentResponseIDs adds the "assessment_responses" edge to the AssessmentResponse entity by IDs.
+func (ou *OrganizationUpdate) AddAssessmentResponseIDs(ids ...string) *OrganizationUpdate {
+	ou.mutation.AddAssessmentResponseIDs(ids...)
+	return ou
+}
+
+// AddAssessmentResponses adds the "assessment_responses" edges to the AssessmentResponse entity.
+func (ou *OrganizationUpdate) AddAssessmentResponses(a ...*AssessmentResponse) *OrganizationUpdate {
+	ids := make([]string, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return ou.AddAssessmentResponseIDs(ids...)
 }
 
 // AddMemberIDs adds the "members" edge to the OrgMembership entity by IDs.
@@ -2585,6 +2601,27 @@ func (ou *OrganizationUpdate) RemoveAssessments(a ...*Assessment) *OrganizationU
 		ids[i] = a[i].ID
 	}
 	return ou.RemoveAssessmentIDs(ids...)
+}
+
+// ClearAssessmentResponses clears all "assessment_responses" edges to the AssessmentResponse entity.
+func (ou *OrganizationUpdate) ClearAssessmentResponses() *OrganizationUpdate {
+	ou.mutation.ClearAssessmentResponses()
+	return ou
+}
+
+// RemoveAssessmentResponseIDs removes the "assessment_responses" edge to AssessmentResponse entities by IDs.
+func (ou *OrganizationUpdate) RemoveAssessmentResponseIDs(ids ...string) *OrganizationUpdate {
+	ou.mutation.RemoveAssessmentResponseIDs(ids...)
+	return ou
+}
+
+// RemoveAssessmentResponses removes "assessment_responses" edges to AssessmentResponse entities.
+func (ou *OrganizationUpdate) RemoveAssessmentResponses(a ...*AssessmentResponse) *OrganizationUpdate {
+	ids := make([]string, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return ou.RemoveAssessmentResponseIDs(ids...)
 }
 
 // ClearMembers clears all "members" edges to the OrgMembership entity.
@@ -5825,6 +5862,54 @@ func (ou *OrganizationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if ou.mutation.AssessmentResponsesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   organization.AssessmentResponsesTable,
+			Columns: []string{organization.AssessmentResponsesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(assessmentresponse.FieldID, field.TypeString),
+			},
+		}
+		edge.Schema = ou.schemaConfig.AssessmentResponse
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ou.mutation.RemovedAssessmentResponsesIDs(); len(nodes) > 0 && !ou.mutation.AssessmentResponsesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   organization.AssessmentResponsesTable,
+			Columns: []string{organization.AssessmentResponsesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(assessmentresponse.FieldID, field.TypeString),
+			},
+		}
+		edge.Schema = ou.schemaConfig.AssessmentResponse
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ou.mutation.AssessmentResponsesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   organization.AssessmentResponsesTable,
+			Columns: []string{organization.AssessmentResponsesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(assessmentresponse.FieldID, field.TypeString),
+			},
+		}
+		edge.Schema = ou.schemaConfig.AssessmentResponse
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if ou.mutation.MembersCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -7067,6 +7152,21 @@ func (ouo *OrganizationUpdateOne) AddAssessments(a ...*Assessment) *Organization
 		ids[i] = a[i].ID
 	}
 	return ouo.AddAssessmentIDs(ids...)
+}
+
+// AddAssessmentResponseIDs adds the "assessment_responses" edge to the AssessmentResponse entity by IDs.
+func (ouo *OrganizationUpdateOne) AddAssessmentResponseIDs(ids ...string) *OrganizationUpdateOne {
+	ouo.mutation.AddAssessmentResponseIDs(ids...)
+	return ouo
+}
+
+// AddAssessmentResponses adds the "assessment_responses" edges to the AssessmentResponse entity.
+func (ouo *OrganizationUpdateOne) AddAssessmentResponses(a ...*AssessmentResponse) *OrganizationUpdateOne {
+	ids := make([]string, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return ouo.AddAssessmentResponseIDs(ids...)
 }
 
 // AddMemberIDs adds the "members" edge to the OrgMembership entity by IDs.
@@ -8401,6 +8501,27 @@ func (ouo *OrganizationUpdateOne) RemoveAssessments(a ...*Assessment) *Organizat
 		ids[i] = a[i].ID
 	}
 	return ouo.RemoveAssessmentIDs(ids...)
+}
+
+// ClearAssessmentResponses clears all "assessment_responses" edges to the AssessmentResponse entity.
+func (ouo *OrganizationUpdateOne) ClearAssessmentResponses() *OrganizationUpdateOne {
+	ouo.mutation.ClearAssessmentResponses()
+	return ouo
+}
+
+// RemoveAssessmentResponseIDs removes the "assessment_responses" edge to AssessmentResponse entities by IDs.
+func (ouo *OrganizationUpdateOne) RemoveAssessmentResponseIDs(ids ...string) *OrganizationUpdateOne {
+	ouo.mutation.RemoveAssessmentResponseIDs(ids...)
+	return ouo
+}
+
+// RemoveAssessmentResponses removes "assessment_responses" edges to AssessmentResponse entities.
+func (ouo *OrganizationUpdateOne) RemoveAssessmentResponses(a ...*AssessmentResponse) *OrganizationUpdateOne {
+	ids := make([]string, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return ouo.RemoveAssessmentResponseIDs(ids...)
 }
 
 // ClearMembers clears all "members" edges to the OrgMembership entity.
@@ -11666,6 +11787,54 @@ func (ouo *OrganizationUpdateOne) sqlSave(ctx context.Context) (_node *Organizat
 			},
 		}
 		edge.Schema = ouo.schemaConfig.Assessment
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if ouo.mutation.AssessmentResponsesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   organization.AssessmentResponsesTable,
+			Columns: []string{organization.AssessmentResponsesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(assessmentresponse.FieldID, field.TypeString),
+			},
+		}
+		edge.Schema = ouo.schemaConfig.AssessmentResponse
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ouo.mutation.RemovedAssessmentResponsesIDs(); len(nodes) > 0 && !ouo.mutation.AssessmentResponsesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   organization.AssessmentResponsesTable,
+			Columns: []string{organization.AssessmentResponsesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(assessmentresponse.FieldID, field.TypeString),
+			},
+		}
+		edge.Schema = ouo.schemaConfig.AssessmentResponse
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ouo.mutation.AssessmentResponsesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   organization.AssessmentResponsesTable,
+			Columns: []string{organization.AssessmentResponsesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(assessmentresponse.FieldID, field.TypeString),
+			},
+		}
+		edge.Schema = ouo.schemaConfig.AssessmentResponse
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}

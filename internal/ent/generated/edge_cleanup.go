@@ -10,6 +10,7 @@ import (
 	"github.com/theopenlane/core/internal/ent/generated/actionplan"
 	"github.com/theopenlane/core/internal/ent/generated/apitoken"
 	"github.com/theopenlane/core/internal/ent/generated/assessment"
+	"github.com/theopenlane/core/internal/ent/generated/assessmentresponse"
 	"github.com/theopenlane/core/internal/ent/generated/asset"
 	"github.com/theopenlane/core/internal/ent/generated/contact"
 	"github.com/theopenlane/core/internal/ent/generated/control"
@@ -833,6 +834,13 @@ func OrganizationEdgeCleanup(ctx context.Context, id string) error {
 	if exists, err := FromContext(ctx).Assessment.Query().Where((assessment.HasOwnerWith(organization.ID(id)))).Exist(ctx); err == nil && exists {
 		if assessmentCount, err := FromContext(ctx).Assessment.Delete().Where(assessment.HasOwnerWith(organization.ID(id))).Exec(ctx); err != nil {
 			log.Debug().Err(err).Int("count", assessmentCount).Msg("deleting assessment")
+			return err
+		}
+	}
+
+	if exists, err := FromContext(ctx).AssessmentResponse.Query().Where((assessmentresponse.HasOwnerWith(organization.ID(id)))).Exist(ctx); err == nil && exists {
+		if assessmentresponseCount, err := FromContext(ctx).AssessmentResponse.Delete().Where(assessmentresponse.HasOwnerWith(organization.ID(id))).Exec(ctx); err != nil {
+			log.Debug().Err(err).Int("count", assessmentresponseCount).Msg("deleting assessmentresponse")
 			return err
 		}
 	}

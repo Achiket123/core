@@ -464,16 +464,16 @@ func (ac *AssessmentCreate) createSpec() (*Assessment, *sqlgraph.CreateSpec) {
 	}
 	if nodes := ac.mutation.BlockedGroupsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
 			Table:   assessment.BlockedGroupsTable,
-			Columns: []string{assessment.BlockedGroupsColumn},
+			Columns: assessment.BlockedGroupsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
 			},
 		}
-		edge.Schema = ac.schemaConfig.Group
+		edge.Schema = ac.schemaConfig.AssessmentBlockedGroups
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
@@ -481,16 +481,16 @@ func (ac *AssessmentCreate) createSpec() (*Assessment, *sqlgraph.CreateSpec) {
 	}
 	if nodes := ac.mutation.EditorsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
 			Table:   assessment.EditorsTable,
-			Columns: []string{assessment.EditorsColumn},
+			Columns: assessment.EditorsPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
 			},
 		}
-		edge.Schema = ac.schemaConfig.Group
+		edge.Schema = ac.schemaConfig.AssessmentEditors
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
@@ -498,16 +498,16 @@ func (ac *AssessmentCreate) createSpec() (*Assessment, *sqlgraph.CreateSpec) {
 	}
 	if nodes := ac.mutation.ViewersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
 			Table:   assessment.ViewersTable,
-			Columns: []string{assessment.ViewersColumn},
+			Columns: assessment.ViewersPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
 			},
 		}
-		edge.Schema = ac.schemaConfig.Group
+		edge.Schema = ac.schemaConfig.AssessmentViewers
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}

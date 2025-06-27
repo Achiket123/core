@@ -13,6 +13,7 @@ import (
 	"github.com/theopenlane/core/internal/ent/generated/assessment"
 	"github.com/theopenlane/core/internal/ent/generated/assessmentresponse"
 	"github.com/theopenlane/core/internal/ent/generated/documentdata"
+	"github.com/theopenlane/core/internal/ent/generated/organization"
 	"github.com/theopenlane/core/internal/ent/generated/user"
 	"github.com/theopenlane/core/pkg/enums"
 )
@@ -36,6 +37,8 @@ type AssessmentResponse struct {
 	DeletedBy string `json:"deleted_by,omitempty"`
 	// tags associated with the object
 	Tags []string `json:"tags,omitempty"`
+	// the organization id that owns the object
+	OwnerID string `json:"owner_id,omitempty"`
 	// the assessment this response is for
 	AssessmentID string `json:"assessment_id,omitempty"`
 	// the user who is responding to the assessment
@@ -60,6 +63,14 @@ type AssessmentResponse struct {
 
 // AssessmentResponseEdges holds the relations/edges for other nodes in the graph.
 type AssessmentResponseEdges struct {
+	// Owner holds the value of the owner edge.
+	Owner *Organization `json:"owner,omitempty"`
+	// groups that are blocked from viewing or editing the risk
+	BlockedGroups []*Group `json:"blocked_groups,omitempty"`
+	// provides edit access to the risk to members of the group
+	Editors []*Group `json:"editors,omitempty"`
+	// provides view access to the risk to members of the group
+	Viewers []*Group `json:"viewers,omitempty"`
 	// Assessment holds the value of the assessment edge.
 	Assessment *Assessment `json:"assessment,omitempty"`
 	// User holds the value of the user edge.
@@ -68,9 +79,51 @@ type AssessmentResponseEdges struct {
 	Document *DocumentData `json:"document,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [3]bool
+	loadedTypes [7]bool
 	// totalCount holds the count of the edges above.
-	totalCount [3]map[string]int
+	totalCount [7]map[string]int
+
+	namedBlockedGroups map[string][]*Group
+	namedEditors       map[string][]*Group
+	namedViewers       map[string][]*Group
+}
+
+// OwnerOrErr returns the Owner value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e AssessmentResponseEdges) OwnerOrErr() (*Organization, error) {
+	if e.Owner != nil {
+		return e.Owner, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: organization.Label}
+	}
+	return nil, &NotLoadedError{edge: "owner"}
+}
+
+// BlockedGroupsOrErr returns the BlockedGroups value or an error if the edge
+// was not loaded in eager-loading.
+func (e AssessmentResponseEdges) BlockedGroupsOrErr() ([]*Group, error) {
+	if e.loadedTypes[1] {
+		return e.BlockedGroups, nil
+	}
+	return nil, &NotLoadedError{edge: "blocked_groups"}
+}
+
+// EditorsOrErr returns the Editors value or an error if the edge
+// was not loaded in eager-loading.
+func (e AssessmentResponseEdges) EditorsOrErr() ([]*Group, error) {
+	if e.loadedTypes[2] {
+		return e.Editors, nil
+	}
+	return nil, &NotLoadedError{edge: "editors"}
+}
+
+// ViewersOrErr returns the Viewers value or an error if the edge
+// was not loaded in eager-loading.
+func (e AssessmentResponseEdges) ViewersOrErr() ([]*Group, error) {
+	if e.loadedTypes[3] {
+		return e.Viewers, nil
+	}
+	return nil, &NotLoadedError{edge: "viewers"}
 }
 
 // AssessmentOrErr returns the Assessment value or an error if the edge
@@ -78,7 +131,7 @@ type AssessmentResponseEdges struct {
 func (e AssessmentResponseEdges) AssessmentOrErr() (*Assessment, error) {
 	if e.Assessment != nil {
 		return e.Assessment, nil
-	} else if e.loadedTypes[0] {
+	} else if e.loadedTypes[4] {
 		return nil, &NotFoundError{label: assessment.Label}
 	}
 	return nil, &NotLoadedError{edge: "assessment"}
@@ -89,7 +142,7 @@ func (e AssessmentResponseEdges) AssessmentOrErr() (*Assessment, error) {
 func (e AssessmentResponseEdges) UserOrErr() (*User, error) {
 	if e.User != nil {
 		return e.User, nil
-	} else if e.loadedTypes[1] {
+	} else if e.loadedTypes[5] {
 		return nil, &NotFoundError{label: user.Label}
 	}
 	return nil, &NotLoadedError{edge: "user"}
@@ -100,7 +153,7 @@ func (e AssessmentResponseEdges) UserOrErr() (*User, error) {
 func (e AssessmentResponseEdges) DocumentOrErr() (*DocumentData, error) {
 	if e.Document != nil {
 		return e.Document, nil
-	} else if e.loadedTypes[2] {
+	} else if e.loadedTypes[6] {
 		return nil, &NotFoundError{label: documentdata.Label}
 	}
 	return nil, &NotLoadedError{edge: "document"}
@@ -113,7 +166,7 @@ func (*AssessmentResponse) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case assessmentresponse.FieldTags:
 			values[i] = new([]byte)
-		case assessmentresponse.FieldID, assessmentresponse.FieldCreatedBy, assessmentresponse.FieldUpdatedBy, assessmentresponse.FieldDeletedBy, assessmentresponse.FieldAssessmentID, assessmentresponse.FieldUserID, assessmentresponse.FieldStatus, assessmentresponse.FieldResponseDataID:
+		case assessmentresponse.FieldID, assessmentresponse.FieldCreatedBy, assessmentresponse.FieldUpdatedBy, assessmentresponse.FieldDeletedBy, assessmentresponse.FieldOwnerID, assessmentresponse.FieldAssessmentID, assessmentresponse.FieldUserID, assessmentresponse.FieldStatus, assessmentresponse.FieldResponseDataID:
 			values[i] = new(sql.NullString)
 		case assessmentresponse.FieldCreatedAt, assessmentresponse.FieldUpdatedAt, assessmentresponse.FieldDeletedAt, assessmentresponse.FieldAssignedAt, assessmentresponse.FieldStartedAt, assessmentresponse.FieldCompletedAt, assessmentresponse.FieldDueDate:
 			values[i] = new(sql.NullTime)
@@ -182,6 +235,12 @@ func (ar *AssessmentResponse) assignValues(columns []string, values []any) error
 					return fmt.Errorf("unmarshal field tags: %w", err)
 				}
 			}
+		case assessmentresponse.FieldOwnerID:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field owner_id", values[i])
+			} else if value.Valid {
+				ar.OwnerID = value.String
+			}
 		case assessmentresponse.FieldAssessmentID:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field assessment_id", values[i])
@@ -243,6 +302,26 @@ func (ar *AssessmentResponse) Value(name string) (ent.Value, error) {
 	return ar.selectValues.Get(name)
 }
 
+// QueryOwner queries the "owner" edge of the AssessmentResponse entity.
+func (ar *AssessmentResponse) QueryOwner() *OrganizationQuery {
+	return NewAssessmentResponseClient(ar.config).QueryOwner(ar)
+}
+
+// QueryBlockedGroups queries the "blocked_groups" edge of the AssessmentResponse entity.
+func (ar *AssessmentResponse) QueryBlockedGroups() *GroupQuery {
+	return NewAssessmentResponseClient(ar.config).QueryBlockedGroups(ar)
+}
+
+// QueryEditors queries the "editors" edge of the AssessmentResponse entity.
+func (ar *AssessmentResponse) QueryEditors() *GroupQuery {
+	return NewAssessmentResponseClient(ar.config).QueryEditors(ar)
+}
+
+// QueryViewers queries the "viewers" edge of the AssessmentResponse entity.
+func (ar *AssessmentResponse) QueryViewers() *GroupQuery {
+	return NewAssessmentResponseClient(ar.config).QueryViewers(ar)
+}
+
 // QueryAssessment queries the "assessment" edge of the AssessmentResponse entity.
 func (ar *AssessmentResponse) QueryAssessment() *AssessmentQuery {
 	return NewAssessmentResponseClient(ar.config).QueryAssessment(ar)
@@ -302,6 +381,9 @@ func (ar *AssessmentResponse) String() string {
 	builder.WriteString("tags=")
 	builder.WriteString(fmt.Sprintf("%v", ar.Tags))
 	builder.WriteString(", ")
+	builder.WriteString("owner_id=")
+	builder.WriteString(ar.OwnerID)
+	builder.WriteString(", ")
 	builder.WriteString("assessment_id=")
 	builder.WriteString(ar.AssessmentID)
 	builder.WriteString(", ")
@@ -327,6 +409,78 @@ func (ar *AssessmentResponse) String() string {
 	builder.WriteString(ar.ResponseDataID)
 	builder.WriteByte(')')
 	return builder.String()
+}
+
+// NamedBlockedGroups returns the BlockedGroups named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (ar *AssessmentResponse) NamedBlockedGroups(name string) ([]*Group, error) {
+	if ar.Edges.namedBlockedGroups == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := ar.Edges.namedBlockedGroups[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (ar *AssessmentResponse) appendNamedBlockedGroups(name string, edges ...*Group) {
+	if ar.Edges.namedBlockedGroups == nil {
+		ar.Edges.namedBlockedGroups = make(map[string][]*Group)
+	}
+	if len(edges) == 0 {
+		ar.Edges.namedBlockedGroups[name] = []*Group{}
+	} else {
+		ar.Edges.namedBlockedGroups[name] = append(ar.Edges.namedBlockedGroups[name], edges...)
+	}
+}
+
+// NamedEditors returns the Editors named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (ar *AssessmentResponse) NamedEditors(name string) ([]*Group, error) {
+	if ar.Edges.namedEditors == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := ar.Edges.namedEditors[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (ar *AssessmentResponse) appendNamedEditors(name string, edges ...*Group) {
+	if ar.Edges.namedEditors == nil {
+		ar.Edges.namedEditors = make(map[string][]*Group)
+	}
+	if len(edges) == 0 {
+		ar.Edges.namedEditors[name] = []*Group{}
+	} else {
+		ar.Edges.namedEditors[name] = append(ar.Edges.namedEditors[name], edges...)
+	}
+}
+
+// NamedViewers returns the Viewers named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (ar *AssessmentResponse) NamedViewers(name string) ([]*Group, error) {
+	if ar.Edges.namedViewers == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := ar.Edges.namedViewers[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (ar *AssessmentResponse) appendNamedViewers(name string, edges ...*Group) {
+	if ar.Edges.namedViewers == nil {
+		ar.Edges.namedViewers = make(map[string][]*Group)
+	}
+	if len(edges) == 0 {
+		ar.Edges.namedViewers[name] = []*Group{}
+	} else {
+		ar.Edges.namedViewers[name] = append(ar.Edges.namedViewers[name], edges...)
+	}
 }
 
 // AssessmentResponses is a parsable slice of AssessmentResponse.

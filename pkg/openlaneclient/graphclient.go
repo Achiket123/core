@@ -2238,6 +2238,7 @@ func (t *AdminSearch_AdminSearch_AssessmentResponses_PageInfo) GetStartCursor() 
 type AdminSearch_AdminSearch_AssessmentResponses_Edges_Node struct {
 	AssessmentID   string   "json:\"assessmentID\" graphql:\"assessmentID\""
 	ID             string   "json:\"id\" graphql:\"id\""
+	OwnerID        *string  "json:\"ownerID,omitempty\" graphql:\"ownerID\""
 	ResponseDataID *string  "json:\"responseDataID,omitempty\" graphql:\"responseDataID\""
 	Tags           []string "json:\"tags,omitempty\" graphql:\"tags\""
 	UserID         string   "json:\"userID\" graphql:\"userID\""
@@ -2254,6 +2255,12 @@ func (t *AdminSearch_AdminSearch_AssessmentResponses_Edges_Node) GetID() string 
 		t = &AdminSearch_AdminSearch_AssessmentResponses_Edges_Node{}
 	}
 	return t.ID
+}
+func (t *AdminSearch_AdminSearch_AssessmentResponses_Edges_Node) GetOwnerID() *string {
+	if t == nil {
+		t = &AdminSearch_AdminSearch_AssessmentResponses_Edges_Node{}
+	}
+	return t.OwnerID
 }
 func (t *AdminSearch_AdminSearch_AssessmentResponses_Edges_Node) GetResponseDataID() *string {
 	if t == nil {
@@ -90512,6 +90519,7 @@ const AdminSearchDocument = `query AdminSearch ($query: String!) {
 				node {
 					id
 					tags
+					ownerID
 					assessmentID
 					userID
 					responseDataID

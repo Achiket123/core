@@ -236,6 +236,7 @@ func adminSearchAssessmentResponses(ctx context.Context, query string, after *en
 					likeQuery := "%" + query + "%"
 					s.Where(sql.ExprP("(tags)::text LIKE $2", likeQuery)) // search by Tags
 				},
+				assessmentresponse.OwnerIDContainsFold(query),        // search by OwnerID
 				assessmentresponse.AssessmentIDContainsFold(query),   // search by AssessmentID
 				assessmentresponse.UserIDContainsFold(query),         // search by UserID
 				assessmentresponse.ResponseDataIDContainsFold(query), // search by ResponseDataID

@@ -83,7 +83,10 @@ func (AssessmentResponse) Fields() []ent.Field {
 
 func (ar AssessmentResponse) Mixin() []ent.Mixin {
 	return mixinConfig{
-		additionalMixins: []ent.Mixin{},
+		additionalMixins: []ent.Mixin{
+			newOrgOwnedMixin(ar),
+			newGroupPermissionsMixin(),
+		},
 	}.getMixins()
 }
 

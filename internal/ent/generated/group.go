@@ -53,9 +53,6 @@ type Group struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the GroupQuery when eager-loading is set.
 	Edges                                        GroupEdges `json:"edges"`
-	assessment_blocked_groups                    *string
-	assessment_editors                           *string
-	assessment_viewers                           *string
 	asset_blocked_groups                         *string
 	asset_editors                                *string
 	asset_viewers                                *string
@@ -119,6 +116,18 @@ type GroupEdges struct {
 	ScanBlockedGroups []*Scan `json:"scan_blocked_groups,omitempty"`
 	// ScanViewers holds the value of the scan_viewers edge.
 	ScanViewers []*Scan `json:"scan_viewers,omitempty"`
+	// AssessmentEditors holds the value of the assessment_editors edge.
+	AssessmentEditors []*Assessment `json:"assessment_editors,omitempty"`
+	// AssessmentBlockedGroups holds the value of the assessment_blocked_groups edge.
+	AssessmentBlockedGroups []*Assessment `json:"assessment_blocked_groups,omitempty"`
+	// AssessmentViewers holds the value of the assessment_viewers edge.
+	AssessmentViewers []*Assessment `json:"assessment_viewers,omitempty"`
+	// AssessmentResponseEditors holds the value of the assessment_response_editors edge.
+	AssessmentResponseEditors []*AssessmentResponse `json:"assessment_response_editors,omitempty"`
+	// AssessmentResponseBlockedGroups holds the value of the assessment_response_blocked_groups edge.
+	AssessmentResponseBlockedGroups []*AssessmentResponse `json:"assessment_response_blocked_groups,omitempty"`
+	// AssessmentResponseViewers holds the value of the assessment_response_viewers edge.
+	AssessmentResponseViewers []*AssessmentResponse `json:"assessment_response_viewers,omitempty"`
 	// ProcedureEditors holds the value of the procedure_editors edge.
 	ProcedureEditors []*Procedure `json:"procedure_editors,omitempty"`
 	// ProcedureBlockedGroups holds the value of the procedure_blocked_groups edge.
@@ -151,9 +160,9 @@ type GroupEdges struct {
 	Members []*GroupMembership `json:"members,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [34]bool
+	loadedTypes [40]bool
 	// totalCount holds the count of the edges above.
-	totalCount [34]map[string]int
+	totalCount [40]map[string]int
 
 	namedProgramEditors                     map[string][]*Program
 	namedProgramBlockedGroups               map[string][]*Program
@@ -173,6 +182,12 @@ type GroupEdges struct {
 	namedScanEditors                        map[string][]*Scan
 	namedScanBlockedGroups                  map[string][]*Scan
 	namedScanViewers                        map[string][]*Scan
+	namedAssessmentEditors                  map[string][]*Assessment
+	namedAssessmentBlockedGroups            map[string][]*Assessment
+	namedAssessmentViewers                  map[string][]*Assessment
+	namedAssessmentResponseEditors          map[string][]*AssessmentResponse
+	namedAssessmentResponseBlockedGroups    map[string][]*AssessmentResponse
+	namedAssessmentResponseViewers          map[string][]*AssessmentResponse
 	namedProcedureEditors                   map[string][]*Procedure
 	namedProcedureBlockedGroups             map[string][]*Procedure
 	namedInternalPolicyEditors              map[string][]*InternalPolicy
@@ -362,10 +377,64 @@ func (e GroupEdges) ScanViewersOrErr() ([]*Scan, error) {
 	return nil, &NotLoadedError{edge: "scan_viewers"}
 }
 
+// AssessmentEditorsOrErr returns the AssessmentEditors value or an error if the edge
+// was not loaded in eager-loading.
+func (e GroupEdges) AssessmentEditorsOrErr() ([]*Assessment, error) {
+	if e.loadedTypes[19] {
+		return e.AssessmentEditors, nil
+	}
+	return nil, &NotLoadedError{edge: "assessment_editors"}
+}
+
+// AssessmentBlockedGroupsOrErr returns the AssessmentBlockedGroups value or an error if the edge
+// was not loaded in eager-loading.
+func (e GroupEdges) AssessmentBlockedGroupsOrErr() ([]*Assessment, error) {
+	if e.loadedTypes[20] {
+		return e.AssessmentBlockedGroups, nil
+	}
+	return nil, &NotLoadedError{edge: "assessment_blocked_groups"}
+}
+
+// AssessmentViewersOrErr returns the AssessmentViewers value or an error if the edge
+// was not loaded in eager-loading.
+func (e GroupEdges) AssessmentViewersOrErr() ([]*Assessment, error) {
+	if e.loadedTypes[21] {
+		return e.AssessmentViewers, nil
+	}
+	return nil, &NotLoadedError{edge: "assessment_viewers"}
+}
+
+// AssessmentResponseEditorsOrErr returns the AssessmentResponseEditors value or an error if the edge
+// was not loaded in eager-loading.
+func (e GroupEdges) AssessmentResponseEditorsOrErr() ([]*AssessmentResponse, error) {
+	if e.loadedTypes[22] {
+		return e.AssessmentResponseEditors, nil
+	}
+	return nil, &NotLoadedError{edge: "assessment_response_editors"}
+}
+
+// AssessmentResponseBlockedGroupsOrErr returns the AssessmentResponseBlockedGroups value or an error if the edge
+// was not loaded in eager-loading.
+func (e GroupEdges) AssessmentResponseBlockedGroupsOrErr() ([]*AssessmentResponse, error) {
+	if e.loadedTypes[23] {
+		return e.AssessmentResponseBlockedGroups, nil
+	}
+	return nil, &NotLoadedError{edge: "assessment_response_blocked_groups"}
+}
+
+// AssessmentResponseViewersOrErr returns the AssessmentResponseViewers value or an error if the edge
+// was not loaded in eager-loading.
+func (e GroupEdges) AssessmentResponseViewersOrErr() ([]*AssessmentResponse, error) {
+	if e.loadedTypes[24] {
+		return e.AssessmentResponseViewers, nil
+	}
+	return nil, &NotLoadedError{edge: "assessment_response_viewers"}
+}
+
 // ProcedureEditorsOrErr returns the ProcedureEditors value or an error if the edge
 // was not loaded in eager-loading.
 func (e GroupEdges) ProcedureEditorsOrErr() ([]*Procedure, error) {
-	if e.loadedTypes[19] {
+	if e.loadedTypes[25] {
 		return e.ProcedureEditors, nil
 	}
 	return nil, &NotLoadedError{edge: "procedure_editors"}
@@ -374,7 +443,7 @@ func (e GroupEdges) ProcedureEditorsOrErr() ([]*Procedure, error) {
 // ProcedureBlockedGroupsOrErr returns the ProcedureBlockedGroups value or an error if the edge
 // was not loaded in eager-loading.
 func (e GroupEdges) ProcedureBlockedGroupsOrErr() ([]*Procedure, error) {
-	if e.loadedTypes[20] {
+	if e.loadedTypes[26] {
 		return e.ProcedureBlockedGroups, nil
 	}
 	return nil, &NotLoadedError{edge: "procedure_blocked_groups"}
@@ -383,7 +452,7 @@ func (e GroupEdges) ProcedureBlockedGroupsOrErr() ([]*Procedure, error) {
 // InternalPolicyEditorsOrErr returns the InternalPolicyEditors value or an error if the edge
 // was not loaded in eager-loading.
 func (e GroupEdges) InternalPolicyEditorsOrErr() ([]*InternalPolicy, error) {
-	if e.loadedTypes[21] {
+	if e.loadedTypes[27] {
 		return e.InternalPolicyEditors, nil
 	}
 	return nil, &NotLoadedError{edge: "internal_policy_editors"}
@@ -392,7 +461,7 @@ func (e GroupEdges) InternalPolicyEditorsOrErr() ([]*InternalPolicy, error) {
 // InternalPolicyBlockedGroupsOrErr returns the InternalPolicyBlockedGroups value or an error if the edge
 // was not loaded in eager-loading.
 func (e GroupEdges) InternalPolicyBlockedGroupsOrErr() ([]*InternalPolicy, error) {
-	if e.loadedTypes[22] {
+	if e.loadedTypes[28] {
 		return e.InternalPolicyBlockedGroups, nil
 	}
 	return nil, &NotLoadedError{edge: "internal_policy_blocked_groups"}
@@ -401,7 +470,7 @@ func (e GroupEdges) InternalPolicyBlockedGroupsOrErr() ([]*InternalPolicy, error
 // ControlEditorsOrErr returns the ControlEditors value or an error if the edge
 // was not loaded in eager-loading.
 func (e GroupEdges) ControlEditorsOrErr() ([]*Control, error) {
-	if e.loadedTypes[23] {
+	if e.loadedTypes[29] {
 		return e.ControlEditors, nil
 	}
 	return nil, &NotLoadedError{edge: "control_editors"}
@@ -410,7 +479,7 @@ func (e GroupEdges) ControlEditorsOrErr() ([]*Control, error) {
 // ControlBlockedGroupsOrErr returns the ControlBlockedGroups value or an error if the edge
 // was not loaded in eager-loading.
 func (e GroupEdges) ControlBlockedGroupsOrErr() ([]*Control, error) {
-	if e.loadedTypes[24] {
+	if e.loadedTypes[30] {
 		return e.ControlBlockedGroups, nil
 	}
 	return nil, &NotLoadedError{edge: "control_blocked_groups"}
@@ -419,7 +488,7 @@ func (e GroupEdges) ControlBlockedGroupsOrErr() ([]*Control, error) {
 // MappedControlEditorsOrErr returns the MappedControlEditors value or an error if the edge
 // was not loaded in eager-loading.
 func (e GroupEdges) MappedControlEditorsOrErr() ([]*MappedControl, error) {
-	if e.loadedTypes[25] {
+	if e.loadedTypes[31] {
 		return e.MappedControlEditors, nil
 	}
 	return nil, &NotLoadedError{edge: "mapped_control_editors"}
@@ -428,7 +497,7 @@ func (e GroupEdges) MappedControlEditorsOrErr() ([]*MappedControl, error) {
 // MappedControlBlockedGroupsOrErr returns the MappedControlBlockedGroups value or an error if the edge
 // was not loaded in eager-loading.
 func (e GroupEdges) MappedControlBlockedGroupsOrErr() ([]*MappedControl, error) {
-	if e.loadedTypes[26] {
+	if e.loadedTypes[32] {
 		return e.MappedControlBlockedGroups, nil
 	}
 	return nil, &NotLoadedError{edge: "mapped_control_blocked_groups"}
@@ -439,7 +508,7 @@ func (e GroupEdges) MappedControlBlockedGroupsOrErr() ([]*MappedControl, error) 
 func (e GroupEdges) SettingOrErr() (*GroupSetting, error) {
 	if e.Setting != nil {
 		return e.Setting, nil
-	} else if e.loadedTypes[27] {
+	} else if e.loadedTypes[33] {
 		return nil, &NotFoundError{label: groupsetting.Label}
 	}
 	return nil, &NotLoadedError{edge: "setting"}
@@ -448,7 +517,7 @@ func (e GroupEdges) SettingOrErr() (*GroupSetting, error) {
 // UsersOrErr returns the Users value or an error if the edge
 // was not loaded in eager-loading.
 func (e GroupEdges) UsersOrErr() ([]*User, error) {
-	if e.loadedTypes[28] {
+	if e.loadedTypes[34] {
 		return e.Users, nil
 	}
 	return nil, &NotLoadedError{edge: "users"}
@@ -457,7 +526,7 @@ func (e GroupEdges) UsersOrErr() ([]*User, error) {
 // EventsOrErr returns the Events value or an error if the edge
 // was not loaded in eager-loading.
 func (e GroupEdges) EventsOrErr() ([]*Event, error) {
-	if e.loadedTypes[29] {
+	if e.loadedTypes[35] {
 		return e.Events, nil
 	}
 	return nil, &NotLoadedError{edge: "events"}
@@ -466,7 +535,7 @@ func (e GroupEdges) EventsOrErr() ([]*Event, error) {
 // IntegrationsOrErr returns the Integrations value or an error if the edge
 // was not loaded in eager-loading.
 func (e GroupEdges) IntegrationsOrErr() ([]*Integration, error) {
-	if e.loadedTypes[30] {
+	if e.loadedTypes[36] {
 		return e.Integrations, nil
 	}
 	return nil, &NotLoadedError{edge: "integrations"}
@@ -475,7 +544,7 @@ func (e GroupEdges) IntegrationsOrErr() ([]*Integration, error) {
 // FilesOrErr returns the Files value or an error if the edge
 // was not loaded in eager-loading.
 func (e GroupEdges) FilesOrErr() ([]*File, error) {
-	if e.loadedTypes[31] {
+	if e.loadedTypes[37] {
 		return e.Files, nil
 	}
 	return nil, &NotLoadedError{edge: "files"}
@@ -484,7 +553,7 @@ func (e GroupEdges) FilesOrErr() ([]*File, error) {
 // TasksOrErr returns the Tasks value or an error if the edge
 // was not loaded in eager-loading.
 func (e GroupEdges) TasksOrErr() ([]*Task, error) {
-	if e.loadedTypes[32] {
+	if e.loadedTypes[38] {
 		return e.Tasks, nil
 	}
 	return nil, &NotLoadedError{edge: "tasks"}
@@ -493,7 +562,7 @@ func (e GroupEdges) TasksOrErr() ([]*Task, error) {
 // MembersOrErr returns the Members value or an error if the edge
 // was not loaded in eager-loading.
 func (e GroupEdges) MembersOrErr() ([]*GroupMembership, error) {
-	if e.loadedTypes[33] {
+	if e.loadedTypes[39] {
 		return e.Members, nil
 	}
 	return nil, &NotLoadedError{edge: "members"}
@@ -512,51 +581,45 @@ func (*Group) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullString)
 		case group.FieldCreatedAt, group.FieldUpdatedAt, group.FieldDeletedAt:
 			values[i] = new(sql.NullTime)
-		case group.ForeignKeys[0]: // assessment_blocked_groups
+		case group.ForeignKeys[0]: // asset_blocked_groups
 			values[i] = new(sql.NullString)
-		case group.ForeignKeys[1]: // assessment_editors
+		case group.ForeignKeys[1]: // asset_editors
 			values[i] = new(sql.NullString)
-		case group.ForeignKeys[2]: // assessment_viewers
+		case group.ForeignKeys[2]: // asset_viewers
 			values[i] = new(sql.NullString)
-		case group.ForeignKeys[3]: // asset_blocked_groups
+		case group.ForeignKeys[3]: // entity_blocked_groups
 			values[i] = new(sql.NullString)
-		case group.ForeignKeys[4]: // asset_editors
+		case group.ForeignKeys[4]: // entity_editors
 			values[i] = new(sql.NullString)
-		case group.ForeignKeys[5]: // asset_viewers
+		case group.ForeignKeys[5]: // entity_viewers
 			values[i] = new(sql.NullString)
-		case group.ForeignKeys[6]: // entity_blocked_groups
+		case group.ForeignKeys[6]: // organization_control_creators
 			values[i] = new(sql.NullString)
-		case group.ForeignKeys[7]: // entity_editors
+		case group.ForeignKeys[7]: // organization_control_implementation_creators
 			values[i] = new(sql.NullString)
-		case group.ForeignKeys[8]: // entity_viewers
+		case group.ForeignKeys[8]: // organization_control_objective_creators
 			values[i] = new(sql.NullString)
-		case group.ForeignKeys[9]: // organization_control_creators
+		case group.ForeignKeys[9]: // organization_evidence_creators
 			values[i] = new(sql.NullString)
-		case group.ForeignKeys[10]: // organization_control_implementation_creators
+		case group.ForeignKeys[10]: // organization_group_creators
 			values[i] = new(sql.NullString)
-		case group.ForeignKeys[11]: // organization_control_objective_creators
+		case group.ForeignKeys[11]: // organization_internal_policy_creators
 			values[i] = new(sql.NullString)
-		case group.ForeignKeys[12]: // organization_evidence_creators
+		case group.ForeignKeys[12]: // organization_mapped_control_creators
 			values[i] = new(sql.NullString)
-		case group.ForeignKeys[13]: // organization_group_creators
+		case group.ForeignKeys[13]: // organization_narrative_creators
 			values[i] = new(sql.NullString)
-		case group.ForeignKeys[14]: // organization_internal_policy_creators
+		case group.ForeignKeys[14]: // organization_procedure_creators
 			values[i] = new(sql.NullString)
-		case group.ForeignKeys[15]: // organization_mapped_control_creators
+		case group.ForeignKeys[15]: // organization_program_creators
 			values[i] = new(sql.NullString)
-		case group.ForeignKeys[16]: // organization_narrative_creators
+		case group.ForeignKeys[16]: // organization_risk_creators
 			values[i] = new(sql.NullString)
-		case group.ForeignKeys[17]: // organization_procedure_creators
+		case group.ForeignKeys[17]: // organization_scheduled_job_creators
 			values[i] = new(sql.NullString)
-		case group.ForeignKeys[18]: // organization_program_creators
+		case group.ForeignKeys[18]: // organization_standard_creators
 			values[i] = new(sql.NullString)
-		case group.ForeignKeys[19]: // organization_risk_creators
-			values[i] = new(sql.NullString)
-		case group.ForeignKeys[20]: // organization_scheduled_job_creators
-			values[i] = new(sql.NullString)
-		case group.ForeignKeys[21]: // organization_standard_creators
-			values[i] = new(sql.NullString)
-		case group.ForeignKeys[22]: // organization_template_creators
+		case group.ForeignKeys[19]: // organization_template_creators
 			values[i] = new(sql.NullString)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -673,159 +736,138 @@ func (gr *Group) assignValues(columns []string, values []any) error {
 			}
 		case group.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field assessment_blocked_groups", values[i])
-			} else if value.Valid {
-				gr.assessment_blocked_groups = new(string)
-				*gr.assessment_blocked_groups = value.String
-			}
-		case group.ForeignKeys[1]:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field assessment_editors", values[i])
-			} else if value.Valid {
-				gr.assessment_editors = new(string)
-				*gr.assessment_editors = value.String
-			}
-		case group.ForeignKeys[2]:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field assessment_viewers", values[i])
-			} else if value.Valid {
-				gr.assessment_viewers = new(string)
-				*gr.assessment_viewers = value.String
-			}
-		case group.ForeignKeys[3]:
-			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field asset_blocked_groups", values[i])
 			} else if value.Valid {
 				gr.asset_blocked_groups = new(string)
 				*gr.asset_blocked_groups = value.String
 			}
-		case group.ForeignKeys[4]:
+		case group.ForeignKeys[1]:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field asset_editors", values[i])
 			} else if value.Valid {
 				gr.asset_editors = new(string)
 				*gr.asset_editors = value.String
 			}
-		case group.ForeignKeys[5]:
+		case group.ForeignKeys[2]:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field asset_viewers", values[i])
 			} else if value.Valid {
 				gr.asset_viewers = new(string)
 				*gr.asset_viewers = value.String
 			}
-		case group.ForeignKeys[6]:
+		case group.ForeignKeys[3]:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field entity_blocked_groups", values[i])
 			} else if value.Valid {
 				gr.entity_blocked_groups = new(string)
 				*gr.entity_blocked_groups = value.String
 			}
-		case group.ForeignKeys[7]:
+		case group.ForeignKeys[4]:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field entity_editors", values[i])
 			} else if value.Valid {
 				gr.entity_editors = new(string)
 				*gr.entity_editors = value.String
 			}
-		case group.ForeignKeys[8]:
+		case group.ForeignKeys[5]:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field entity_viewers", values[i])
 			} else if value.Valid {
 				gr.entity_viewers = new(string)
 				*gr.entity_viewers = value.String
 			}
-		case group.ForeignKeys[9]:
+		case group.ForeignKeys[6]:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field organization_control_creators", values[i])
 			} else if value.Valid {
 				gr.organization_control_creators = new(string)
 				*gr.organization_control_creators = value.String
 			}
-		case group.ForeignKeys[10]:
+		case group.ForeignKeys[7]:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field organization_control_implementation_creators", values[i])
 			} else if value.Valid {
 				gr.organization_control_implementation_creators = new(string)
 				*gr.organization_control_implementation_creators = value.String
 			}
-		case group.ForeignKeys[11]:
+		case group.ForeignKeys[8]:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field organization_control_objective_creators", values[i])
 			} else if value.Valid {
 				gr.organization_control_objective_creators = new(string)
 				*gr.organization_control_objective_creators = value.String
 			}
-		case group.ForeignKeys[12]:
+		case group.ForeignKeys[9]:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field organization_evidence_creators", values[i])
 			} else if value.Valid {
 				gr.organization_evidence_creators = new(string)
 				*gr.organization_evidence_creators = value.String
 			}
-		case group.ForeignKeys[13]:
+		case group.ForeignKeys[10]:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field organization_group_creators", values[i])
 			} else if value.Valid {
 				gr.organization_group_creators = new(string)
 				*gr.organization_group_creators = value.String
 			}
-		case group.ForeignKeys[14]:
+		case group.ForeignKeys[11]:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field organization_internal_policy_creators", values[i])
 			} else if value.Valid {
 				gr.organization_internal_policy_creators = new(string)
 				*gr.organization_internal_policy_creators = value.String
 			}
-		case group.ForeignKeys[15]:
+		case group.ForeignKeys[12]:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field organization_mapped_control_creators", values[i])
 			} else if value.Valid {
 				gr.organization_mapped_control_creators = new(string)
 				*gr.organization_mapped_control_creators = value.String
 			}
-		case group.ForeignKeys[16]:
+		case group.ForeignKeys[13]:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field organization_narrative_creators", values[i])
 			} else if value.Valid {
 				gr.organization_narrative_creators = new(string)
 				*gr.organization_narrative_creators = value.String
 			}
-		case group.ForeignKeys[17]:
+		case group.ForeignKeys[14]:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field organization_procedure_creators", values[i])
 			} else if value.Valid {
 				gr.organization_procedure_creators = new(string)
 				*gr.organization_procedure_creators = value.String
 			}
-		case group.ForeignKeys[18]:
+		case group.ForeignKeys[15]:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field organization_program_creators", values[i])
 			} else if value.Valid {
 				gr.organization_program_creators = new(string)
 				*gr.organization_program_creators = value.String
 			}
-		case group.ForeignKeys[19]:
+		case group.ForeignKeys[16]:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field organization_risk_creators", values[i])
 			} else if value.Valid {
 				gr.organization_risk_creators = new(string)
 				*gr.organization_risk_creators = value.String
 			}
-		case group.ForeignKeys[20]:
+		case group.ForeignKeys[17]:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field organization_scheduled_job_creators", values[i])
 			} else if value.Valid {
 				gr.organization_scheduled_job_creators = new(string)
 				*gr.organization_scheduled_job_creators = value.String
 			}
-		case group.ForeignKeys[21]:
+		case group.ForeignKeys[18]:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field organization_standard_creators", values[i])
 			} else if value.Valid {
 				gr.organization_standard_creators = new(string)
 				*gr.organization_standard_creators = value.String
 			}
-		case group.ForeignKeys[22]:
+		case group.ForeignKeys[19]:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field organization_template_creators", values[i])
 			} else if value.Valid {
@@ -938,6 +980,36 @@ func (gr *Group) QueryScanBlockedGroups() *ScanQuery {
 // QueryScanViewers queries the "scan_viewers" edge of the Group entity.
 func (gr *Group) QueryScanViewers() *ScanQuery {
 	return NewGroupClient(gr.config).QueryScanViewers(gr)
+}
+
+// QueryAssessmentEditors queries the "assessment_editors" edge of the Group entity.
+func (gr *Group) QueryAssessmentEditors() *AssessmentQuery {
+	return NewGroupClient(gr.config).QueryAssessmentEditors(gr)
+}
+
+// QueryAssessmentBlockedGroups queries the "assessment_blocked_groups" edge of the Group entity.
+func (gr *Group) QueryAssessmentBlockedGroups() *AssessmentQuery {
+	return NewGroupClient(gr.config).QueryAssessmentBlockedGroups(gr)
+}
+
+// QueryAssessmentViewers queries the "assessment_viewers" edge of the Group entity.
+func (gr *Group) QueryAssessmentViewers() *AssessmentQuery {
+	return NewGroupClient(gr.config).QueryAssessmentViewers(gr)
+}
+
+// QueryAssessmentResponseEditors queries the "assessment_response_editors" edge of the Group entity.
+func (gr *Group) QueryAssessmentResponseEditors() *AssessmentResponseQuery {
+	return NewGroupClient(gr.config).QueryAssessmentResponseEditors(gr)
+}
+
+// QueryAssessmentResponseBlockedGroups queries the "assessment_response_blocked_groups" edge of the Group entity.
+func (gr *Group) QueryAssessmentResponseBlockedGroups() *AssessmentResponseQuery {
+	return NewGroupClient(gr.config).QueryAssessmentResponseBlockedGroups(gr)
+}
+
+// QueryAssessmentResponseViewers queries the "assessment_response_viewers" edge of the Group entity.
+func (gr *Group) QueryAssessmentResponseViewers() *AssessmentResponseQuery {
+	return NewGroupClient(gr.config).QueryAssessmentResponseViewers(gr)
 }
 
 // QueryProcedureEditors queries the "procedure_editors" edge of the Group entity.
@@ -1515,6 +1587,150 @@ func (gr *Group) appendNamedScanViewers(name string, edges ...*Scan) {
 		gr.Edges.namedScanViewers[name] = []*Scan{}
 	} else {
 		gr.Edges.namedScanViewers[name] = append(gr.Edges.namedScanViewers[name], edges...)
+	}
+}
+
+// NamedAssessmentEditors returns the AssessmentEditors named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (gr *Group) NamedAssessmentEditors(name string) ([]*Assessment, error) {
+	if gr.Edges.namedAssessmentEditors == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := gr.Edges.namedAssessmentEditors[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (gr *Group) appendNamedAssessmentEditors(name string, edges ...*Assessment) {
+	if gr.Edges.namedAssessmentEditors == nil {
+		gr.Edges.namedAssessmentEditors = make(map[string][]*Assessment)
+	}
+	if len(edges) == 0 {
+		gr.Edges.namedAssessmentEditors[name] = []*Assessment{}
+	} else {
+		gr.Edges.namedAssessmentEditors[name] = append(gr.Edges.namedAssessmentEditors[name], edges...)
+	}
+}
+
+// NamedAssessmentBlockedGroups returns the AssessmentBlockedGroups named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (gr *Group) NamedAssessmentBlockedGroups(name string) ([]*Assessment, error) {
+	if gr.Edges.namedAssessmentBlockedGroups == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := gr.Edges.namedAssessmentBlockedGroups[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (gr *Group) appendNamedAssessmentBlockedGroups(name string, edges ...*Assessment) {
+	if gr.Edges.namedAssessmentBlockedGroups == nil {
+		gr.Edges.namedAssessmentBlockedGroups = make(map[string][]*Assessment)
+	}
+	if len(edges) == 0 {
+		gr.Edges.namedAssessmentBlockedGroups[name] = []*Assessment{}
+	} else {
+		gr.Edges.namedAssessmentBlockedGroups[name] = append(gr.Edges.namedAssessmentBlockedGroups[name], edges...)
+	}
+}
+
+// NamedAssessmentViewers returns the AssessmentViewers named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (gr *Group) NamedAssessmentViewers(name string) ([]*Assessment, error) {
+	if gr.Edges.namedAssessmentViewers == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := gr.Edges.namedAssessmentViewers[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (gr *Group) appendNamedAssessmentViewers(name string, edges ...*Assessment) {
+	if gr.Edges.namedAssessmentViewers == nil {
+		gr.Edges.namedAssessmentViewers = make(map[string][]*Assessment)
+	}
+	if len(edges) == 0 {
+		gr.Edges.namedAssessmentViewers[name] = []*Assessment{}
+	} else {
+		gr.Edges.namedAssessmentViewers[name] = append(gr.Edges.namedAssessmentViewers[name], edges...)
+	}
+}
+
+// NamedAssessmentResponseEditors returns the AssessmentResponseEditors named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (gr *Group) NamedAssessmentResponseEditors(name string) ([]*AssessmentResponse, error) {
+	if gr.Edges.namedAssessmentResponseEditors == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := gr.Edges.namedAssessmentResponseEditors[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (gr *Group) appendNamedAssessmentResponseEditors(name string, edges ...*AssessmentResponse) {
+	if gr.Edges.namedAssessmentResponseEditors == nil {
+		gr.Edges.namedAssessmentResponseEditors = make(map[string][]*AssessmentResponse)
+	}
+	if len(edges) == 0 {
+		gr.Edges.namedAssessmentResponseEditors[name] = []*AssessmentResponse{}
+	} else {
+		gr.Edges.namedAssessmentResponseEditors[name] = append(gr.Edges.namedAssessmentResponseEditors[name], edges...)
+	}
+}
+
+// NamedAssessmentResponseBlockedGroups returns the AssessmentResponseBlockedGroups named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (gr *Group) NamedAssessmentResponseBlockedGroups(name string) ([]*AssessmentResponse, error) {
+	if gr.Edges.namedAssessmentResponseBlockedGroups == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := gr.Edges.namedAssessmentResponseBlockedGroups[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (gr *Group) appendNamedAssessmentResponseBlockedGroups(name string, edges ...*AssessmentResponse) {
+	if gr.Edges.namedAssessmentResponseBlockedGroups == nil {
+		gr.Edges.namedAssessmentResponseBlockedGroups = make(map[string][]*AssessmentResponse)
+	}
+	if len(edges) == 0 {
+		gr.Edges.namedAssessmentResponseBlockedGroups[name] = []*AssessmentResponse{}
+	} else {
+		gr.Edges.namedAssessmentResponseBlockedGroups[name] = append(gr.Edges.namedAssessmentResponseBlockedGroups[name], edges...)
+	}
+}
+
+// NamedAssessmentResponseViewers returns the AssessmentResponseViewers named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (gr *Group) NamedAssessmentResponseViewers(name string) ([]*AssessmentResponse, error) {
+	if gr.Edges.namedAssessmentResponseViewers == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := gr.Edges.namedAssessmentResponseViewers[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (gr *Group) appendNamedAssessmentResponseViewers(name string, edges ...*AssessmentResponse) {
+	if gr.Edges.namedAssessmentResponseViewers == nil {
+		gr.Edges.namedAssessmentResponseViewers = make(map[string][]*AssessmentResponse)
+	}
+	if len(edges) == 0 {
+		gr.Edges.namedAssessmentResponseViewers[name] = []*AssessmentResponse{}
+	} else {
+		gr.Edges.namedAssessmentResponseViewers[name] = append(gr.Edges.namedAssessmentResponseViewers[name], edges...)
 	}
 }
 

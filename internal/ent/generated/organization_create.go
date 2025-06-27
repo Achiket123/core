@@ -13,6 +13,7 @@ import (
 	"github.com/theopenlane/core/internal/ent/generated/actionplan"
 	"github.com/theopenlane/core/internal/ent/generated/apitoken"
 	"github.com/theopenlane/core/internal/ent/generated/assessment"
+	"github.com/theopenlane/core/internal/ent/generated/assessmentresponse"
 	"github.com/theopenlane/core/internal/ent/generated/asset"
 	"github.com/theopenlane/core/internal/ent/generated/contact"
 	"github.com/theopenlane/core/internal/ent/generated/control"
@@ -1276,6 +1277,21 @@ func (oc *OrganizationCreate) AddAssessments(a ...*Assessment) *OrganizationCrea
 		ids[i] = a[i].ID
 	}
 	return oc.AddAssessmentIDs(ids...)
+}
+
+// AddAssessmentResponseIDs adds the "assessment_responses" edge to the AssessmentResponse entity by IDs.
+func (oc *OrganizationCreate) AddAssessmentResponseIDs(ids ...string) *OrganizationCreate {
+	oc.mutation.AddAssessmentResponseIDs(ids...)
+	return oc
+}
+
+// AddAssessmentResponses adds the "assessment_responses" edges to the AssessmentResponse entity.
+func (oc *OrganizationCreate) AddAssessmentResponses(a ...*AssessmentResponse) *OrganizationCreate {
+	ids := make([]string, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return oc.AddAssessmentResponseIDs(ids...)
 }
 
 // AddMemberIDs adds the "members" edge to the OrgMembership entity by IDs.
@@ -2604,6 +2620,23 @@ func (oc *OrganizationCreate) createSpec() (*Organization, *sqlgraph.CreateSpec)
 			},
 		}
 		edge.Schema = oc.schemaConfig.Assessment
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := oc.mutation.AssessmentResponsesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   organization.AssessmentResponsesTable,
+			Columns: []string{organization.AssessmentResponsesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(assessmentresponse.FieldID, field.TypeString),
+			},
+		}
+		edge.Schema = oc.schemaConfig.AssessmentResponse
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}

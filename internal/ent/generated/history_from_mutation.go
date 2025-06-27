@@ -685,6 +685,10 @@ func (m *AssessmentResponseMutation) CreateHistoryFromCreate(ctx context.Context
 		create = create.SetTags(tags)
 	}
 
+	if ownerID, exists := m.OwnerID(); exists {
+		create = create.SetOwnerID(ownerID)
+	}
+
 	if assessmentID, exists := m.AssessmentID(); exists {
 		create = create.SetAssessmentID(assessmentID)
 	}
@@ -789,6 +793,12 @@ func (m *AssessmentResponseMutation) CreateHistoryFromUpdate(ctx context.Context
 			create = create.SetTags(assessmentresponse.Tags)
 		}
 
+		if ownerID, exists := m.OwnerID(); exists {
+			create = create.SetOwnerID(ownerID)
+		} else {
+			create = create.SetOwnerID(assessmentresponse.OwnerID)
+		}
+
 		if assessmentID, exists := m.AssessmentID(); exists {
 			create = create.SetAssessmentID(assessmentID)
 		} else {
@@ -876,6 +886,7 @@ func (m *AssessmentResponseMutation) CreateHistoryFromDelete(ctx context.Context
 			SetDeletedAt(assessmentresponse.DeletedAt).
 			SetDeletedBy(assessmentresponse.DeletedBy).
 			SetTags(assessmentresponse.Tags).
+			SetOwnerID(assessmentresponse.OwnerID).
 			SetAssessmentID(assessmentresponse.AssessmentID).
 			SetUserID(assessmentresponse.UserID).
 			SetStatus(assessmentresponse.Status).

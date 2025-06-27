@@ -146,6 +146,20 @@ func (arhc *AssessmentResponseHistoryCreate) SetTags(s []string) *AssessmentResp
 	return arhc
 }
 
+// SetOwnerID sets the "owner_id" field.
+func (arhc *AssessmentResponseHistoryCreate) SetOwnerID(s string) *AssessmentResponseHistoryCreate {
+	arhc.mutation.SetOwnerID(s)
+	return arhc
+}
+
+// SetNillableOwnerID sets the "owner_id" field if the given value is not nil.
+func (arhc *AssessmentResponseHistoryCreate) SetNillableOwnerID(s *string) *AssessmentResponseHistoryCreate {
+	if s != nil {
+		arhc.SetOwnerID(*s)
+	}
+	return arhc
+}
+
 // SetAssessmentID sets the "assessment_id" field.
 func (arhc *AssessmentResponseHistoryCreate) SetAssessmentID(s string) *AssessmentResponseHistoryCreate {
 	arhc.mutation.SetAssessmentID(s)
@@ -426,6 +440,10 @@ func (arhc *AssessmentResponseHistoryCreate) createSpec() (*AssessmentResponseHi
 	if value, ok := arhc.mutation.Tags(); ok {
 		_spec.SetField(assessmentresponsehistory.FieldTags, field.TypeJSON, value)
 		_node.Tags = value
+	}
+	if value, ok := arhc.mutation.OwnerID(); ok {
+		_spec.SetField(assessmentresponsehistory.FieldOwnerID, field.TypeString, value)
+		_node.OwnerID = value
 	}
 	if value, ok := arhc.mutation.AssessmentID(); ok {
 		_spec.SetField(assessmentresponsehistory.FieldAssessmentID, field.TypeString, value)
