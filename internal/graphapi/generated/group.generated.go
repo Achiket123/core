@@ -137,12 +137,6 @@ func (ec *executionContext) fieldContext_GroupBulkCreatePayload_groups(_ context
 				return ec.fieldContext_Group_assessmentBlockedGroups(ctx, field)
 			case "assessmentViewers":
 				return ec.fieldContext_Group_assessmentViewers(ctx, field)
-			case "assessmentResponseEditors":
-				return ec.fieldContext_Group_assessmentResponseEditors(ctx, field)
-			case "assessmentResponseBlockedGroups":
-				return ec.fieldContext_Group_assessmentResponseBlockedGroups(ctx, field)
-			case "assessmentResponseViewers":
-				return ec.fieldContext_Group_assessmentResponseViewers(ctx, field)
 			case "procedureEditors":
 				return ec.fieldContext_Group_procedureEditors(ctx, field)
 			case "procedureBlockedGroups":
@@ -293,12 +287,6 @@ func (ec *executionContext) fieldContext_GroupCreatePayload_group(_ context.Cont
 				return ec.fieldContext_Group_assessmentBlockedGroups(ctx, field)
 			case "assessmentViewers":
 				return ec.fieldContext_Group_assessmentViewers(ctx, field)
-			case "assessmentResponseEditors":
-				return ec.fieldContext_Group_assessmentResponseEditors(ctx, field)
-			case "assessmentResponseBlockedGroups":
-				return ec.fieldContext_Group_assessmentResponseBlockedGroups(ctx, field)
-			case "assessmentResponseViewers":
-				return ec.fieldContext_Group_assessmentResponseViewers(ctx, field)
 			case "procedureEditors":
 				return ec.fieldContext_Group_procedureEditors(ctx, field)
 			case "procedureBlockedGroups":
@@ -493,12 +481,6 @@ func (ec *executionContext) fieldContext_GroupUpdatePayload_group(_ context.Cont
 				return ec.fieldContext_Group_assessmentBlockedGroups(ctx, field)
 			case "assessmentViewers":
 				return ec.fieldContext_Group_assessmentViewers(ctx, field)
-			case "assessmentResponseEditors":
-				return ec.fieldContext_Group_assessmentResponseEditors(ctx, field)
-			case "assessmentResponseBlockedGroups":
-				return ec.fieldContext_Group_assessmentResponseBlockedGroups(ctx, field)
-			case "assessmentResponseViewers":
-				return ec.fieldContext_Group_assessmentResponseViewers(ctx, field)
 			case "procedureEditors":
 				return ec.fieldContext_Group_procedureEditors(ctx, field)
 			case "procedureBlockedGroups":

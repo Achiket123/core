@@ -15,8 +15,6 @@ import (
 	"github.com/theopenlane/core/internal/ent/generated/assessment"
 	"github.com/theopenlane/core/internal/ent/generated/assessmentresponse"
 	"github.com/theopenlane/core/internal/ent/generated/documentdata"
-	"github.com/theopenlane/core/internal/ent/generated/group"
-	"github.com/theopenlane/core/internal/ent/generated/organization"
 	"github.com/theopenlane/core/internal/ent/generated/predicate"
 	"github.com/theopenlane/core/internal/ent/generated/user"
 	"github.com/theopenlane/core/pkg/enums"
@@ -125,26 +123,6 @@ func (aru *AssessmentResponseUpdate) AppendTags(s []string) *AssessmentResponseU
 // ClearTags clears the value of the "tags" field.
 func (aru *AssessmentResponseUpdate) ClearTags() *AssessmentResponseUpdate {
 	aru.mutation.ClearTags()
-	return aru
-}
-
-// SetOwnerID sets the "owner_id" field.
-func (aru *AssessmentResponseUpdate) SetOwnerID(s string) *AssessmentResponseUpdate {
-	aru.mutation.SetOwnerID(s)
-	return aru
-}
-
-// SetNillableOwnerID sets the "owner_id" field if the given value is not nil.
-func (aru *AssessmentResponseUpdate) SetNillableOwnerID(s *string) *AssessmentResponseUpdate {
-	if s != nil {
-		aru.SetOwnerID(*s)
-	}
-	return aru
-}
-
-// ClearOwnerID clears the value of the "owner_id" field.
-func (aru *AssessmentResponseUpdate) ClearOwnerID() *AssessmentResponseUpdate {
-	aru.mutation.ClearOwnerID()
 	return aru
 }
 
@@ -284,56 +262,6 @@ func (aru *AssessmentResponseUpdate) ClearResponseDataID() *AssessmentResponseUp
 	return aru
 }
 
-// SetOwner sets the "owner" edge to the Organization entity.
-func (aru *AssessmentResponseUpdate) SetOwner(o *Organization) *AssessmentResponseUpdate {
-	return aru.SetOwnerID(o.ID)
-}
-
-// AddBlockedGroupIDs adds the "blocked_groups" edge to the Group entity by IDs.
-func (aru *AssessmentResponseUpdate) AddBlockedGroupIDs(ids ...string) *AssessmentResponseUpdate {
-	aru.mutation.AddBlockedGroupIDs(ids...)
-	return aru
-}
-
-// AddBlockedGroups adds the "blocked_groups" edges to the Group entity.
-func (aru *AssessmentResponseUpdate) AddBlockedGroups(g ...*Group) *AssessmentResponseUpdate {
-	ids := make([]string, len(g))
-	for i := range g {
-		ids[i] = g[i].ID
-	}
-	return aru.AddBlockedGroupIDs(ids...)
-}
-
-// AddEditorIDs adds the "editors" edge to the Group entity by IDs.
-func (aru *AssessmentResponseUpdate) AddEditorIDs(ids ...string) *AssessmentResponseUpdate {
-	aru.mutation.AddEditorIDs(ids...)
-	return aru
-}
-
-// AddEditors adds the "editors" edges to the Group entity.
-func (aru *AssessmentResponseUpdate) AddEditors(g ...*Group) *AssessmentResponseUpdate {
-	ids := make([]string, len(g))
-	for i := range g {
-		ids[i] = g[i].ID
-	}
-	return aru.AddEditorIDs(ids...)
-}
-
-// AddViewerIDs adds the "viewers" edge to the Group entity by IDs.
-func (aru *AssessmentResponseUpdate) AddViewerIDs(ids ...string) *AssessmentResponseUpdate {
-	aru.mutation.AddViewerIDs(ids...)
-	return aru
-}
-
-// AddViewers adds the "viewers" edges to the Group entity.
-func (aru *AssessmentResponseUpdate) AddViewers(g ...*Group) *AssessmentResponseUpdate {
-	ids := make([]string, len(g))
-	for i := range g {
-		ids[i] = g[i].ID
-	}
-	return aru.AddViewerIDs(ids...)
-}
-
 // SetAssessment sets the "assessment" edge to the Assessment entity.
 func (aru *AssessmentResponseUpdate) SetAssessment(a *Assessment) *AssessmentResponseUpdate {
 	return aru.SetAssessmentID(a.ID)
@@ -366,75 +294,6 @@ func (aru *AssessmentResponseUpdate) SetDocument(d *DocumentData) *AssessmentRes
 // Mutation returns the AssessmentResponseMutation object of the builder.
 func (aru *AssessmentResponseUpdate) Mutation() *AssessmentResponseMutation {
 	return aru.mutation
-}
-
-// ClearOwner clears the "owner" edge to the Organization entity.
-func (aru *AssessmentResponseUpdate) ClearOwner() *AssessmentResponseUpdate {
-	aru.mutation.ClearOwner()
-	return aru
-}
-
-// ClearBlockedGroups clears all "blocked_groups" edges to the Group entity.
-func (aru *AssessmentResponseUpdate) ClearBlockedGroups() *AssessmentResponseUpdate {
-	aru.mutation.ClearBlockedGroups()
-	return aru
-}
-
-// RemoveBlockedGroupIDs removes the "blocked_groups" edge to Group entities by IDs.
-func (aru *AssessmentResponseUpdate) RemoveBlockedGroupIDs(ids ...string) *AssessmentResponseUpdate {
-	aru.mutation.RemoveBlockedGroupIDs(ids...)
-	return aru
-}
-
-// RemoveBlockedGroups removes "blocked_groups" edges to Group entities.
-func (aru *AssessmentResponseUpdate) RemoveBlockedGroups(g ...*Group) *AssessmentResponseUpdate {
-	ids := make([]string, len(g))
-	for i := range g {
-		ids[i] = g[i].ID
-	}
-	return aru.RemoveBlockedGroupIDs(ids...)
-}
-
-// ClearEditors clears all "editors" edges to the Group entity.
-func (aru *AssessmentResponseUpdate) ClearEditors() *AssessmentResponseUpdate {
-	aru.mutation.ClearEditors()
-	return aru
-}
-
-// RemoveEditorIDs removes the "editors" edge to Group entities by IDs.
-func (aru *AssessmentResponseUpdate) RemoveEditorIDs(ids ...string) *AssessmentResponseUpdate {
-	aru.mutation.RemoveEditorIDs(ids...)
-	return aru
-}
-
-// RemoveEditors removes "editors" edges to Group entities.
-func (aru *AssessmentResponseUpdate) RemoveEditors(g ...*Group) *AssessmentResponseUpdate {
-	ids := make([]string, len(g))
-	for i := range g {
-		ids[i] = g[i].ID
-	}
-	return aru.RemoveEditorIDs(ids...)
-}
-
-// ClearViewers clears all "viewers" edges to the Group entity.
-func (aru *AssessmentResponseUpdate) ClearViewers() *AssessmentResponseUpdate {
-	aru.mutation.ClearViewers()
-	return aru
-}
-
-// RemoveViewerIDs removes the "viewers" edge to Group entities by IDs.
-func (aru *AssessmentResponseUpdate) RemoveViewerIDs(ids ...string) *AssessmentResponseUpdate {
-	aru.mutation.RemoveViewerIDs(ids...)
-	return aru
-}
-
-// RemoveViewers removes "viewers" edges to Group entities.
-func (aru *AssessmentResponseUpdate) RemoveViewers(g ...*Group) *AssessmentResponseUpdate {
-	ids := make([]string, len(g))
-	for i := range g {
-		ids[i] = g[i].ID
-	}
-	return aru.RemoveViewerIDs(ids...)
 }
 
 // ClearAssessment clears the "assessment" edge to the Assessment entity.
@@ -499,11 +358,6 @@ func (aru *AssessmentResponseUpdate) defaults() error {
 
 // check runs all checks and user-defined validators on the builder.
 func (aru *AssessmentResponseUpdate) check() error {
-	if v, ok := aru.mutation.OwnerID(); ok {
-		if err := assessmentresponse.OwnerIDValidator(v); err != nil {
-			return &ValidationError{Name: "owner_id", err: fmt.Errorf(`generated: validator failed for field "AssessmentResponse.owner_id": %w`, err)}
-		}
-	}
 	if v, ok := aru.mutation.AssessmentID(); ok {
 		if err := assessmentresponse.AssessmentIDValidator(v); err != nil {
 			return &ValidationError{Name: "assessment_id", err: fmt.Errorf(`generated: validator failed for field "AssessmentResponse.assessment_id": %w`, err)}
@@ -610,181 +464,6 @@ func (aru *AssessmentResponseUpdate) sqlSave(ctx context.Context) (n int, err er
 	}
 	if aru.mutation.DueDateCleared() {
 		_spec.ClearField(assessmentresponse.FieldDueDate, field.TypeTime)
-	}
-	if aru.mutation.OwnerCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   assessmentresponse.OwnerTable,
-			Columns: []string{assessmentresponse.OwnerColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(organization.FieldID, field.TypeString),
-			},
-		}
-		edge.Schema = aru.schemaConfig.AssessmentResponse
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aru.mutation.OwnerIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   assessmentresponse.OwnerTable,
-			Columns: []string{assessmentresponse.OwnerColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(organization.FieldID, field.TypeString),
-			},
-		}
-		edge.Schema = aru.schemaConfig.AssessmentResponse
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if aru.mutation.BlockedGroupsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   assessmentresponse.BlockedGroupsTable,
-			Columns: assessmentresponse.BlockedGroupsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
-			},
-		}
-		edge.Schema = aru.schemaConfig.AssessmentResponseBlockedGroups
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aru.mutation.RemovedBlockedGroupsIDs(); len(nodes) > 0 && !aru.mutation.BlockedGroupsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   assessmentresponse.BlockedGroupsTable,
-			Columns: assessmentresponse.BlockedGroupsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
-			},
-		}
-		edge.Schema = aru.schemaConfig.AssessmentResponseBlockedGroups
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aru.mutation.BlockedGroupsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   assessmentresponse.BlockedGroupsTable,
-			Columns: assessmentresponse.BlockedGroupsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
-			},
-		}
-		edge.Schema = aru.schemaConfig.AssessmentResponseBlockedGroups
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if aru.mutation.EditorsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   assessmentresponse.EditorsTable,
-			Columns: assessmentresponse.EditorsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
-			},
-		}
-		edge.Schema = aru.schemaConfig.AssessmentResponseEditors
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aru.mutation.RemovedEditorsIDs(); len(nodes) > 0 && !aru.mutation.EditorsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   assessmentresponse.EditorsTable,
-			Columns: assessmentresponse.EditorsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
-			},
-		}
-		edge.Schema = aru.schemaConfig.AssessmentResponseEditors
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aru.mutation.EditorsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   assessmentresponse.EditorsTable,
-			Columns: assessmentresponse.EditorsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
-			},
-		}
-		edge.Schema = aru.schemaConfig.AssessmentResponseEditors
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if aru.mutation.ViewersCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   assessmentresponse.ViewersTable,
-			Columns: assessmentresponse.ViewersPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
-			},
-		}
-		edge.Schema = aru.schemaConfig.AssessmentResponseViewers
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aru.mutation.RemovedViewersIDs(); len(nodes) > 0 && !aru.mutation.ViewersCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   assessmentresponse.ViewersTable,
-			Columns: assessmentresponse.ViewersPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
-			},
-		}
-		edge.Schema = aru.schemaConfig.AssessmentResponseViewers
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aru.mutation.ViewersIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   assessmentresponse.ViewersTable,
-			Columns: assessmentresponse.ViewersPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
-			},
-		}
-		edge.Schema = aru.schemaConfig.AssessmentResponseViewers
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if aru.mutation.AssessmentCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -993,26 +672,6 @@ func (aruo *AssessmentResponseUpdateOne) ClearTags() *AssessmentResponseUpdateOn
 	return aruo
 }
 
-// SetOwnerID sets the "owner_id" field.
-func (aruo *AssessmentResponseUpdateOne) SetOwnerID(s string) *AssessmentResponseUpdateOne {
-	aruo.mutation.SetOwnerID(s)
-	return aruo
-}
-
-// SetNillableOwnerID sets the "owner_id" field if the given value is not nil.
-func (aruo *AssessmentResponseUpdateOne) SetNillableOwnerID(s *string) *AssessmentResponseUpdateOne {
-	if s != nil {
-		aruo.SetOwnerID(*s)
-	}
-	return aruo
-}
-
-// ClearOwnerID clears the value of the "owner_id" field.
-func (aruo *AssessmentResponseUpdateOne) ClearOwnerID() *AssessmentResponseUpdateOne {
-	aruo.mutation.ClearOwnerID()
-	return aruo
-}
-
 // SetAssessmentID sets the "assessment_id" field.
 func (aruo *AssessmentResponseUpdateOne) SetAssessmentID(s string) *AssessmentResponseUpdateOne {
 	aruo.mutation.SetAssessmentID(s)
@@ -1149,56 +808,6 @@ func (aruo *AssessmentResponseUpdateOne) ClearResponseDataID() *AssessmentRespon
 	return aruo
 }
 
-// SetOwner sets the "owner" edge to the Organization entity.
-func (aruo *AssessmentResponseUpdateOne) SetOwner(o *Organization) *AssessmentResponseUpdateOne {
-	return aruo.SetOwnerID(o.ID)
-}
-
-// AddBlockedGroupIDs adds the "blocked_groups" edge to the Group entity by IDs.
-func (aruo *AssessmentResponseUpdateOne) AddBlockedGroupIDs(ids ...string) *AssessmentResponseUpdateOne {
-	aruo.mutation.AddBlockedGroupIDs(ids...)
-	return aruo
-}
-
-// AddBlockedGroups adds the "blocked_groups" edges to the Group entity.
-func (aruo *AssessmentResponseUpdateOne) AddBlockedGroups(g ...*Group) *AssessmentResponseUpdateOne {
-	ids := make([]string, len(g))
-	for i := range g {
-		ids[i] = g[i].ID
-	}
-	return aruo.AddBlockedGroupIDs(ids...)
-}
-
-// AddEditorIDs adds the "editors" edge to the Group entity by IDs.
-func (aruo *AssessmentResponseUpdateOne) AddEditorIDs(ids ...string) *AssessmentResponseUpdateOne {
-	aruo.mutation.AddEditorIDs(ids...)
-	return aruo
-}
-
-// AddEditors adds the "editors" edges to the Group entity.
-func (aruo *AssessmentResponseUpdateOne) AddEditors(g ...*Group) *AssessmentResponseUpdateOne {
-	ids := make([]string, len(g))
-	for i := range g {
-		ids[i] = g[i].ID
-	}
-	return aruo.AddEditorIDs(ids...)
-}
-
-// AddViewerIDs adds the "viewers" edge to the Group entity by IDs.
-func (aruo *AssessmentResponseUpdateOne) AddViewerIDs(ids ...string) *AssessmentResponseUpdateOne {
-	aruo.mutation.AddViewerIDs(ids...)
-	return aruo
-}
-
-// AddViewers adds the "viewers" edges to the Group entity.
-func (aruo *AssessmentResponseUpdateOne) AddViewers(g ...*Group) *AssessmentResponseUpdateOne {
-	ids := make([]string, len(g))
-	for i := range g {
-		ids[i] = g[i].ID
-	}
-	return aruo.AddViewerIDs(ids...)
-}
-
 // SetAssessment sets the "assessment" edge to the Assessment entity.
 func (aruo *AssessmentResponseUpdateOne) SetAssessment(a *Assessment) *AssessmentResponseUpdateOne {
 	return aruo.SetAssessmentID(a.ID)
@@ -1231,75 +840,6 @@ func (aruo *AssessmentResponseUpdateOne) SetDocument(d *DocumentData) *Assessmen
 // Mutation returns the AssessmentResponseMutation object of the builder.
 func (aruo *AssessmentResponseUpdateOne) Mutation() *AssessmentResponseMutation {
 	return aruo.mutation
-}
-
-// ClearOwner clears the "owner" edge to the Organization entity.
-func (aruo *AssessmentResponseUpdateOne) ClearOwner() *AssessmentResponseUpdateOne {
-	aruo.mutation.ClearOwner()
-	return aruo
-}
-
-// ClearBlockedGroups clears all "blocked_groups" edges to the Group entity.
-func (aruo *AssessmentResponseUpdateOne) ClearBlockedGroups() *AssessmentResponseUpdateOne {
-	aruo.mutation.ClearBlockedGroups()
-	return aruo
-}
-
-// RemoveBlockedGroupIDs removes the "blocked_groups" edge to Group entities by IDs.
-func (aruo *AssessmentResponseUpdateOne) RemoveBlockedGroupIDs(ids ...string) *AssessmentResponseUpdateOne {
-	aruo.mutation.RemoveBlockedGroupIDs(ids...)
-	return aruo
-}
-
-// RemoveBlockedGroups removes "blocked_groups" edges to Group entities.
-func (aruo *AssessmentResponseUpdateOne) RemoveBlockedGroups(g ...*Group) *AssessmentResponseUpdateOne {
-	ids := make([]string, len(g))
-	for i := range g {
-		ids[i] = g[i].ID
-	}
-	return aruo.RemoveBlockedGroupIDs(ids...)
-}
-
-// ClearEditors clears all "editors" edges to the Group entity.
-func (aruo *AssessmentResponseUpdateOne) ClearEditors() *AssessmentResponseUpdateOne {
-	aruo.mutation.ClearEditors()
-	return aruo
-}
-
-// RemoveEditorIDs removes the "editors" edge to Group entities by IDs.
-func (aruo *AssessmentResponseUpdateOne) RemoveEditorIDs(ids ...string) *AssessmentResponseUpdateOne {
-	aruo.mutation.RemoveEditorIDs(ids...)
-	return aruo
-}
-
-// RemoveEditors removes "editors" edges to Group entities.
-func (aruo *AssessmentResponseUpdateOne) RemoveEditors(g ...*Group) *AssessmentResponseUpdateOne {
-	ids := make([]string, len(g))
-	for i := range g {
-		ids[i] = g[i].ID
-	}
-	return aruo.RemoveEditorIDs(ids...)
-}
-
-// ClearViewers clears all "viewers" edges to the Group entity.
-func (aruo *AssessmentResponseUpdateOne) ClearViewers() *AssessmentResponseUpdateOne {
-	aruo.mutation.ClearViewers()
-	return aruo
-}
-
-// RemoveViewerIDs removes the "viewers" edge to Group entities by IDs.
-func (aruo *AssessmentResponseUpdateOne) RemoveViewerIDs(ids ...string) *AssessmentResponseUpdateOne {
-	aruo.mutation.RemoveViewerIDs(ids...)
-	return aruo
-}
-
-// RemoveViewers removes "viewers" edges to Group entities.
-func (aruo *AssessmentResponseUpdateOne) RemoveViewers(g ...*Group) *AssessmentResponseUpdateOne {
-	ids := make([]string, len(g))
-	for i := range g {
-		ids[i] = g[i].ID
-	}
-	return aruo.RemoveViewerIDs(ids...)
 }
 
 // ClearAssessment clears the "assessment" edge to the Assessment entity.
@@ -1377,11 +917,6 @@ func (aruo *AssessmentResponseUpdateOne) defaults() error {
 
 // check runs all checks and user-defined validators on the builder.
 func (aruo *AssessmentResponseUpdateOne) check() error {
-	if v, ok := aruo.mutation.OwnerID(); ok {
-		if err := assessmentresponse.OwnerIDValidator(v); err != nil {
-			return &ValidationError{Name: "owner_id", err: fmt.Errorf(`generated: validator failed for field "AssessmentResponse.owner_id": %w`, err)}
-		}
-	}
 	if v, ok := aruo.mutation.AssessmentID(); ok {
 		if err := assessmentresponse.AssessmentIDValidator(v); err != nil {
 			return &ValidationError{Name: "assessment_id", err: fmt.Errorf(`generated: validator failed for field "AssessmentResponse.assessment_id": %w`, err)}
@@ -1505,181 +1040,6 @@ func (aruo *AssessmentResponseUpdateOne) sqlSave(ctx context.Context) (_node *As
 	}
 	if aruo.mutation.DueDateCleared() {
 		_spec.ClearField(assessmentresponse.FieldDueDate, field.TypeTime)
-	}
-	if aruo.mutation.OwnerCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   assessmentresponse.OwnerTable,
-			Columns: []string{assessmentresponse.OwnerColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(organization.FieldID, field.TypeString),
-			},
-		}
-		edge.Schema = aruo.schemaConfig.AssessmentResponse
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aruo.mutation.OwnerIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   assessmentresponse.OwnerTable,
-			Columns: []string{assessmentresponse.OwnerColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(organization.FieldID, field.TypeString),
-			},
-		}
-		edge.Schema = aruo.schemaConfig.AssessmentResponse
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if aruo.mutation.BlockedGroupsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   assessmentresponse.BlockedGroupsTable,
-			Columns: assessmentresponse.BlockedGroupsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
-			},
-		}
-		edge.Schema = aruo.schemaConfig.AssessmentResponseBlockedGroups
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aruo.mutation.RemovedBlockedGroupsIDs(); len(nodes) > 0 && !aruo.mutation.BlockedGroupsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   assessmentresponse.BlockedGroupsTable,
-			Columns: assessmentresponse.BlockedGroupsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
-			},
-		}
-		edge.Schema = aruo.schemaConfig.AssessmentResponseBlockedGroups
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aruo.mutation.BlockedGroupsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   assessmentresponse.BlockedGroupsTable,
-			Columns: assessmentresponse.BlockedGroupsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
-			},
-		}
-		edge.Schema = aruo.schemaConfig.AssessmentResponseBlockedGroups
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if aruo.mutation.EditorsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   assessmentresponse.EditorsTable,
-			Columns: assessmentresponse.EditorsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
-			},
-		}
-		edge.Schema = aruo.schemaConfig.AssessmentResponseEditors
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aruo.mutation.RemovedEditorsIDs(); len(nodes) > 0 && !aruo.mutation.EditorsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   assessmentresponse.EditorsTable,
-			Columns: assessmentresponse.EditorsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
-			},
-		}
-		edge.Schema = aruo.schemaConfig.AssessmentResponseEditors
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aruo.mutation.EditorsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   assessmentresponse.EditorsTable,
-			Columns: assessmentresponse.EditorsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
-			},
-		}
-		edge.Schema = aruo.schemaConfig.AssessmentResponseEditors
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if aruo.mutation.ViewersCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   assessmentresponse.ViewersTable,
-			Columns: assessmentresponse.ViewersPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
-			},
-		}
-		edge.Schema = aruo.schemaConfig.AssessmentResponseViewers
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aruo.mutation.RemovedViewersIDs(); len(nodes) > 0 && !aruo.mutation.ViewersCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   assessmentresponse.ViewersTable,
-			Columns: assessmentresponse.ViewersPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
-			},
-		}
-		edge.Schema = aruo.schemaConfig.AssessmentResponseViewers
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aruo.mutation.ViewersIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   assessmentresponse.ViewersTable,
-			Columns: assessmentresponse.ViewersPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
-			},
-		}
-		edge.Schema = aruo.schemaConfig.AssessmentResponseViewers
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if aruo.mutation.AssessmentCleared() {
 		edge := &sqlgraph.EdgeSpec{

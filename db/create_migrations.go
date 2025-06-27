@@ -55,7 +55,11 @@ func main() {
 		log.Fatal().Msg("failed to load the ATLAS_POSTGRES_DB_URI env var")
 	}
 
-	maxConnections := 10
+	// if you ever get some weird failures about:
+	// "sql/migrate: connected database is not clean"
+	// it is likely because the number of migrations being created exceeds some limit
+	// try playing around with this number
+	maxConnections := 50
 
 	tf, err := testutils.GetPostgresDockerTest(pgDBURI, 5*time.Minute, maxConnections)
 	if err != nil {

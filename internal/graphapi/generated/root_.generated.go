@@ -295,13 +295,11 @@ type ComplexityRoot struct {
 		Assessment     func(childComplexity int) int
 		AssessmentID   func(childComplexity int) int
 		AssignedAt     func(childComplexity int) int
-		BlockedGroups  func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.GroupOrder, where *generated.GroupWhereInput) int
 		CompletedAt    func(childComplexity int) int
 		CreatedAt      func(childComplexity int) int
 		CreatedBy      func(childComplexity int) int
 		Document       func(childComplexity int) int
 		DueDate        func(childComplexity int) int
-		Editors        func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.GroupOrder, where *generated.GroupWhereInput) int
 		ID             func(childComplexity int) int
 		Owner          func(childComplexity int) int
 		OwnerID        func(childComplexity int) int
@@ -313,7 +311,6 @@ type ComplexityRoot struct {
 		UpdatedBy      func(childComplexity int) int
 		User           func(childComplexity int) int
 		UserID         func(childComplexity int) int
-		Viewers        func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.GroupOrder, where *generated.GroupWhereInput) int
 	}
 
 	AssessmentResponseBulkCreatePayload struct {
@@ -1525,9 +1522,6 @@ type ComplexityRoot struct {
 	Group struct {
 		AssessmentBlockedGroups            func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.AssessmentOrder, where *generated.AssessmentWhereInput) int
 		AssessmentEditors                  func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.AssessmentOrder, where *generated.AssessmentWhereInput) int
-		AssessmentResponseBlockedGroups    func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.AssessmentResponseOrder, where *generated.AssessmentResponseWhereInput) int
-		AssessmentResponseEditors          func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.AssessmentResponseOrder, where *generated.AssessmentResponseWhereInput) int
-		AssessmentResponseViewers          func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.AssessmentResponseOrder, where *generated.AssessmentResponseWhereInput) int
 		AssessmentViewers                  func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.AssessmentOrder, where *generated.AssessmentWhereInput) int
 		ControlBlockedGroups               func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.ControlOrder, where *generated.ControlWhereInput) int
 		ControlEditors                     func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.ControlOrder, where *generated.ControlWhereInput) int
@@ -5990,18 +5984,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.AssessmentResponse.AssignedAt(childComplexity), true
 
-	case "AssessmentResponse.blockedGroups":
-		if e.complexity.AssessmentResponse.BlockedGroups == nil {
-			break
-		}
-
-		args, err := ec.field_AssessmentResponse_blockedGroups_args(ctx, rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.AssessmentResponse.BlockedGroups(childComplexity, args["after"].(*entgql.Cursor[string]), args["first"].(*int), args["before"].(*entgql.Cursor[string]), args["last"].(*int), args["orderBy"].([]*generated.GroupOrder), args["where"].(*generated.GroupWhereInput)), true
-
 	case "AssessmentResponse.completedAt":
 		if e.complexity.AssessmentResponse.CompletedAt == nil {
 			break
@@ -6036,18 +6018,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.AssessmentResponse.DueDate(childComplexity), true
-
-	case "AssessmentResponse.editors":
-		if e.complexity.AssessmentResponse.Editors == nil {
-			break
-		}
-
-		args, err := ec.field_AssessmentResponse_editors_args(ctx, rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.AssessmentResponse.Editors(childComplexity, args["after"].(*entgql.Cursor[string]), args["first"].(*int), args["before"].(*entgql.Cursor[string]), args["last"].(*int), args["orderBy"].([]*generated.GroupOrder), args["where"].(*generated.GroupWhereInput)), true
 
 	case "AssessmentResponse.id":
 		if e.complexity.AssessmentResponse.ID == nil {
@@ -6125,18 +6095,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.AssessmentResponse.UserID(childComplexity), true
-
-	case "AssessmentResponse.viewers":
-		if e.complexity.AssessmentResponse.Viewers == nil {
-			break
-		}
-
-		args, err := ec.field_AssessmentResponse_viewers_args(ctx, rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.AssessmentResponse.Viewers(childComplexity, args["after"].(*entgql.Cursor[string]), args["first"].(*int), args["before"].(*entgql.Cursor[string]), args["last"].(*int), args["orderBy"].([]*generated.GroupOrder), args["where"].(*generated.GroupWhereInput)), true
 
 	case "AssessmentResponseBulkCreatePayload.assessmentResponses":
 		if e.complexity.AssessmentResponseBulkCreatePayload.AssessmentResponses == nil {
@@ -11896,42 +11854,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Group.AssessmentEditors(childComplexity, args["after"].(*entgql.Cursor[string]), args["first"].(*int), args["before"].(*entgql.Cursor[string]), args["last"].(*int), args["orderBy"].([]*generated.AssessmentOrder), args["where"].(*generated.AssessmentWhereInput)), true
-
-	case "Group.assessmentResponseBlockedGroups":
-		if e.complexity.Group.AssessmentResponseBlockedGroups == nil {
-			break
-		}
-
-		args, err := ec.field_Group_assessmentResponseBlockedGroups_args(ctx, rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Group.AssessmentResponseBlockedGroups(childComplexity, args["after"].(*entgql.Cursor[string]), args["first"].(*int), args["before"].(*entgql.Cursor[string]), args["last"].(*int), args["orderBy"].([]*generated.AssessmentResponseOrder), args["where"].(*generated.AssessmentResponseWhereInput)), true
-
-	case "Group.assessmentResponseEditors":
-		if e.complexity.Group.AssessmentResponseEditors == nil {
-			break
-		}
-
-		args, err := ec.field_Group_assessmentResponseEditors_args(ctx, rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Group.AssessmentResponseEditors(childComplexity, args["after"].(*entgql.Cursor[string]), args["first"].(*int), args["before"].(*entgql.Cursor[string]), args["last"].(*int), args["orderBy"].([]*generated.AssessmentResponseOrder), args["where"].(*generated.AssessmentResponseWhereInput)), true
-
-	case "Group.assessmentResponseViewers":
-		if e.complexity.Group.AssessmentResponseViewers == nil {
-			break
-		}
-
-		args, err := ec.field_Group_assessmentResponseViewers_args(ctx, rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Group.AssessmentResponseViewers(childComplexity, args["after"].(*entgql.Cursor[string]), args["first"].(*int), args["before"].(*entgql.Cursor[string]), args["last"].(*int), args["orderBy"].([]*generated.AssessmentResponseOrder), args["where"].(*generated.AssessmentResponseWhereInput)), true
 
 	case "Group.assessmentViewers":
 		if e.complexity.Group.AssessmentViewers == nil {
@@ -36770,7 +36692,7 @@ type AssessmentResponse implements Node {
   """
   tags: [String!]
   """
-  the organization id that owns the object
+  the ID of the organization owner of the object
   """
   ownerID: ID
   """
@@ -36806,99 +36728,6 @@ type AssessmentResponse implements Node {
   """
   responseDataID: ID
   owner: Organization
-  blockedGroups(
-    """
-    Returns the elements in the list that come after the specified cursor.
-    """
-    after: Cursor
-
-    """
-    Returns the first _n_ elements from the list.
-    """
-    first: Int
-
-    """
-    Returns the elements in the list that come before the specified cursor.
-    """
-    before: Cursor
-
-    """
-    Returns the last _n_ elements from the list.
-    """
-    last: Int
-
-    """
-    Ordering options for Groups returned from the connection.
-    """
-    orderBy: [GroupOrder!]
-
-    """
-    Filtering options for Groups returned from the connection.
-    """
-    where: GroupWhereInput
-  ): GroupConnection!
-  editors(
-    """
-    Returns the elements in the list that come after the specified cursor.
-    """
-    after: Cursor
-
-    """
-    Returns the first _n_ elements from the list.
-    """
-    first: Int
-
-    """
-    Returns the elements in the list that come before the specified cursor.
-    """
-    before: Cursor
-
-    """
-    Returns the last _n_ elements from the list.
-    """
-    last: Int
-
-    """
-    Ordering options for Groups returned from the connection.
-    """
-    orderBy: [GroupOrder!]
-
-    """
-    Filtering options for Groups returned from the connection.
-    """
-    where: GroupWhereInput
-  ): GroupConnection!
-  viewers(
-    """
-    Returns the elements in the list that come after the specified cursor.
-    """
-    after: Cursor
-
-    """
-    Returns the first _n_ elements from the list.
-    """
-    first: Int
-
-    """
-    Returns the elements in the list that come before the specified cursor.
-    """
-    before: Cursor
-
-    """
-    Returns the last _n_ elements from the list.
-    """
-    last: Int
-
-    """
-    Ordering options for Groups returned from the connection.
-    """
-    orderBy: [GroupOrder!]
-
-    """
-    Filtering options for Groups returned from the connection.
-    """
-    where: GroupWhereInput
-  ): GroupConnection!
   assessment: Assessment!
   user: User!
   """
@@ -36959,7 +36788,7 @@ type AssessmentResponseHistory implements Node {
   """
   tags: [String!]
   """
-  the organization id that owns the object
+  the ID of the organization owner of the object
   """
   ownerID: String
   """
@@ -37551,21 +37380,6 @@ input AssessmentResponseWhereInput {
   """
   hasOwner: Boolean
   hasOwnerWith: [OrganizationWhereInput!]
-  """
-  blocked_groups edge predicates
-  """
-  hasBlockedGroups: Boolean
-  hasBlockedGroupsWith: [GroupWhereInput!]
-  """
-  editors edge predicates
-  """
-  hasEditors: Boolean
-  hasEditorsWith: [GroupWhereInput!]
-  """
-  viewers edge predicates
-  """
-  hasViewers: Boolean
-  hasViewersWith: [GroupWhereInput!]
   """
   assessment edge predicates
   """
@@ -43825,9 +43639,6 @@ input CreateAssessmentResponseInput {
   """
   dueDate: Time
   ownerID: ID
-  blockedGroupIDs: [ID!]
-  editorIDs: [ID!]
-  viewerIDs: [ID!]
   assessmentID: ID!
   userID: ID!
   documentID: ID
@@ -44458,9 +44269,6 @@ input CreateGroupInput {
   assessmentEditorIDs: [ID!]
   assessmentBlockedGroupIDs: [ID!]
   assessmentViewerIDs: [ID!]
-  assessmentResponseEditorIDs: [ID!]
-  assessmentResponseBlockedGroupIDs: [ID!]
-  assessmentResponseViewerIDs: [ID!]
   procedureEditorIDs: [ID!]
   procedureBlockedGroupIDs: [ID!]
   internalPolicyEditorIDs: [ID!]
@@ -52443,99 +52251,6 @@ type Group implements Node {
     """
     where: AssessmentWhereInput
   ): AssessmentConnection!
-  assessmentResponseEditors(
-    """
-    Returns the elements in the list that come after the specified cursor.
-    """
-    after: Cursor
-
-    """
-    Returns the first _n_ elements from the list.
-    """
-    first: Int
-
-    """
-    Returns the elements in the list that come before the specified cursor.
-    """
-    before: Cursor
-
-    """
-    Returns the last _n_ elements from the list.
-    """
-    last: Int
-
-    """
-    Ordering options for AssessmentResponses returned from the connection.
-    """
-    orderBy: [AssessmentResponseOrder!]
-
-    """
-    Filtering options for AssessmentResponses returned from the connection.
-    """
-    where: AssessmentResponseWhereInput
-  ): AssessmentResponseConnection!
-  assessmentResponseBlockedGroups(
-    """
-    Returns the elements in the list that come after the specified cursor.
-    """
-    after: Cursor
-
-    """
-    Returns the first _n_ elements from the list.
-    """
-    first: Int
-
-    """
-    Returns the elements in the list that come before the specified cursor.
-    """
-    before: Cursor
-
-    """
-    Returns the last _n_ elements from the list.
-    """
-    last: Int
-
-    """
-    Ordering options for AssessmentResponses returned from the connection.
-    """
-    orderBy: [AssessmentResponseOrder!]
-
-    """
-    Filtering options for AssessmentResponses returned from the connection.
-    """
-    where: AssessmentResponseWhereInput
-  ): AssessmentResponseConnection!
-  assessmentResponseViewers(
-    """
-    Returns the elements in the list that come after the specified cursor.
-    """
-    after: Cursor
-
-    """
-    Returns the first _n_ elements from the list.
-    """
-    first: Int
-
-    """
-    Returns the elements in the list that come before the specified cursor.
-    """
-    before: Cursor
-
-    """
-    Returns the last _n_ elements from the list.
-    """
-    last: Int
-
-    """
-    Ordering options for AssessmentResponses returned from the connection.
-    """
-    orderBy: [AssessmentResponseOrder!]
-
-    """
-    Filtering options for AssessmentResponses returned from the connection.
-    """
-    where: AssessmentResponseWhereInput
-  ): AssessmentResponseConnection!
   procedureEditors(
     """
     Returns the elements in the list that come after the specified cursor.
@@ -54521,21 +54236,6 @@ input GroupWhereInput {
   """
   hasAssessmentViewers: Boolean
   hasAssessmentViewersWith: [AssessmentWhereInput!]
-  """
-  assessment_response_editors edge predicates
-  """
-  hasAssessmentResponseEditors: Boolean
-  hasAssessmentResponseEditorsWith: [AssessmentResponseWhereInput!]
-  """
-  assessment_response_blocked_groups edge predicates
-  """
-  hasAssessmentResponseBlockedGroups: Boolean
-  hasAssessmentResponseBlockedGroupsWith: [AssessmentResponseWhereInput!]
-  """
-  assessment_response_viewers edge predicates
-  """
-  hasAssessmentResponseViewers: Boolean
-  hasAssessmentResponseViewersWith: [AssessmentResponseWhereInput!]
   """
   procedure_editors edge predicates
   """
@@ -81692,17 +81392,6 @@ input UpdateAssessmentResponseInput {
   """
   dueDate: Time
   clearDueDate: Boolean
-  ownerID: ID
-  clearOwner: Boolean
-  addBlockedGroupIDs: [ID!]
-  removeBlockedGroupIDs: [ID!]
-  clearBlockedGroups: Boolean
-  addEditorIDs: [ID!]
-  removeEditorIDs: [ID!]
-  clearEditors: Boolean
-  addViewerIDs: [ID!]
-  removeViewerIDs: [ID!]
-  clearViewers: Boolean
   assessmentID: ID
   userID: ID
   documentID: ID
@@ -82656,15 +82345,6 @@ input UpdateGroupInput {
   addAssessmentViewerIDs: [ID!]
   removeAssessmentViewerIDs: [ID!]
   clearAssessmentViewers: Boolean
-  addAssessmentResponseEditorIDs: [ID!]
-  removeAssessmentResponseEditorIDs: [ID!]
-  clearAssessmentResponseEditors: Boolean
-  addAssessmentResponseBlockedGroupIDs: [ID!]
-  removeAssessmentResponseBlockedGroupIDs: [ID!]
-  clearAssessmentResponseBlockedGroups: Boolean
-  addAssessmentResponseViewerIDs: [ID!]
-  removeAssessmentResponseViewerIDs: [ID!]
-  clearAssessmentResponseViewers: Boolean
   addProcedureEditorIDs: [ID!]
   removeProcedureEditorIDs: [ID!]
   clearProcedureEditors: Boolean

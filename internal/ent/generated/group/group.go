@@ -89,12 +89,6 @@ const (
 	EdgeAssessmentBlockedGroups = "assessment_blocked_groups"
 	// EdgeAssessmentViewers holds the string denoting the assessment_viewers edge name in mutations.
 	EdgeAssessmentViewers = "assessment_viewers"
-	// EdgeAssessmentResponseEditors holds the string denoting the assessment_response_editors edge name in mutations.
-	EdgeAssessmentResponseEditors = "assessment_response_editors"
-	// EdgeAssessmentResponseBlockedGroups holds the string denoting the assessment_response_blocked_groups edge name in mutations.
-	EdgeAssessmentResponseBlockedGroups = "assessment_response_blocked_groups"
-	// EdgeAssessmentResponseViewers holds the string denoting the assessment_response_viewers edge name in mutations.
-	EdgeAssessmentResponseViewers = "assessment_response_viewers"
 	// EdgeProcedureEditors holds the string denoting the procedure_editors edge name in mutations.
 	EdgeProcedureEditors = "procedure_editors"
 	// EdgeProcedureBlockedGroups holds the string denoting the procedure_blocked_groups edge name in mutations.
@@ -239,21 +233,6 @@ const (
 	// AssessmentViewersInverseTable is the table name for the Assessment entity.
 	// It exists in this package in order to avoid circular dependency with the "assessment" package.
 	AssessmentViewersInverseTable = "assessments"
-	// AssessmentResponseEditorsTable is the table that holds the assessment_response_editors relation/edge. The primary key declared below.
-	AssessmentResponseEditorsTable = "assessment_response_editors"
-	// AssessmentResponseEditorsInverseTable is the table name for the AssessmentResponse entity.
-	// It exists in this package in order to avoid circular dependency with the "assessmentresponse" package.
-	AssessmentResponseEditorsInverseTable = "assessment_responses"
-	// AssessmentResponseBlockedGroupsTable is the table that holds the assessment_response_blocked_groups relation/edge. The primary key declared below.
-	AssessmentResponseBlockedGroupsTable = "assessment_response_blocked_groups"
-	// AssessmentResponseBlockedGroupsInverseTable is the table name for the AssessmentResponse entity.
-	// It exists in this package in order to avoid circular dependency with the "assessmentresponse" package.
-	AssessmentResponseBlockedGroupsInverseTable = "assessment_responses"
-	// AssessmentResponseViewersTable is the table that holds the assessment_response_viewers relation/edge. The primary key declared below.
-	AssessmentResponseViewersTable = "assessment_response_viewers"
-	// AssessmentResponseViewersInverseTable is the table name for the AssessmentResponse entity.
-	// It exists in this package in order to avoid circular dependency with the "assessmentresponse" package.
-	AssessmentResponseViewersInverseTable = "assessment_responses"
 	// ProcedureEditorsTable is the table that holds the procedure_editors relation/edge. The primary key declared below.
 	ProcedureEditorsTable = "procedure_editors"
 	// ProcedureEditorsInverseTable is the table name for the Procedure entity.
@@ -446,15 +425,6 @@ var (
 	// AssessmentViewersPrimaryKey and AssessmentViewersColumn2 are the table columns denoting the
 	// primary key for the assessment_viewers relation (M2M).
 	AssessmentViewersPrimaryKey = []string{"assessment_id", "group_id"}
-	// AssessmentResponseEditorsPrimaryKey and AssessmentResponseEditorsColumn2 are the table columns denoting the
-	// primary key for the assessment_response_editors relation (M2M).
-	AssessmentResponseEditorsPrimaryKey = []string{"assessment_response_id", "group_id"}
-	// AssessmentResponseBlockedGroupsPrimaryKey and AssessmentResponseBlockedGroupsColumn2 are the table columns denoting the
-	// primary key for the assessment_response_blocked_groups relation (M2M).
-	AssessmentResponseBlockedGroupsPrimaryKey = []string{"assessment_response_id", "group_id"}
-	// AssessmentResponseViewersPrimaryKey and AssessmentResponseViewersColumn2 are the table columns denoting the
-	// primary key for the assessment_response_viewers relation (M2M).
-	AssessmentResponseViewersPrimaryKey = []string{"assessment_response_id", "group_id"}
 	// ProcedureEditorsPrimaryKey and ProcedureEditorsColumn2 are the table columns denoting the
 	// primary key for the procedure_editors relation (M2M).
 	ProcedureEditorsPrimaryKey = []string{"procedure_id", "group_id"}
@@ -924,48 +894,6 @@ func ByAssessmentViewers(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption
 	}
 }
 
-// ByAssessmentResponseEditorsCount orders the results by assessment_response_editors count.
-func ByAssessmentResponseEditorsCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newAssessmentResponseEditorsStep(), opts...)
-	}
-}
-
-// ByAssessmentResponseEditors orders the results by assessment_response_editors terms.
-func ByAssessmentResponseEditors(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newAssessmentResponseEditorsStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-
-// ByAssessmentResponseBlockedGroupsCount orders the results by assessment_response_blocked_groups count.
-func ByAssessmentResponseBlockedGroupsCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newAssessmentResponseBlockedGroupsStep(), opts...)
-	}
-}
-
-// ByAssessmentResponseBlockedGroups orders the results by assessment_response_blocked_groups terms.
-func ByAssessmentResponseBlockedGroups(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newAssessmentResponseBlockedGroupsStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-
-// ByAssessmentResponseViewersCount orders the results by assessment_response_viewers count.
-func ByAssessmentResponseViewersCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newAssessmentResponseViewersStep(), opts...)
-	}
-}
-
-// ByAssessmentResponseViewers orders the results by assessment_response_viewers terms.
-func ByAssessmentResponseViewers(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newAssessmentResponseViewersStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-
 // ByProcedureEditorsCount orders the results by procedure_editors count.
 func ByProcedureEditorsCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -1320,27 +1248,6 @@ func newAssessmentViewersStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(AssessmentViewersInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2M, true, AssessmentViewersTable, AssessmentViewersPrimaryKey...),
-	)
-}
-func newAssessmentResponseEditorsStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(AssessmentResponseEditorsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, true, AssessmentResponseEditorsTable, AssessmentResponseEditorsPrimaryKey...),
-	)
-}
-func newAssessmentResponseBlockedGroupsStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(AssessmentResponseBlockedGroupsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, true, AssessmentResponseBlockedGroupsTable, AssessmentResponseBlockedGroupsPrimaryKey...),
-	)
-}
-func newAssessmentResponseViewersStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(AssessmentResponseViewersInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, true, AssessmentResponseViewersTable, AssessmentResponseViewersPrimaryKey...),
 	)
 }
 func newProcedureEditorsStep() *sqlgraph.Step {

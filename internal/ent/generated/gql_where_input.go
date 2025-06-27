@@ -4811,18 +4811,6 @@ type AssessmentResponseWhereInput struct {
 	HasOwner     *bool                     `json:"hasOwner,omitempty"`
 	HasOwnerWith []*OrganizationWhereInput `json:"hasOwnerWith,omitempty"`
 
-	// "blocked_groups" edge predicates.
-	HasBlockedGroups     *bool              `json:"hasBlockedGroups,omitempty"`
-	HasBlockedGroupsWith []*GroupWhereInput `json:"hasBlockedGroupsWith,omitempty"`
-
-	// "editors" edge predicates.
-	HasEditors     *bool              `json:"hasEditors,omitempty"`
-	HasEditorsWith []*GroupWhereInput `json:"hasEditorsWith,omitempty"`
-
-	// "viewers" edge predicates.
-	HasViewers     *bool              `json:"hasViewers,omitempty"`
-	HasViewersWith []*GroupWhereInput `json:"hasViewersWith,omitempty"`
-
 	// "assessment" edge predicates.
 	HasAssessment     *bool                   `json:"hasAssessment,omitempty"`
 	HasAssessmentWith []*AssessmentWhereInput `json:"hasAssessmentWith,omitempty"`
@@ -5399,60 +5387,6 @@ func (i *AssessmentResponseWhereInput) P() (predicate.AssessmentResponse, error)
 			with = append(with, p)
 		}
 		predicates = append(predicates, assessmentresponse.HasOwnerWith(with...))
-	}
-	if i.HasBlockedGroups != nil {
-		p := assessmentresponse.HasBlockedGroups()
-		if !*i.HasBlockedGroups {
-			p = assessmentresponse.Not(p)
-		}
-		predicates = append(predicates, p)
-	}
-	if len(i.HasBlockedGroupsWith) > 0 {
-		with := make([]predicate.Group, 0, len(i.HasBlockedGroupsWith))
-		for _, w := range i.HasBlockedGroupsWith {
-			p, err := w.P()
-			if err != nil {
-				return nil, fmt.Errorf("%w: field 'HasBlockedGroupsWith'", err)
-			}
-			with = append(with, p)
-		}
-		predicates = append(predicates, assessmentresponse.HasBlockedGroupsWith(with...))
-	}
-	if i.HasEditors != nil {
-		p := assessmentresponse.HasEditors()
-		if !*i.HasEditors {
-			p = assessmentresponse.Not(p)
-		}
-		predicates = append(predicates, p)
-	}
-	if len(i.HasEditorsWith) > 0 {
-		with := make([]predicate.Group, 0, len(i.HasEditorsWith))
-		for _, w := range i.HasEditorsWith {
-			p, err := w.P()
-			if err != nil {
-				return nil, fmt.Errorf("%w: field 'HasEditorsWith'", err)
-			}
-			with = append(with, p)
-		}
-		predicates = append(predicates, assessmentresponse.HasEditorsWith(with...))
-	}
-	if i.HasViewers != nil {
-		p := assessmentresponse.HasViewers()
-		if !*i.HasViewers {
-			p = assessmentresponse.Not(p)
-		}
-		predicates = append(predicates, p)
-	}
-	if len(i.HasViewersWith) > 0 {
-		with := make([]predicate.Group, 0, len(i.HasViewersWith))
-		for _, w := range i.HasViewersWith {
-			p, err := w.P()
-			if err != nil {
-				return nil, fmt.Errorf("%w: field 'HasViewersWith'", err)
-			}
-			with = append(with, p)
-		}
-		predicates = append(predicates, assessmentresponse.HasViewersWith(with...))
 	}
 	if i.HasAssessment != nil {
 		p := assessmentresponse.HasAssessment()
@@ -30121,18 +30055,6 @@ type GroupWhereInput struct {
 	HasAssessmentViewers     *bool                   `json:"hasAssessmentViewers,omitempty"`
 	HasAssessmentViewersWith []*AssessmentWhereInput `json:"hasAssessmentViewersWith,omitempty"`
 
-	// "assessment_response_editors" edge predicates.
-	HasAssessmentResponseEditors     *bool                           `json:"hasAssessmentResponseEditors,omitempty"`
-	HasAssessmentResponseEditorsWith []*AssessmentResponseWhereInput `json:"hasAssessmentResponseEditorsWith,omitempty"`
-
-	// "assessment_response_blocked_groups" edge predicates.
-	HasAssessmentResponseBlockedGroups     *bool                           `json:"hasAssessmentResponseBlockedGroups,omitempty"`
-	HasAssessmentResponseBlockedGroupsWith []*AssessmentResponseWhereInput `json:"hasAssessmentResponseBlockedGroupsWith,omitempty"`
-
-	// "assessment_response_viewers" edge predicates.
-	HasAssessmentResponseViewers     *bool                           `json:"hasAssessmentResponseViewers,omitempty"`
-	HasAssessmentResponseViewersWith []*AssessmentResponseWhereInput `json:"hasAssessmentResponseViewersWith,omitempty"`
-
 	// "procedure_editors" edge predicates.
 	HasProcedureEditors     *bool                  `json:"hasProcedureEditors,omitempty"`
 	HasProcedureEditorsWith []*ProcedureWhereInput `json:"hasProcedureEditorsWith,omitempty"`
@@ -31015,60 +30937,6 @@ func (i *GroupWhereInput) P() (predicate.Group, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, group.HasAssessmentViewersWith(with...))
-	}
-	if i.HasAssessmentResponseEditors != nil {
-		p := group.HasAssessmentResponseEditors()
-		if !*i.HasAssessmentResponseEditors {
-			p = group.Not(p)
-		}
-		predicates = append(predicates, p)
-	}
-	if len(i.HasAssessmentResponseEditorsWith) > 0 {
-		with := make([]predicate.AssessmentResponse, 0, len(i.HasAssessmentResponseEditorsWith))
-		for _, w := range i.HasAssessmentResponseEditorsWith {
-			p, err := w.P()
-			if err != nil {
-				return nil, fmt.Errorf("%w: field 'HasAssessmentResponseEditorsWith'", err)
-			}
-			with = append(with, p)
-		}
-		predicates = append(predicates, group.HasAssessmentResponseEditorsWith(with...))
-	}
-	if i.HasAssessmentResponseBlockedGroups != nil {
-		p := group.HasAssessmentResponseBlockedGroups()
-		if !*i.HasAssessmentResponseBlockedGroups {
-			p = group.Not(p)
-		}
-		predicates = append(predicates, p)
-	}
-	if len(i.HasAssessmentResponseBlockedGroupsWith) > 0 {
-		with := make([]predicate.AssessmentResponse, 0, len(i.HasAssessmentResponseBlockedGroupsWith))
-		for _, w := range i.HasAssessmentResponseBlockedGroupsWith {
-			p, err := w.P()
-			if err != nil {
-				return nil, fmt.Errorf("%w: field 'HasAssessmentResponseBlockedGroupsWith'", err)
-			}
-			with = append(with, p)
-		}
-		predicates = append(predicates, group.HasAssessmentResponseBlockedGroupsWith(with...))
-	}
-	if i.HasAssessmentResponseViewers != nil {
-		p := group.HasAssessmentResponseViewers()
-		if !*i.HasAssessmentResponseViewers {
-			p = group.Not(p)
-		}
-		predicates = append(predicates, p)
-	}
-	if len(i.HasAssessmentResponseViewersWith) > 0 {
-		with := make([]predicate.AssessmentResponse, 0, len(i.HasAssessmentResponseViewersWith))
-		for _, w := range i.HasAssessmentResponseViewersWith {
-			p, err := w.P()
-			if err != nil {
-				return nil, fmt.Errorf("%w: field 'HasAssessmentResponseViewersWith'", err)
-			}
-			with = append(with, p)
-		}
-		predicates = append(predicates, group.HasAssessmentResponseViewersWith(with...))
 	}
 	if i.HasProcedureEditors != nil {
 		p := group.HasProcedureEditors()

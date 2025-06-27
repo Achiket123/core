@@ -5369,81 +5369,6 @@ var (
 			},
 		},
 	}
-	// AssessmentResponseBlockedGroupsColumns holds the columns for the "assessment_response_blocked_groups" table.
-	AssessmentResponseBlockedGroupsColumns = []*schema.Column{
-		{Name: "assessment_response_id", Type: field.TypeString},
-		{Name: "group_id", Type: field.TypeString},
-	}
-	// AssessmentResponseBlockedGroupsTable holds the schema information for the "assessment_response_blocked_groups" table.
-	AssessmentResponseBlockedGroupsTable = &schema.Table{
-		Name:       "assessment_response_blocked_groups",
-		Columns:    AssessmentResponseBlockedGroupsColumns,
-		PrimaryKey: []*schema.Column{AssessmentResponseBlockedGroupsColumns[0], AssessmentResponseBlockedGroupsColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "assessment_response_blocked_groups_assessment_response_id",
-				Columns:    []*schema.Column{AssessmentResponseBlockedGroupsColumns[0]},
-				RefColumns: []*schema.Column{AssessmentResponsesColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "assessment_response_blocked_groups_group_id",
-				Columns:    []*schema.Column{AssessmentResponseBlockedGroupsColumns[1]},
-				RefColumns: []*schema.Column{GroupsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
-	// AssessmentResponseEditorsColumns holds the columns for the "assessment_response_editors" table.
-	AssessmentResponseEditorsColumns = []*schema.Column{
-		{Name: "assessment_response_id", Type: field.TypeString},
-		{Name: "group_id", Type: field.TypeString},
-	}
-	// AssessmentResponseEditorsTable holds the schema information for the "assessment_response_editors" table.
-	AssessmentResponseEditorsTable = &schema.Table{
-		Name:       "assessment_response_editors",
-		Columns:    AssessmentResponseEditorsColumns,
-		PrimaryKey: []*schema.Column{AssessmentResponseEditorsColumns[0], AssessmentResponseEditorsColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "assessment_response_editors_assessment_response_id",
-				Columns:    []*schema.Column{AssessmentResponseEditorsColumns[0]},
-				RefColumns: []*schema.Column{AssessmentResponsesColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "assessment_response_editors_group_id",
-				Columns:    []*schema.Column{AssessmentResponseEditorsColumns[1]},
-				RefColumns: []*schema.Column{GroupsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
-	// AssessmentResponseViewersColumns holds the columns for the "assessment_response_viewers" table.
-	AssessmentResponseViewersColumns = []*schema.Column{
-		{Name: "assessment_response_id", Type: field.TypeString},
-		{Name: "group_id", Type: field.TypeString},
-	}
-	// AssessmentResponseViewersTable holds the schema information for the "assessment_response_viewers" table.
-	AssessmentResponseViewersTable = &schema.Table{
-		Name:       "assessment_response_viewers",
-		Columns:    AssessmentResponseViewersColumns,
-		PrimaryKey: []*schema.Column{AssessmentResponseViewersColumns[0], AssessmentResponseViewersColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "assessment_response_viewers_assessment_response_id",
-				Columns:    []*schema.Column{AssessmentResponseViewersColumns[0]},
-				RefColumns: []*schema.Column{AssessmentResponsesColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "assessment_response_viewers_group_id",
-				Columns:    []*schema.Column{AssessmentResponseViewersColumns[1]},
-				RefColumns: []*schema.Column{GroupsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
 	// ContactFilesColumns holds the columns for the "contact_files" table.
 	ContactFilesColumns = []*schema.Column{
 		{Name: "contact_id", Type: field.TypeString},
@@ -8181,9 +8106,6 @@ var (
 		AssessmentEditorsTable,
 		AssessmentViewersTable,
 		AssessmentUsersTable,
-		AssessmentResponseBlockedGroupsTable,
-		AssessmentResponseEditorsTable,
-		AssessmentResponseViewersTable,
 		ContactFilesTable,
 		ControlControlObjectivesTable,
 		ControlTasksTable,
@@ -8578,12 +8500,6 @@ func init() {
 	AssessmentViewersTable.ForeignKeys[1].RefTable = GroupsTable
 	AssessmentUsersTable.ForeignKeys[0].RefTable = AssessmentsTable
 	AssessmentUsersTable.ForeignKeys[1].RefTable = UsersTable
-	AssessmentResponseBlockedGroupsTable.ForeignKeys[0].RefTable = AssessmentResponsesTable
-	AssessmentResponseBlockedGroupsTable.ForeignKeys[1].RefTable = GroupsTable
-	AssessmentResponseEditorsTable.ForeignKeys[0].RefTable = AssessmentResponsesTable
-	AssessmentResponseEditorsTable.ForeignKeys[1].RefTable = GroupsTable
-	AssessmentResponseViewersTable.ForeignKeys[0].RefTable = AssessmentResponsesTable
-	AssessmentResponseViewersTable.ForeignKeys[1].RefTable = GroupsTable
 	ContactFilesTable.ForeignKeys[0].RefTable = ContactsTable
 	ContactFilesTable.ForeignKeys[1].RefTable = FilesTable
 	ControlControlObjectivesTable.ForeignKeys[0].RefTable = ControlsTable

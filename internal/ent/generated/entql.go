@@ -3474,42 +3474,6 @@ var schemaGraph = func() *sqlgraph.Schema {
 		"Organization",
 	)
 	graph.MustAddE(
-		"blocked_groups",
-		&sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   assessmentresponse.BlockedGroupsTable,
-			Columns: assessmentresponse.BlockedGroupsPrimaryKey,
-			Bidi:    false,
-		},
-		"AssessmentResponse",
-		"Group",
-	)
-	graph.MustAddE(
-		"editors",
-		&sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   assessmentresponse.EditorsTable,
-			Columns: assessmentresponse.EditorsPrimaryKey,
-			Bidi:    false,
-		},
-		"AssessmentResponse",
-		"Group",
-	)
-	graph.MustAddE(
-		"viewers",
-		&sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   assessmentresponse.ViewersTable,
-			Columns: assessmentresponse.ViewersPrimaryKey,
-			Bidi:    false,
-		},
-		"AssessmentResponse",
-		"Group",
-	)
-	graph.MustAddE(
 		"assessment",
 		&sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -5128,42 +5092,6 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		"Group",
 		"Assessment",
-	)
-	graph.MustAddE(
-		"assessment_response_editors",
-		&sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   group.AssessmentResponseEditorsTable,
-			Columns: group.AssessmentResponseEditorsPrimaryKey,
-			Bidi:    false,
-		},
-		"Group",
-		"AssessmentResponse",
-	)
-	graph.MustAddE(
-		"assessment_response_blocked_groups",
-		&sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   group.AssessmentResponseBlockedGroupsTable,
-			Columns: group.AssessmentResponseBlockedGroupsPrimaryKey,
-			Bidi:    false,
-		},
-		"Group",
-		"AssessmentResponse",
-	)
-	graph.MustAddE(
-		"assessment_response_viewers",
-		&sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   group.AssessmentResponseViewersTable,
-			Columns: group.AssessmentResponseViewersPrimaryKey,
-			Bidi:    false,
-		},
-		"Group",
-		"AssessmentResponse",
 	)
 	graph.MustAddE(
 		"procedure_editors",
@@ -9690,48 +9618,6 @@ func (f *AssessmentResponseFilter) WhereHasOwner() {
 // WhereHasOwnerWith applies a predicate to check if query has an edge owner with a given conditions (other predicates).
 func (f *AssessmentResponseFilter) WhereHasOwnerWith(preds ...predicate.Organization) {
 	f.Where(entql.HasEdgeWith("owner", sqlgraph.WrapFunc(func(s *sql.Selector) {
-		for _, p := range preds {
-			p(s)
-		}
-	})))
-}
-
-// WhereHasBlockedGroups applies a predicate to check if query has an edge blocked_groups.
-func (f *AssessmentResponseFilter) WhereHasBlockedGroups() {
-	f.Where(entql.HasEdge("blocked_groups"))
-}
-
-// WhereHasBlockedGroupsWith applies a predicate to check if query has an edge blocked_groups with a given conditions (other predicates).
-func (f *AssessmentResponseFilter) WhereHasBlockedGroupsWith(preds ...predicate.Group) {
-	f.Where(entql.HasEdgeWith("blocked_groups", sqlgraph.WrapFunc(func(s *sql.Selector) {
-		for _, p := range preds {
-			p(s)
-		}
-	})))
-}
-
-// WhereHasEditors applies a predicate to check if query has an edge editors.
-func (f *AssessmentResponseFilter) WhereHasEditors() {
-	f.Where(entql.HasEdge("editors"))
-}
-
-// WhereHasEditorsWith applies a predicate to check if query has an edge editors with a given conditions (other predicates).
-func (f *AssessmentResponseFilter) WhereHasEditorsWith(preds ...predicate.Group) {
-	f.Where(entql.HasEdgeWith("editors", sqlgraph.WrapFunc(func(s *sql.Selector) {
-		for _, p := range preds {
-			p(s)
-		}
-	})))
-}
-
-// WhereHasViewers applies a predicate to check if query has an edge viewers.
-func (f *AssessmentResponseFilter) WhereHasViewers() {
-	f.Where(entql.HasEdge("viewers"))
-}
-
-// WhereHasViewersWith applies a predicate to check if query has an edge viewers with a given conditions (other predicates).
-func (f *AssessmentResponseFilter) WhereHasViewersWith(preds ...predicate.Group) {
-	f.Where(entql.HasEdgeWith("viewers", sqlgraph.WrapFunc(func(s *sql.Selector) {
 		for _, p := range preds {
 			p(s)
 		}
@@ -15307,48 +15193,6 @@ func (f *GroupFilter) WhereHasAssessmentViewers() {
 // WhereHasAssessmentViewersWith applies a predicate to check if query has an edge assessment_viewers with a given conditions (other predicates).
 func (f *GroupFilter) WhereHasAssessmentViewersWith(preds ...predicate.Assessment) {
 	f.Where(entql.HasEdgeWith("assessment_viewers", sqlgraph.WrapFunc(func(s *sql.Selector) {
-		for _, p := range preds {
-			p(s)
-		}
-	})))
-}
-
-// WhereHasAssessmentResponseEditors applies a predicate to check if query has an edge assessment_response_editors.
-func (f *GroupFilter) WhereHasAssessmentResponseEditors() {
-	f.Where(entql.HasEdge("assessment_response_editors"))
-}
-
-// WhereHasAssessmentResponseEditorsWith applies a predicate to check if query has an edge assessment_response_editors with a given conditions (other predicates).
-func (f *GroupFilter) WhereHasAssessmentResponseEditorsWith(preds ...predicate.AssessmentResponse) {
-	f.Where(entql.HasEdgeWith("assessment_response_editors", sqlgraph.WrapFunc(func(s *sql.Selector) {
-		for _, p := range preds {
-			p(s)
-		}
-	})))
-}
-
-// WhereHasAssessmentResponseBlockedGroups applies a predicate to check if query has an edge assessment_response_blocked_groups.
-func (f *GroupFilter) WhereHasAssessmentResponseBlockedGroups() {
-	f.Where(entql.HasEdge("assessment_response_blocked_groups"))
-}
-
-// WhereHasAssessmentResponseBlockedGroupsWith applies a predicate to check if query has an edge assessment_response_blocked_groups with a given conditions (other predicates).
-func (f *GroupFilter) WhereHasAssessmentResponseBlockedGroupsWith(preds ...predicate.AssessmentResponse) {
-	f.Where(entql.HasEdgeWith("assessment_response_blocked_groups", sqlgraph.WrapFunc(func(s *sql.Selector) {
-		for _, p := range preds {
-			p(s)
-		}
-	})))
-}
-
-// WhereHasAssessmentResponseViewers applies a predicate to check if query has an edge assessment_response_viewers.
-func (f *GroupFilter) WhereHasAssessmentResponseViewers() {
-	f.Where(entql.HasEdge("assessment_response_viewers"))
-}
-
-// WhereHasAssessmentResponseViewersWith applies a predicate to check if query has an edge assessment_response_viewers with a given conditions (other predicates).
-func (f *GroupFilter) WhereHasAssessmentResponseViewersWith(preds ...predicate.AssessmentResponse) {
-	f.Where(entql.HasEdgeWith("assessment_response_viewers", sqlgraph.WrapFunc(func(s *sql.Selector) {
 		for _, p := range preds {
 			p(s)
 		}

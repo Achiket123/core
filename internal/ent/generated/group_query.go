@@ -14,7 +14,6 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/theopenlane/core/internal/ent/generated/assessment"
-	"github.com/theopenlane/core/internal/ent/generated/assessmentresponse"
 	"github.com/theopenlane/core/internal/ent/generated/control"
 	"github.com/theopenlane/core/internal/ent/generated/controlimplementation"
 	"github.com/theopenlane/core/internal/ent/generated/controlobjective"
@@ -68,9 +67,6 @@ type GroupQuery struct {
 	withAssessmentEditors                       *AssessmentQuery
 	withAssessmentBlockedGroups                 *AssessmentQuery
 	withAssessmentViewers                       *AssessmentQuery
-	withAssessmentResponseEditors               *AssessmentResponseQuery
-	withAssessmentResponseBlockedGroups         *AssessmentResponseQuery
-	withAssessmentResponseViewers               *AssessmentResponseQuery
 	withProcedureEditors                        *ProcedureQuery
 	withProcedureBlockedGroups                  *ProcedureQuery
 	withInternalPolicyEditors                   *InternalPolicyQuery
@@ -110,9 +106,6 @@ type GroupQuery struct {
 	withNamedAssessmentEditors                  map[string]*AssessmentQuery
 	withNamedAssessmentBlockedGroups            map[string]*AssessmentQuery
 	withNamedAssessmentViewers                  map[string]*AssessmentQuery
-	withNamedAssessmentResponseEditors          map[string]*AssessmentResponseQuery
-	withNamedAssessmentResponseBlockedGroups    map[string]*AssessmentResponseQuery
-	withNamedAssessmentResponseViewers          map[string]*AssessmentResponseQuery
 	withNamedProcedureEditors                   map[string]*ProcedureQuery
 	withNamedProcedureBlockedGroups             map[string]*ProcedureQuery
 	withNamedInternalPolicyEditors              map[string]*InternalPolicyQuery
@@ -713,81 +706,6 @@ func (gq *GroupQuery) QueryAssessmentViewers() *AssessmentQuery {
 	return query
 }
 
-// QueryAssessmentResponseEditors chains the current query on the "assessment_response_editors" edge.
-func (gq *GroupQuery) QueryAssessmentResponseEditors() *AssessmentResponseQuery {
-	query := (&AssessmentResponseClient{config: gq.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := gq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := gq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(group.Table, group.FieldID, selector),
-			sqlgraph.To(assessmentresponse.Table, assessmentresponse.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, group.AssessmentResponseEditorsTable, group.AssessmentResponseEditorsPrimaryKey...),
-		)
-		schemaConfig := gq.schemaConfig
-		step.To.Schema = schemaConfig.AssessmentResponse
-		step.Edge.Schema = schemaConfig.AssessmentResponseEditors
-		fromU = sqlgraph.SetNeighbors(gq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryAssessmentResponseBlockedGroups chains the current query on the "assessment_response_blocked_groups" edge.
-func (gq *GroupQuery) QueryAssessmentResponseBlockedGroups() *AssessmentResponseQuery {
-	query := (&AssessmentResponseClient{config: gq.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := gq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := gq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(group.Table, group.FieldID, selector),
-			sqlgraph.To(assessmentresponse.Table, assessmentresponse.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, group.AssessmentResponseBlockedGroupsTable, group.AssessmentResponseBlockedGroupsPrimaryKey...),
-		)
-		schemaConfig := gq.schemaConfig
-		step.To.Schema = schemaConfig.AssessmentResponse
-		step.Edge.Schema = schemaConfig.AssessmentResponseBlockedGroups
-		fromU = sqlgraph.SetNeighbors(gq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryAssessmentResponseViewers chains the current query on the "assessment_response_viewers" edge.
-func (gq *GroupQuery) QueryAssessmentResponseViewers() *AssessmentResponseQuery {
-	query := (&AssessmentResponseClient{config: gq.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := gq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := gq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(group.Table, group.FieldID, selector),
-			sqlgraph.To(assessmentresponse.Table, assessmentresponse.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, group.AssessmentResponseViewersTable, group.AssessmentResponseViewersPrimaryKey...),
-		)
-		schemaConfig := gq.schemaConfig
-		step.To.Schema = schemaConfig.AssessmentResponse
-		step.Edge.Schema = schemaConfig.AssessmentResponseViewers
-		fromU = sqlgraph.SetNeighbors(gq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
 // QueryProcedureEditors chains the current query on the "procedure_editors" edge.
 func (gq *GroupQuery) QueryProcedureEditors() *ProcedureQuery {
 	query := (&ProcedureClient{config: gq.config}).Query()
@@ -1377,9 +1295,6 @@ func (gq *GroupQuery) Clone() *GroupQuery {
 		withAssessmentEditors:                  gq.withAssessmentEditors.Clone(),
 		withAssessmentBlockedGroups:            gq.withAssessmentBlockedGroups.Clone(),
 		withAssessmentViewers:                  gq.withAssessmentViewers.Clone(),
-		withAssessmentResponseEditors:          gq.withAssessmentResponseEditors.Clone(),
-		withAssessmentResponseBlockedGroups:    gq.withAssessmentResponseBlockedGroups.Clone(),
-		withAssessmentResponseViewers:          gq.withAssessmentResponseViewers.Clone(),
 		withProcedureEditors:                   gq.withProcedureEditors.Clone(),
 		withProcedureBlockedGroups:             gq.withProcedureBlockedGroups.Clone(),
 		withInternalPolicyEditors:              gq.withInternalPolicyEditors.Clone(),
@@ -1644,39 +1559,6 @@ func (gq *GroupQuery) WithAssessmentViewers(opts ...func(*AssessmentQuery)) *Gro
 	return gq
 }
 
-// WithAssessmentResponseEditors tells the query-builder to eager-load the nodes that are connected to
-// the "assessment_response_editors" edge. The optional arguments are used to configure the query builder of the edge.
-func (gq *GroupQuery) WithAssessmentResponseEditors(opts ...func(*AssessmentResponseQuery)) *GroupQuery {
-	query := (&AssessmentResponseClient{config: gq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	gq.withAssessmentResponseEditors = query
-	return gq
-}
-
-// WithAssessmentResponseBlockedGroups tells the query-builder to eager-load the nodes that are connected to
-// the "assessment_response_blocked_groups" edge. The optional arguments are used to configure the query builder of the edge.
-func (gq *GroupQuery) WithAssessmentResponseBlockedGroups(opts ...func(*AssessmentResponseQuery)) *GroupQuery {
-	query := (&AssessmentResponseClient{config: gq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	gq.withAssessmentResponseBlockedGroups = query
-	return gq
-}
-
-// WithAssessmentResponseViewers tells the query-builder to eager-load the nodes that are connected to
-// the "assessment_response_viewers" edge. The optional arguments are used to configure the query builder of the edge.
-func (gq *GroupQuery) WithAssessmentResponseViewers(opts ...func(*AssessmentResponseQuery)) *GroupQuery {
-	query := (&AssessmentResponseClient{config: gq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	gq.withAssessmentResponseViewers = query
-	return gq
-}
-
 // WithProcedureEditors tells the query-builder to eager-load the nodes that are connected to
 // the "procedure_editors" edge. The optional arguments are used to configure the query builder of the edge.
 func (gq *GroupQuery) WithProcedureEditors(opts ...func(*ProcedureQuery)) *GroupQuery {
@@ -1927,7 +1809,7 @@ func (gq *GroupQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Group,
 		nodes       = []*Group{}
 		withFKs     = gq.withFKs
 		_spec       = gq.querySpec()
-		loadedTypes = [40]bool{
+		loadedTypes = [37]bool{
 			gq.withOwner != nil,
 			gq.withProgramEditors != nil,
 			gq.withProgramBlockedGroups != nil,
@@ -1950,9 +1832,6 @@ func (gq *GroupQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Group,
 			gq.withAssessmentEditors != nil,
 			gq.withAssessmentBlockedGroups != nil,
 			gq.withAssessmentViewers != nil,
-			gq.withAssessmentResponseEditors != nil,
-			gq.withAssessmentResponseBlockedGroups != nil,
-			gq.withAssessmentResponseViewers != nil,
 			gq.withProcedureEditors != nil,
 			gq.withProcedureBlockedGroups != nil,
 			gq.withInternalPolicyEditors != nil,
@@ -2162,33 +2041,6 @@ func (gq *GroupQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Group,
 		if err := gq.loadAssessmentViewers(ctx, query, nodes,
 			func(n *Group) { n.Edges.AssessmentViewers = []*Assessment{} },
 			func(n *Group, e *Assessment) { n.Edges.AssessmentViewers = append(n.Edges.AssessmentViewers, e) }); err != nil {
-			return nil, err
-		}
-	}
-	if query := gq.withAssessmentResponseEditors; query != nil {
-		if err := gq.loadAssessmentResponseEditors(ctx, query, nodes,
-			func(n *Group) { n.Edges.AssessmentResponseEditors = []*AssessmentResponse{} },
-			func(n *Group, e *AssessmentResponse) {
-				n.Edges.AssessmentResponseEditors = append(n.Edges.AssessmentResponseEditors, e)
-			}); err != nil {
-			return nil, err
-		}
-	}
-	if query := gq.withAssessmentResponseBlockedGroups; query != nil {
-		if err := gq.loadAssessmentResponseBlockedGroups(ctx, query, nodes,
-			func(n *Group) { n.Edges.AssessmentResponseBlockedGroups = []*AssessmentResponse{} },
-			func(n *Group, e *AssessmentResponse) {
-				n.Edges.AssessmentResponseBlockedGroups = append(n.Edges.AssessmentResponseBlockedGroups, e)
-			}); err != nil {
-			return nil, err
-		}
-	}
-	if query := gq.withAssessmentResponseViewers; query != nil {
-		if err := gq.loadAssessmentResponseViewers(ctx, query, nodes,
-			func(n *Group) { n.Edges.AssessmentResponseViewers = []*AssessmentResponse{} },
-			func(n *Group, e *AssessmentResponse) {
-				n.Edges.AssessmentResponseViewers = append(n.Edges.AssessmentResponseViewers, e)
-			}); err != nil {
 			return nil, err
 		}
 	}
@@ -2450,27 +2302,6 @@ func (gq *GroupQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Group,
 		if err := gq.loadAssessmentViewers(ctx, query, nodes,
 			func(n *Group) { n.appendNamedAssessmentViewers(name) },
 			func(n *Group, e *Assessment) { n.appendNamedAssessmentViewers(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range gq.withNamedAssessmentResponseEditors {
-		if err := gq.loadAssessmentResponseEditors(ctx, query, nodes,
-			func(n *Group) { n.appendNamedAssessmentResponseEditors(name) },
-			func(n *Group, e *AssessmentResponse) { n.appendNamedAssessmentResponseEditors(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range gq.withNamedAssessmentResponseBlockedGroups {
-		if err := gq.loadAssessmentResponseBlockedGroups(ctx, query, nodes,
-			func(n *Group) { n.appendNamedAssessmentResponseBlockedGroups(name) },
-			func(n *Group, e *AssessmentResponse) { n.appendNamedAssessmentResponseBlockedGroups(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range gq.withNamedAssessmentResponseViewers {
-		if err := gq.loadAssessmentResponseViewers(ctx, query, nodes,
-			func(n *Group) { n.appendNamedAssessmentResponseViewers(name) },
-			func(n *Group, e *AssessmentResponse) { n.appendNamedAssessmentResponseViewers(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -3911,192 +3742,6 @@ func (gq *GroupQuery) loadAssessmentViewers(ctx context.Context, query *Assessme
 	}
 	return nil
 }
-func (gq *GroupQuery) loadAssessmentResponseEditors(ctx context.Context, query *AssessmentResponseQuery, nodes []*Group, init func(*Group), assign func(*Group, *AssessmentResponse)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[string]*Group)
-	nids := make(map[string]map[*Group]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
-		}
-	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(group.AssessmentResponseEditorsTable)
-		joinT.Schema(gq.schemaConfig.AssessmentResponseEditors)
-		s.Join(joinT).On(s.C(assessmentresponse.FieldID), joinT.C(group.AssessmentResponseEditorsPrimaryKey[0]))
-		s.Where(sql.InValues(joinT.C(group.AssessmentResponseEditorsPrimaryKey[1]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(group.AssessmentResponseEditorsPrimaryKey[1]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
-	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullString)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := values[0].(*sql.NullString).String
-				inValue := values[1].(*sql.NullString).String
-				if nids[inValue] == nil {
-					nids[inValue] = map[*Group]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*AssessmentResponse](ctx, query, qr, query.inters)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
-		if !ok {
-			return fmt.Errorf(`unexpected "assessment_response_editors" node returned %v`, n.ID)
-		}
-		for kn := range nodes {
-			assign(kn, n)
-		}
-	}
-	return nil
-}
-func (gq *GroupQuery) loadAssessmentResponseBlockedGroups(ctx context.Context, query *AssessmentResponseQuery, nodes []*Group, init func(*Group), assign func(*Group, *AssessmentResponse)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[string]*Group)
-	nids := make(map[string]map[*Group]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
-		}
-	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(group.AssessmentResponseBlockedGroupsTable)
-		joinT.Schema(gq.schemaConfig.AssessmentResponseBlockedGroups)
-		s.Join(joinT).On(s.C(assessmentresponse.FieldID), joinT.C(group.AssessmentResponseBlockedGroupsPrimaryKey[0]))
-		s.Where(sql.InValues(joinT.C(group.AssessmentResponseBlockedGroupsPrimaryKey[1]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(group.AssessmentResponseBlockedGroupsPrimaryKey[1]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
-	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullString)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := values[0].(*sql.NullString).String
-				inValue := values[1].(*sql.NullString).String
-				if nids[inValue] == nil {
-					nids[inValue] = map[*Group]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*AssessmentResponse](ctx, query, qr, query.inters)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
-		if !ok {
-			return fmt.Errorf(`unexpected "assessment_response_blocked_groups" node returned %v`, n.ID)
-		}
-		for kn := range nodes {
-			assign(kn, n)
-		}
-	}
-	return nil
-}
-func (gq *GroupQuery) loadAssessmentResponseViewers(ctx context.Context, query *AssessmentResponseQuery, nodes []*Group, init func(*Group), assign func(*Group, *AssessmentResponse)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[string]*Group)
-	nids := make(map[string]map[*Group]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
-		}
-	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(group.AssessmentResponseViewersTable)
-		joinT.Schema(gq.schemaConfig.AssessmentResponseViewers)
-		s.Join(joinT).On(s.C(assessmentresponse.FieldID), joinT.C(group.AssessmentResponseViewersPrimaryKey[0]))
-		s.Where(sql.InValues(joinT.C(group.AssessmentResponseViewersPrimaryKey[1]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(group.AssessmentResponseViewersPrimaryKey[1]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
-	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullString)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := values[0].(*sql.NullString).String
-				inValue := values[1].(*sql.NullString).String
-				if nids[inValue] == nil {
-					nids[inValue] = map[*Group]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*AssessmentResponse](ctx, query, qr, query.inters)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
-		if !ok {
-			return fmt.Errorf(`unexpected "assessment_response_viewers" node returned %v`, n.ID)
-		}
-		for kn := range nodes {
-			assign(kn, n)
-		}
-	}
-	return nil
-}
 func (gq *GroupQuery) loadProcedureEditors(ctx context.Context, query *ProcedureQuery, nodes []*Group, init func(*Group), assign func(*Group, *Procedure)) error {
 	edgeIDs := make([]driver.Value, len(nodes))
 	byID := make(map[string]*Group)
@@ -5323,48 +4968,6 @@ func (gq *GroupQuery) WithNamedAssessmentViewers(name string, opts ...func(*Asse
 		gq.withNamedAssessmentViewers = make(map[string]*AssessmentQuery)
 	}
 	gq.withNamedAssessmentViewers[name] = query
-	return gq
-}
-
-// WithNamedAssessmentResponseEditors tells the query-builder to eager-load the nodes that are connected to the "assessment_response_editors"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (gq *GroupQuery) WithNamedAssessmentResponseEditors(name string, opts ...func(*AssessmentResponseQuery)) *GroupQuery {
-	query := (&AssessmentResponseClient{config: gq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if gq.withNamedAssessmentResponseEditors == nil {
-		gq.withNamedAssessmentResponseEditors = make(map[string]*AssessmentResponseQuery)
-	}
-	gq.withNamedAssessmentResponseEditors[name] = query
-	return gq
-}
-
-// WithNamedAssessmentResponseBlockedGroups tells the query-builder to eager-load the nodes that are connected to the "assessment_response_blocked_groups"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (gq *GroupQuery) WithNamedAssessmentResponseBlockedGroups(name string, opts ...func(*AssessmentResponseQuery)) *GroupQuery {
-	query := (&AssessmentResponseClient{config: gq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if gq.withNamedAssessmentResponseBlockedGroups == nil {
-		gq.withNamedAssessmentResponseBlockedGroups = make(map[string]*AssessmentResponseQuery)
-	}
-	gq.withNamedAssessmentResponseBlockedGroups[name] = query
-	return gq
-}
-
-// WithNamedAssessmentResponseViewers tells the query-builder to eager-load the nodes that are connected to the "assessment_response_viewers"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (gq *GroupQuery) WithNamedAssessmentResponseViewers(name string, opts ...func(*AssessmentResponseQuery)) *GroupQuery {
-	query := (&AssessmentResponseClient{config: gq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if gq.withNamedAssessmentResponseViewers == nil {
-		gq.withNamedAssessmentResponseViewers = make(map[string]*AssessmentResponseQuery)
-	}
-	gq.withNamedAssessmentResponseViewers[name] = query
 	return gq
 }
 

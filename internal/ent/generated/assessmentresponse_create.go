@@ -13,7 +13,6 @@ import (
 	"github.com/theopenlane/core/internal/ent/generated/assessment"
 	"github.com/theopenlane/core/internal/ent/generated/assessmentresponse"
 	"github.com/theopenlane/core/internal/ent/generated/documentdata"
-	"github.com/theopenlane/core/internal/ent/generated/group"
 	"github.com/theopenlane/core/internal/ent/generated/organization"
 	"github.com/theopenlane/core/internal/ent/generated/user"
 	"github.com/theopenlane/core/pkg/enums"
@@ -243,51 +242,6 @@ func (arc *AssessmentResponseCreate) SetNillableID(s *string) *AssessmentRespons
 // SetOwner sets the "owner" edge to the Organization entity.
 func (arc *AssessmentResponseCreate) SetOwner(o *Organization) *AssessmentResponseCreate {
 	return arc.SetOwnerID(o.ID)
-}
-
-// AddBlockedGroupIDs adds the "blocked_groups" edge to the Group entity by IDs.
-func (arc *AssessmentResponseCreate) AddBlockedGroupIDs(ids ...string) *AssessmentResponseCreate {
-	arc.mutation.AddBlockedGroupIDs(ids...)
-	return arc
-}
-
-// AddBlockedGroups adds the "blocked_groups" edges to the Group entity.
-func (arc *AssessmentResponseCreate) AddBlockedGroups(g ...*Group) *AssessmentResponseCreate {
-	ids := make([]string, len(g))
-	for i := range g {
-		ids[i] = g[i].ID
-	}
-	return arc.AddBlockedGroupIDs(ids...)
-}
-
-// AddEditorIDs adds the "editors" edge to the Group entity by IDs.
-func (arc *AssessmentResponseCreate) AddEditorIDs(ids ...string) *AssessmentResponseCreate {
-	arc.mutation.AddEditorIDs(ids...)
-	return arc
-}
-
-// AddEditors adds the "editors" edges to the Group entity.
-func (arc *AssessmentResponseCreate) AddEditors(g ...*Group) *AssessmentResponseCreate {
-	ids := make([]string, len(g))
-	for i := range g {
-		ids[i] = g[i].ID
-	}
-	return arc.AddEditorIDs(ids...)
-}
-
-// AddViewerIDs adds the "viewers" edge to the Group entity by IDs.
-func (arc *AssessmentResponseCreate) AddViewerIDs(ids ...string) *AssessmentResponseCreate {
-	arc.mutation.AddViewerIDs(ids...)
-	return arc
-}
-
-// AddViewers adds the "viewers" edges to the Group entity.
-func (arc *AssessmentResponseCreate) AddViewers(g ...*Group) *AssessmentResponseCreate {
-	ids := make([]string, len(g))
-	for i := range g {
-		ids[i] = g[i].ID
-	}
-	return arc.AddViewerIDs(ids...)
 }
 
 // SetAssessment sets the "assessment" edge to the Assessment entity.
@@ -532,57 +486,6 @@ func (arc *AssessmentResponseCreate) createSpec() (*AssessmentResponse, *sqlgrap
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.OwnerID = nodes[0]
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := arc.mutation.BlockedGroupsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   assessmentresponse.BlockedGroupsTable,
-			Columns: assessmentresponse.BlockedGroupsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
-			},
-		}
-		edge.Schema = arc.schemaConfig.AssessmentResponseBlockedGroups
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := arc.mutation.EditorsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   assessmentresponse.EditorsTable,
-			Columns: assessmentresponse.EditorsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
-			},
-		}
-		edge.Schema = arc.schemaConfig.AssessmentResponseEditors
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := arc.mutation.ViewersIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   assessmentresponse.ViewersTable,
-			Columns: assessmentresponse.ViewersPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(group.FieldID, field.TypeString),
-			},
-		}
-		edge.Schema = arc.schemaConfig.AssessmentResponseViewers
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := arc.mutation.AssessmentIDs(); len(nodes) > 0 {

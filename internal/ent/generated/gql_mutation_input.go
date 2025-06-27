@@ -717,19 +717,16 @@ func (c *AssessmentUpdateOne) SetInput(i UpdateAssessmentInput) *AssessmentUpdat
 
 // CreateAssessmentResponseInput represents a mutation input for creating assessmentresponses.
 type CreateAssessmentResponseInput struct {
-	Tags            []string
-	Status          *enums.AssessmentResponseStatus
-	AssignedAt      *time.Time
-	StartedAt       *time.Time
-	CompletedAt     *time.Time
-	DueDate         *time.Time
-	OwnerID         *string
-	BlockedGroupIDs []string
-	EditorIDs       []string
-	ViewerIDs       []string
-	AssessmentID    string
-	UserID          string
-	DocumentID      *string
+	Tags         []string
+	Status       *enums.AssessmentResponseStatus
+	AssignedAt   *time.Time
+	StartedAt    *time.Time
+	CompletedAt  *time.Time
+	DueDate      *time.Time
+	OwnerID      *string
+	AssessmentID string
+	UserID       string
+	DocumentID   *string
 }
 
 // Mutate applies the CreateAssessmentResponseInput on the AssessmentResponseMutation builder.
@@ -755,15 +752,6 @@ func (i *CreateAssessmentResponseInput) Mutate(m *AssessmentResponseMutation) {
 	if v := i.OwnerID; v != nil {
 		m.SetOwnerID(*v)
 	}
-	if v := i.BlockedGroupIDs; len(v) > 0 {
-		m.AddBlockedGroupIDs(v...)
-	}
-	if v := i.EditorIDs; len(v) > 0 {
-		m.AddEditorIDs(v...)
-	}
-	if v := i.ViewerIDs; len(v) > 0 {
-		m.AddViewerIDs(v...)
-	}
 	m.SetAssessmentID(i.AssessmentID)
 	m.SetUserID(i.UserID)
 	if v := i.DocumentID; v != nil {
@@ -779,32 +767,21 @@ func (c *AssessmentResponseCreate) SetInput(i CreateAssessmentResponseInput) *As
 
 // UpdateAssessmentResponseInput represents a mutation input for updating assessmentresponses.
 type UpdateAssessmentResponseInput struct {
-	ClearTags             bool
-	Tags                  []string
-	AppendTags            []string
-	Status                *enums.AssessmentResponseStatus
-	ClearAssignedAt       bool
-	AssignedAt            *time.Time
-	StartedAt             *time.Time
-	ClearCompletedAt      bool
-	CompletedAt           *time.Time
-	ClearDueDate          bool
-	DueDate               *time.Time
-	ClearOwner            bool
-	OwnerID               *string
-	ClearBlockedGroups    bool
-	AddBlockedGroupIDs    []string
-	RemoveBlockedGroupIDs []string
-	ClearEditors          bool
-	AddEditorIDs          []string
-	RemoveEditorIDs       []string
-	ClearViewers          bool
-	AddViewerIDs          []string
-	RemoveViewerIDs       []string
-	AssessmentID          *string
-	UserID                *string
-	ClearDocument         bool
-	DocumentID            *string
+	ClearTags        bool
+	Tags             []string
+	AppendTags       []string
+	Status           *enums.AssessmentResponseStatus
+	ClearAssignedAt  bool
+	AssignedAt       *time.Time
+	StartedAt        *time.Time
+	ClearCompletedAt bool
+	CompletedAt      *time.Time
+	ClearDueDate     bool
+	DueDate          *time.Time
+	AssessmentID     *string
+	UserID           *string
+	ClearDocument    bool
+	DocumentID       *string
 }
 
 // Mutate applies the UpdateAssessmentResponseInput on the AssessmentResponseMutation builder.
@@ -841,39 +818,6 @@ func (i *UpdateAssessmentResponseInput) Mutate(m *AssessmentResponseMutation) {
 	}
 	if v := i.DueDate; v != nil {
 		m.SetDueDate(*v)
-	}
-	if i.ClearOwner {
-		m.ClearOwner()
-	}
-	if v := i.OwnerID; v != nil {
-		m.SetOwnerID(*v)
-	}
-	if i.ClearBlockedGroups {
-		m.ClearBlockedGroups()
-	}
-	if v := i.AddBlockedGroupIDs; len(v) > 0 {
-		m.AddBlockedGroupIDs(v...)
-	}
-	if v := i.RemoveBlockedGroupIDs; len(v) > 0 {
-		m.RemoveBlockedGroupIDs(v...)
-	}
-	if i.ClearEditors {
-		m.ClearEditors()
-	}
-	if v := i.AddEditorIDs; len(v) > 0 {
-		m.AddEditorIDs(v...)
-	}
-	if v := i.RemoveEditorIDs; len(v) > 0 {
-		m.RemoveEditorIDs(v...)
-	}
-	if i.ClearViewers {
-		m.ClearViewers()
-	}
-	if v := i.AddViewerIDs; len(v) > 0 {
-		m.AddViewerIDs(v...)
-	}
-	if v := i.RemoveViewerIDs; len(v) > 0 {
-		m.RemoveViewerIDs(v...)
 	}
 	if v := i.AssessmentID; v != nil {
 		m.SetAssessmentID(*v)
@@ -4138,9 +4082,6 @@ type CreateGroupInput struct {
 	AssessmentEditorIDs                  []string
 	AssessmentBlockedGroupIDs            []string
 	AssessmentViewerIDs                  []string
-	AssessmentResponseEditorIDs          []string
-	AssessmentResponseBlockedGroupIDs    []string
-	AssessmentResponseViewerIDs          []string
 	ProcedureEditorIDs                   []string
 	ProcedureBlockedGroupIDs             []string
 	InternalPolicyEditorIDs              []string
@@ -4236,15 +4177,6 @@ func (i *CreateGroupInput) Mutate(m *GroupMutation) {
 	}
 	if v := i.AssessmentViewerIDs; len(v) > 0 {
 		m.AddAssessmentViewerIDs(v...)
-	}
-	if v := i.AssessmentResponseEditorIDs; len(v) > 0 {
-		m.AddAssessmentResponseEditorIDs(v...)
-	}
-	if v := i.AssessmentResponseBlockedGroupIDs; len(v) > 0 {
-		m.AddAssessmentResponseBlockedGroupIDs(v...)
-	}
-	if v := i.AssessmentResponseViewerIDs; len(v) > 0 {
-		m.AddAssessmentResponseViewerIDs(v...)
 	}
 	if v := i.ProcedureEditorIDs; len(v) > 0 {
 		m.AddProcedureEditorIDs(v...)
@@ -4369,15 +4301,6 @@ type UpdateGroupInput struct {
 	ClearAssessmentViewers                     bool
 	AddAssessmentViewerIDs                     []string
 	RemoveAssessmentViewerIDs                  []string
-	ClearAssessmentResponseEditors             bool
-	AddAssessmentResponseEditorIDs             []string
-	RemoveAssessmentResponseEditorIDs          []string
-	ClearAssessmentResponseBlockedGroups       bool
-	AddAssessmentResponseBlockedGroupIDs       []string
-	RemoveAssessmentResponseBlockedGroupIDs    []string
-	ClearAssessmentResponseViewers             bool
-	AddAssessmentResponseViewerIDs             []string
-	RemoveAssessmentResponseViewerIDs          []string
 	ClearProcedureEditors                      bool
 	AddProcedureEditorIDs                      []string
 	RemoveProcedureEditorIDs                   []string
@@ -4641,33 +4564,6 @@ func (i *UpdateGroupInput) Mutate(m *GroupMutation) {
 	}
 	if v := i.RemoveAssessmentViewerIDs; len(v) > 0 {
 		m.RemoveAssessmentViewerIDs(v...)
-	}
-	if i.ClearAssessmentResponseEditors {
-		m.ClearAssessmentResponseEditors()
-	}
-	if v := i.AddAssessmentResponseEditorIDs; len(v) > 0 {
-		m.AddAssessmentResponseEditorIDs(v...)
-	}
-	if v := i.RemoveAssessmentResponseEditorIDs; len(v) > 0 {
-		m.RemoveAssessmentResponseEditorIDs(v...)
-	}
-	if i.ClearAssessmentResponseBlockedGroups {
-		m.ClearAssessmentResponseBlockedGroups()
-	}
-	if v := i.AddAssessmentResponseBlockedGroupIDs; len(v) > 0 {
-		m.AddAssessmentResponseBlockedGroupIDs(v...)
-	}
-	if v := i.RemoveAssessmentResponseBlockedGroupIDs; len(v) > 0 {
-		m.RemoveAssessmentResponseBlockedGroupIDs(v...)
-	}
-	if i.ClearAssessmentResponseViewers {
-		m.ClearAssessmentResponseViewers()
-	}
-	if v := i.AddAssessmentResponseViewerIDs; len(v) > 0 {
-		m.AddAssessmentResponseViewerIDs(v...)
-	}
-	if v := i.RemoveAssessmentResponseViewerIDs; len(v) > 0 {
-		m.RemoveAssessmentResponseViewerIDs(v...)
 	}
 	if i.ClearProcedureEditors {
 		m.ClearProcedureEditors()

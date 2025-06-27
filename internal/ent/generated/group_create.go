@@ -11,7 +11,6 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/theopenlane/core/internal/ent/generated/assessment"
-	"github.com/theopenlane/core/internal/ent/generated/assessmentresponse"
 	"github.com/theopenlane/core/internal/ent/generated/control"
 	"github.com/theopenlane/core/internal/ent/generated/controlimplementation"
 	"github.com/theopenlane/core/internal/ent/generated/controlobjective"
@@ -558,51 +557,6 @@ func (gc *GroupCreate) AddAssessmentViewers(a ...*Assessment) *GroupCreate {
 		ids[i] = a[i].ID
 	}
 	return gc.AddAssessmentViewerIDs(ids...)
-}
-
-// AddAssessmentResponseEditorIDs adds the "assessment_response_editors" edge to the AssessmentResponse entity by IDs.
-func (gc *GroupCreate) AddAssessmentResponseEditorIDs(ids ...string) *GroupCreate {
-	gc.mutation.AddAssessmentResponseEditorIDs(ids...)
-	return gc
-}
-
-// AddAssessmentResponseEditors adds the "assessment_response_editors" edges to the AssessmentResponse entity.
-func (gc *GroupCreate) AddAssessmentResponseEditors(a ...*AssessmentResponse) *GroupCreate {
-	ids := make([]string, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return gc.AddAssessmentResponseEditorIDs(ids...)
-}
-
-// AddAssessmentResponseBlockedGroupIDs adds the "assessment_response_blocked_groups" edge to the AssessmentResponse entity by IDs.
-func (gc *GroupCreate) AddAssessmentResponseBlockedGroupIDs(ids ...string) *GroupCreate {
-	gc.mutation.AddAssessmentResponseBlockedGroupIDs(ids...)
-	return gc
-}
-
-// AddAssessmentResponseBlockedGroups adds the "assessment_response_blocked_groups" edges to the AssessmentResponse entity.
-func (gc *GroupCreate) AddAssessmentResponseBlockedGroups(a ...*AssessmentResponse) *GroupCreate {
-	ids := make([]string, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return gc.AddAssessmentResponseBlockedGroupIDs(ids...)
-}
-
-// AddAssessmentResponseViewerIDs adds the "assessment_response_viewers" edge to the AssessmentResponse entity by IDs.
-func (gc *GroupCreate) AddAssessmentResponseViewerIDs(ids ...string) *GroupCreate {
-	gc.mutation.AddAssessmentResponseViewerIDs(ids...)
-	return gc
-}
-
-// AddAssessmentResponseViewers adds the "assessment_response_viewers" edges to the AssessmentResponse entity.
-func (gc *GroupCreate) AddAssessmentResponseViewers(a ...*AssessmentResponse) *GroupCreate {
-	ids := make([]string, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return gc.AddAssessmentResponseViewerIDs(ids...)
 }
 
 // AddProcedureEditorIDs adds the "procedure_editors" edge to the Procedure entity by IDs.
@@ -1410,57 +1364,6 @@ func (gc *GroupCreate) createSpec() (*Group, *sqlgraph.CreateSpec) {
 			},
 		}
 		edge.Schema = gc.schemaConfig.AssessmentViewers
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := gc.mutation.AssessmentResponseEditorsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   group.AssessmentResponseEditorsTable,
-			Columns: group.AssessmentResponseEditorsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(assessmentresponse.FieldID, field.TypeString),
-			},
-		}
-		edge.Schema = gc.schemaConfig.AssessmentResponseEditors
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := gc.mutation.AssessmentResponseBlockedGroupsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   group.AssessmentResponseBlockedGroupsTable,
-			Columns: group.AssessmentResponseBlockedGroupsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(assessmentresponse.FieldID, field.TypeString),
-			},
-		}
-		edge.Schema = gc.schemaConfig.AssessmentResponseBlockedGroups
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := gc.mutation.AssessmentResponseViewersIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   group.AssessmentResponseViewersTable,
-			Columns: group.AssessmentResponseViewersPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(assessmentresponse.FieldID, field.TypeString),
-			},
-		}
-		edge.Schema = gc.schemaConfig.AssessmentResponseViewers
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
