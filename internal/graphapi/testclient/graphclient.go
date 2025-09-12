@@ -5155,10 +5155,12 @@ func (t *AdminSearch_AdminSearch_MappedControls_PageInfo) GetStartCursor() *stri
 }
 
 type AdminSearch_AdminSearch_MappedControls_Edges_Node struct {
-	ID       string   "json:\"id\" graphql:\"id\""
-	OwnerID  *string  "json:\"ownerID,omitempty\" graphql:\"ownerID\""
-	Relation *string  "json:\"relation,omitempty\" graphql:\"relation\""
-	Tags     []string "json:\"tags,omitempty\" graphql:\"tags\""
+	ID            string   "json:\"id\" graphql:\"id\""
+	InternalID    *string  "json:\"internalID,omitempty\" graphql:\"internalID\""
+	InternalNotes *string  "json:\"internalNotes,omitempty\" graphql:\"internalNotes\""
+	OwnerID       *string  "json:\"ownerID,omitempty\" graphql:\"ownerID\""
+	Relation      *string  "json:\"relation,omitempty\" graphql:\"relation\""
+	Tags          []string "json:\"tags,omitempty\" graphql:\"tags\""
 }
 
 func (t *AdminSearch_AdminSearch_MappedControls_Edges_Node) GetID() string {
@@ -5166,6 +5168,18 @@ func (t *AdminSearch_AdminSearch_MappedControls_Edges_Node) GetID() string {
 		t = &AdminSearch_AdminSearch_MappedControls_Edges_Node{}
 	}
 	return t.ID
+}
+func (t *AdminSearch_AdminSearch_MappedControls_Edges_Node) GetInternalID() *string {
+	if t == nil {
+		t = &AdminSearch_AdminSearch_MappedControls_Edges_Node{}
+	}
+	return t.InternalID
+}
+func (t *AdminSearch_AdminSearch_MappedControls_Edges_Node) GetInternalNotes() *string {
+	if t == nil {
+		t = &AdminSearch_AdminSearch_MappedControls_Edges_Node{}
+	}
+	return t.InternalNotes
 }
 func (t *AdminSearch_AdminSearch_MappedControls_Edges_Node) GetOwnerID() *string {
 	if t == nil {
@@ -44834,6 +44848,8 @@ type CreateMappedControl_CreateMappedControl_MappedControl struct {
 	FromControls    CreateMappedControl_CreateMappedControl_MappedControl_FromControls    "json:\"fromControls\" graphql:\"fromControls\""
 	FromSubcontrols CreateMappedControl_CreateMappedControl_MappedControl_FromSubcontrols "json:\"fromSubcontrols\" graphql:\"fromSubcontrols\""
 	ID              string                                                                "json:\"id\" graphql:\"id\""
+	InternalID      *string                                                               "json:\"internalID,omitempty\" graphql:\"internalID\""
+	InternalNotes   *string                                                               "json:\"internalNotes,omitempty\" graphql:\"internalNotes\""
 	MappingType     enums.MappingType                                                     "json:\"mappingType\" graphql:\"mappingType\""
 	Relation        *string                                                               "json:\"relation,omitempty\" graphql:\"relation\""
 	Source          *enums.MappingSource                                                  "json:\"source,omitempty\" graphql:\"source\""
@@ -44879,6 +44895,18 @@ func (t *CreateMappedControl_CreateMappedControl_MappedControl) GetID() string {
 		t = &CreateMappedControl_CreateMappedControl_MappedControl{}
 	}
 	return t.ID
+}
+func (t *CreateMappedControl_CreateMappedControl_MappedControl) GetInternalID() *string {
+	if t == nil {
+		t = &CreateMappedControl_CreateMappedControl_MappedControl{}
+	}
+	return t.InternalID
+}
+func (t *CreateMappedControl_CreateMappedControl_MappedControl) GetInternalNotes() *string {
+	if t == nil {
+		t = &CreateMappedControl_CreateMappedControl_MappedControl{}
+	}
+	return t.InternalNotes
 }
 func (t *CreateMappedControl_CreateMappedControl_MappedControl) GetMappingType() *enums.MappingType {
 	if t == nil {
@@ -45150,6 +45178,8 @@ type GetAllMappedControls_MappedControls_Edges_Node struct {
 	FromControls    GetAllMappedControls_MappedControls_Edges_Node_FromControls    "json:\"fromControls\" graphql:\"fromControls\""
 	FromSubcontrols GetAllMappedControls_MappedControls_Edges_Node_FromSubcontrols "json:\"fromSubcontrols\" graphql:\"fromSubcontrols\""
 	ID              string                                                         "json:\"id\" graphql:\"id\""
+	InternalID      *string                                                        "json:\"internalID,omitempty\" graphql:\"internalID\""
+	InternalNotes   *string                                                        "json:\"internalNotes,omitempty\" graphql:\"internalNotes\""
 	MappingType     enums.MappingType                                              "json:\"mappingType\" graphql:\"mappingType\""
 	Relation        *string                                                        "json:\"relation,omitempty\" graphql:\"relation\""
 	Source          *enums.MappingSource                                           "json:\"source,omitempty\" graphql:\"source\""
@@ -45195,6 +45225,18 @@ func (t *GetAllMappedControls_MappedControls_Edges_Node) GetID() string {
 		t = &GetAllMappedControls_MappedControls_Edges_Node{}
 	}
 	return t.ID
+}
+func (t *GetAllMappedControls_MappedControls_Edges_Node) GetInternalID() *string {
+	if t == nil {
+		t = &GetAllMappedControls_MappedControls_Edges_Node{}
+	}
+	return t.InternalID
+}
+func (t *GetAllMappedControls_MappedControls_Edges_Node) GetInternalNotes() *string {
+	if t == nil {
+		t = &GetAllMappedControls_MappedControls_Edges_Node{}
+	}
+	return t.InternalNotes
 }
 func (t *GetAllMappedControls_MappedControls_Edges_Node) GetMappingType() *enums.MappingType {
 	if t == nil {
@@ -45448,6 +45490,8 @@ type GetMappedControlByID_MappedControl struct {
 	FromControls    GetMappedControlByID_MappedControl_FromControls    "json:\"fromControls\" graphql:\"fromControls\""
 	FromSubcontrols GetMappedControlByID_MappedControl_FromSubcontrols "json:\"fromSubcontrols\" graphql:\"fromSubcontrols\""
 	ID              string                                             "json:\"id\" graphql:\"id\""
+	InternalID      *string                                            "json:\"internalID,omitempty\" graphql:\"internalID\""
+	InternalNotes   *string                                            "json:\"internalNotes,omitempty\" graphql:\"internalNotes\""
 	MappingType     enums.MappingType                                  "json:\"mappingType\" graphql:\"mappingType\""
 	Relation        *string                                            "json:\"relation,omitempty\" graphql:\"relation\""
 	Source          *enums.MappingSource                               "json:\"source,omitempty\" graphql:\"source\""
@@ -45493,6 +45537,18 @@ func (t *GetMappedControlByID_MappedControl) GetID() string {
 		t = &GetMappedControlByID_MappedControl{}
 	}
 	return t.ID
+}
+func (t *GetMappedControlByID_MappedControl) GetInternalID() *string {
+	if t == nil {
+		t = &GetMappedControlByID_MappedControl{}
+	}
+	return t.InternalID
+}
+func (t *GetMappedControlByID_MappedControl) GetInternalNotes() *string {
+	if t == nil {
+		t = &GetMappedControlByID_MappedControl{}
+	}
+	return t.InternalNotes
 }
 func (t *GetMappedControlByID_MappedControl) GetMappingType() *enums.MappingType {
 	if t == nil {
@@ -45742,6 +45798,8 @@ type GetMappedControls_MappedControls_Edges_Node struct {
 	FromControls    GetMappedControls_MappedControls_Edges_Node_FromControls    "json:\"fromControls\" graphql:\"fromControls\""
 	FromSubcontrols GetMappedControls_MappedControls_Edges_Node_FromSubcontrols "json:\"fromSubcontrols\" graphql:\"fromSubcontrols\""
 	ID              string                                                      "json:\"id\" graphql:\"id\""
+	InternalID      *string                                                     "json:\"internalID,omitempty\" graphql:\"internalID\""
+	InternalNotes   *string                                                     "json:\"internalNotes,omitempty\" graphql:\"internalNotes\""
 	MappingType     enums.MappingType                                           "json:\"mappingType\" graphql:\"mappingType\""
 	Relation        *string                                                     "json:\"relation,omitempty\" graphql:\"relation\""
 	Source          *enums.MappingSource                                        "json:\"source,omitempty\" graphql:\"source\""
@@ -45787,6 +45845,18 @@ func (t *GetMappedControls_MappedControls_Edges_Node) GetID() string {
 		t = &GetMappedControls_MappedControls_Edges_Node{}
 	}
 	return t.ID
+}
+func (t *GetMappedControls_MappedControls_Edges_Node) GetInternalID() *string {
+	if t == nil {
+		t = &GetMappedControls_MappedControls_Edges_Node{}
+	}
+	return t.InternalID
+}
+func (t *GetMappedControls_MappedControls_Edges_Node) GetInternalNotes() *string {
+	if t == nil {
+		t = &GetMappedControls_MappedControls_Edges_Node{}
+	}
+	return t.InternalNotes
 }
 func (t *GetMappedControls_MappedControls_Edges_Node) GetMappingType() *enums.MappingType {
 	if t == nil {
@@ -46040,6 +46110,8 @@ type UpdateMappedControl_UpdateMappedControl_MappedControl struct {
 	FromControls    UpdateMappedControl_UpdateMappedControl_MappedControl_FromControls    "json:\"fromControls\" graphql:\"fromControls\""
 	FromSubcontrols UpdateMappedControl_UpdateMappedControl_MappedControl_FromSubcontrols "json:\"fromSubcontrols\" graphql:\"fromSubcontrols\""
 	ID              string                                                                "json:\"id\" graphql:\"id\""
+	InternalID      *string                                                               "json:\"internalID,omitempty\" graphql:\"internalID\""
+	InternalNotes   *string                                                               "json:\"internalNotes,omitempty\" graphql:\"internalNotes\""
 	MappingType     enums.MappingType                                                     "json:\"mappingType\" graphql:\"mappingType\""
 	Relation        *string                                                               "json:\"relation,omitempty\" graphql:\"relation\""
 	Source          *enums.MappingSource                                                  "json:\"source,omitempty\" graphql:\"source\""
@@ -46085,6 +46157,18 @@ func (t *UpdateMappedControl_UpdateMappedControl_MappedControl) GetID() string {
 		t = &UpdateMappedControl_UpdateMappedControl_MappedControl{}
 	}
 	return t.ID
+}
+func (t *UpdateMappedControl_UpdateMappedControl_MappedControl) GetInternalID() *string {
+	if t == nil {
+		t = &UpdateMappedControl_UpdateMappedControl_MappedControl{}
+	}
+	return t.InternalID
+}
+func (t *UpdateMappedControl_UpdateMappedControl_MappedControl) GetInternalNotes() *string {
+	if t == nil {
+		t = &UpdateMappedControl_UpdateMappedControl_MappedControl{}
+	}
+	return t.InternalNotes
 }
 func (t *UpdateMappedControl_UpdateMappedControl_MappedControl) GetMappingType() *enums.MappingType {
 	if t == nil {
@@ -98078,6 +98162,8 @@ const AdminSearchDocument = `query AdminSearch ($query: String!) {
 					tags
 					ownerID
 					relation
+					internalNotes
+					internalID
 				}
 			}
 		}
@@ -109671,6 +109757,8 @@ const CreateMappedControlDocument = `mutation CreateMappedControl ($input: Creat
 			tags
 			updatedAt
 			updatedBy
+			internalID
+			internalNotes
 			fromControls {
 				edges {
 					node {
@@ -109770,6 +109858,8 @@ const GetAllMappedControlsDocument = `query GetAllMappedControls {
 				tags
 				updatedAt
 				updatedBy
+				internalID
+				internalNotes
 				fromControls {
 					edges {
 						node {
@@ -109835,6 +109925,8 @@ const GetMappedControlByIDDocument = `query GetMappedControlByID ($mappedControl
 		tags
 		updatedAt
 		updatedBy
+		internalID
+		internalNotes
 		fromControls {
 			edges {
 				node {
@@ -109909,6 +110001,8 @@ const GetMappedControlsDocument = `query GetMappedControls ($first: Int, $last: 
 				tags
 				updatedAt
 				updatedBy
+				internalID
+				internalNotes
 				fromControls {
 					edges {
 						node {
@@ -109979,6 +110073,8 @@ const UpdateMappedControlDocument = `mutation UpdateMappedControl ($updateMapped
 			tags
 			updatedAt
 			updatedBy
+			internalID
+			internalNotes
 			fromControls {
 				edges {
 					node {

@@ -10,6 +10,8 @@ import (
 	"github.com/theopenlane/core/internal/ent/generated"
 	"github.com/theopenlane/core/internal/ent/generated/hook"
 	"github.com/theopenlane/core/internal/ent/hooks"
+	"github.com/theopenlane/core/internal/ent/interceptors"
+	"github.com/theopenlane/core/internal/ent/mixin"
 	"github.com/theopenlane/core/internal/ent/privacy/policy"
 	"github.com/theopenlane/core/internal/ent/privacy/rule"
 	"github.com/theopenlane/core/pkg/enums"
@@ -115,6 +117,7 @@ func (m MappedControl) Edges() []ent.Edge {
 func (m MappedControl) Mixin() []ent.Mixin {
 	return mixinConfig{
 		additionalMixins: []ent.Mixin{
+			mixin.SystemOwnedMixin{},
 			newOrgOwnedMixin(m, withSkipForSystemAdmin(true)),
 			// add group edit permissions to the mapped control
 			newGroupPermissionsMixin(withSkipViewPermissions()),
@@ -137,6 +140,13 @@ func (MappedControl) Hooks() []ent.Hook {
 			ent.OpCreate,
 		),
 		hooks.HookMappedControl(),
+	}
+}
+
+// Interceptors of the MappedControl
+func (MappedControl) Interceptors() []ent.Interceptor {
+	return []ent.Interceptor{
+		interceptors.InterceptorMappedControls(),
 	}
 }
 

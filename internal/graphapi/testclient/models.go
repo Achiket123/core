@@ -4975,14 +4975,18 @@ type CreateMappedControlInput struct {
 	// percentage (0-100) of confidence in the mapping
 	Confidence *int64 `json:"confidence,omitempty"`
 	// source of the mapping, e.g. manual, suggested, etc.
-	Source            *enums.MappingSource `json:"source,omitempty"`
-	OwnerID           *string              `json:"ownerID,omitempty"`
-	BlockedGroupIDs   []string             `json:"blockedGroupIDs,omitempty"`
-	EditorIDs         []string             `json:"editorIDs,omitempty"`
-	FromControlIDs    []string             `json:"fromControlIDs,omitempty"`
-	ToControlIDs      []string             `json:"toControlIDs,omitempty"`
-	FromSubcontrolIDs []string             `json:"fromSubcontrolIDs,omitempty"`
-	ToSubcontrolIDs   []string             `json:"toSubcontrolIDs,omitempty"`
+	Source *enums.MappingSource `json:"source,omitempty"`
+	// internal notes about the mapping, this field is only available to system admins
+	InternalNotes *string `json:"internalNotes,omitempty"`
+	// an internal identifier for the mapping, this field is only available to system admins
+	InternalID        *string  `json:"internalID,omitempty"`
+	OwnerID           *string  `json:"ownerID,omitempty"`
+	BlockedGroupIDs   []string `json:"blockedGroupIDs,omitempty"`
+	EditorIDs         []string `json:"editorIDs,omitempty"`
+	FromControlIDs    []string `json:"fromControlIDs,omitempty"`
+	ToControlIDs      []string `json:"toControlIDs,omitempty"`
+	FromSubcontrolIDs []string `json:"fromSubcontrolIDs,omitempty"`
+	ToSubcontrolIDs   []string `json:"toSubcontrolIDs,omitempty"`
 }
 
 type CreateMemberWithProgramInput struct {
@@ -15063,7 +15067,11 @@ type MappedControl struct {
 	// percentage (0-100) of confidence in the mapping
 	Confidence *int64 `json:"confidence,omitempty"`
 	// source of the mapping, e.g. manual, suggested, etc.
-	Source          *enums.MappingSource  `json:"source,omitempty"`
+	Source *enums.MappingSource `json:"source,omitempty"`
+	// internal notes about the mapping, this field is only available to system admins
+	InternalNotes *string `json:"internalNotes,omitempty"`
+	// an internal identifier for the mapping, this field is only available to system admins
+	InternalID      *string               `json:"internalID,omitempty"`
 	Owner           *Organization         `json:"owner,omitempty"`
 	BlockedGroups   *GroupConnection      `json:"blockedGroups"`
 	Editors         *GroupConnection      `json:"editors"`
@@ -15132,6 +15140,10 @@ type MappedControlHistory struct {
 	Confidence *int64 `json:"confidence,omitempty"`
 	// source of the mapping, e.g. manual, suggested, etc.
 	Source *enums.MappingSource `json:"source,omitempty"`
+	// internal notes about the mapping, this field is only available to system admins
+	InternalNotes *string `json:"internalNotes,omitempty"`
+	// an internal identifier for the mapping, this field is only available to system admins
+	InternalID *string `json:"internalID,omitempty"`
 }
 
 func (MappedControlHistory) IsNode() {}
@@ -15318,6 +15330,38 @@ type MappedControlHistoryWhereInput struct {
 	SourceNotIn  []enums.MappingSource `json:"sourceNotIn,omitempty"`
 	SourceIsNil  *bool                 `json:"sourceIsNil,omitempty"`
 	SourceNotNil *bool                 `json:"sourceNotNil,omitempty"`
+	// internal_notes field predicates
+	InternalNotes             *string  `json:"internalNotes,omitempty"`
+	InternalNotesNeq          *string  `json:"internalNotesNEQ,omitempty"`
+	InternalNotesIn           []string `json:"internalNotesIn,omitempty"`
+	InternalNotesNotIn        []string `json:"internalNotesNotIn,omitempty"`
+	InternalNotesGt           *string  `json:"internalNotesGT,omitempty"`
+	InternalNotesGte          *string  `json:"internalNotesGTE,omitempty"`
+	InternalNotesLt           *string  `json:"internalNotesLT,omitempty"`
+	InternalNotesLte          *string  `json:"internalNotesLTE,omitempty"`
+	InternalNotesContains     *string  `json:"internalNotesContains,omitempty"`
+	InternalNotesHasPrefix    *string  `json:"internalNotesHasPrefix,omitempty"`
+	InternalNotesHasSuffix    *string  `json:"internalNotesHasSuffix,omitempty"`
+	InternalNotesIsNil        *bool    `json:"internalNotesIsNil,omitempty"`
+	InternalNotesNotNil       *bool    `json:"internalNotesNotNil,omitempty"`
+	InternalNotesEqualFold    *string  `json:"internalNotesEqualFold,omitempty"`
+	InternalNotesContainsFold *string  `json:"internalNotesContainsFold,omitempty"`
+	// internal_id field predicates
+	InternalID             *string  `json:"internalID,omitempty"`
+	InternalIdneq          *string  `json:"internalIDNEQ,omitempty"`
+	InternalIDIn           []string `json:"internalIDIn,omitempty"`
+	InternalIDNotIn        []string `json:"internalIDNotIn,omitempty"`
+	InternalIdgt           *string  `json:"internalIDGT,omitempty"`
+	InternalIdgte          *string  `json:"internalIDGTE,omitempty"`
+	InternalIdlt           *string  `json:"internalIDLT,omitempty"`
+	InternalIdlte          *string  `json:"internalIDLTE,omitempty"`
+	InternalIDContains     *string  `json:"internalIDContains,omitempty"`
+	InternalIDHasPrefix    *string  `json:"internalIDHasPrefix,omitempty"`
+	InternalIDHasSuffix    *string  `json:"internalIDHasSuffix,omitempty"`
+	InternalIDIsNil        *bool    `json:"internalIDIsNil,omitempty"`
+	InternalIDNotNil       *bool    `json:"internalIDNotNil,omitempty"`
+	InternalIDEqualFold    *string  `json:"internalIDEqualFold,omitempty"`
+	InternalIDContainsFold *string  `json:"internalIDContainsFold,omitempty"`
 }
 
 // Ordering options for MappedControl connections
@@ -15460,6 +15504,38 @@ type MappedControlWhereInput struct {
 	SourceNotIn  []enums.MappingSource `json:"sourceNotIn,omitempty"`
 	SourceIsNil  *bool                 `json:"sourceIsNil,omitempty"`
 	SourceNotNil *bool                 `json:"sourceNotNil,omitempty"`
+	// internal_notes field predicates
+	InternalNotes             *string  `json:"internalNotes,omitempty"`
+	InternalNotesNeq          *string  `json:"internalNotesNEQ,omitempty"`
+	InternalNotesIn           []string `json:"internalNotesIn,omitempty"`
+	InternalNotesNotIn        []string `json:"internalNotesNotIn,omitempty"`
+	InternalNotesGt           *string  `json:"internalNotesGT,omitempty"`
+	InternalNotesGte          *string  `json:"internalNotesGTE,omitempty"`
+	InternalNotesLt           *string  `json:"internalNotesLT,omitempty"`
+	InternalNotesLte          *string  `json:"internalNotesLTE,omitempty"`
+	InternalNotesContains     *string  `json:"internalNotesContains,omitempty"`
+	InternalNotesHasPrefix    *string  `json:"internalNotesHasPrefix,omitempty"`
+	InternalNotesHasSuffix    *string  `json:"internalNotesHasSuffix,omitempty"`
+	InternalNotesIsNil        *bool    `json:"internalNotesIsNil,omitempty"`
+	InternalNotesNotNil       *bool    `json:"internalNotesNotNil,omitempty"`
+	InternalNotesEqualFold    *string  `json:"internalNotesEqualFold,omitempty"`
+	InternalNotesContainsFold *string  `json:"internalNotesContainsFold,omitempty"`
+	// internal_id field predicates
+	InternalID             *string  `json:"internalID,omitempty"`
+	InternalIdneq          *string  `json:"internalIDNEQ,omitempty"`
+	InternalIDIn           []string `json:"internalIDIn,omitempty"`
+	InternalIDNotIn        []string `json:"internalIDNotIn,omitempty"`
+	InternalIdgt           *string  `json:"internalIDGT,omitempty"`
+	InternalIdgte          *string  `json:"internalIDGTE,omitempty"`
+	InternalIdlt           *string  `json:"internalIDLT,omitempty"`
+	InternalIdlte          *string  `json:"internalIDLTE,omitempty"`
+	InternalIDContains     *string  `json:"internalIDContains,omitempty"`
+	InternalIDHasPrefix    *string  `json:"internalIDHasPrefix,omitempty"`
+	InternalIDHasSuffix    *string  `json:"internalIDHasSuffix,omitempty"`
+	InternalIDIsNil        *bool    `json:"internalIDIsNil,omitempty"`
+	InternalIDNotNil       *bool    `json:"internalIDNotNil,omitempty"`
+	InternalIDEqualFold    *string  `json:"internalIDEqualFold,omitempty"`
+	InternalIDContainsFold *string  `json:"internalIDContainsFold,omitempty"`
 	// owner edge predicates
 	HasOwner     *bool                     `json:"hasOwner,omitempty"`
 	HasOwnerWith []*OrganizationWhereInput `json:"hasOwnerWith,omitempty"`
@@ -29455,28 +29531,34 @@ type UpdateMappedControlInput struct {
 	Confidence      *int64 `json:"confidence,omitempty"`
 	ClearConfidence *bool  `json:"clearConfidence,omitempty"`
 	// source of the mapping, e.g. manual, suggested, etc.
-	Source                  *enums.MappingSource `json:"source,omitempty"`
-	ClearSource             *bool                `json:"clearSource,omitempty"`
-	OwnerID                 *string              `json:"ownerID,omitempty"`
-	ClearOwner              *bool                `json:"clearOwner,omitempty"`
-	AddBlockedGroupIDs      []string             `json:"addBlockedGroupIDs,omitempty"`
-	RemoveBlockedGroupIDs   []string             `json:"removeBlockedGroupIDs,omitempty"`
-	ClearBlockedGroups      *bool                `json:"clearBlockedGroups,omitempty"`
-	AddEditorIDs            []string             `json:"addEditorIDs,omitempty"`
-	RemoveEditorIDs         []string             `json:"removeEditorIDs,omitempty"`
-	ClearEditors            *bool                `json:"clearEditors,omitempty"`
-	AddFromControlIDs       []string             `json:"addFromControlIDs,omitempty"`
-	RemoveFromControlIDs    []string             `json:"removeFromControlIDs,omitempty"`
-	ClearFromControls       *bool                `json:"clearFromControls,omitempty"`
-	AddToControlIDs         []string             `json:"addToControlIDs,omitempty"`
-	RemoveToControlIDs      []string             `json:"removeToControlIDs,omitempty"`
-	ClearToControls         *bool                `json:"clearToControls,omitempty"`
-	AddFromSubcontrolIDs    []string             `json:"addFromSubcontrolIDs,omitempty"`
-	RemoveFromSubcontrolIDs []string             `json:"removeFromSubcontrolIDs,omitempty"`
-	ClearFromSubcontrols    *bool                `json:"clearFromSubcontrols,omitempty"`
-	AddToSubcontrolIDs      []string             `json:"addToSubcontrolIDs,omitempty"`
-	RemoveToSubcontrolIDs   []string             `json:"removeToSubcontrolIDs,omitempty"`
-	ClearToSubcontrols      *bool                `json:"clearToSubcontrols,omitempty"`
+	Source      *enums.MappingSource `json:"source,omitempty"`
+	ClearSource *bool                `json:"clearSource,omitempty"`
+	// internal notes about the mapping, this field is only available to system admins
+	InternalNotes      *string `json:"internalNotes,omitempty"`
+	ClearInternalNotes *bool   `json:"clearInternalNotes,omitempty"`
+	// an internal identifier for the mapping, this field is only available to system admins
+	InternalID              *string  `json:"internalID,omitempty"`
+	ClearInternalID         *bool    `json:"clearInternalID,omitempty"`
+	OwnerID                 *string  `json:"ownerID,omitempty"`
+	ClearOwner              *bool    `json:"clearOwner,omitempty"`
+	AddBlockedGroupIDs      []string `json:"addBlockedGroupIDs,omitempty"`
+	RemoveBlockedGroupIDs   []string `json:"removeBlockedGroupIDs,omitempty"`
+	ClearBlockedGroups      *bool    `json:"clearBlockedGroups,omitempty"`
+	AddEditorIDs            []string `json:"addEditorIDs,omitempty"`
+	RemoveEditorIDs         []string `json:"removeEditorIDs,omitempty"`
+	ClearEditors            *bool    `json:"clearEditors,omitempty"`
+	AddFromControlIDs       []string `json:"addFromControlIDs,omitempty"`
+	RemoveFromControlIDs    []string `json:"removeFromControlIDs,omitempty"`
+	ClearFromControls       *bool    `json:"clearFromControls,omitempty"`
+	AddToControlIDs         []string `json:"addToControlIDs,omitempty"`
+	RemoveToControlIDs      []string `json:"removeToControlIDs,omitempty"`
+	ClearToControls         *bool    `json:"clearToControls,omitempty"`
+	AddFromSubcontrolIDs    []string `json:"addFromSubcontrolIDs,omitempty"`
+	RemoveFromSubcontrolIDs []string `json:"removeFromSubcontrolIDs,omitempty"`
+	ClearFromSubcontrols    *bool    `json:"clearFromSubcontrols,omitempty"`
+	AddToSubcontrolIDs      []string `json:"addToSubcontrolIDs,omitempty"`
+	RemoveToSubcontrolIDs   []string `json:"removeToSubcontrolIDs,omitempty"`
+	ClearToSubcontrols      *bool    `json:"clearToSubcontrols,omitempty"`
 }
 
 // UpdateNarrativeInput is used for update Narrative object.

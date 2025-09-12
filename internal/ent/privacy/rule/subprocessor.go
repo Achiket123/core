@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"entgo.io/ent"
-	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog"
 	"github.com/theopenlane/core/internal/ent/generated"
 	"github.com/theopenlane/core/internal/ent/generated/privacy"
 	"github.com/theopenlane/core/internal/ent/generated/subprocessor"
@@ -47,7 +47,7 @@ func SystemOwnedSubprocessor() privacy.SubprocessorMutationRuleFunc {
 			}
 		}
 		if systemOwned && !allowAdmin {
-			log.Debug().Msg("user attempted to set system owned field without being a system admin")
+			zerolog.Ctx(ctx).Debug().Msg("user attempted to set system owned field without being a system admin")
 			return ErrAdminOnlyField
 		}
 
