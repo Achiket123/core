@@ -118,9 +118,9 @@ func (TrustCenterWatermarkConfig) Hooks() []ent.Hook {
 // Policy of the TrustCenterWatermarkConfig
 func (TrustCenterWatermarkConfig) Policy() ent.Policy {
 	return policy.NewPolicy(
-	// policy.WithMutationRules(
-	// 	entfga.CheckEditAccess[*generated.TrustCenterWatermarkConfigMutation](),
-	// ),
+		policy.WithMutationRules(
+			entfga.CheckEditAccess[*generated.TrustCenterWatermarkConfigMutation](),
+		),
 	)
 }
 
@@ -138,7 +138,7 @@ func (TrustCenterWatermarkConfig) Indexes() []ent.Index {
 // Annotations of the TrustCenterWatermarkConfig
 func (TrustCenterWatermarkConfig) Annotations() []schema.Annotation {
 	return []schema.Annotation{
-		// entfga.SettingsChecks("trust_center"),
+		entfga.SettingsChecks("trust_center"),
 		entfga.SelfAccessChecks(),
 	}
 }
