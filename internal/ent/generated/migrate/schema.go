@@ -5188,6 +5188,16 @@ var (
 				OnDelete:   schema.SetNull,
 			},
 		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "trustcenterwatermarkconfig_trust_center_id",
+				Unique:  true,
+				Columns: []*schema.Column{TrustCenterWatermarkConfigsColumns[13]},
+				Annotation: &entsql.IndexAnnotation{
+					Where: "deleted_at is NULL",
+				},
+			},
+		},
 	}
 	// TrustCenterWatermarkConfigHistoryColumns holds the columns for the "trust_center_watermark_config_history" table.
 	TrustCenterWatermarkConfigHistoryColumns = []*schema.Column{
