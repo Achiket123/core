@@ -1150,6 +1150,25 @@ func (r *mutationResolver) bulkCreateTrustCenterSubprocessor(ctx context.Context
 	}, nil
 }
 
+// bulkCreateTrustCenterWatermarkConfig uses the CreateBulk function to create multiple TrustCenterWatermarkConfig entities
+func (r *mutationResolver) bulkCreateTrustCenterWatermarkConfig(ctx context.Context, input []*generated.CreateTrustCenterWatermarkConfigInput) (*model.TrustCenterWatermarkConfigBulkCreatePayload, error) {
+	c := withTransactionalMutation(ctx)
+	builders := make([]*generated.TrustCenterWatermarkConfigCreate, len(input))
+	for i, data := range input {
+		builders[i] = c.TrustCenterWatermarkConfig.Create().SetInput(*data)
+	}
+
+	res, err := c.TrustCenterWatermarkConfig.CreateBulk(builders...).Save(ctx)
+	if err != nil {
+		return nil, parseRequestError(err, action{action: ActionCreate, object: "trustcenterwatermarkconfig"})
+	}
+
+	// return response
+	return &model.TrustCenterWatermarkConfigBulkCreatePayload{
+		TrustCenterWatermarkConfigs: res,
+	}, nil
+}
+
 // bulkCreateUserSetting uses the CreateBulk function to create multiple UserSetting entities
 func (r *mutationResolver) bulkCreateUserSetting(ctx context.Context, input []*generated.CreateUserSettingInput) (*model.UserSettingBulkCreatePayload, error) {
 	c := withTransactionalMutation(ctx)

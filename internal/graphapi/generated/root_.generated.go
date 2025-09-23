@@ -2445,271 +2445,276 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		CreateAPIToken                       func(childComplexity int, input generated.CreateAPITokenInput) int
-		CreateActionPlan                     func(childComplexity int, input generated.CreateActionPlanInput) int
-		CreateAsset                          func(childComplexity int, input generated.CreateAssetInput) int
-		CreateBulkAPIToken                   func(childComplexity int, input []*generated.CreateAPITokenInput) int
-		CreateBulkActionPlan                 func(childComplexity int, input []*generated.CreateActionPlanInput) int
-		CreateBulkAsset                      func(childComplexity int, input []*generated.CreateAssetInput) int
-		CreateBulkCSVAPIToken                func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVActionPlan              func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVAsset                   func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVContact                 func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVControl                 func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVControlImplementation   func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVControlObjective        func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVCustomDomain            func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVDNSVerification         func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVDocumentData            func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVEntity                  func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVEntityType              func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVEvent                   func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVGroup                   func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVGroupMembership         func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVGroupSetting            func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVHush                    func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVInternalPolicy          func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVInvite                  func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVJobTemplate             func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVMappableDomain          func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVMappedControl           func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVNarrative               func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVOrgMembership           func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVOrganizationSetting     func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVProcedure               func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVProgram                 func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVProgramMembership       func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVRisk                    func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVScan                    func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVScheduledJob            func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVSubcontrol              func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVSubprocessor            func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVSubscriber              func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVTask                    func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVTemplate                func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVTrustCenterCompliance   func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVTrustCenterDoc          func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVTrustCenterSubprocessor func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVUserSetting             func(childComplexity int, input graphql.Upload) int
-		CreateBulkContact                    func(childComplexity int, input []*generated.CreateContactInput) int
-		CreateBulkControl                    func(childComplexity int, input []*generated.CreateControlInput) int
-		CreateBulkControlImplementation      func(childComplexity int, input []*generated.CreateControlImplementationInput) int
-		CreateBulkControlObjective           func(childComplexity int, input []*generated.CreateControlObjectiveInput) int
-		CreateBulkCustomDomain               func(childComplexity int, input []*generated.CreateCustomDomainInput) int
-		CreateBulkDNSVerification            func(childComplexity int, input []*generated.CreateDNSVerificationInput) int
-		CreateBulkDocumentData               func(childComplexity int, input []*generated.CreateDocumentDataInput) int
-		CreateBulkEntity                     func(childComplexity int, input []*generated.CreateEntityInput) int
-		CreateBulkEntityType                 func(childComplexity int, input []*generated.CreateEntityTypeInput) int
-		CreateBulkEvent                      func(childComplexity int, input []*generated.CreateEventInput) int
-		CreateBulkGroup                      func(childComplexity int, input []*generated.CreateGroupInput) int
-		CreateBulkGroupMembership            func(childComplexity int, input []*generated.CreateGroupMembershipInput) int
-		CreateBulkGroupSetting               func(childComplexity int, input []*generated.CreateGroupSettingInput) int
-		CreateBulkHush                       func(childComplexity int, input []*generated.CreateHushInput) int
-		CreateBulkInternalPolicy             func(childComplexity int, input []*generated.CreateInternalPolicyInput) int
-		CreateBulkInvite                     func(childComplexity int, input []*generated.CreateInviteInput) int
-		CreateBulkJobTemplate                func(childComplexity int, input []*generated.CreateJobTemplateInput) int
-		CreateBulkMappableDomain             func(childComplexity int, input []*generated.CreateMappableDomainInput) int
-		CreateBulkMappedControl              func(childComplexity int, input []*generated.CreateMappedControlInput) int
-		CreateBulkNarrative                  func(childComplexity int, input []*generated.CreateNarrativeInput) int
-		CreateBulkOrgMembership              func(childComplexity int, input []*generated.CreateOrgMembershipInput) int
-		CreateBulkOrganizationSetting        func(childComplexity int, input []*generated.CreateOrganizationSettingInput) int
-		CreateBulkProcedure                  func(childComplexity int, input []*generated.CreateProcedureInput) int
-		CreateBulkProgram                    func(childComplexity int, input []*generated.CreateProgramInput) int
-		CreateBulkProgramMembership          func(childComplexity int, input []*generated.CreateProgramMembershipInput) int
-		CreateBulkRisk                       func(childComplexity int, input []*generated.CreateRiskInput) int
-		CreateBulkScan                       func(childComplexity int, input []*generated.CreateScanInput) int
-		CreateBulkScheduledJob               func(childComplexity int, input []*generated.CreateScheduledJobInput) int
-		CreateBulkSubcontrol                 func(childComplexity int, input []*generated.CreateSubcontrolInput) int
-		CreateBulkSubprocessor               func(childComplexity int, input []*generated.CreateSubprocessorInput) int
-		CreateBulkSubscriber                 func(childComplexity int, input []*generated.CreateSubscriberInput) int
-		CreateBulkTask                       func(childComplexity int, input []*generated.CreateTaskInput) int
-		CreateBulkTemplate                   func(childComplexity int, input []*generated.CreateTemplateInput) int
-		CreateBulkTrustCenterCompliance      func(childComplexity int, input []*generated.CreateTrustCenterComplianceInput) int
-		CreateBulkTrustCenterDoc             func(childComplexity int, input []*generated.CreateTrustCenterDocInput) int
-		CreateBulkTrustCenterSubprocessor    func(childComplexity int, input []*generated.CreateTrustCenterSubprocessorInput) int
-		CreateBulkUserSetting                func(childComplexity int, input []*generated.CreateUserSettingInput) int
-		CreateContact                        func(childComplexity int, input generated.CreateContactInput) int
-		CreateControl                        func(childComplexity int, input generated.CreateControlInput) int
-		CreateControlImplementation          func(childComplexity int, input generated.CreateControlImplementationInput) int
-		CreateControlObjective               func(childComplexity int, input generated.CreateControlObjectiveInput) int
-		CreateControlWithSubcontrols         func(childComplexity int, input model.CreateControlWithSubcontrolsInput) int
-		CreateControlsByClone                func(childComplexity int, input *model.CloneControlInput) int
-		CreateCustomDomain                   func(childComplexity int, input generated.CreateCustomDomainInput) int
-		CreateDNSVerification                func(childComplexity int, input generated.CreateDNSVerificationInput) int
-		CreateDocumentData                   func(childComplexity int, input generated.CreateDocumentDataInput) int
-		CreateEntity                         func(childComplexity int, input generated.CreateEntityInput) int
-		CreateEntityType                     func(childComplexity int, input generated.CreateEntityTypeInput) int
-		CreateEvent                          func(childComplexity int, input generated.CreateEventInput) int
-		CreateEvidence                       func(childComplexity int, input generated.CreateEvidenceInput, evidenceFiles []*graphql.Upload) int
-		CreateExport                         func(childComplexity int, input generated.CreateExportInput) int
-		CreateFullProgram                    func(childComplexity int, input model.CreateFullProgramInput) int
-		CreateGroup                          func(childComplexity int, input generated.CreateGroupInput) int
-		CreateGroupByClone                   func(childComplexity int, groupInput generated.CreateGroupInput, members []*model.GroupMembersInput, inheritGroupPermissions *string, cloneGroupMembers *string) int
-		CreateGroupMembership                func(childComplexity int, input generated.CreateGroupMembershipInput) int
-		CreateGroupSetting                   func(childComplexity int, input generated.CreateGroupSettingInput) int
-		CreateGroupWithMembers               func(childComplexity int, groupInput generated.CreateGroupInput, members []*model.GroupMembersInput) int
-		CreateHush                           func(childComplexity int, input generated.CreateHushInput) int
-		CreateInternalPolicy                 func(childComplexity int, input generated.CreateInternalPolicyInput) int
-		CreateInvite                         func(childComplexity int, input generated.CreateInviteInput) int
-		CreateJobResult                      func(childComplexity int, input generated.CreateJobResultInput, jobResultFiles []*graphql.Upload) int
-		CreateJobRunner                      func(childComplexity int, input generated.CreateJobRunnerInput) int
-		CreateJobRunnerRegistrationToken     func(childComplexity int, input generated.CreateJobRunnerRegistrationTokenInput) int
-		CreateJobRunnerToken                 func(childComplexity int, input generated.CreateJobRunnerTokenInput) int
-		CreateJobTemplate                    func(childComplexity int, input generated.CreateJobTemplateInput) int
-		CreateMappableDomain                 func(childComplexity int, input generated.CreateMappableDomainInput) int
-		CreateMappedControl                  func(childComplexity int, input generated.CreateMappedControlInput) int
-		CreateNarrative                      func(childComplexity int, input generated.CreateNarrativeInput) int
-		CreateOnboarding                     func(childComplexity int, input generated.CreateOnboardingInput) int
-		CreateOrgMembership                  func(childComplexity int, input generated.CreateOrgMembershipInput) int
-		CreateOrganization                   func(childComplexity int, input generated.CreateOrganizationInput, avatarFile *graphql.Upload) int
-		CreateOrganizationSetting            func(childComplexity int, input generated.CreateOrganizationSettingInput) int
-		CreateOrganizationWithMembers        func(childComplexity int, organizationInput generated.CreateOrganizationInput, avatarFile *graphql.Upload, members []*model.OrgMembersInput) int
-		CreatePersonalAccessToken            func(childComplexity int, input generated.CreatePersonalAccessTokenInput) int
-		CreateProcedure                      func(childComplexity int, input generated.CreateProcedureInput) int
-		CreateProgram                        func(childComplexity int, input generated.CreateProgramInput) int
-		CreateProgramMembership              func(childComplexity int, input generated.CreateProgramMembershipInput) int
-		CreateProgramWithMembers             func(childComplexity int, input model.CreateProgramWithMembersInput) int
-		CreateRisk                           func(childComplexity int, input generated.CreateRiskInput) int
-		CreateScan                           func(childComplexity int, input generated.CreateScanInput) int
-		CreateScheduledJob                   func(childComplexity int, input generated.CreateScheduledJobInput) int
-		CreateScheduledJobRun                func(childComplexity int, input generated.CreateScheduledJobRunInput) int
-		CreateStandard                       func(childComplexity int, input generated.CreateStandardInput) int
-		CreateSubcontrol                     func(childComplexity int, input generated.CreateSubcontrolInput) int
-		CreateSubprocessor                   func(childComplexity int, input generated.CreateSubprocessorInput, logoFile *graphql.Upload) int
-		CreateSubscriber                     func(childComplexity int, input generated.CreateSubscriberInput) int
-		CreateTFASetting                     func(childComplexity int, input generated.CreateTFASettingInput) int
-		CreateTask                           func(childComplexity int, input generated.CreateTaskInput) int
-		CreateTemplate                       func(childComplexity int, input generated.CreateTemplateInput, templateFiles []*graphql.Upload) int
-		CreateTrustCenter                    func(childComplexity int, input generated.CreateTrustCenterInput) int
-		CreateTrustCenterCompliance          func(childComplexity int, input generated.CreateTrustCenterComplianceInput) int
-		CreateTrustCenterDoc                 func(childComplexity int, input generated.CreateTrustCenterDocInput, trustCenterDocFile graphql.Upload) int
-		CreateTrustCenterDomain              func(childComplexity int, input model.CreateTrustCenterDomainInput) int
-		CreateTrustCenterNda                 func(childComplexity int, input model.CreateTrustCenterNDAInput, templateFiles []*graphql.Upload) int
-		CreateTrustCenterSetting             func(childComplexity int, input generated.CreateTrustCenterSettingInput, logoFile *graphql.Upload, faviconFile *graphql.Upload) int
-		CreateTrustCenterSubprocessor        func(childComplexity int, input generated.CreateTrustCenterSubprocessorInput) int
-		CreateUploadInternalPolicy           func(childComplexity int, policyFile graphql.Upload, ownerID *string) int
-		CreateUploadProcedure                func(childComplexity int, procedureFile graphql.Upload, ownerID *string) int
-		CreateUser                           func(childComplexity int, input generated.CreateUserInput, avatarFile *graphql.Upload) int
-		CreateUserSetting                    func(childComplexity int, input generated.CreateUserSettingInput) int
-		DeleteAPIToken                       func(childComplexity int, id string) int
-		DeleteActionPlan                     func(childComplexity int, id string) int
-		DeleteAsset                          func(childComplexity int, id string) int
-		DeleteBulkExport                     func(childComplexity int, ids []string) int
-		DeleteContact                        func(childComplexity int, id string) int
-		DeleteControl                        func(childComplexity int, id string) int
-		DeleteControlImplementation          func(childComplexity int, id string) int
-		DeleteControlObjective               func(childComplexity int, id string) int
-		DeleteCustomDomain                   func(childComplexity int, id string) int
-		DeleteDNSVerification                func(childComplexity int, id string) int
-		DeleteDocumentData                   func(childComplexity int, id string) int
-		DeleteEntity                         func(childComplexity int, id string) int
-		DeleteEntityType                     func(childComplexity int, id string) int
-		DeleteEvent                          func(childComplexity int, id string) int
-		DeleteEvidence                       func(childComplexity int, id string) int
-		DeleteExport                         func(childComplexity int, id string) int
-		DeleteFile                           func(childComplexity int, id string) int
-		DeleteGroup                          func(childComplexity int, id string) int
-		DeleteGroupMembership                func(childComplexity int, id string) int
-		DeleteGroupSetting                   func(childComplexity int, id string) int
-		DeleteHush                           func(childComplexity int, id string) int
-		DeleteIntegration                    func(childComplexity int, id string) int
-		DeleteInternalPolicy                 func(childComplexity int, id string) int
-		DeleteInvite                         func(childComplexity int, id string) int
-		DeleteJobResult                      func(childComplexity int, id string) int
-		DeleteJobRunner                      func(childComplexity int, id string) int
-		DeleteJobRunnerRegistrationToken     func(childComplexity int, id string) int
-		DeleteJobRunnerToken                 func(childComplexity int, id string) int
-		DeleteJobTemplate                    func(childComplexity int, id string) int
-		DeleteMappableDomain                 func(childComplexity int, id string) int
-		DeleteMappedControl                  func(childComplexity int, id string) int
-		DeleteNarrative                      func(childComplexity int, id string) int
-		DeleteOrgMembership                  func(childComplexity int, id string) int
-		DeleteOrganization                   func(childComplexity int, id string) int
-		DeleteOrganizationSetting            func(childComplexity int, id string) int
-		DeletePersonalAccessToken            func(childComplexity int, id string) int
-		DeleteProcedure                      func(childComplexity int, id string) int
-		DeleteProgram                        func(childComplexity int, id string) int
-		DeleteProgramMembership              func(childComplexity int, id string) int
-		DeleteRisk                           func(childComplexity int, id string) int
-		DeleteScan                           func(childComplexity int, id string) int
-		DeleteScheduledJob                   func(childComplexity int, id string) int
-		DeleteScheduledJobRun                func(childComplexity int, id string) int
-		DeleteStandard                       func(childComplexity int, id string) int
-		DeleteSubcontrol                     func(childComplexity int, id string) int
-		DeleteSubprocessor                   func(childComplexity int, id string) int
-		DeleteSubscriber                     func(childComplexity int, email string, ownerID *string) int
-		DeleteTask                           func(childComplexity int, id string) int
-		DeleteTemplate                       func(childComplexity int, id string) int
-		DeleteTrustCenter                    func(childComplexity int, id string) int
-		DeleteTrustCenterCompliance          func(childComplexity int, id string) int
-		DeleteTrustCenterDoc                 func(childComplexity int, id string) int
-		DeleteTrustCenterSetting             func(childComplexity int, id string) int
-		DeleteTrustCenterSubprocessor        func(childComplexity int, id string) int
-		DeleteUser                           func(childComplexity int, id string) int
-		DeleteWebauthn                       func(childComplexity int, id string) int
-		UpdateAPIToken                       func(childComplexity int, id string, input generated.UpdateAPITokenInput) int
-		UpdateActionPlan                     func(childComplexity int, id string, input generated.UpdateActionPlanInput) int
-		UpdateAsset                          func(childComplexity int, id string, input generated.UpdateAssetInput) int
-		UpdateBulkActionPlan                 func(childComplexity int, ids []string, input generated.UpdateActionPlanInput) int
-		UpdateBulkContact                    func(childComplexity int, ids []string, input generated.UpdateContactInput) int
-		UpdateBulkControl                    func(childComplexity int, ids []string, input generated.UpdateControlInput) int
-		UpdateBulkHush                       func(childComplexity int, ids []string, input generated.UpdateHushInput) int
-		UpdateBulkInternalPolicy             func(childComplexity int, ids []string, input generated.UpdateInternalPolicyInput) int
-		UpdateBulkProcedure                  func(childComplexity int, ids []string, input generated.UpdateProcedureInput) int
-		UpdateBulkRisk                       func(childComplexity int, ids []string, input generated.UpdateRiskInput) int
-		UpdateBulkScan                       func(childComplexity int, ids []string, input generated.UpdateScanInput) int
-		UpdateBulkTask                       func(childComplexity int, ids []string, input generated.UpdateTaskInput) int
-		UpdateContact                        func(childComplexity int, id string, input generated.UpdateContactInput) int
-		UpdateControl                        func(childComplexity int, id string, input generated.UpdateControlInput) int
-		UpdateControlImplementation          func(childComplexity int, id string, input generated.UpdateControlImplementationInput) int
-		UpdateControlObjective               func(childComplexity int, id string, input generated.UpdateControlObjectiveInput) int
-		UpdateCustomDomain                   func(childComplexity int, id string, input generated.UpdateCustomDomainInput) int
-		UpdateDNSVerification                func(childComplexity int, id string, input generated.UpdateDNSVerificationInput) int
-		UpdateDocumentData                   func(childComplexity int, id string, input generated.UpdateDocumentDataInput) int
-		UpdateEntity                         func(childComplexity int, id string, input generated.UpdateEntityInput) int
-		UpdateEntityType                     func(childComplexity int, id string, input generated.UpdateEntityTypeInput) int
-		UpdateEvent                          func(childComplexity int, id string, input generated.UpdateEventInput) int
-		UpdateEvidence                       func(childComplexity int, id string, input generated.UpdateEvidenceInput, evidenceFiles []*graphql.Upload) int
-		UpdateExport                         func(childComplexity int, id string, input generated.UpdateExportInput, exportFiles []*graphql.Upload) int
-		UpdateGroup                          func(childComplexity int, id string, input generated.UpdateGroupInput) int
-		UpdateGroupMembership                func(childComplexity int, id string, input generated.UpdateGroupMembershipInput) int
-		UpdateGroupSetting                   func(childComplexity int, id string, input generated.UpdateGroupSettingInput) int
-		UpdateHush                           func(childComplexity int, id string, input generated.UpdateHushInput) int
-		UpdateInternalPolicy                 func(childComplexity int, id string, input generated.UpdateInternalPolicyInput) int
-		UpdateInvite                         func(childComplexity int, id string, input generated.UpdateInviteInput) int
-		UpdateJobResult                      func(childComplexity int, id string, input generated.UpdateJobResultInput, jobResultFiles []*graphql.Upload) int
-		UpdateJobRunner                      func(childComplexity int, id string, input generated.UpdateJobRunnerInput) int
-		UpdateJobTemplate                    func(childComplexity int, id string, input generated.UpdateJobTemplateInput) int
-		UpdateMappableDomain                 func(childComplexity int, id string, input generated.UpdateMappableDomainInput) int
-		UpdateMappedControl                  func(childComplexity int, id string, input generated.UpdateMappedControlInput) int
-		UpdateNarrative                      func(childComplexity int, id string, input generated.UpdateNarrativeInput) int
-		UpdateOrgMembership                  func(childComplexity int, id string, input generated.UpdateOrgMembershipInput) int
-		UpdateOrganization                   func(childComplexity int, id string, input generated.UpdateOrganizationInput, avatarFile *graphql.Upload) int
-		UpdateOrganizationSetting            func(childComplexity int, id string, input generated.UpdateOrganizationSettingInput) int
-		UpdatePersonalAccessToken            func(childComplexity int, id string, input generated.UpdatePersonalAccessTokenInput) int
-		UpdateProcedure                      func(childComplexity int, id string, input generated.UpdateProcedureInput) int
-		UpdateProgram                        func(childComplexity int, id string, input generated.UpdateProgramInput) int
-		UpdateProgramMembership              func(childComplexity int, id string, input generated.UpdateProgramMembershipInput) int
-		UpdateRisk                           func(childComplexity int, id string, input generated.UpdateRiskInput) int
-		UpdateScan                           func(childComplexity int, id string, input generated.UpdateScanInput) int
-		UpdateScheduledJob                   func(childComplexity int, id string, input generated.UpdateScheduledJobInput) int
-		UpdateScheduledJobRun                func(childComplexity int, id string, input generated.UpdateScheduledJobRunInput) int
-		UpdateStandard                       func(childComplexity int, id string, input generated.UpdateStandardInput) int
-		UpdateSubcontrol                     func(childComplexity int, id string, input generated.UpdateSubcontrolInput) int
-		UpdateSubprocessor                   func(childComplexity int, id string, input generated.UpdateSubprocessorInput, logoFile *graphql.Upload) int
-		UpdateSubscriber                     func(childComplexity int, email string, input generated.UpdateSubscriberInput) int
-		UpdateTFASetting                     func(childComplexity int, input generated.UpdateTFASettingInput) int
-		UpdateTask                           func(childComplexity int, id string, input generated.UpdateTaskInput) int
-		UpdateTaskComment                    func(childComplexity int, id string, input generated.UpdateNoteInput, noteFiles []*graphql.Upload) int
-		UpdateTemplate                       func(childComplexity int, id string, input generated.UpdateTemplateInput, templateFiles []*graphql.Upload) int
-		UpdateTrustCenter                    func(childComplexity int, id string, input generated.UpdateTrustCenterInput) int
-		UpdateTrustCenterCompliance          func(childComplexity int, id string, input generated.UpdateTrustCenterComplianceInput) int
-		UpdateTrustCenterDoc                 func(childComplexity int, id string, input generated.UpdateTrustCenterDocInput) int
-		UpdateTrustCenterNda                 func(childComplexity int, id string, templateFiles []*graphql.Upload) int
-		UpdateTrustCenterSetting             func(childComplexity int, id string, input generated.UpdateTrustCenterSettingInput, logoFile *graphql.Upload, faviconFile *graphql.Upload) int
-		UpdateTrustCenterSubprocessor        func(childComplexity int, id string, input generated.UpdateTrustCenterSubprocessorInput) int
-		UpdateUser                           func(childComplexity int, id string, input generated.UpdateUserInput, avatarFile *graphql.Upload) int
-		UpdateUserSetting                    func(childComplexity int, id string, input generated.UpdateUserSettingInput) int
+		CreateAPIToken                          func(childComplexity int, input generated.CreateAPITokenInput) int
+		CreateActionPlan                        func(childComplexity int, input generated.CreateActionPlanInput) int
+		CreateAsset                             func(childComplexity int, input generated.CreateAssetInput) int
+		CreateBulkAPIToken                      func(childComplexity int, input []*generated.CreateAPITokenInput) int
+		CreateBulkActionPlan                    func(childComplexity int, input []*generated.CreateActionPlanInput) int
+		CreateBulkAsset                         func(childComplexity int, input []*generated.CreateAssetInput) int
+		CreateBulkCSVAPIToken                   func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVActionPlan                 func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVAsset                      func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVContact                    func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVControl                    func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVControlImplementation      func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVControlObjective           func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVCustomDomain               func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVDNSVerification            func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVDocumentData               func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVEntity                     func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVEntityType                 func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVEvent                      func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVGroup                      func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVGroupMembership            func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVGroupSetting               func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVHush                       func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVInternalPolicy             func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVInvite                     func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVJobTemplate                func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVMappableDomain             func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVMappedControl              func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVNarrative                  func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVOrgMembership              func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVOrganizationSetting        func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVProcedure                  func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVProgram                    func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVProgramMembership          func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVRisk                       func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVScan                       func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVScheduledJob               func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVSubcontrol                 func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVSubprocessor               func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVSubscriber                 func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVTask                       func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVTemplate                   func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVTrustCenterCompliance      func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVTrustCenterDoc             func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVTrustCenterSubprocessor    func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVTrustCenterWatermarkConfig func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVUserSetting                func(childComplexity int, input graphql.Upload) int
+		CreateBulkContact                       func(childComplexity int, input []*generated.CreateContactInput) int
+		CreateBulkControl                       func(childComplexity int, input []*generated.CreateControlInput) int
+		CreateBulkControlImplementation         func(childComplexity int, input []*generated.CreateControlImplementationInput) int
+		CreateBulkControlObjective              func(childComplexity int, input []*generated.CreateControlObjectiveInput) int
+		CreateBulkCustomDomain                  func(childComplexity int, input []*generated.CreateCustomDomainInput) int
+		CreateBulkDNSVerification               func(childComplexity int, input []*generated.CreateDNSVerificationInput) int
+		CreateBulkDocumentData                  func(childComplexity int, input []*generated.CreateDocumentDataInput) int
+		CreateBulkEntity                        func(childComplexity int, input []*generated.CreateEntityInput) int
+		CreateBulkEntityType                    func(childComplexity int, input []*generated.CreateEntityTypeInput) int
+		CreateBulkEvent                         func(childComplexity int, input []*generated.CreateEventInput) int
+		CreateBulkGroup                         func(childComplexity int, input []*generated.CreateGroupInput) int
+		CreateBulkGroupMembership               func(childComplexity int, input []*generated.CreateGroupMembershipInput) int
+		CreateBulkGroupSetting                  func(childComplexity int, input []*generated.CreateGroupSettingInput) int
+		CreateBulkHush                          func(childComplexity int, input []*generated.CreateHushInput) int
+		CreateBulkInternalPolicy                func(childComplexity int, input []*generated.CreateInternalPolicyInput) int
+		CreateBulkInvite                        func(childComplexity int, input []*generated.CreateInviteInput) int
+		CreateBulkJobTemplate                   func(childComplexity int, input []*generated.CreateJobTemplateInput) int
+		CreateBulkMappableDomain                func(childComplexity int, input []*generated.CreateMappableDomainInput) int
+		CreateBulkMappedControl                 func(childComplexity int, input []*generated.CreateMappedControlInput) int
+		CreateBulkNarrative                     func(childComplexity int, input []*generated.CreateNarrativeInput) int
+		CreateBulkOrgMembership                 func(childComplexity int, input []*generated.CreateOrgMembershipInput) int
+		CreateBulkOrganizationSetting           func(childComplexity int, input []*generated.CreateOrganizationSettingInput) int
+		CreateBulkProcedure                     func(childComplexity int, input []*generated.CreateProcedureInput) int
+		CreateBulkProgram                       func(childComplexity int, input []*generated.CreateProgramInput) int
+		CreateBulkProgramMembership             func(childComplexity int, input []*generated.CreateProgramMembershipInput) int
+		CreateBulkRisk                          func(childComplexity int, input []*generated.CreateRiskInput) int
+		CreateBulkScan                          func(childComplexity int, input []*generated.CreateScanInput) int
+		CreateBulkScheduledJob                  func(childComplexity int, input []*generated.CreateScheduledJobInput) int
+		CreateBulkSubcontrol                    func(childComplexity int, input []*generated.CreateSubcontrolInput) int
+		CreateBulkSubprocessor                  func(childComplexity int, input []*generated.CreateSubprocessorInput) int
+		CreateBulkSubscriber                    func(childComplexity int, input []*generated.CreateSubscriberInput) int
+		CreateBulkTask                          func(childComplexity int, input []*generated.CreateTaskInput) int
+		CreateBulkTemplate                      func(childComplexity int, input []*generated.CreateTemplateInput) int
+		CreateBulkTrustCenterCompliance         func(childComplexity int, input []*generated.CreateTrustCenterComplianceInput) int
+		CreateBulkTrustCenterDoc                func(childComplexity int, input []*generated.CreateTrustCenterDocInput) int
+		CreateBulkTrustCenterSubprocessor       func(childComplexity int, input []*generated.CreateTrustCenterSubprocessorInput) int
+		CreateBulkTrustCenterWatermarkConfig    func(childComplexity int, input []*generated.CreateTrustCenterWatermarkConfigInput) int
+		CreateBulkUserSetting                   func(childComplexity int, input []*generated.CreateUserSettingInput) int
+		CreateContact                           func(childComplexity int, input generated.CreateContactInput) int
+		CreateControl                           func(childComplexity int, input generated.CreateControlInput) int
+		CreateControlImplementation             func(childComplexity int, input generated.CreateControlImplementationInput) int
+		CreateControlObjective                  func(childComplexity int, input generated.CreateControlObjectiveInput) int
+		CreateControlWithSubcontrols            func(childComplexity int, input model.CreateControlWithSubcontrolsInput) int
+		CreateControlsByClone                   func(childComplexity int, input *model.CloneControlInput) int
+		CreateCustomDomain                      func(childComplexity int, input generated.CreateCustomDomainInput) int
+		CreateDNSVerification                   func(childComplexity int, input generated.CreateDNSVerificationInput) int
+		CreateDocumentData                      func(childComplexity int, input generated.CreateDocumentDataInput) int
+		CreateEntity                            func(childComplexity int, input generated.CreateEntityInput) int
+		CreateEntityType                        func(childComplexity int, input generated.CreateEntityTypeInput) int
+		CreateEvent                             func(childComplexity int, input generated.CreateEventInput) int
+		CreateEvidence                          func(childComplexity int, input generated.CreateEvidenceInput, evidenceFiles []*graphql.Upload) int
+		CreateExport                            func(childComplexity int, input generated.CreateExportInput) int
+		CreateFullProgram                       func(childComplexity int, input model.CreateFullProgramInput) int
+		CreateGroup                             func(childComplexity int, input generated.CreateGroupInput) int
+		CreateGroupByClone                      func(childComplexity int, groupInput generated.CreateGroupInput, members []*model.GroupMembersInput, inheritGroupPermissions *string, cloneGroupMembers *string) int
+		CreateGroupMembership                   func(childComplexity int, input generated.CreateGroupMembershipInput) int
+		CreateGroupSetting                      func(childComplexity int, input generated.CreateGroupSettingInput) int
+		CreateGroupWithMembers                  func(childComplexity int, groupInput generated.CreateGroupInput, members []*model.GroupMembersInput) int
+		CreateHush                              func(childComplexity int, input generated.CreateHushInput) int
+		CreateInternalPolicy                    func(childComplexity int, input generated.CreateInternalPolicyInput) int
+		CreateInvite                            func(childComplexity int, input generated.CreateInviteInput) int
+		CreateJobResult                         func(childComplexity int, input generated.CreateJobResultInput, jobResultFiles []*graphql.Upload) int
+		CreateJobRunner                         func(childComplexity int, input generated.CreateJobRunnerInput) int
+		CreateJobRunnerRegistrationToken        func(childComplexity int, input generated.CreateJobRunnerRegistrationTokenInput) int
+		CreateJobRunnerToken                    func(childComplexity int, input generated.CreateJobRunnerTokenInput) int
+		CreateJobTemplate                       func(childComplexity int, input generated.CreateJobTemplateInput) int
+		CreateMappableDomain                    func(childComplexity int, input generated.CreateMappableDomainInput) int
+		CreateMappedControl                     func(childComplexity int, input generated.CreateMappedControlInput) int
+		CreateNarrative                         func(childComplexity int, input generated.CreateNarrativeInput) int
+		CreateOnboarding                        func(childComplexity int, input generated.CreateOnboardingInput) int
+		CreateOrgMembership                     func(childComplexity int, input generated.CreateOrgMembershipInput) int
+		CreateOrganization                      func(childComplexity int, input generated.CreateOrganizationInput, avatarFile *graphql.Upload) int
+		CreateOrganizationSetting               func(childComplexity int, input generated.CreateOrganizationSettingInput) int
+		CreateOrganizationWithMembers           func(childComplexity int, organizationInput generated.CreateOrganizationInput, avatarFile *graphql.Upload, members []*model.OrgMembersInput) int
+		CreatePersonalAccessToken               func(childComplexity int, input generated.CreatePersonalAccessTokenInput) int
+		CreateProcedure                         func(childComplexity int, input generated.CreateProcedureInput) int
+		CreateProgram                           func(childComplexity int, input generated.CreateProgramInput) int
+		CreateProgramMembership                 func(childComplexity int, input generated.CreateProgramMembershipInput) int
+		CreateProgramWithMembers                func(childComplexity int, input model.CreateProgramWithMembersInput) int
+		CreateRisk                              func(childComplexity int, input generated.CreateRiskInput) int
+		CreateScan                              func(childComplexity int, input generated.CreateScanInput) int
+		CreateScheduledJob                      func(childComplexity int, input generated.CreateScheduledJobInput) int
+		CreateScheduledJobRun                   func(childComplexity int, input generated.CreateScheduledJobRunInput) int
+		CreateStandard                          func(childComplexity int, input generated.CreateStandardInput) int
+		CreateSubcontrol                        func(childComplexity int, input generated.CreateSubcontrolInput) int
+		CreateSubprocessor                      func(childComplexity int, input generated.CreateSubprocessorInput, logoFile *graphql.Upload) int
+		CreateSubscriber                        func(childComplexity int, input generated.CreateSubscriberInput) int
+		CreateTFASetting                        func(childComplexity int, input generated.CreateTFASettingInput) int
+		CreateTask                              func(childComplexity int, input generated.CreateTaskInput) int
+		CreateTemplate                          func(childComplexity int, input generated.CreateTemplateInput, templateFiles []*graphql.Upload) int
+		CreateTrustCenter                       func(childComplexity int, input generated.CreateTrustCenterInput) int
+		CreateTrustCenterCompliance             func(childComplexity int, input generated.CreateTrustCenterComplianceInput) int
+		CreateTrustCenterDoc                    func(childComplexity int, input generated.CreateTrustCenterDocInput, trustCenterDocFile graphql.Upload) int
+		CreateTrustCenterDomain                 func(childComplexity int, input model.CreateTrustCenterDomainInput) int
+		CreateTrustCenterNda                    func(childComplexity int, input model.CreateTrustCenterNDAInput, templateFiles []*graphql.Upload) int
+		CreateTrustCenterSetting                func(childComplexity int, input generated.CreateTrustCenterSettingInput, logoFile *graphql.Upload, faviconFile *graphql.Upload) int
+		CreateTrustCenterSubprocessor           func(childComplexity int, input generated.CreateTrustCenterSubprocessorInput) int
+		CreateTrustCenterWatermarkConfig        func(childComplexity int, input generated.CreateTrustCenterWatermarkConfigInput) int
+		CreateUploadInternalPolicy              func(childComplexity int, policyFile graphql.Upload, ownerID *string) int
+		CreateUploadProcedure                   func(childComplexity int, procedureFile graphql.Upload, ownerID *string) int
+		CreateUser                              func(childComplexity int, input generated.CreateUserInput, avatarFile *graphql.Upload) int
+		CreateUserSetting                       func(childComplexity int, input generated.CreateUserSettingInput) int
+		DeleteAPIToken                          func(childComplexity int, id string) int
+		DeleteActionPlan                        func(childComplexity int, id string) int
+		DeleteAsset                             func(childComplexity int, id string) int
+		DeleteBulkExport                        func(childComplexity int, ids []string) int
+		DeleteContact                           func(childComplexity int, id string) int
+		DeleteControl                           func(childComplexity int, id string) int
+		DeleteControlImplementation             func(childComplexity int, id string) int
+		DeleteControlObjective                  func(childComplexity int, id string) int
+		DeleteCustomDomain                      func(childComplexity int, id string) int
+		DeleteDNSVerification                   func(childComplexity int, id string) int
+		DeleteDocumentData                      func(childComplexity int, id string) int
+		DeleteEntity                            func(childComplexity int, id string) int
+		DeleteEntityType                        func(childComplexity int, id string) int
+		DeleteEvent                             func(childComplexity int, id string) int
+		DeleteEvidence                          func(childComplexity int, id string) int
+		DeleteExport                            func(childComplexity int, id string) int
+		DeleteFile                              func(childComplexity int, id string) int
+		DeleteGroup                             func(childComplexity int, id string) int
+		DeleteGroupMembership                   func(childComplexity int, id string) int
+		DeleteGroupSetting                      func(childComplexity int, id string) int
+		DeleteHush                              func(childComplexity int, id string) int
+		DeleteIntegration                       func(childComplexity int, id string) int
+		DeleteInternalPolicy                    func(childComplexity int, id string) int
+		DeleteInvite                            func(childComplexity int, id string) int
+		DeleteJobResult                         func(childComplexity int, id string) int
+		DeleteJobRunner                         func(childComplexity int, id string) int
+		DeleteJobRunnerRegistrationToken        func(childComplexity int, id string) int
+		DeleteJobRunnerToken                    func(childComplexity int, id string) int
+		DeleteJobTemplate                       func(childComplexity int, id string) int
+		DeleteMappableDomain                    func(childComplexity int, id string) int
+		DeleteMappedControl                     func(childComplexity int, id string) int
+		DeleteNarrative                         func(childComplexity int, id string) int
+		DeleteOrgMembership                     func(childComplexity int, id string) int
+		DeleteOrganization                      func(childComplexity int, id string) int
+		DeleteOrganizationSetting               func(childComplexity int, id string) int
+		DeletePersonalAccessToken               func(childComplexity int, id string) int
+		DeleteProcedure                         func(childComplexity int, id string) int
+		DeleteProgram                           func(childComplexity int, id string) int
+		DeleteProgramMembership                 func(childComplexity int, id string) int
+		DeleteRisk                              func(childComplexity int, id string) int
+		DeleteScan                              func(childComplexity int, id string) int
+		DeleteScheduledJob                      func(childComplexity int, id string) int
+		DeleteScheduledJobRun                   func(childComplexity int, id string) int
+		DeleteStandard                          func(childComplexity int, id string) int
+		DeleteSubcontrol                        func(childComplexity int, id string) int
+		DeleteSubprocessor                      func(childComplexity int, id string) int
+		DeleteSubscriber                        func(childComplexity int, email string, ownerID *string) int
+		DeleteTask                              func(childComplexity int, id string) int
+		DeleteTemplate                          func(childComplexity int, id string) int
+		DeleteTrustCenter                       func(childComplexity int, id string) int
+		DeleteTrustCenterCompliance             func(childComplexity int, id string) int
+		DeleteTrustCenterDoc                    func(childComplexity int, id string) int
+		DeleteTrustCenterSetting                func(childComplexity int, id string) int
+		DeleteTrustCenterSubprocessor           func(childComplexity int, id string) int
+		DeleteTrustCenterWatermarkConfig        func(childComplexity int, id string) int
+		DeleteUser                              func(childComplexity int, id string) int
+		DeleteWebauthn                          func(childComplexity int, id string) int
+		UpdateAPIToken                          func(childComplexity int, id string, input generated.UpdateAPITokenInput) int
+		UpdateActionPlan                        func(childComplexity int, id string, input generated.UpdateActionPlanInput) int
+		UpdateAsset                             func(childComplexity int, id string, input generated.UpdateAssetInput) int
+		UpdateBulkActionPlan                    func(childComplexity int, ids []string, input generated.UpdateActionPlanInput) int
+		UpdateBulkContact                       func(childComplexity int, ids []string, input generated.UpdateContactInput) int
+		UpdateBulkControl                       func(childComplexity int, ids []string, input generated.UpdateControlInput) int
+		UpdateBulkHush                          func(childComplexity int, ids []string, input generated.UpdateHushInput) int
+		UpdateBulkInternalPolicy                func(childComplexity int, ids []string, input generated.UpdateInternalPolicyInput) int
+		UpdateBulkProcedure                     func(childComplexity int, ids []string, input generated.UpdateProcedureInput) int
+		UpdateBulkRisk                          func(childComplexity int, ids []string, input generated.UpdateRiskInput) int
+		UpdateBulkScan                          func(childComplexity int, ids []string, input generated.UpdateScanInput) int
+		UpdateBulkTask                          func(childComplexity int, ids []string, input generated.UpdateTaskInput) int
+		UpdateContact                           func(childComplexity int, id string, input generated.UpdateContactInput) int
+		UpdateControl                           func(childComplexity int, id string, input generated.UpdateControlInput) int
+		UpdateControlImplementation             func(childComplexity int, id string, input generated.UpdateControlImplementationInput) int
+		UpdateControlObjective                  func(childComplexity int, id string, input generated.UpdateControlObjectiveInput) int
+		UpdateCustomDomain                      func(childComplexity int, id string, input generated.UpdateCustomDomainInput) int
+		UpdateDNSVerification                   func(childComplexity int, id string, input generated.UpdateDNSVerificationInput) int
+		UpdateDocumentData                      func(childComplexity int, id string, input generated.UpdateDocumentDataInput) int
+		UpdateEntity                            func(childComplexity int, id string, input generated.UpdateEntityInput) int
+		UpdateEntityType                        func(childComplexity int, id string, input generated.UpdateEntityTypeInput) int
+		UpdateEvent                             func(childComplexity int, id string, input generated.UpdateEventInput) int
+		UpdateEvidence                          func(childComplexity int, id string, input generated.UpdateEvidenceInput, evidenceFiles []*graphql.Upload) int
+		UpdateExport                            func(childComplexity int, id string, input generated.UpdateExportInput, exportFiles []*graphql.Upload) int
+		UpdateGroup                             func(childComplexity int, id string, input generated.UpdateGroupInput) int
+		UpdateGroupMembership                   func(childComplexity int, id string, input generated.UpdateGroupMembershipInput) int
+		UpdateGroupSetting                      func(childComplexity int, id string, input generated.UpdateGroupSettingInput) int
+		UpdateHush                              func(childComplexity int, id string, input generated.UpdateHushInput) int
+		UpdateInternalPolicy                    func(childComplexity int, id string, input generated.UpdateInternalPolicyInput) int
+		UpdateInvite                            func(childComplexity int, id string, input generated.UpdateInviteInput) int
+		UpdateJobResult                         func(childComplexity int, id string, input generated.UpdateJobResultInput, jobResultFiles []*graphql.Upload) int
+		UpdateJobRunner                         func(childComplexity int, id string, input generated.UpdateJobRunnerInput) int
+		UpdateJobTemplate                       func(childComplexity int, id string, input generated.UpdateJobTemplateInput) int
+		UpdateMappableDomain                    func(childComplexity int, id string, input generated.UpdateMappableDomainInput) int
+		UpdateMappedControl                     func(childComplexity int, id string, input generated.UpdateMappedControlInput) int
+		UpdateNarrative                         func(childComplexity int, id string, input generated.UpdateNarrativeInput) int
+		UpdateOrgMembership                     func(childComplexity int, id string, input generated.UpdateOrgMembershipInput) int
+		UpdateOrganization                      func(childComplexity int, id string, input generated.UpdateOrganizationInput, avatarFile *graphql.Upload) int
+		UpdateOrganizationSetting               func(childComplexity int, id string, input generated.UpdateOrganizationSettingInput) int
+		UpdatePersonalAccessToken               func(childComplexity int, id string, input generated.UpdatePersonalAccessTokenInput) int
+		UpdateProcedure                         func(childComplexity int, id string, input generated.UpdateProcedureInput) int
+		UpdateProgram                           func(childComplexity int, id string, input generated.UpdateProgramInput) int
+		UpdateProgramMembership                 func(childComplexity int, id string, input generated.UpdateProgramMembershipInput) int
+		UpdateRisk                              func(childComplexity int, id string, input generated.UpdateRiskInput) int
+		UpdateScan                              func(childComplexity int, id string, input generated.UpdateScanInput) int
+		UpdateScheduledJob                      func(childComplexity int, id string, input generated.UpdateScheduledJobInput) int
+		UpdateScheduledJobRun                   func(childComplexity int, id string, input generated.UpdateScheduledJobRunInput) int
+		UpdateStandard                          func(childComplexity int, id string, input generated.UpdateStandardInput) int
+		UpdateSubcontrol                        func(childComplexity int, id string, input generated.UpdateSubcontrolInput) int
+		UpdateSubprocessor                      func(childComplexity int, id string, input generated.UpdateSubprocessorInput, logoFile *graphql.Upload) int
+		UpdateSubscriber                        func(childComplexity int, email string, input generated.UpdateSubscriberInput) int
+		UpdateTFASetting                        func(childComplexity int, input generated.UpdateTFASettingInput) int
+		UpdateTask                              func(childComplexity int, id string, input generated.UpdateTaskInput) int
+		UpdateTaskComment                       func(childComplexity int, id string, input generated.UpdateNoteInput, noteFiles []*graphql.Upload) int
+		UpdateTemplate                          func(childComplexity int, id string, input generated.UpdateTemplateInput, templateFiles []*graphql.Upload) int
+		UpdateTrustCenter                       func(childComplexity int, id string, input generated.UpdateTrustCenterInput) int
+		UpdateTrustCenterCompliance             func(childComplexity int, id string, input generated.UpdateTrustCenterComplianceInput) int
+		UpdateTrustCenterDoc                    func(childComplexity int, id string, input generated.UpdateTrustCenterDocInput) int
+		UpdateTrustCenterNda                    func(childComplexity int, id string, templateFiles []*graphql.Upload) int
+		UpdateTrustCenterSetting                func(childComplexity int, id string, input generated.UpdateTrustCenterSettingInput, logoFile *graphql.Upload, faviconFile *graphql.Upload) int
+		UpdateTrustCenterSubprocessor           func(childComplexity int, id string, input generated.UpdateTrustCenterSubprocessorInput) int
+		UpdateTrustCenterWatermarkConfig        func(childComplexity int, id string, input generated.UpdateTrustCenterWatermarkConfigInput) int
+		UpdateUser                              func(childComplexity int, id string, input generated.UpdateUserInput, avatarFile *graphql.Upload) int
+		UpdateUserSetting                       func(childComplexity int, id string, input generated.UpdateUserSettingInput) int
 	}
 
 	Narrative struct {
@@ -3846,6 +3851,9 @@ type ComplexityRoot struct {
 		TrustCenterSubprocessor               func(childComplexity int, id string) int
 		TrustCenterSubprocessorHistories      func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy *generated.TrustCenterSubprocessorHistoryOrder, where *generated.TrustCenterSubprocessorHistoryWhereInput) int
 		TrustCenterSubprocessors              func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.TrustCenterSubprocessorOrder, where *generated.TrustCenterSubprocessorWhereInput) int
+		TrustCenterWatermarkConfig            func(childComplexity int, id string) int
+		TrustCenterWatermarkConfigHistories   func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy *generated.TrustCenterWatermarkConfigHistoryOrder, where *generated.TrustCenterWatermarkConfigHistoryWhereInput) int
+		TrustCenterWatermarkConfigs           func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.TrustCenterWatermarkConfigOrder, where *generated.TrustCenterWatermarkConfigWhereInput) int
 		TrustCenters                          func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.TrustCenterOrder, where *generated.TrustCenterWhereInput) int
 		User                                  func(childComplexity int, id string) int
 		UserHistories                         func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy *generated.UserHistoryOrder, where *generated.UserHistoryWhereInput) int
@@ -4797,6 +4805,7 @@ type ComplexityRoot struct {
 		TrustCenterSubprocessors func(childComplexity int, after *entgql.Cursor[string], first *int, before *entgql.Cursor[string], last *int, orderBy []*generated.TrustCenterSubprocessorOrder, where *generated.TrustCenterSubprocessorWhereInput) int
 		UpdatedAt                func(childComplexity int) int
 		UpdatedBy                func(childComplexity int) int
+		WatermarkConfig          func(childComplexity int) int
 	}
 
 	TrustCenterCompliance struct {
@@ -5151,6 +5160,81 @@ type ComplexityRoot struct {
 
 	TrustCenterUpdatePayload struct {
 		TrustCenter func(childComplexity int) int
+	}
+
+	TrustCenterWatermarkConfig struct {
+		Color         func(childComplexity int) int
+		CreatedAt     func(childComplexity int) int
+		CreatedBy     func(childComplexity int) int
+		File          func(childComplexity int) int
+		Font          func(childComplexity int) int
+		FontSize      func(childComplexity int) int
+		ID            func(childComplexity int) int
+		LogoID        func(childComplexity int) int
+		Opacity       func(childComplexity int) int
+		Rotation      func(childComplexity int) int
+		Text          func(childComplexity int) int
+		TrustCenter   func(childComplexity int) int
+		TrustCenterID func(childComplexity int) int
+		UpdatedAt     func(childComplexity int) int
+		UpdatedBy     func(childComplexity int) int
+	}
+
+	TrustCenterWatermarkConfigBulkCreatePayload struct {
+		TrustCenterWatermarkConfigs func(childComplexity int) int
+	}
+
+	TrustCenterWatermarkConfigConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	TrustCenterWatermarkConfigCreatePayload struct {
+		TrustCenterWatermarkConfig func(childComplexity int) int
+	}
+
+	TrustCenterWatermarkConfigDeletePayload struct {
+		DeletedID func(childComplexity int) int
+	}
+
+	TrustCenterWatermarkConfigEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
+	TrustCenterWatermarkConfigHistory struct {
+		Color         func(childComplexity int) int
+		CreatedAt     func(childComplexity int) int
+		CreatedBy     func(childComplexity int) int
+		Font          func(childComplexity int) int
+		FontSize      func(childComplexity int) int
+		HistoryTime   func(childComplexity int) int
+		ID            func(childComplexity int) int
+		LogoID        func(childComplexity int) int
+		Opacity       func(childComplexity int) int
+		Operation     func(childComplexity int) int
+		Ref           func(childComplexity int) int
+		Rotation      func(childComplexity int) int
+		Text          func(childComplexity int) int
+		TrustCenterID func(childComplexity int) int
+		UpdatedAt     func(childComplexity int) int
+		UpdatedBy     func(childComplexity int) int
+	}
+
+	TrustCenterWatermarkConfigHistoryConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	TrustCenterWatermarkConfigHistoryEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
+	TrustCenterWatermarkConfigUpdatePayload struct {
+		TrustCenterWatermarkConfig func(childComplexity int) int
 	}
 
 	User struct {
@@ -17365,6 +17449,18 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.Mutation.CreateBulkCSVTrustCenterSubprocessor(childComplexity, args["input"].(graphql.Upload)), true
 
+	case "Mutation.createBulkCSVTrustCenterWatermarkConfig":
+		if e.complexity.Mutation.CreateBulkCSVTrustCenterWatermarkConfig == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createBulkCSVTrustCenterWatermarkConfig_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateBulkCSVTrustCenterWatermarkConfig(childComplexity, args["input"].(graphql.Upload)), true
+
 	case "Mutation.createBulkCSVUserSetting":
 		if e.complexity.Mutation.CreateBulkCSVUserSetting == nil {
 			break
@@ -17808,6 +17904,18 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Mutation.CreateBulkTrustCenterSubprocessor(childComplexity, args["input"].([]*generated.CreateTrustCenterSubprocessorInput)), true
+
+	case "Mutation.createBulkTrustCenterWatermarkConfig":
+		if e.complexity.Mutation.CreateBulkTrustCenterWatermarkConfig == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createBulkTrustCenterWatermarkConfig_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateBulkTrustCenterWatermarkConfig(childComplexity, args["input"].([]*generated.CreateTrustCenterWatermarkConfigInput)), true
 
 	case "Mutation.createBulkUserSetting":
 		if e.complexity.Mutation.CreateBulkUserSetting == nil {
@@ -18529,6 +18637,18 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.Mutation.CreateTrustCenterSubprocessor(childComplexity, args["input"].(generated.CreateTrustCenterSubprocessorInput)), true
 
+	case "Mutation.createTrustCenterWatermarkConfig":
+		if e.complexity.Mutation.CreateTrustCenterWatermarkConfig == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createTrustCenterWatermarkConfig_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateTrustCenterWatermarkConfig(childComplexity, args["input"].(generated.CreateTrustCenterWatermarkConfigInput)), true
+
 	case "Mutation.createUploadInternalPolicy":
 		if e.complexity.Mutation.CreateUploadInternalPolicy == nil {
 			break
@@ -19224,6 +19344,18 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Mutation.DeleteTrustCenterSubprocessor(childComplexity, args["id"].(string)), true
+
+	case "Mutation.deleteTrustCenterWatermarkConfig":
+		if e.complexity.Mutation.DeleteTrustCenterWatermarkConfig == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteTrustCenterWatermarkConfig_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteTrustCenterWatermarkConfig(childComplexity, args["id"].(string)), true
 
 	case "Mutation.deleteUser":
 		if e.complexity.Mutation.DeleteUser == nil {
@@ -19980,6 +20112,18 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Mutation.UpdateTrustCenterSubprocessor(childComplexity, args["id"].(string), args["input"].(generated.UpdateTrustCenterSubprocessorInput)), true
+
+	case "Mutation.updateTrustCenterWatermarkConfig":
+		if e.complexity.Mutation.UpdateTrustCenterWatermarkConfig == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateTrustCenterWatermarkConfig_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateTrustCenterWatermarkConfig(childComplexity, args["id"].(string), args["input"].(generated.UpdateTrustCenterWatermarkConfigInput)), true
 
 	case "Mutation.updateUser":
 		if e.complexity.Mutation.UpdateUser == nil {
@@ -27743,6 +27887,42 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.Query.TrustCenterSubprocessors(childComplexity, args["after"].(*entgql.Cursor[string]), args["first"].(*int), args["before"].(*entgql.Cursor[string]), args["last"].(*int), args["orderBy"].([]*generated.TrustCenterSubprocessorOrder), args["where"].(*generated.TrustCenterSubprocessorWhereInput)), true
 
+	case "Query.trustCenterWatermarkConfig":
+		if e.complexity.Query.TrustCenterWatermarkConfig == nil {
+			break
+		}
+
+		args, err := ec.field_Query_trustCenterWatermarkConfig_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.TrustCenterWatermarkConfig(childComplexity, args["id"].(string)), true
+
+	case "Query.trustCenterWatermarkConfigHistories":
+		if e.complexity.Query.TrustCenterWatermarkConfigHistories == nil {
+			break
+		}
+
+		args, err := ec.field_Query_trustCenterWatermarkConfigHistories_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.TrustCenterWatermarkConfigHistories(childComplexity, args["after"].(*entgql.Cursor[string]), args["first"].(*int), args["before"].(*entgql.Cursor[string]), args["last"].(*int), args["orderBy"].(*generated.TrustCenterWatermarkConfigHistoryOrder), args["where"].(*generated.TrustCenterWatermarkConfigHistoryWhereInput)), true
+
+	case "Query.trustCenterWatermarkConfigs":
+		if e.complexity.Query.TrustCenterWatermarkConfigs == nil {
+			break
+		}
+
+		args, err := ec.field_Query_trustCenterWatermarkConfigs_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.TrustCenterWatermarkConfigs(childComplexity, args["after"].(*entgql.Cursor[string]), args["first"].(*int), args["before"].(*entgql.Cursor[string]), args["last"].(*int), args["orderBy"].([]*generated.TrustCenterWatermarkConfigOrder), args["where"].(*generated.TrustCenterWatermarkConfigWhereInput)), true
+
 	case "Query.trustCenters":
 		if e.complexity.Query.TrustCenters == nil {
 			break
@@ -32552,6 +32732,13 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.TrustCenter.UpdatedBy(childComplexity), true
 
+	case "TrustCenter.watermarkConfig":
+		if e.complexity.TrustCenter.WatermarkConfig == nil {
+			break
+		}
+
+		return e.complexity.TrustCenter.WatermarkConfig(childComplexity), true
+
 	case "TrustCenterCompliance.createdAt":
 		if e.complexity.TrustCenterCompliance.CreatedAt == nil {
 			break
@@ -33964,6 +34151,321 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.TrustCenterUpdatePayload.TrustCenter(childComplexity), true
 
+	case "TrustCenterWatermarkConfig.color":
+		if e.complexity.TrustCenterWatermarkConfig.Color == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfig.Color(childComplexity), true
+
+	case "TrustCenterWatermarkConfig.createdAt":
+		if e.complexity.TrustCenterWatermarkConfig.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfig.CreatedAt(childComplexity), true
+
+	case "TrustCenterWatermarkConfig.createdBy":
+		if e.complexity.TrustCenterWatermarkConfig.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfig.CreatedBy(childComplexity), true
+
+	case "TrustCenterWatermarkConfig.file":
+		if e.complexity.TrustCenterWatermarkConfig.File == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfig.File(childComplexity), true
+
+	case "TrustCenterWatermarkConfig.font":
+		if e.complexity.TrustCenterWatermarkConfig.Font == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfig.Font(childComplexity), true
+
+	case "TrustCenterWatermarkConfig.fontSize":
+		if e.complexity.TrustCenterWatermarkConfig.FontSize == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfig.FontSize(childComplexity), true
+
+	case "TrustCenterWatermarkConfig.id":
+		if e.complexity.TrustCenterWatermarkConfig.ID == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfig.ID(childComplexity), true
+
+	case "TrustCenterWatermarkConfig.logoID":
+		if e.complexity.TrustCenterWatermarkConfig.LogoID == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfig.LogoID(childComplexity), true
+
+	case "TrustCenterWatermarkConfig.opacity":
+		if e.complexity.TrustCenterWatermarkConfig.Opacity == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfig.Opacity(childComplexity), true
+
+	case "TrustCenterWatermarkConfig.rotation":
+		if e.complexity.TrustCenterWatermarkConfig.Rotation == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfig.Rotation(childComplexity), true
+
+	case "TrustCenterWatermarkConfig.text":
+		if e.complexity.TrustCenterWatermarkConfig.Text == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfig.Text(childComplexity), true
+
+	case "TrustCenterWatermarkConfig.trustCenter":
+		if e.complexity.TrustCenterWatermarkConfig.TrustCenter == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfig.TrustCenter(childComplexity), true
+
+	case "TrustCenterWatermarkConfig.trustCenterID":
+		if e.complexity.TrustCenterWatermarkConfig.TrustCenterID == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfig.TrustCenterID(childComplexity), true
+
+	case "TrustCenterWatermarkConfig.updatedAt":
+		if e.complexity.TrustCenterWatermarkConfig.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfig.UpdatedAt(childComplexity), true
+
+	case "TrustCenterWatermarkConfig.updatedBy":
+		if e.complexity.TrustCenterWatermarkConfig.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfig.UpdatedBy(childComplexity), true
+
+	case "TrustCenterWatermarkConfigBulkCreatePayload.trustCenterWatermarkConfigs":
+		if e.complexity.TrustCenterWatermarkConfigBulkCreatePayload.TrustCenterWatermarkConfigs == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfigBulkCreatePayload.TrustCenterWatermarkConfigs(childComplexity), true
+
+	case "TrustCenterWatermarkConfigConnection.edges":
+		if e.complexity.TrustCenterWatermarkConfigConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfigConnection.Edges(childComplexity), true
+
+	case "TrustCenterWatermarkConfigConnection.pageInfo":
+		if e.complexity.TrustCenterWatermarkConfigConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfigConnection.PageInfo(childComplexity), true
+
+	case "TrustCenterWatermarkConfigConnection.totalCount":
+		if e.complexity.TrustCenterWatermarkConfigConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfigConnection.TotalCount(childComplexity), true
+
+	case "TrustCenterWatermarkConfigCreatePayload.trustCenterWatermarkConfig":
+		if e.complexity.TrustCenterWatermarkConfigCreatePayload.TrustCenterWatermarkConfig == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfigCreatePayload.TrustCenterWatermarkConfig(childComplexity), true
+
+	case "TrustCenterWatermarkConfigDeletePayload.deletedID":
+		if e.complexity.TrustCenterWatermarkConfigDeletePayload.DeletedID == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfigDeletePayload.DeletedID(childComplexity), true
+
+	case "TrustCenterWatermarkConfigEdge.cursor":
+		if e.complexity.TrustCenterWatermarkConfigEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfigEdge.Cursor(childComplexity), true
+
+	case "TrustCenterWatermarkConfigEdge.node":
+		if e.complexity.TrustCenterWatermarkConfigEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfigEdge.Node(childComplexity), true
+
+	case "TrustCenterWatermarkConfigHistory.color":
+		if e.complexity.TrustCenterWatermarkConfigHistory.Color == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfigHistory.Color(childComplexity), true
+
+	case "TrustCenterWatermarkConfigHistory.createdAt":
+		if e.complexity.TrustCenterWatermarkConfigHistory.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfigHistory.CreatedAt(childComplexity), true
+
+	case "TrustCenterWatermarkConfigHistory.createdBy":
+		if e.complexity.TrustCenterWatermarkConfigHistory.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfigHistory.CreatedBy(childComplexity), true
+
+	case "TrustCenterWatermarkConfigHistory.font":
+		if e.complexity.TrustCenterWatermarkConfigHistory.Font == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfigHistory.Font(childComplexity), true
+
+	case "TrustCenterWatermarkConfigHistory.fontSize":
+		if e.complexity.TrustCenterWatermarkConfigHistory.FontSize == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfigHistory.FontSize(childComplexity), true
+
+	case "TrustCenterWatermarkConfigHistory.historyTime":
+		if e.complexity.TrustCenterWatermarkConfigHistory.HistoryTime == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfigHistory.HistoryTime(childComplexity), true
+
+	case "TrustCenterWatermarkConfigHistory.id":
+		if e.complexity.TrustCenterWatermarkConfigHistory.ID == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfigHistory.ID(childComplexity), true
+
+	case "TrustCenterWatermarkConfigHistory.logoID":
+		if e.complexity.TrustCenterWatermarkConfigHistory.LogoID == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfigHistory.LogoID(childComplexity), true
+
+	case "TrustCenterWatermarkConfigHistory.opacity":
+		if e.complexity.TrustCenterWatermarkConfigHistory.Opacity == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfigHistory.Opacity(childComplexity), true
+
+	case "TrustCenterWatermarkConfigHistory.operation":
+		if e.complexity.TrustCenterWatermarkConfigHistory.Operation == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfigHistory.Operation(childComplexity), true
+
+	case "TrustCenterWatermarkConfigHistory.ref":
+		if e.complexity.TrustCenterWatermarkConfigHistory.Ref == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfigHistory.Ref(childComplexity), true
+
+	case "TrustCenterWatermarkConfigHistory.rotation":
+		if e.complexity.TrustCenterWatermarkConfigHistory.Rotation == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfigHistory.Rotation(childComplexity), true
+
+	case "TrustCenterWatermarkConfigHistory.text":
+		if e.complexity.TrustCenterWatermarkConfigHistory.Text == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfigHistory.Text(childComplexity), true
+
+	case "TrustCenterWatermarkConfigHistory.trustCenterID":
+		if e.complexity.TrustCenterWatermarkConfigHistory.TrustCenterID == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfigHistory.TrustCenterID(childComplexity), true
+
+	case "TrustCenterWatermarkConfigHistory.updatedAt":
+		if e.complexity.TrustCenterWatermarkConfigHistory.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfigHistory.UpdatedAt(childComplexity), true
+
+	case "TrustCenterWatermarkConfigHistory.updatedBy":
+		if e.complexity.TrustCenterWatermarkConfigHistory.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfigHistory.UpdatedBy(childComplexity), true
+
+	case "TrustCenterWatermarkConfigHistoryConnection.edges":
+		if e.complexity.TrustCenterWatermarkConfigHistoryConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfigHistoryConnection.Edges(childComplexity), true
+
+	case "TrustCenterWatermarkConfigHistoryConnection.pageInfo":
+		if e.complexity.TrustCenterWatermarkConfigHistoryConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfigHistoryConnection.PageInfo(childComplexity), true
+
+	case "TrustCenterWatermarkConfigHistoryConnection.totalCount":
+		if e.complexity.TrustCenterWatermarkConfigHistoryConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfigHistoryConnection.TotalCount(childComplexity), true
+
+	case "TrustCenterWatermarkConfigHistoryEdge.cursor":
+		if e.complexity.TrustCenterWatermarkConfigHistoryEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfigHistoryEdge.Cursor(childComplexity), true
+
+	case "TrustCenterWatermarkConfigHistoryEdge.node":
+		if e.complexity.TrustCenterWatermarkConfigHistoryEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfigHistoryEdge.Node(childComplexity), true
+
+	case "TrustCenterWatermarkConfigUpdatePayload.trustCenterWatermarkConfig":
+		if e.complexity.TrustCenterWatermarkConfigUpdatePayload.TrustCenterWatermarkConfig == nil {
+			break
+		}
+
+		return e.complexity.TrustCenterWatermarkConfigUpdatePayload.TrustCenterWatermarkConfig(childComplexity), true
+
 	case "User.actionPlans":
 		if e.complexity.User.ActionPlans == nil {
 			break
@@ -35089,6 +35591,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCreateTrustCenterNDAInput,
 		ec.unmarshalInputCreateTrustCenterSettingInput,
 		ec.unmarshalInputCreateTrustCenterSubprocessorInput,
+		ec.unmarshalInputCreateTrustCenterWatermarkConfigInput,
 		ec.unmarshalInputCreateUserInput,
 		ec.unmarshalInputCreateUserSettingInput,
 		ec.unmarshalInputCustomDomainHistoryOrder,
@@ -35269,6 +35772,10 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputTrustCenterSubprocessorHistoryWhereInput,
 		ec.unmarshalInputTrustCenterSubprocessorOrder,
 		ec.unmarshalInputTrustCenterSubprocessorWhereInput,
+		ec.unmarshalInputTrustCenterWatermarkConfigHistoryOrder,
+		ec.unmarshalInputTrustCenterWatermarkConfigHistoryWhereInput,
+		ec.unmarshalInputTrustCenterWatermarkConfigOrder,
+		ec.unmarshalInputTrustCenterWatermarkConfigWhereInput,
 		ec.unmarshalInputTrustCenterWhereInput,
 		ec.unmarshalInputUpdateAPITokenInput,
 		ec.unmarshalInputUpdateActionPlanInput,
@@ -35324,6 +35831,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputUpdateTrustCenterInput,
 		ec.unmarshalInputUpdateTrustCenterSettingInput,
 		ec.unmarshalInputUpdateTrustCenterSubprocessorInput,
+		ec.unmarshalInputUpdateTrustCenterWatermarkConfigInput,
 		ec.unmarshalInputUpdateUserInput,
 		ec.unmarshalInputUpdateUserSettingInput,
 		ec.unmarshalInputUserHistoryOrder,
@@ -47615,6 +48123,7 @@ input CreateTrustCenterInput {
   ownerID: ID
   customDomainID: ID
   settingID: ID
+  watermarkConfigID: ID
   trustCenterSubprocessorIDs: [ID!]
   trustCenterDocIDs: [ID!]
   trustCenterComplianceIDs: [ID!]
@@ -47685,6 +48194,38 @@ input CreateTrustCenterSubprocessorInput {
   category: String!
   trustCenterID: ID
   subprocessorID: ID!
+}
+"""
+CreateTrustCenterWatermarkConfigInput is used for create TrustCenterWatermarkConfig object.
+Input was generated by ent.
+"""
+input CreateTrustCenterWatermarkConfigInput {
+  """
+  text to watermark the document with
+  """
+  text: String
+  """
+  font size of the watermark text
+  """
+  fontSize: Float
+  """
+  opacity of the watermark text
+  """
+  opacity: Float
+  """
+  rotation of the watermark text
+  """
+  rotation: Float
+  """
+  color of the watermark text
+  """
+  color: String
+  """
+  font of the watermark text
+  """
+  font: String
+  trustCenterID: ID
+  fileID: ID
 }
 """
 CreateUserInput is used for create User object.
@@ -77638,6 +78179,68 @@ type Query {
     """
     where: TrustCenterSubprocessorHistoryWhereInput
   ): TrustCenterSubprocessorHistoryConnection!
+  trustCenterWatermarkConfigs(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: Cursor
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: Cursor
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for TrustCenterWatermarkConfigs returned from the connection.
+    """
+    orderBy: [TrustCenterWatermarkConfigOrder!]
+
+    """
+    Filtering options for TrustCenterWatermarkConfigs returned from the connection.
+    """
+    where: TrustCenterWatermarkConfigWhereInput
+  ): TrustCenterWatermarkConfigConnection!
+  trustCenterWatermarkConfigHistories(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: Cursor
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: Cursor
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for TrustCenterWatermarkConfigHistories returned from the connection.
+    """
+    orderBy: TrustCenterWatermarkConfigHistoryOrder
+
+    """
+    Filtering options for TrustCenterWatermarkConfigHistories returned from the connection.
+    """
+    where: TrustCenterWatermarkConfigHistoryWhereInput
+  ): TrustCenterWatermarkConfigHistoryConnection!
   users(
     """
     Returns the elements in the list that come after the specified cursor.
@@ -86782,6 +87385,7 @@ type TrustCenter implements Node {
   owner: Organization
   customDomain: CustomDomain
   setting: TrustCenterSetting
+  watermarkConfig: TrustCenterWatermarkConfig
   trustCenterSubprocessors(
     """
     Returns the elements in the list that come after the specified cursor.
@@ -89689,6 +90293,673 @@ input TrustCenterSubprocessorWhereInput {
   hasSubprocessor: Boolean
   hasSubprocessorWith: [SubprocessorWhereInput!]
 }
+type TrustCenterWatermarkConfig implements Node {
+  id: ID!
+  createdAt: Time
+  updatedAt: Time
+  createdBy: String
+  updatedBy: String
+  """
+  ID of the trust center
+  """
+  trustCenterID: ID
+  """
+  ID of the file containing the document
+  """
+  logoID: ID
+  """
+  text to watermark the document with
+  """
+  text: String
+  """
+  font size of the watermark text
+  """
+  fontSize: Float
+  """
+  opacity of the watermark text
+  """
+  opacity: Float
+  """
+  rotation of the watermark text
+  """
+  rotation: Float
+  """
+  color of the watermark text
+  """
+  color: String
+  """
+  font of the watermark text
+  """
+  font: String
+  trustCenter: TrustCenter
+  """
+  the file containing the image for watermarking, if applicable
+  """
+  file: File
+}
+"""
+A connection to a list of items.
+"""
+type TrustCenterWatermarkConfigConnection {
+  """
+  A list of edges.
+  """
+  edges: [TrustCenterWatermarkConfigEdge]
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+"""
+An edge in a connection.
+"""
+type TrustCenterWatermarkConfigEdge {
+  """
+  The item at the end of the edge.
+  """
+  node: TrustCenterWatermarkConfig
+  """
+  A cursor for use in pagination.
+  """
+  cursor: Cursor!
+}
+type TrustCenterWatermarkConfigHistory implements Node {
+  id: ID!
+  historyTime: Time!
+  ref: String
+  operation: TrustCenterWatermarkConfigHistoryOpType!
+  createdAt: Time
+  updatedAt: Time
+  createdBy: String
+  updatedBy: String
+  """
+  ID of the trust center
+  """
+  trustCenterID: String
+  """
+  ID of the file containing the document
+  """
+  logoID: String
+  """
+  text to watermark the document with
+  """
+  text: String
+  """
+  font size of the watermark text
+  """
+  fontSize: Float
+  """
+  opacity of the watermark text
+  """
+  opacity: Float
+  """
+  rotation of the watermark text
+  """
+  rotation: Float
+  """
+  color of the watermark text
+  """
+  color: String
+  """
+  font of the watermark text
+  """
+  font: String
+}
+"""
+A connection to a list of items.
+"""
+type TrustCenterWatermarkConfigHistoryConnection {
+  """
+  A list of edges.
+  """
+  edges: [TrustCenterWatermarkConfigHistoryEdge]
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+"""
+An edge in a connection.
+"""
+type TrustCenterWatermarkConfigHistoryEdge {
+  """
+  The item at the end of the edge.
+  """
+  node: TrustCenterWatermarkConfigHistory
+  """
+  A cursor for use in pagination.
+  """
+  cursor: Cursor!
+}
+"""
+TrustCenterWatermarkConfigHistoryOpType is enum for the field operation
+"""
+enum TrustCenterWatermarkConfigHistoryOpType @goModel(model: "github.com/theopenlane/entx/history.OpType") {
+  INSERT
+  UPDATE
+  DELETE
+}
+"""
+Ordering options for TrustCenterWatermarkConfigHistory connections
+"""
+input TrustCenterWatermarkConfigHistoryOrder {
+  """
+  The ordering direction.
+  """
+  direction: OrderDirection! = ASC
+  """
+  The field by which to order TrustCenterWatermarkConfigHistories.
+  """
+  field: TrustCenterWatermarkConfigHistoryOrderField!
+}
+"""
+Properties by which TrustCenterWatermarkConfigHistory connections can be ordered.
+"""
+enum TrustCenterWatermarkConfigHistoryOrderField {
+  history_time
+  created_at
+  updated_at
+}
+"""
+TrustCenterWatermarkConfigHistoryWhereInput is used for filtering TrustCenterWatermarkConfigHistory objects.
+Input was generated by ent.
+"""
+input TrustCenterWatermarkConfigHistoryWhereInput {
+  not: TrustCenterWatermarkConfigHistoryWhereInput
+  and: [TrustCenterWatermarkConfigHistoryWhereInput!]
+  or: [TrustCenterWatermarkConfigHistoryWhereInput!]
+  """
+  id field predicates
+  """
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  idEqualFold: ID
+  idContainsFold: ID
+  """
+  history_time field predicates
+  """
+  historyTime: Time
+  historyTimeNEQ: Time
+  historyTimeIn: [Time!]
+  historyTimeNotIn: [Time!]
+  historyTimeGT: Time
+  historyTimeGTE: Time
+  historyTimeLT: Time
+  historyTimeLTE: Time
+  """
+  ref field predicates
+  """
+  ref: String
+  refNEQ: String
+  refIn: [String!]
+  refNotIn: [String!]
+  refGT: String
+  refGTE: String
+  refLT: String
+  refLTE: String
+  refContains: String
+  refHasPrefix: String
+  refHasSuffix: String
+  refIsNil: Boolean
+  refNotNil: Boolean
+  refEqualFold: String
+  refContainsFold: String
+  """
+  operation field predicates
+  """
+  operation: TrustCenterWatermarkConfigHistoryOpType
+  operationNEQ: TrustCenterWatermarkConfigHistoryOpType
+  operationIn: [TrustCenterWatermarkConfigHistoryOpType!]
+  operationNotIn: [TrustCenterWatermarkConfigHistoryOpType!]
+  """
+  created_at field predicates
+  """
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  createdAtIsNil: Boolean
+  createdAtNotNil: Boolean
+  """
+  updated_at field predicates
+  """
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  updatedAtIsNil: Boolean
+  updatedAtNotNil: Boolean
+  """
+  created_by field predicates
+  """
+  createdBy: String
+  createdByNEQ: String
+  createdByIn: [String!]
+  createdByNotIn: [String!]
+  createdByGT: String
+  createdByGTE: String
+  createdByLT: String
+  createdByLTE: String
+  createdByContains: String
+  createdByHasPrefix: String
+  createdByHasSuffix: String
+  createdByIsNil: Boolean
+  createdByNotNil: Boolean
+  createdByEqualFold: String
+  createdByContainsFold: String
+  """
+  updated_by field predicates
+  """
+  updatedBy: String
+  updatedByNEQ: String
+  updatedByIn: [String!]
+  updatedByNotIn: [String!]
+  updatedByGT: String
+  updatedByGTE: String
+  updatedByLT: String
+  updatedByLTE: String
+  updatedByContains: String
+  updatedByHasPrefix: String
+  updatedByHasSuffix: String
+  updatedByIsNil: Boolean
+  updatedByNotNil: Boolean
+  updatedByEqualFold: String
+  updatedByContainsFold: String
+  """
+  trust_center_id field predicates
+  """
+  trustCenterID: String
+  trustCenterIDNEQ: String
+  trustCenterIDIn: [String!]
+  trustCenterIDNotIn: [String!]
+  trustCenterIDGT: String
+  trustCenterIDGTE: String
+  trustCenterIDLT: String
+  trustCenterIDLTE: String
+  trustCenterIDContains: String
+  trustCenterIDHasPrefix: String
+  trustCenterIDHasSuffix: String
+  trustCenterIDIsNil: Boolean
+  trustCenterIDNotNil: Boolean
+  trustCenterIDEqualFold: String
+  trustCenterIDContainsFold: String
+  """
+  logo_id field predicates
+  """
+  logoID: String
+  logoIDNEQ: String
+  logoIDIn: [String!]
+  logoIDNotIn: [String!]
+  logoIDGT: String
+  logoIDGTE: String
+  logoIDLT: String
+  logoIDLTE: String
+  logoIDContains: String
+  logoIDHasPrefix: String
+  logoIDHasSuffix: String
+  logoIDIsNil: Boolean
+  logoIDNotNil: Boolean
+  logoIDEqualFold: String
+  logoIDContainsFold: String
+  """
+  text field predicates
+  """
+  text: String
+  textNEQ: String
+  textIn: [String!]
+  textNotIn: [String!]
+  textGT: String
+  textGTE: String
+  textLT: String
+  textLTE: String
+  textContains: String
+  textHasPrefix: String
+  textHasSuffix: String
+  textIsNil: Boolean
+  textNotNil: Boolean
+  textEqualFold: String
+  textContainsFold: String
+  """
+  font_size field predicates
+  """
+  fontSize: Float
+  fontSizeNEQ: Float
+  fontSizeIn: [Float!]
+  fontSizeNotIn: [Float!]
+  fontSizeGT: Float
+  fontSizeGTE: Float
+  fontSizeLT: Float
+  fontSizeLTE: Float
+  fontSizeIsNil: Boolean
+  fontSizeNotNil: Boolean
+  """
+  opacity field predicates
+  """
+  opacity: Float
+  opacityNEQ: Float
+  opacityIn: [Float!]
+  opacityNotIn: [Float!]
+  opacityGT: Float
+  opacityGTE: Float
+  opacityLT: Float
+  opacityLTE: Float
+  opacityIsNil: Boolean
+  opacityNotNil: Boolean
+  """
+  rotation field predicates
+  """
+  rotation: Float
+  rotationNEQ: Float
+  rotationIn: [Float!]
+  rotationNotIn: [Float!]
+  rotationGT: Float
+  rotationGTE: Float
+  rotationLT: Float
+  rotationLTE: Float
+  rotationIsNil: Boolean
+  rotationNotNil: Boolean
+  """
+  color field predicates
+  """
+  color: String
+  colorNEQ: String
+  colorIn: [String!]
+  colorNotIn: [String!]
+  colorGT: String
+  colorGTE: String
+  colorLT: String
+  colorLTE: String
+  colorContains: String
+  colorHasPrefix: String
+  colorHasSuffix: String
+  colorIsNil: Boolean
+  colorNotNil: Boolean
+  colorEqualFold: String
+  colorContainsFold: String
+  """
+  font field predicates
+  """
+  font: String
+  fontNEQ: String
+  fontIn: [String!]
+  fontNotIn: [String!]
+  fontGT: String
+  fontGTE: String
+  fontLT: String
+  fontLTE: String
+  fontContains: String
+  fontHasPrefix: String
+  fontHasSuffix: String
+  fontIsNil: Boolean
+  fontNotNil: Boolean
+  fontEqualFold: String
+  fontContainsFold: String
+}
+"""
+Ordering options for TrustCenterWatermarkConfig connections
+"""
+input TrustCenterWatermarkConfigOrder {
+  """
+  The ordering direction.
+  """
+  direction: OrderDirection! = ASC
+  """
+  The field by which to order TrustCenterWatermarkConfigs.
+  """
+  field: TrustCenterWatermarkConfigOrderField!
+}
+"""
+Properties by which TrustCenterWatermarkConfig connections can be ordered.
+"""
+enum TrustCenterWatermarkConfigOrderField {
+  created_at
+  updated_at
+}
+"""
+TrustCenterWatermarkConfigWhereInput is used for filtering TrustCenterWatermarkConfig objects.
+Input was generated by ent.
+"""
+input TrustCenterWatermarkConfigWhereInput {
+  not: TrustCenterWatermarkConfigWhereInput
+  and: [TrustCenterWatermarkConfigWhereInput!]
+  or: [TrustCenterWatermarkConfigWhereInput!]
+  """
+  id field predicates
+  """
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  idEqualFold: ID
+  idContainsFold: ID
+  """
+  created_at field predicates
+  """
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  createdAtIsNil: Boolean
+  createdAtNotNil: Boolean
+  """
+  updated_at field predicates
+  """
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  updatedAtIsNil: Boolean
+  updatedAtNotNil: Boolean
+  """
+  created_by field predicates
+  """
+  createdBy: String
+  createdByNEQ: String
+  createdByIn: [String!]
+  createdByNotIn: [String!]
+  createdByGT: String
+  createdByGTE: String
+  createdByLT: String
+  createdByLTE: String
+  createdByContains: String
+  createdByHasPrefix: String
+  createdByHasSuffix: String
+  createdByIsNil: Boolean
+  createdByNotNil: Boolean
+  createdByEqualFold: String
+  createdByContainsFold: String
+  """
+  updated_by field predicates
+  """
+  updatedBy: String
+  updatedByNEQ: String
+  updatedByIn: [String!]
+  updatedByNotIn: [String!]
+  updatedByGT: String
+  updatedByGTE: String
+  updatedByLT: String
+  updatedByLTE: String
+  updatedByContains: String
+  updatedByHasPrefix: String
+  updatedByHasSuffix: String
+  updatedByIsNil: Boolean
+  updatedByNotNil: Boolean
+  updatedByEqualFold: String
+  updatedByContainsFold: String
+  """
+  trust_center_id field predicates
+  """
+  trustCenterID: ID
+  trustCenterIDNEQ: ID
+  trustCenterIDIn: [ID!]
+  trustCenterIDNotIn: [ID!]
+  trustCenterIDGT: ID
+  trustCenterIDGTE: ID
+  trustCenterIDLT: ID
+  trustCenterIDLTE: ID
+  trustCenterIDContains: ID
+  trustCenterIDHasPrefix: ID
+  trustCenterIDHasSuffix: ID
+  trustCenterIDIsNil: Boolean
+  trustCenterIDNotNil: Boolean
+  trustCenterIDEqualFold: ID
+  trustCenterIDContainsFold: ID
+  """
+  logo_id field predicates
+  """
+  logoID: ID
+  logoIDNEQ: ID
+  logoIDIn: [ID!]
+  logoIDNotIn: [ID!]
+  logoIDGT: ID
+  logoIDGTE: ID
+  logoIDLT: ID
+  logoIDLTE: ID
+  logoIDContains: ID
+  logoIDHasPrefix: ID
+  logoIDHasSuffix: ID
+  logoIDIsNil: Boolean
+  logoIDNotNil: Boolean
+  logoIDEqualFold: ID
+  logoIDContainsFold: ID
+  """
+  text field predicates
+  """
+  text: String
+  textNEQ: String
+  textIn: [String!]
+  textNotIn: [String!]
+  textGT: String
+  textGTE: String
+  textLT: String
+  textLTE: String
+  textContains: String
+  textHasPrefix: String
+  textHasSuffix: String
+  textIsNil: Boolean
+  textNotNil: Boolean
+  textEqualFold: String
+  textContainsFold: String
+  """
+  font_size field predicates
+  """
+  fontSize: Float
+  fontSizeNEQ: Float
+  fontSizeIn: [Float!]
+  fontSizeNotIn: [Float!]
+  fontSizeGT: Float
+  fontSizeGTE: Float
+  fontSizeLT: Float
+  fontSizeLTE: Float
+  fontSizeIsNil: Boolean
+  fontSizeNotNil: Boolean
+  """
+  opacity field predicates
+  """
+  opacity: Float
+  opacityNEQ: Float
+  opacityIn: [Float!]
+  opacityNotIn: [Float!]
+  opacityGT: Float
+  opacityGTE: Float
+  opacityLT: Float
+  opacityLTE: Float
+  opacityIsNil: Boolean
+  opacityNotNil: Boolean
+  """
+  rotation field predicates
+  """
+  rotation: Float
+  rotationNEQ: Float
+  rotationIn: [Float!]
+  rotationNotIn: [Float!]
+  rotationGT: Float
+  rotationGTE: Float
+  rotationLT: Float
+  rotationLTE: Float
+  rotationIsNil: Boolean
+  rotationNotNil: Boolean
+  """
+  color field predicates
+  """
+  color: String
+  colorNEQ: String
+  colorIn: [String!]
+  colorNotIn: [String!]
+  colorGT: String
+  colorGTE: String
+  colorLT: String
+  colorLTE: String
+  colorContains: String
+  colorHasPrefix: String
+  colorHasSuffix: String
+  colorIsNil: Boolean
+  colorNotNil: Boolean
+  colorEqualFold: String
+  colorContainsFold: String
+  """
+  font field predicates
+  """
+  font: String
+  fontNEQ: String
+  fontIn: [String!]
+  fontNotIn: [String!]
+  fontGT: String
+  fontGTE: String
+  fontLT: String
+  fontLTE: String
+  fontContains: String
+  fontHasPrefix: String
+  fontHasSuffix: String
+  fontIsNil: Boolean
+  fontNotNil: Boolean
+  fontEqualFold: String
+  fontContainsFold: String
+  """
+  trust_center edge predicates
+  """
+  hasTrustCenter: Boolean
+  hasTrustCenterWith: [TrustCenterWhereInput!]
+  """
+  file edge predicates
+  """
+  hasFile: Boolean
+  hasFileWith: [FileWhereInput!]
+}
 """
 TrustCenterWhereInput is used for filtering TrustCenter objects.
 Input was generated by ent.
@@ -89841,6 +91112,11 @@ input TrustCenterWhereInput {
   """
   hasSetting: Boolean
   hasSettingWith: [TrustCenterSettingWhereInput!]
+  """
+  watermark_config edge predicates
+  """
+  hasWatermarkConfig: Boolean
+  hasWatermarkConfigWith: [TrustCenterWatermarkConfigWhereInput!]
   """
   trust_center_subprocessors edge predicates
   """
@@ -93088,6 +94364,8 @@ input UpdateTrustCenterInput {
   clearCustomDomain: Boolean
   settingID: ID
   clearSetting: Boolean
+  watermarkConfigID: ID
+  clearWatermarkConfig: Boolean
   addTrustCenterSubprocessorIDs: [ID!]
   removeTrustCenterSubprocessorIDs: [ID!]
   clearTrustCenterSubprocessors: Boolean
@@ -93184,6 +94462,46 @@ input UpdateTrustCenterSubprocessorInput {
   trustCenterID: ID
   clearTrustCenter: Boolean
   subprocessorID: ID
+}
+"""
+UpdateTrustCenterWatermarkConfigInput is used for update TrustCenterWatermarkConfig object.
+Input was generated by ent.
+"""
+input UpdateTrustCenterWatermarkConfigInput {
+  """
+  text to watermark the document with
+  """
+  text: String
+  clearText: Boolean
+  """
+  font size of the watermark text
+  """
+  fontSize: Float
+  clearFontSize: Boolean
+  """
+  opacity of the watermark text
+  """
+  opacity: Float
+  clearOpacity: Boolean
+  """
+  rotation of the watermark text
+  """
+  rotation: Float
+  clearRotation: Boolean
+  """
+  color of the watermark text
+  """
+  color: String
+  clearColor: Boolean
+  """
+  font of the watermark text
+  """
+  font: String
+  clearFont: Boolean
+  trustCenterID: ID
+  clearTrustCenter: Boolean
+  fileID: ID
+  clearFile: Boolean
 }
 """
 UpdateUserInput is used for update User object.
@@ -101703,6 +103021,109 @@ type TrustCenterSubprocessorBulkCreatePayload {
     Created trustCenterSubprocessors
     """
     trustCenterSubprocessors: [TrustCenterSubprocessor!]
+}`, BuiltIn: false},
+	{Name: "../schema/trustcenterwatermarkconfig.graphql", Input: `extend type Query {
+    """
+    Look up trustCenterWatermarkConfig by ID
+    """
+     trustCenterWatermarkConfig(
+        """
+        ID of the trustCenterWatermarkConfig
+        """
+        id: ID!
+    ):  TrustCenterWatermarkConfig!
+}
+
+extend type Mutation{
+    """
+    Create a new trustCenterWatermarkConfig
+    """
+    createTrustCenterWatermarkConfig(
+        """
+        values of the trustCenterWatermarkConfig
+        """
+        input: CreateTrustCenterWatermarkConfigInput!
+    ): TrustCenterWatermarkConfigCreatePayload!
+    """
+    Create multiple new trustCenterWatermarkConfigs
+    """
+    createBulkTrustCenterWatermarkConfig(
+        """
+        values of the trustCenterWatermarkConfig
+        """
+        input: [CreateTrustCenterWatermarkConfigInput!]
+    ): TrustCenterWatermarkConfigBulkCreatePayload!
+    """
+    Create multiple new trustCenterWatermarkConfigs via file upload
+    """
+    createBulkCSVTrustCenterWatermarkConfig(
+        """
+        csv file containing values of the trustCenterWatermarkConfig
+        """
+        input: Upload!
+    ): TrustCenterWatermarkConfigBulkCreatePayload!
+    """
+    Update an existing trustCenterWatermarkConfig
+    """
+    updateTrustCenterWatermarkConfig(
+        """
+        ID of the trustCenterWatermarkConfig
+        """
+        id: ID!
+        """
+        New values for the trustCenterWatermarkConfig
+        """
+        input: UpdateTrustCenterWatermarkConfigInput!
+    ): TrustCenterWatermarkConfigUpdatePayload!
+    """
+    Delete an existing trustCenterWatermarkConfig
+    """
+    deleteTrustCenterWatermarkConfig(
+        """
+        ID of the trustCenterWatermarkConfig
+        """
+        id: ID!
+    ): TrustCenterWatermarkConfigDeletePayload!
+}
+
+"""
+Return response for createTrustCenterWatermarkConfig mutation
+"""
+type TrustCenterWatermarkConfigCreatePayload {
+    """
+    Created trustCenterWatermarkConfig
+    """
+    trustCenterWatermarkConfig: TrustCenterWatermarkConfig!
+}
+
+"""
+Return response for updateTrustCenterWatermarkConfig mutation
+"""
+type TrustCenterWatermarkConfigUpdatePayload {
+    """
+    Updated trustCenterWatermarkConfig
+    """
+    trustCenterWatermarkConfig: TrustCenterWatermarkConfig!
+}
+
+"""
+Return response for deleteTrustCenterWatermarkConfig mutation
+"""
+type TrustCenterWatermarkConfigDeletePayload {
+    """
+    Deleted trustCenterWatermarkConfig ID
+    """
+    deletedID: ID!
+}
+
+"""
+Return response for createBulkTrustCenterWatermarkConfig mutation
+"""
+type TrustCenterWatermarkConfigBulkCreatePayload {
+    """
+    Created trustCenterWatermarkConfigs
+    """
+    trustCenterWatermarkConfigs: [TrustCenterWatermarkConfig!]
 }`, BuiltIn: false},
 	{Name: "../schema/user.graphql", Input: `extend type Query {
     """
