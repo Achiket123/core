@@ -8755,6 +8755,10 @@ func init() {
 	}
 	TrustCenterWatermarkConfigsTable.ForeignKeys[0].RefTable = TrustCentersTable
 	TrustCenterWatermarkConfigsTable.ForeignKeys[1].RefTable = FilesTable
+	TrustCenterWatermarkConfigsTable.Annotation = &entsql.Annotation{}
+	TrustCenterWatermarkConfigsTable.Annotation.Checks = map[string]string{
+		"text_or_logo_id_not_null": "(text IS NOT NULL) OR (logo_id IS NOT NULL)",
+	}
 	TrustCenterWatermarkConfigHistoryTable.Annotation = &entsql.Annotation{
 		Table: "trust_center_watermark_config_history",
 	}
