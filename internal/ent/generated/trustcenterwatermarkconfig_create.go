@@ -9,6 +9,8 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/theopenlane/core/internal/ent/generated/file"
+	"github.com/theopenlane/core/internal/ent/generated/trustcenter"
 	"github.com/theopenlane/core/internal/ent/generated/trustcenterwatermarkconfig"
 )
 
@@ -103,6 +105,118 @@ func (_c *TrustCenterWatermarkConfigCreate) SetNillableDeletedBy(v *string) *Tru
 	return _c
 }
 
+// SetTrustCenterID sets the "trust_center_id" field.
+func (_c *TrustCenterWatermarkConfigCreate) SetTrustCenterID(v string) *TrustCenterWatermarkConfigCreate {
+	_c.mutation.SetTrustCenterID(v)
+	return _c
+}
+
+// SetNillableTrustCenterID sets the "trust_center_id" field if the given value is not nil.
+func (_c *TrustCenterWatermarkConfigCreate) SetNillableTrustCenterID(v *string) *TrustCenterWatermarkConfigCreate {
+	if v != nil {
+		_c.SetTrustCenterID(*v)
+	}
+	return _c
+}
+
+// SetLogoID sets the "logo_id" field.
+func (_c *TrustCenterWatermarkConfigCreate) SetLogoID(v string) *TrustCenterWatermarkConfigCreate {
+	_c.mutation.SetLogoID(v)
+	return _c
+}
+
+// SetNillableLogoID sets the "logo_id" field if the given value is not nil.
+func (_c *TrustCenterWatermarkConfigCreate) SetNillableLogoID(v *string) *TrustCenterWatermarkConfigCreate {
+	if v != nil {
+		_c.SetLogoID(*v)
+	}
+	return _c
+}
+
+// SetText sets the "text" field.
+func (_c *TrustCenterWatermarkConfigCreate) SetText(v string) *TrustCenterWatermarkConfigCreate {
+	_c.mutation.SetText(v)
+	return _c
+}
+
+// SetNillableText sets the "text" field if the given value is not nil.
+func (_c *TrustCenterWatermarkConfigCreate) SetNillableText(v *string) *TrustCenterWatermarkConfigCreate {
+	if v != nil {
+		_c.SetText(*v)
+	}
+	return _c
+}
+
+// SetFontSize sets the "font_size" field.
+func (_c *TrustCenterWatermarkConfigCreate) SetFontSize(v float64) *TrustCenterWatermarkConfigCreate {
+	_c.mutation.SetFontSize(v)
+	return _c
+}
+
+// SetNillableFontSize sets the "font_size" field if the given value is not nil.
+func (_c *TrustCenterWatermarkConfigCreate) SetNillableFontSize(v *float64) *TrustCenterWatermarkConfigCreate {
+	if v != nil {
+		_c.SetFontSize(*v)
+	}
+	return _c
+}
+
+// SetOpacity sets the "opacity" field.
+func (_c *TrustCenterWatermarkConfigCreate) SetOpacity(v float64) *TrustCenterWatermarkConfigCreate {
+	_c.mutation.SetOpacity(v)
+	return _c
+}
+
+// SetNillableOpacity sets the "opacity" field if the given value is not nil.
+func (_c *TrustCenterWatermarkConfigCreate) SetNillableOpacity(v *float64) *TrustCenterWatermarkConfigCreate {
+	if v != nil {
+		_c.SetOpacity(*v)
+	}
+	return _c
+}
+
+// SetRotation sets the "rotation" field.
+func (_c *TrustCenterWatermarkConfigCreate) SetRotation(v float64) *TrustCenterWatermarkConfigCreate {
+	_c.mutation.SetRotation(v)
+	return _c
+}
+
+// SetNillableRotation sets the "rotation" field if the given value is not nil.
+func (_c *TrustCenterWatermarkConfigCreate) SetNillableRotation(v *float64) *TrustCenterWatermarkConfigCreate {
+	if v != nil {
+		_c.SetRotation(*v)
+	}
+	return _c
+}
+
+// SetColor sets the "color" field.
+func (_c *TrustCenterWatermarkConfigCreate) SetColor(v string) *TrustCenterWatermarkConfigCreate {
+	_c.mutation.SetColor(v)
+	return _c
+}
+
+// SetNillableColor sets the "color" field if the given value is not nil.
+func (_c *TrustCenterWatermarkConfigCreate) SetNillableColor(v *string) *TrustCenterWatermarkConfigCreate {
+	if v != nil {
+		_c.SetColor(*v)
+	}
+	return _c
+}
+
+// SetFont sets the "font" field.
+func (_c *TrustCenterWatermarkConfigCreate) SetFont(v string) *TrustCenterWatermarkConfigCreate {
+	_c.mutation.SetFont(v)
+	return _c
+}
+
+// SetNillableFont sets the "font" field if the given value is not nil.
+func (_c *TrustCenterWatermarkConfigCreate) SetNillableFont(v *string) *TrustCenterWatermarkConfigCreate {
+	if v != nil {
+		_c.SetFont(*v)
+	}
+	return _c
+}
+
 // SetID sets the "id" field.
 func (_c *TrustCenterWatermarkConfigCreate) SetID(v string) *TrustCenterWatermarkConfigCreate {
 	_c.mutation.SetID(v)
@@ -115,6 +229,30 @@ func (_c *TrustCenterWatermarkConfigCreate) SetNillableID(v *string) *TrustCente
 		_c.SetID(*v)
 	}
 	return _c
+}
+
+// SetTrustCenter sets the "trust_center" edge to the TrustCenter entity.
+func (_c *TrustCenterWatermarkConfigCreate) SetTrustCenter(v *TrustCenter) *TrustCenterWatermarkConfigCreate {
+	return _c.SetTrustCenterID(v.ID)
+}
+
+// SetFileID sets the "file" edge to the File entity by ID.
+func (_c *TrustCenterWatermarkConfigCreate) SetFileID(id string) *TrustCenterWatermarkConfigCreate {
+	_c.mutation.SetFileID(id)
+	return _c
+}
+
+// SetNillableFileID sets the "file" edge to the File entity by ID if the given value is not nil.
+func (_c *TrustCenterWatermarkConfigCreate) SetNillableFileID(id *string) *TrustCenterWatermarkConfigCreate {
+	if id != nil {
+		_c = _c.SetFileID(*id)
+	}
+	return _c
+}
+
+// SetFile sets the "file" edge to the File entity.
+func (_c *TrustCenterWatermarkConfigCreate) SetFile(v *File) *TrustCenterWatermarkConfigCreate {
+	return _c.SetFileID(v.ID)
 }
 
 // Mutation returns the TrustCenterWatermarkConfigMutation object of the builder.
@@ -168,6 +306,18 @@ func (_c *TrustCenterWatermarkConfigCreate) defaults() error {
 		v := trustcenterwatermarkconfig.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
+	if _, ok := _c.mutation.FontSize(); !ok {
+		v := trustcenterwatermarkconfig.DefaultFontSize
+		_c.mutation.SetFontSize(v)
+	}
+	if _, ok := _c.mutation.Opacity(); !ok {
+		v := trustcenterwatermarkconfig.DefaultOpacity
+		_c.mutation.SetOpacity(v)
+	}
+	if _, ok := _c.mutation.Rotation(); !ok {
+		v := trustcenterwatermarkconfig.DefaultRotation
+		_c.mutation.SetRotation(v)
+	}
 	if _, ok := _c.mutation.ID(); !ok {
 		if trustcenterwatermarkconfig.DefaultID == nil {
 			return fmt.Errorf("generated: uninitialized trustcenterwatermarkconfig.DefaultID (forgotten import generated/runtime?)")
@@ -180,6 +330,21 @@ func (_c *TrustCenterWatermarkConfigCreate) defaults() error {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *TrustCenterWatermarkConfigCreate) check() error {
+	if v, ok := _c.mutation.TrustCenterID(); ok {
+		if err := trustcenterwatermarkconfig.TrustCenterIDValidator(v); err != nil {
+			return &ValidationError{Name: "trust_center_id", err: fmt.Errorf(`generated: validator failed for field "TrustCenterWatermarkConfig.trust_center_id": %w`, err)}
+		}
+	}
+	if v, ok := _c.mutation.Opacity(); ok {
+		if err := trustcenterwatermarkconfig.OpacityValidator(v); err != nil {
+			return &ValidationError{Name: "opacity", err: fmt.Errorf(`generated: validator failed for field "TrustCenterWatermarkConfig.opacity": %w`, err)}
+		}
+	}
+	if v, ok := _c.mutation.Rotation(); ok {
+		if err := trustcenterwatermarkconfig.RotationValidator(v); err != nil {
+			return &ValidationError{Name: "rotation", err: fmt.Errorf(`generated: validator failed for field "TrustCenterWatermarkConfig.rotation": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -239,6 +404,66 @@ func (_c *TrustCenterWatermarkConfigCreate) createSpec() (*TrustCenterWatermarkC
 	if value, ok := _c.mutation.DeletedBy(); ok {
 		_spec.SetField(trustcenterwatermarkconfig.FieldDeletedBy, field.TypeString, value)
 		_node.DeletedBy = value
+	}
+	if value, ok := _c.mutation.Text(); ok {
+		_spec.SetField(trustcenterwatermarkconfig.FieldText, field.TypeString, value)
+		_node.Text = value
+	}
+	if value, ok := _c.mutation.FontSize(); ok {
+		_spec.SetField(trustcenterwatermarkconfig.FieldFontSize, field.TypeFloat64, value)
+		_node.FontSize = value
+	}
+	if value, ok := _c.mutation.Opacity(); ok {
+		_spec.SetField(trustcenterwatermarkconfig.FieldOpacity, field.TypeFloat64, value)
+		_node.Opacity = value
+	}
+	if value, ok := _c.mutation.Rotation(); ok {
+		_spec.SetField(trustcenterwatermarkconfig.FieldRotation, field.TypeFloat64, value)
+		_node.Rotation = value
+	}
+	if value, ok := _c.mutation.Color(); ok {
+		_spec.SetField(trustcenterwatermarkconfig.FieldColor, field.TypeString, value)
+		_node.Color = value
+	}
+	if value, ok := _c.mutation.Font(); ok {
+		_spec.SetField(trustcenterwatermarkconfig.FieldFont, field.TypeString, value)
+		_node.Font = value
+	}
+	if nodes := _c.mutation.TrustCenterIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: true,
+			Table:   trustcenterwatermarkconfig.TrustCenterTable,
+			Columns: []string{trustcenterwatermarkconfig.TrustCenterColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(trustcenter.FieldID, field.TypeString),
+			},
+		}
+		edge.Schema = _c.schemaConfig.TrustCenterWatermarkConfig
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.TrustCenterID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.FileIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   trustcenterwatermarkconfig.FileTable,
+			Columns: []string{trustcenterwatermarkconfig.FileColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeString),
+			},
+		}
+		edge.Schema = _c.schemaConfig.TrustCenterWatermarkConfig
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.LogoID = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

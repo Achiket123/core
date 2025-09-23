@@ -7100,6 +7100,14 @@ func (_m *TrustCenter) Setting(ctx context.Context) (*TrustCenterSetting, error)
 	return result, MaskNotFound(err)
 }
 
+func (_m *TrustCenter) WatermarkConfig(ctx context.Context) (*TrustCenterWatermarkConfig, error) {
+	result, err := _m.Edges.WatermarkConfigOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryWatermarkConfig().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (_m *TrustCenter) TrustCenterSubprocessors(
 	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy []*TrustCenterSubprocessorOrder, where *TrustCenterSubprocessorWhereInput,
 ) (*TrustCenterSubprocessorConnection, error) {
@@ -7108,7 +7116,7 @@ func (_m *TrustCenter) TrustCenterSubprocessors(
 		WithTrustCenterSubprocessorFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := _m.Edges.totalCount[3][alias]
+	totalCount, hasTotalCount := _m.Edges.totalCount[4][alias]
 	if nodes, err := _m.NamedTrustCenterSubprocessors(alias); err == nil || hasTotalCount {
 		pager, err := newTrustCenterSubprocessorPager(opts, last != nil)
 		if err != nil {
@@ -7129,7 +7137,7 @@ func (_m *TrustCenter) TrustCenterDocs(
 		WithTrustCenterDocFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := _m.Edges.totalCount[4][alias]
+	totalCount, hasTotalCount := _m.Edges.totalCount[5][alias]
 	if nodes, err := _m.NamedTrustCenterDocs(alias); err == nil || hasTotalCount {
 		pager, err := newTrustCenterDocPager(opts, last != nil)
 		if err != nil {
@@ -7150,7 +7158,7 @@ func (_m *TrustCenter) TrustCenterCompliances(
 		WithTrustCenterComplianceFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := _m.Edges.totalCount[5][alias]
+	totalCount, hasTotalCount := _m.Edges.totalCount[6][alias]
 	if nodes, err := _m.NamedTrustCenterCompliances(alias); err == nil || hasTotalCount {
 		pager, err := newTrustCenterCompliancePager(opts, last != nil)
 		if err != nil {
@@ -7171,7 +7179,7 @@ func (_m *TrustCenter) Templates(
 		WithTemplateFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := _m.Edges.totalCount[6][alias]
+	totalCount, hasTotalCount := _m.Edges.totalCount[7][alias]
 	if nodes, err := _m.NamedTemplates(alias); err == nil || hasTotalCount {
 		pager, err := newTemplatePager(opts, last != nil)
 		if err != nil {
@@ -7283,6 +7291,22 @@ func (_m *TrustCenterSubprocessor) Subprocessor(ctx context.Context) (*Subproces
 		result, err = _m.QuerySubprocessor().Only(ctx)
 	}
 	return result, err
+}
+
+func (_m *TrustCenterWatermarkConfig) TrustCenter(ctx context.Context) (*TrustCenter, error) {
+	result, err := _m.Edges.TrustCenterOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryTrustCenter().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (_m *TrustCenterWatermarkConfig) File(ctx context.Context) (*File, error) {
+	result, err := _m.Edges.FileOrErr()
+	if IsNotLoaded(err) {
+		result, err = _m.QueryFile().Only(ctx)
+	}
+	return result, MaskNotFound(err)
 }
 
 func (_m *User) PersonalAccessTokens(

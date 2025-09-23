@@ -5160,12 +5160,34 @@ var (
 		{Name: "updated_by", Type: field.TypeString, Nullable: true},
 		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 		{Name: "deleted_by", Type: field.TypeString, Nullable: true},
+		{Name: "text", Type: field.TypeString, Nullable: true},
+		{Name: "font_size", Type: field.TypeFloat64, Nullable: true, Default: 48},
+		{Name: "opacity", Type: field.TypeFloat64, Nullable: true, Default: 0.3},
+		{Name: "rotation", Type: field.TypeFloat64, Nullable: true, Default: 45},
+		{Name: "color", Type: field.TypeString, Nullable: true},
+		{Name: "font", Type: field.TypeString, Nullable: true},
+		{Name: "trust_center_id", Type: field.TypeString, Unique: true, Nullable: true},
+		{Name: "logo_id", Type: field.TypeString, Nullable: true},
 	}
 	// TrustCenterWatermarkConfigsTable holds the schema information for the "trust_center_watermark_configs" table.
 	TrustCenterWatermarkConfigsTable = &schema.Table{
 		Name:       "trust_center_watermark_configs",
 		Columns:    TrustCenterWatermarkConfigsColumns,
 		PrimaryKey: []*schema.Column{TrustCenterWatermarkConfigsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "trust_center_watermark_configs_trust_centers_watermark_config",
+				Columns:    []*schema.Column{TrustCenterWatermarkConfigsColumns[13]},
+				RefColumns: []*schema.Column{TrustCentersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "trust_center_watermark_configs_files_file",
+				Columns:    []*schema.Column{TrustCenterWatermarkConfigsColumns[14]},
+				RefColumns: []*schema.Column{FilesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// TrustCenterWatermarkConfigHistoryColumns holds the columns for the "trust_center_watermark_config_history" table.
 	TrustCenterWatermarkConfigHistoryColumns = []*schema.Column{
@@ -5179,6 +5201,14 @@ var (
 		{Name: "updated_by", Type: field.TypeString, Nullable: true},
 		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 		{Name: "deleted_by", Type: field.TypeString, Nullable: true},
+		{Name: "trust_center_id", Type: field.TypeString, Nullable: true},
+		{Name: "logo_id", Type: field.TypeString, Nullable: true},
+		{Name: "text", Type: field.TypeString, Nullable: true},
+		{Name: "font_size", Type: field.TypeFloat64, Nullable: true, Default: 48},
+		{Name: "opacity", Type: field.TypeFloat64, Nullable: true, Default: 0.3},
+		{Name: "rotation", Type: field.TypeFloat64, Nullable: true, Default: 45},
+		{Name: "color", Type: field.TypeString, Nullable: true},
+		{Name: "font", Type: field.TypeString, Nullable: true},
 	}
 	// TrustCenterWatermarkConfigHistoryTable holds the schema information for the "trust_center_watermark_config_history" table.
 	TrustCenterWatermarkConfigHistoryTable = &schema.Table{
@@ -8713,6 +8743,8 @@ func init() {
 	TrustCenterSubprocessorHistoryTable.Annotation = &entsql.Annotation{
 		Table: "trust_center_subprocessor_history",
 	}
+	TrustCenterWatermarkConfigsTable.ForeignKeys[0].RefTable = TrustCentersTable
+	TrustCenterWatermarkConfigsTable.ForeignKeys[1].RefTable = FilesTable
 	TrustCenterWatermarkConfigHistoryTable.Annotation = &entsql.Annotation{
 		Table: "trust_center_watermark_config_history",
 	}

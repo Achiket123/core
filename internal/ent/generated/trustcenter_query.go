@@ -22,6 +22,7 @@ import (
 	"github.com/theopenlane/core/internal/ent/generated/trustcenterdoc"
 	"github.com/theopenlane/core/internal/ent/generated/trustcentersetting"
 	"github.com/theopenlane/core/internal/ent/generated/trustcentersubprocessor"
+	"github.com/theopenlane/core/internal/ent/generated/trustcenterwatermarkconfig"
 
 	"github.com/theopenlane/core/internal/ent/generated/internal"
 )
@@ -36,6 +37,7 @@ type TrustCenterQuery struct {
 	withOwner                         *OrganizationQuery
 	withCustomDomain                  *CustomDomainQuery
 	withSetting                       *TrustCenterSettingQuery
+	withWatermarkConfig               *TrustCenterWatermarkConfigQuery
 	withTrustCenterSubprocessors      *TrustCenterSubprocessorQuery
 	withTrustCenterDocs               *TrustCenterDocQuery
 	withTrustCenterCompliances        *TrustCenterComplianceQuery
@@ -151,6 +153,31 @@ func (_q *TrustCenterQuery) QuerySetting() *TrustCenterSettingQuery {
 		schemaConfig := _q.schemaConfig
 		step.To.Schema = schemaConfig.TrustCenterSetting
 		step.Edge.Schema = schemaConfig.TrustCenterSetting
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryWatermarkConfig chains the current query on the "watermark_config" edge.
+func (_q *TrustCenterQuery) QueryWatermarkConfig() *TrustCenterWatermarkConfigQuery {
+	query := (&TrustCenterWatermarkConfigClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(trustcenter.Table, trustcenter.FieldID, selector),
+			sqlgraph.To(trustcenterwatermarkconfig.Table, trustcenterwatermarkconfig.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, trustcenter.WatermarkConfigTable, trustcenter.WatermarkConfigColumn),
+		)
+		schemaConfig := _q.schemaConfig
+		step.To.Schema = schemaConfig.TrustCenterWatermarkConfig
+		step.Edge.Schema = schemaConfig.TrustCenterWatermarkConfig
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
@@ -452,6 +479,7 @@ func (_q *TrustCenterQuery) Clone() *TrustCenterQuery {
 		withOwner:                    _q.withOwner.Clone(),
 		withCustomDomain:             _q.withCustomDomain.Clone(),
 		withSetting:                  _q.withSetting.Clone(),
+		withWatermarkConfig:          _q.withWatermarkConfig.Clone(),
 		withTrustCenterSubprocessors: _q.withTrustCenterSubprocessors.Clone(),
 		withTrustCenterDocs:          _q.withTrustCenterDocs.Clone(),
 		withTrustCenterCompliances:   _q.withTrustCenterCompliances.Clone(),
@@ -493,6 +521,17 @@ func (_q *TrustCenterQuery) WithSetting(opts ...func(*TrustCenterSettingQuery)) 
 		opt(query)
 	}
 	_q.withSetting = query
+	return _q
+}
+
+// WithWatermarkConfig tells the query-builder to eager-load the nodes that are connected to
+// the "watermark_config" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *TrustCenterQuery) WithWatermarkConfig(opts ...func(*TrustCenterWatermarkConfigQuery)) *TrustCenterQuery {
+	query := (&TrustCenterWatermarkConfigClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withWatermarkConfig = query
 	return _q
 }
 
@@ -624,10 +663,11 @@ func (_q *TrustCenterQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 	var (
 		nodes       = []*TrustCenter{}
 		_spec       = _q.querySpec()
-		loadedTypes = [7]bool{
+		loadedTypes = [8]bool{
 			_q.withOwner != nil,
 			_q.withCustomDomain != nil,
 			_q.withSetting != nil,
+			_q.withWatermarkConfig != nil,
 			_q.withTrustCenterSubprocessors != nil,
 			_q.withTrustCenterDocs != nil,
 			_q.withTrustCenterCompliances != nil,
@@ -672,6 +712,12 @@ func (_q *TrustCenterQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 	if query := _q.withSetting; query != nil {
 		if err := _q.loadSetting(ctx, query, nodes, nil,
 			func(n *TrustCenter, e *TrustCenterSetting) { n.Edges.Setting = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withWatermarkConfig; query != nil {
+		if err := _q.loadWatermarkConfig(ctx, query, nodes, nil,
+			func(n *TrustCenter, e *TrustCenterWatermarkConfig) { n.Edges.WatermarkConfig = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -813,6 +859,33 @@ func (_q *TrustCenterQuery) loadSetting(ctx context.Context, query *TrustCenterS
 	}
 	query.Where(predicate.TrustCenterSetting(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(trustcenter.SettingColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.TrustCenterID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "trust_center_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (_q *TrustCenterQuery) loadWatermarkConfig(ctx context.Context, query *TrustCenterWatermarkConfigQuery, nodes []*TrustCenter, init func(*TrustCenter), assign func(*TrustCenter, *TrustCenterWatermarkConfig)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[string]*TrustCenter)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(trustcenterwatermarkconfig.FieldTrustCenterID)
+	}
+	query.Where(predicate.TrustCenterWatermarkConfig(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(trustcenter.WatermarkConfigColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {

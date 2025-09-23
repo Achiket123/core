@@ -11825,6 +11825,7 @@ type CreateTrustCenterInput struct {
 	OwnerID                    *string
 	CustomDomainID             *string
 	SettingID                  *string
+	WatermarkConfigID          *string
 	TrustCenterSubprocessorIDs []string
 	TrustCenterDocIDs          []string
 	TrustCenterComplianceIDs   []string
@@ -11844,6 +11845,9 @@ func (i *CreateTrustCenterInput) Mutate(m *TrustCenterMutation) {
 	}
 	if v := i.SettingID; v != nil {
 		m.SetSettingID(*v)
+	}
+	if v := i.WatermarkConfigID; v != nil {
+		m.SetWatermarkConfigID(*v)
 	}
 	if v := i.TrustCenterSubprocessorIDs; len(v) > 0 {
 		m.AddTrustCenterSubprocessorIDs(v...)
@@ -11876,6 +11880,8 @@ type UpdateTrustCenterInput struct {
 	CustomDomainID                   *string
 	ClearSetting                     bool
 	SettingID                        *string
+	ClearWatermarkConfig             bool
+	WatermarkConfigID                *string
 	ClearTrustCenterSubprocessors    bool
 	AddTrustCenterSubprocessorIDs    []string
 	RemoveTrustCenterSubprocessorIDs []string
@@ -11918,6 +11924,12 @@ func (i *UpdateTrustCenterInput) Mutate(m *TrustCenterMutation) {
 	}
 	if v := i.SettingID; v != nil {
 		m.SetSettingID(*v)
+	}
+	if i.ClearWatermarkConfig {
+		m.ClearWatermarkConfig()
+	}
+	if v := i.WatermarkConfigID; v != nil {
+		m.SetWatermarkConfigID(*v)
 	}
 	if i.ClearTrustCenterSubprocessors {
 		m.ClearTrustCenterSubprocessors()
@@ -12421,10 +12433,42 @@ func (c *TrustCenterSubprocessorUpdateOne) SetInput(i UpdateTrustCenterSubproces
 
 // CreateTrustCenterWatermarkConfigInput represents a mutation input for creating trustcenterwatermarkconfigs.
 type CreateTrustCenterWatermarkConfigInput struct {
+	Text          *string
+	FontSize      *float64
+	Opacity       *float64
+	Rotation      *float64
+	Color         *string
+	Font          *string
+	TrustCenterID *string
+	FileID        *string
 }
 
 // Mutate applies the CreateTrustCenterWatermarkConfigInput on the TrustCenterWatermarkConfigMutation builder.
 func (i *CreateTrustCenterWatermarkConfigInput) Mutate(m *TrustCenterWatermarkConfigMutation) {
+	if v := i.Text; v != nil {
+		m.SetText(*v)
+	}
+	if v := i.FontSize; v != nil {
+		m.SetFontSize(*v)
+	}
+	if v := i.Opacity; v != nil {
+		m.SetOpacity(*v)
+	}
+	if v := i.Rotation; v != nil {
+		m.SetRotation(*v)
+	}
+	if v := i.Color; v != nil {
+		m.SetColor(*v)
+	}
+	if v := i.Font; v != nil {
+		m.SetFont(*v)
+	}
+	if v := i.TrustCenterID; v != nil {
+		m.SetTrustCenterID(*v)
+	}
+	if v := i.FileID; v != nil {
+		m.SetFileID(*v)
+	}
 }
 
 // SetInput applies the change-set in the CreateTrustCenterWatermarkConfigInput on the TrustCenterWatermarkConfigCreate builder.
@@ -12435,10 +12479,74 @@ func (c *TrustCenterWatermarkConfigCreate) SetInput(i CreateTrustCenterWatermark
 
 // UpdateTrustCenterWatermarkConfigInput represents a mutation input for updating trustcenterwatermarkconfigs.
 type UpdateTrustCenterWatermarkConfigInput struct {
+	ClearText        bool
+	Text             *string
+	ClearFontSize    bool
+	FontSize         *float64
+	ClearOpacity     bool
+	Opacity          *float64
+	ClearRotation    bool
+	Rotation         *float64
+	ClearColor       bool
+	Color            *string
+	ClearFont        bool
+	Font             *string
+	ClearTrustCenter bool
+	TrustCenterID    *string
+	ClearFile        bool
+	FileID           *string
 }
 
 // Mutate applies the UpdateTrustCenterWatermarkConfigInput on the TrustCenterWatermarkConfigMutation builder.
 func (i *UpdateTrustCenterWatermarkConfigInput) Mutate(m *TrustCenterWatermarkConfigMutation) {
+	if i.ClearText {
+		m.ClearText()
+	}
+	if v := i.Text; v != nil {
+		m.SetText(*v)
+	}
+	if i.ClearFontSize {
+		m.ClearFontSize()
+	}
+	if v := i.FontSize; v != nil {
+		m.SetFontSize(*v)
+	}
+	if i.ClearOpacity {
+		m.ClearOpacity()
+	}
+	if v := i.Opacity; v != nil {
+		m.SetOpacity(*v)
+	}
+	if i.ClearRotation {
+		m.ClearRotation()
+	}
+	if v := i.Rotation; v != nil {
+		m.SetRotation(*v)
+	}
+	if i.ClearColor {
+		m.ClearColor()
+	}
+	if v := i.Color; v != nil {
+		m.SetColor(*v)
+	}
+	if i.ClearFont {
+		m.ClearFont()
+	}
+	if v := i.Font; v != nil {
+		m.SetFont(*v)
+	}
+	if i.ClearTrustCenter {
+		m.ClearTrustCenter()
+	}
+	if v := i.TrustCenterID; v != nil {
+		m.SetTrustCenterID(*v)
+	}
+	if i.ClearFile {
+		m.ClearFile()
+	}
+	if v := i.FileID; v != nil {
+		m.SetFileID(*v)
+	}
 }
 
 // SetInput applies the change-set in the UpdateTrustCenterWatermarkConfigInput on the TrustCenterWatermarkConfigUpdate builder.

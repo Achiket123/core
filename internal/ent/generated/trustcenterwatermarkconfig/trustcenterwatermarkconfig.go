@@ -7,6 +7,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -26,8 +27,42 @@ const (
 	FieldDeletedAt = "deleted_at"
 	// FieldDeletedBy holds the string denoting the deleted_by field in the database.
 	FieldDeletedBy = "deleted_by"
+	// FieldTrustCenterID holds the string denoting the trust_center_id field in the database.
+	FieldTrustCenterID = "trust_center_id"
+	// FieldLogoID holds the string denoting the logo_id field in the database.
+	FieldLogoID = "logo_id"
+	// FieldText holds the string denoting the text field in the database.
+	FieldText = "text"
+	// FieldFontSize holds the string denoting the font_size field in the database.
+	FieldFontSize = "font_size"
+	// FieldOpacity holds the string denoting the opacity field in the database.
+	FieldOpacity = "opacity"
+	// FieldRotation holds the string denoting the rotation field in the database.
+	FieldRotation = "rotation"
+	// FieldColor holds the string denoting the color field in the database.
+	FieldColor = "color"
+	// FieldFont holds the string denoting the font field in the database.
+	FieldFont = "font"
+	// EdgeTrustCenter holds the string denoting the trust_center edge name in mutations.
+	EdgeTrustCenter = "trust_center"
+	// EdgeFile holds the string denoting the file edge name in mutations.
+	EdgeFile = "file"
 	// Table holds the table name of the trustcenterwatermarkconfig in the database.
 	Table = "trust_center_watermark_configs"
+	// TrustCenterTable is the table that holds the trust_center relation/edge.
+	TrustCenterTable = "trust_center_watermark_configs"
+	// TrustCenterInverseTable is the table name for the TrustCenter entity.
+	// It exists in this package in order to avoid circular dependency with the "trustcenter" package.
+	TrustCenterInverseTable = "trust_centers"
+	// TrustCenterColumn is the table column denoting the trust_center relation/edge.
+	TrustCenterColumn = "trust_center_id"
+	// FileTable is the table that holds the file relation/edge.
+	FileTable = "trust_center_watermark_configs"
+	// FileInverseTable is the table name for the File entity.
+	// It exists in this package in order to avoid circular dependency with the "file" package.
+	FileInverseTable = "files"
+	// FileColumn is the table column denoting the file relation/edge.
+	FileColumn = "logo_id"
 )
 
 // Columns holds all SQL columns for trustcenterwatermarkconfig fields.
@@ -39,6 +74,14 @@ var Columns = []string{
 	FieldUpdatedBy,
 	FieldDeletedAt,
 	FieldDeletedBy,
+	FieldTrustCenterID,
+	FieldLogoID,
+	FieldText,
+	FieldFontSize,
+	FieldOpacity,
+	FieldRotation,
+	FieldColor,
+	FieldFont,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -57,8 +100,8 @@ func ValidColumn(column string) bool {
 //
 //	import _ "github.com/theopenlane/core/internal/ent/generated/runtime"
 var (
-	Hooks        [4]ent.Hook
-	Interceptors [2]ent.Interceptor
+	Hooks        [5]ent.Hook
+	Interceptors [3]ent.Interceptor
 	Policy       ent.Policy
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
@@ -66,6 +109,18 @@ var (
 	DefaultUpdatedAt func() time.Time
 	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
 	UpdateDefaultUpdatedAt func() time.Time
+	// TrustCenterIDValidator is a validator for the "trust_center_id" field. It is called by the builders before save.
+	TrustCenterIDValidator func(string) error
+	// DefaultFontSize holds the default value on creation for the "font_size" field.
+	DefaultFontSize float64
+	// DefaultOpacity holds the default value on creation for the "opacity" field.
+	DefaultOpacity float64
+	// OpacityValidator is a validator for the "opacity" field. It is called by the builders before save.
+	OpacityValidator func(float64) error
+	// DefaultRotation holds the default value on creation for the "rotation" field.
+	DefaultRotation float64
+	// RotationValidator is a validator for the "rotation" field. It is called by the builders before save.
+	RotationValidator func(float64) error
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() string
 )
@@ -106,4 +161,72 @@ func ByDeletedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByDeletedBy orders the results by the deleted_by field.
 func ByDeletedBy(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDeletedBy, opts...).ToFunc()
+}
+
+// ByTrustCenterID orders the results by the trust_center_id field.
+func ByTrustCenterID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTrustCenterID, opts...).ToFunc()
+}
+
+// ByLogoID orders the results by the logo_id field.
+func ByLogoID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLogoID, opts...).ToFunc()
+}
+
+// ByText orders the results by the text field.
+func ByText(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldText, opts...).ToFunc()
+}
+
+// ByFontSize orders the results by the font_size field.
+func ByFontSize(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldFontSize, opts...).ToFunc()
+}
+
+// ByOpacity orders the results by the opacity field.
+func ByOpacity(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldOpacity, opts...).ToFunc()
+}
+
+// ByRotation orders the results by the rotation field.
+func ByRotation(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRotation, opts...).ToFunc()
+}
+
+// ByColor orders the results by the color field.
+func ByColor(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldColor, opts...).ToFunc()
+}
+
+// ByFont orders the results by the font field.
+func ByFont(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldFont, opts...).ToFunc()
+}
+
+// ByTrustCenterField orders the results by trust_center field.
+func ByTrustCenterField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newTrustCenterStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByFileField orders the results by file field.
+func ByFileField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newFileStep(), sql.OrderByField(field, opts...))
+	}
+}
+func newTrustCenterStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(TrustCenterInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2O, true, TrustCenterTable, TrustCenterColumn),
+	)
+}
+func newFileStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(FileInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, FileTable, FileColumn),
+	)
 }

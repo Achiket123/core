@@ -35,6 +35,22 @@ const (
 	FieldDeletedAt = "deleted_at"
 	// FieldDeletedBy holds the string denoting the deleted_by field in the database.
 	FieldDeletedBy = "deleted_by"
+	// FieldTrustCenterID holds the string denoting the trust_center_id field in the database.
+	FieldTrustCenterID = "trust_center_id"
+	// FieldLogoID holds the string denoting the logo_id field in the database.
+	FieldLogoID = "logo_id"
+	// FieldText holds the string denoting the text field in the database.
+	FieldText = "text"
+	// FieldFontSize holds the string denoting the font_size field in the database.
+	FieldFontSize = "font_size"
+	// FieldOpacity holds the string denoting the opacity field in the database.
+	FieldOpacity = "opacity"
+	// FieldRotation holds the string denoting the rotation field in the database.
+	FieldRotation = "rotation"
+	// FieldColor holds the string denoting the color field in the database.
+	FieldColor = "color"
+	// FieldFont holds the string denoting the font field in the database.
+	FieldFont = "font"
 	// Table holds the table name of the trustcenterwatermarkconfighistory in the database.
 	Table = "trust_center_watermark_config_history"
 )
@@ -51,6 +67,14 @@ var Columns = []string{
 	FieldUpdatedBy,
 	FieldDeletedAt,
 	FieldDeletedBy,
+	FieldTrustCenterID,
+	FieldLogoID,
+	FieldText,
+	FieldFontSize,
+	FieldOpacity,
+	FieldRotation,
+	FieldColor,
+	FieldFont,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -80,6 +104,12 @@ var (
 	DefaultUpdatedAt func() time.Time
 	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
 	UpdateDefaultUpdatedAt func() time.Time
+	// DefaultFontSize holds the default value on creation for the "font_size" field.
+	DefaultFontSize float64
+	// DefaultOpacity holds the default value on creation for the "opacity" field.
+	DefaultOpacity float64
+	// DefaultRotation holds the default value on creation for the "rotation" field.
+	DefaultRotation float64
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() string
 )
@@ -145,6 +175,46 @@ func ByDeletedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByDeletedBy orders the results by the deleted_by field.
 func ByDeletedBy(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDeletedBy, opts...).ToFunc()
+}
+
+// ByTrustCenterID orders the results by the trust_center_id field.
+func ByTrustCenterID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTrustCenterID, opts...).ToFunc()
+}
+
+// ByLogoID orders the results by the logo_id field.
+func ByLogoID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLogoID, opts...).ToFunc()
+}
+
+// ByText orders the results by the text field.
+func ByText(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldText, opts...).ToFunc()
+}
+
+// ByFontSize orders the results by the font_size field.
+func ByFontSize(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldFontSize, opts...).ToFunc()
+}
+
+// ByOpacity orders the results by the opacity field.
+func ByOpacity(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldOpacity, opts...).ToFunc()
+}
+
+// ByRotation orders the results by the rotation field.
+func ByRotation(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRotation, opts...).ToFunc()
+}
+
+// ByColor orders the results by the color field.
+func ByColor(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldColor, opts...).ToFunc()
+}
+
+// ByFont orders the results by the font field.
+func ByFont(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldFont, opts...).ToFunc()
 }
 
 var (

@@ -15,6 +15,7 @@ import (
 	"github.com/theopenlane/core/internal/ent/privacy/policy"
 	"github.com/theopenlane/entx"
 	"github.com/theopenlane/entx/history"
+	"github.com/theopenlane/iam/entfga"
 )
 
 // TrustCenterWatermarkConfigHistory holds the schema definition for the TrustCenterWatermarkConfigHistory entity.
@@ -35,6 +36,11 @@ func (TrustCenterWatermarkConfigHistory) Annotations() []schema.Annotation {
 		},
 		entgql.QueryField(),
 		entgql.RelayConnection(),
+		entfga.Annotations{
+			ObjectType:   "trust_center_watermark_config",
+			IDField:      "Ref",
+			IncludeHooks: false,
+		},
 	}
 }
 
@@ -107,6 +113,6 @@ func (TrustCenterWatermarkConfigHistory) Policy() ent.Policy {
 // Interceptors of the TrustCenterWatermarkConfigHistory
 func (TrustCenterWatermarkConfigHistory) Interceptors() []ent.Interceptor {
 	return []ent.Interceptor{
-		interceptors.HistoryAccess("audit_log_viewer", false, false, ""),
+		interceptors.FilterListQuery(),
 	}
 }

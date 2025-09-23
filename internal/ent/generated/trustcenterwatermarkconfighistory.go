@@ -35,7 +35,23 @@ type TrustCenterWatermarkConfigHistory struct {
 	// DeletedAt holds the value of the "deleted_at" field.
 	DeletedAt time.Time `json:"deleted_at,omitempty"`
 	// DeletedBy holds the value of the "deleted_by" field.
-	DeletedBy    string `json:"deleted_by,omitempty"`
+	DeletedBy string `json:"deleted_by,omitempty"`
+	// ID of the trust center
+	TrustCenterID string `json:"trust_center_id,omitempty"`
+	// ID of the file containing the document
+	LogoID *string `json:"logo_id,omitempty"`
+	// text to watermark the document with
+	Text string `json:"text,omitempty"`
+	// font size of the watermark text
+	FontSize float64 `json:"font_size,omitempty"`
+	// opacity of the watermark text
+	Opacity float64 `json:"opacity,omitempty"`
+	// rotation of the watermark text
+	Rotation float64 `json:"rotation,omitempty"`
+	// color of the watermark text
+	Color string `json:"color,omitempty"`
+	// font of the watermark text
+	Font         string `json:"font,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -46,7 +62,9 @@ func (*TrustCenterWatermarkConfigHistory) scanValues(columns []string) ([]any, e
 		switch columns[i] {
 		case trustcenterwatermarkconfighistory.FieldOperation:
 			values[i] = new(history.OpType)
-		case trustcenterwatermarkconfighistory.FieldID, trustcenterwatermarkconfighistory.FieldRef, trustcenterwatermarkconfighistory.FieldCreatedBy, trustcenterwatermarkconfighistory.FieldUpdatedBy, trustcenterwatermarkconfighistory.FieldDeletedBy:
+		case trustcenterwatermarkconfighistory.FieldFontSize, trustcenterwatermarkconfighistory.FieldOpacity, trustcenterwatermarkconfighistory.FieldRotation:
+			values[i] = new(sql.NullFloat64)
+		case trustcenterwatermarkconfighistory.FieldID, trustcenterwatermarkconfighistory.FieldRef, trustcenterwatermarkconfighistory.FieldCreatedBy, trustcenterwatermarkconfighistory.FieldUpdatedBy, trustcenterwatermarkconfighistory.FieldDeletedBy, trustcenterwatermarkconfighistory.FieldTrustCenterID, trustcenterwatermarkconfighistory.FieldLogoID, trustcenterwatermarkconfighistory.FieldText, trustcenterwatermarkconfighistory.FieldColor, trustcenterwatermarkconfighistory.FieldFont:
 			values[i] = new(sql.NullString)
 		case trustcenterwatermarkconfighistory.FieldHistoryTime, trustcenterwatermarkconfighistory.FieldCreatedAt, trustcenterwatermarkconfighistory.FieldUpdatedAt, trustcenterwatermarkconfighistory.FieldDeletedAt:
 			values[i] = new(sql.NullTime)
@@ -125,6 +143,55 @@ func (_m *TrustCenterWatermarkConfigHistory) assignValues(columns []string, valu
 			} else if value.Valid {
 				_m.DeletedBy = value.String
 			}
+		case trustcenterwatermarkconfighistory.FieldTrustCenterID:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field trust_center_id", values[i])
+			} else if value.Valid {
+				_m.TrustCenterID = value.String
+			}
+		case trustcenterwatermarkconfighistory.FieldLogoID:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field logo_id", values[i])
+			} else if value.Valid {
+				_m.LogoID = new(string)
+				*_m.LogoID = value.String
+			}
+		case trustcenterwatermarkconfighistory.FieldText:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field text", values[i])
+			} else if value.Valid {
+				_m.Text = value.String
+			}
+		case trustcenterwatermarkconfighistory.FieldFontSize:
+			if value, ok := values[i].(*sql.NullFloat64); !ok {
+				return fmt.Errorf("unexpected type %T for field font_size", values[i])
+			} else if value.Valid {
+				_m.FontSize = value.Float64
+			}
+		case trustcenterwatermarkconfighistory.FieldOpacity:
+			if value, ok := values[i].(*sql.NullFloat64); !ok {
+				return fmt.Errorf("unexpected type %T for field opacity", values[i])
+			} else if value.Valid {
+				_m.Opacity = value.Float64
+			}
+		case trustcenterwatermarkconfighistory.FieldRotation:
+			if value, ok := values[i].(*sql.NullFloat64); !ok {
+				return fmt.Errorf("unexpected type %T for field rotation", values[i])
+			} else if value.Valid {
+				_m.Rotation = value.Float64
+			}
+		case trustcenterwatermarkconfighistory.FieldColor:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field color", values[i])
+			} else if value.Valid {
+				_m.Color = value.String
+			}
+		case trustcenterwatermarkconfighistory.FieldFont:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field font", values[i])
+			} else if value.Valid {
+				_m.Font = value.String
+			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -187,6 +254,32 @@ func (_m *TrustCenterWatermarkConfigHistory) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("deleted_by=")
 	builder.WriteString(_m.DeletedBy)
+	builder.WriteString(", ")
+	builder.WriteString("trust_center_id=")
+	builder.WriteString(_m.TrustCenterID)
+	builder.WriteString(", ")
+	if v := _m.LogoID; v != nil {
+		builder.WriteString("logo_id=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	builder.WriteString("text=")
+	builder.WriteString(_m.Text)
+	builder.WriteString(", ")
+	builder.WriteString("font_size=")
+	builder.WriteString(fmt.Sprintf("%v", _m.FontSize))
+	builder.WriteString(", ")
+	builder.WriteString("opacity=")
+	builder.WriteString(fmt.Sprintf("%v", _m.Opacity))
+	builder.WriteString(", ")
+	builder.WriteString("rotation=")
+	builder.WriteString(fmt.Sprintf("%v", _m.Rotation))
+	builder.WriteString(", ")
+	builder.WriteString("color=")
+	builder.WriteString(_m.Color)
+	builder.WriteString(", ")
+	builder.WriteString("font=")
+	builder.WriteString(_m.Font)
 	builder.WriteByte(')')
 	return builder.String()
 }

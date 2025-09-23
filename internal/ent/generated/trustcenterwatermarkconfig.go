@@ -9,6 +9,8 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/theopenlane/core/internal/ent/generated/file"
+	"github.com/theopenlane/core/internal/ent/generated/trustcenter"
 	"github.com/theopenlane/core/internal/ent/generated/trustcenterwatermarkconfig"
 )
 
@@ -28,8 +30,62 @@ type TrustCenterWatermarkConfig struct {
 	// DeletedAt holds the value of the "deleted_at" field.
 	DeletedAt time.Time `json:"deleted_at,omitempty"`
 	// DeletedBy holds the value of the "deleted_by" field.
-	DeletedBy    string `json:"deleted_by,omitempty"`
+	DeletedBy string `json:"deleted_by,omitempty"`
+	// ID of the trust center
+	TrustCenterID string `json:"trust_center_id,omitempty"`
+	// ID of the file containing the document
+	LogoID *string `json:"logo_id,omitempty"`
+	// text to watermark the document with
+	Text string `json:"text,omitempty"`
+	// font size of the watermark text
+	FontSize float64 `json:"font_size,omitempty"`
+	// opacity of the watermark text
+	Opacity float64 `json:"opacity,omitempty"`
+	// rotation of the watermark text
+	Rotation float64 `json:"rotation,omitempty"`
+	// color of the watermark text
+	Color string `json:"color,omitempty"`
+	// font of the watermark text
+	Font string `json:"font,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the TrustCenterWatermarkConfigQuery when eager-loading is set.
+	Edges        TrustCenterWatermarkConfigEdges `json:"edges"`
 	selectValues sql.SelectValues
+}
+
+// TrustCenterWatermarkConfigEdges holds the relations/edges for other nodes in the graph.
+type TrustCenterWatermarkConfigEdges struct {
+	// TrustCenter holds the value of the trust_center edge.
+	TrustCenter *TrustCenter `json:"trust_center,omitempty"`
+	// the file containing the image for watermarking, if applicable
+	File *File `json:"file,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [2]bool
+	// totalCount holds the count of the edges above.
+	totalCount [2]map[string]int
+}
+
+// TrustCenterOrErr returns the TrustCenter value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e TrustCenterWatermarkConfigEdges) TrustCenterOrErr() (*TrustCenter, error) {
+	if e.TrustCenter != nil {
+		return e.TrustCenter, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: trustcenter.Label}
+	}
+	return nil, &NotLoadedError{edge: "trust_center"}
+}
+
+// FileOrErr returns the File value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e TrustCenterWatermarkConfigEdges) FileOrErr() (*File, error) {
+	if e.File != nil {
+		return e.File, nil
+	} else if e.loadedTypes[1] {
+		return nil, &NotFoundError{label: file.Label}
+	}
+	return nil, &NotLoadedError{edge: "file"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -37,7 +93,9 @@ func (*TrustCenterWatermarkConfig) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case trustcenterwatermarkconfig.FieldID, trustcenterwatermarkconfig.FieldCreatedBy, trustcenterwatermarkconfig.FieldUpdatedBy, trustcenterwatermarkconfig.FieldDeletedBy:
+		case trustcenterwatermarkconfig.FieldFontSize, trustcenterwatermarkconfig.FieldOpacity, trustcenterwatermarkconfig.FieldRotation:
+			values[i] = new(sql.NullFloat64)
+		case trustcenterwatermarkconfig.FieldID, trustcenterwatermarkconfig.FieldCreatedBy, trustcenterwatermarkconfig.FieldUpdatedBy, trustcenterwatermarkconfig.FieldDeletedBy, trustcenterwatermarkconfig.FieldTrustCenterID, trustcenterwatermarkconfig.FieldLogoID, trustcenterwatermarkconfig.FieldText, trustcenterwatermarkconfig.FieldColor, trustcenterwatermarkconfig.FieldFont:
 			values[i] = new(sql.NullString)
 		case trustcenterwatermarkconfig.FieldCreatedAt, trustcenterwatermarkconfig.FieldUpdatedAt, trustcenterwatermarkconfig.FieldDeletedAt:
 			values[i] = new(sql.NullTime)
@@ -98,6 +156,55 @@ func (_m *TrustCenterWatermarkConfig) assignValues(columns []string, values []an
 			} else if value.Valid {
 				_m.DeletedBy = value.String
 			}
+		case trustcenterwatermarkconfig.FieldTrustCenterID:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field trust_center_id", values[i])
+			} else if value.Valid {
+				_m.TrustCenterID = value.String
+			}
+		case trustcenterwatermarkconfig.FieldLogoID:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field logo_id", values[i])
+			} else if value.Valid {
+				_m.LogoID = new(string)
+				*_m.LogoID = value.String
+			}
+		case trustcenterwatermarkconfig.FieldText:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field text", values[i])
+			} else if value.Valid {
+				_m.Text = value.String
+			}
+		case trustcenterwatermarkconfig.FieldFontSize:
+			if value, ok := values[i].(*sql.NullFloat64); !ok {
+				return fmt.Errorf("unexpected type %T for field font_size", values[i])
+			} else if value.Valid {
+				_m.FontSize = value.Float64
+			}
+		case trustcenterwatermarkconfig.FieldOpacity:
+			if value, ok := values[i].(*sql.NullFloat64); !ok {
+				return fmt.Errorf("unexpected type %T for field opacity", values[i])
+			} else if value.Valid {
+				_m.Opacity = value.Float64
+			}
+		case trustcenterwatermarkconfig.FieldRotation:
+			if value, ok := values[i].(*sql.NullFloat64); !ok {
+				return fmt.Errorf("unexpected type %T for field rotation", values[i])
+			} else if value.Valid {
+				_m.Rotation = value.Float64
+			}
+		case trustcenterwatermarkconfig.FieldColor:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field color", values[i])
+			} else if value.Valid {
+				_m.Color = value.String
+			}
+		case trustcenterwatermarkconfig.FieldFont:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field font", values[i])
+			} else if value.Valid {
+				_m.Font = value.String
+			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -109,6 +216,16 @@ func (_m *TrustCenterWatermarkConfig) assignValues(columns []string, values []an
 // This includes values selected through modifiers, order, etc.
 func (_m *TrustCenterWatermarkConfig) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
+}
+
+// QueryTrustCenter queries the "trust_center" edge of the TrustCenterWatermarkConfig entity.
+func (_m *TrustCenterWatermarkConfig) QueryTrustCenter() *TrustCenterQuery {
+	return NewTrustCenterWatermarkConfigClient(_m.config).QueryTrustCenter(_m)
+}
+
+// QueryFile queries the "file" edge of the TrustCenterWatermarkConfig entity.
+func (_m *TrustCenterWatermarkConfig) QueryFile() *FileQuery {
+	return NewTrustCenterWatermarkConfigClient(_m.config).QueryFile(_m)
 }
 
 // Update returns a builder for updating this TrustCenterWatermarkConfig.
@@ -151,6 +268,32 @@ func (_m *TrustCenterWatermarkConfig) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("deleted_by=")
 	builder.WriteString(_m.DeletedBy)
+	builder.WriteString(", ")
+	builder.WriteString("trust_center_id=")
+	builder.WriteString(_m.TrustCenterID)
+	builder.WriteString(", ")
+	if v := _m.LogoID; v != nil {
+		builder.WriteString("logo_id=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	builder.WriteString("text=")
+	builder.WriteString(_m.Text)
+	builder.WriteString(", ")
+	builder.WriteString("font_size=")
+	builder.WriteString(fmt.Sprintf("%v", _m.FontSize))
+	builder.WriteString(", ")
+	builder.WriteString("opacity=")
+	builder.WriteString(fmt.Sprintf("%v", _m.Opacity))
+	builder.WriteString(", ")
+	builder.WriteString("rotation=")
+	builder.WriteString(fmt.Sprintf("%v", _m.Rotation))
+	builder.WriteString(", ")
+	builder.WriteString("color=")
+	builder.WriteString(_m.Color)
+	builder.WriteString(", ")
+	builder.WriteString("font=")
+	builder.WriteString(_m.Font)
 	builder.WriteByte(')')
 	return builder.String()
 }

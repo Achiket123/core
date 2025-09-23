@@ -103,6 +103,187 @@ func (_u *TrustCenterWatermarkConfigHistoryUpdate) ClearDeletedBy() *TrustCenter
 	return _u
 }
 
+// SetTrustCenterID sets the "trust_center_id" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdate) SetTrustCenterID(v string) *TrustCenterWatermarkConfigHistoryUpdate {
+	_u.mutation.SetTrustCenterID(v)
+	return _u
+}
+
+// SetNillableTrustCenterID sets the "trust_center_id" field if the given value is not nil.
+func (_u *TrustCenterWatermarkConfigHistoryUpdate) SetNillableTrustCenterID(v *string) *TrustCenterWatermarkConfigHistoryUpdate {
+	if v != nil {
+		_u.SetTrustCenterID(*v)
+	}
+	return _u
+}
+
+// ClearTrustCenterID clears the value of the "trust_center_id" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdate) ClearTrustCenterID() *TrustCenterWatermarkConfigHistoryUpdate {
+	_u.mutation.ClearTrustCenterID()
+	return _u
+}
+
+// SetLogoID sets the "logo_id" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdate) SetLogoID(v string) *TrustCenterWatermarkConfigHistoryUpdate {
+	_u.mutation.SetLogoID(v)
+	return _u
+}
+
+// SetNillableLogoID sets the "logo_id" field if the given value is not nil.
+func (_u *TrustCenterWatermarkConfigHistoryUpdate) SetNillableLogoID(v *string) *TrustCenterWatermarkConfigHistoryUpdate {
+	if v != nil {
+		_u.SetLogoID(*v)
+	}
+	return _u
+}
+
+// ClearLogoID clears the value of the "logo_id" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdate) ClearLogoID() *TrustCenterWatermarkConfigHistoryUpdate {
+	_u.mutation.ClearLogoID()
+	return _u
+}
+
+// SetText sets the "text" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdate) SetText(v string) *TrustCenterWatermarkConfigHistoryUpdate {
+	_u.mutation.SetText(v)
+	return _u
+}
+
+// SetNillableText sets the "text" field if the given value is not nil.
+func (_u *TrustCenterWatermarkConfigHistoryUpdate) SetNillableText(v *string) *TrustCenterWatermarkConfigHistoryUpdate {
+	if v != nil {
+		_u.SetText(*v)
+	}
+	return _u
+}
+
+// ClearText clears the value of the "text" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdate) ClearText() *TrustCenterWatermarkConfigHistoryUpdate {
+	_u.mutation.ClearText()
+	return _u
+}
+
+// SetFontSize sets the "font_size" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdate) SetFontSize(v float64) *TrustCenterWatermarkConfigHistoryUpdate {
+	_u.mutation.ResetFontSize()
+	_u.mutation.SetFontSize(v)
+	return _u
+}
+
+// SetNillableFontSize sets the "font_size" field if the given value is not nil.
+func (_u *TrustCenterWatermarkConfigHistoryUpdate) SetNillableFontSize(v *float64) *TrustCenterWatermarkConfigHistoryUpdate {
+	if v != nil {
+		_u.SetFontSize(*v)
+	}
+	return _u
+}
+
+// AddFontSize adds value to the "font_size" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdate) AddFontSize(v float64) *TrustCenterWatermarkConfigHistoryUpdate {
+	_u.mutation.AddFontSize(v)
+	return _u
+}
+
+// ClearFontSize clears the value of the "font_size" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdate) ClearFontSize() *TrustCenterWatermarkConfigHistoryUpdate {
+	_u.mutation.ClearFontSize()
+	return _u
+}
+
+// SetOpacity sets the "opacity" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdate) SetOpacity(v float64) *TrustCenterWatermarkConfigHistoryUpdate {
+	_u.mutation.ResetOpacity()
+	_u.mutation.SetOpacity(v)
+	return _u
+}
+
+// SetNillableOpacity sets the "opacity" field if the given value is not nil.
+func (_u *TrustCenterWatermarkConfigHistoryUpdate) SetNillableOpacity(v *float64) *TrustCenterWatermarkConfigHistoryUpdate {
+	if v != nil {
+		_u.SetOpacity(*v)
+	}
+	return _u
+}
+
+// AddOpacity adds value to the "opacity" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdate) AddOpacity(v float64) *TrustCenterWatermarkConfigHistoryUpdate {
+	_u.mutation.AddOpacity(v)
+	return _u
+}
+
+// ClearOpacity clears the value of the "opacity" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdate) ClearOpacity() *TrustCenterWatermarkConfigHistoryUpdate {
+	_u.mutation.ClearOpacity()
+	return _u
+}
+
+// SetRotation sets the "rotation" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdate) SetRotation(v float64) *TrustCenterWatermarkConfigHistoryUpdate {
+	_u.mutation.ResetRotation()
+	_u.mutation.SetRotation(v)
+	return _u
+}
+
+// SetNillableRotation sets the "rotation" field if the given value is not nil.
+func (_u *TrustCenterWatermarkConfigHistoryUpdate) SetNillableRotation(v *float64) *TrustCenterWatermarkConfigHistoryUpdate {
+	if v != nil {
+		_u.SetRotation(*v)
+	}
+	return _u
+}
+
+// AddRotation adds value to the "rotation" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdate) AddRotation(v float64) *TrustCenterWatermarkConfigHistoryUpdate {
+	_u.mutation.AddRotation(v)
+	return _u
+}
+
+// ClearRotation clears the value of the "rotation" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdate) ClearRotation() *TrustCenterWatermarkConfigHistoryUpdate {
+	_u.mutation.ClearRotation()
+	return _u
+}
+
+// SetColor sets the "color" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdate) SetColor(v string) *TrustCenterWatermarkConfigHistoryUpdate {
+	_u.mutation.SetColor(v)
+	return _u
+}
+
+// SetNillableColor sets the "color" field if the given value is not nil.
+func (_u *TrustCenterWatermarkConfigHistoryUpdate) SetNillableColor(v *string) *TrustCenterWatermarkConfigHistoryUpdate {
+	if v != nil {
+		_u.SetColor(*v)
+	}
+	return _u
+}
+
+// ClearColor clears the value of the "color" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdate) ClearColor() *TrustCenterWatermarkConfigHistoryUpdate {
+	_u.mutation.ClearColor()
+	return _u
+}
+
+// SetFont sets the "font" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdate) SetFont(v string) *TrustCenterWatermarkConfigHistoryUpdate {
+	_u.mutation.SetFont(v)
+	return _u
+}
+
+// SetNillableFont sets the "font" field if the given value is not nil.
+func (_u *TrustCenterWatermarkConfigHistoryUpdate) SetNillableFont(v *string) *TrustCenterWatermarkConfigHistoryUpdate {
+	if v != nil {
+		_u.SetFont(*v)
+	}
+	return _u
+}
+
+// ClearFont clears the value of the "font" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdate) ClearFont() *TrustCenterWatermarkConfigHistoryUpdate {
+	_u.mutation.ClearFont()
+	return _u
+}
+
 // Mutation returns the TrustCenterWatermarkConfigHistoryMutation object of the builder.
 func (_u *TrustCenterWatermarkConfigHistoryUpdate) Mutation() *TrustCenterWatermarkConfigHistoryMutation {
 	return _u.mutation
@@ -198,6 +379,63 @@ func (_u *TrustCenterWatermarkConfigHistoryUpdate) sqlSave(ctx context.Context) 
 	if _u.mutation.DeletedByCleared() {
 		_spec.ClearField(trustcenterwatermarkconfighistory.FieldDeletedBy, field.TypeString)
 	}
+	if value, ok := _u.mutation.TrustCenterID(); ok {
+		_spec.SetField(trustcenterwatermarkconfighistory.FieldTrustCenterID, field.TypeString, value)
+	}
+	if _u.mutation.TrustCenterIDCleared() {
+		_spec.ClearField(trustcenterwatermarkconfighistory.FieldTrustCenterID, field.TypeString)
+	}
+	if value, ok := _u.mutation.LogoID(); ok {
+		_spec.SetField(trustcenterwatermarkconfighistory.FieldLogoID, field.TypeString, value)
+	}
+	if _u.mutation.LogoIDCleared() {
+		_spec.ClearField(trustcenterwatermarkconfighistory.FieldLogoID, field.TypeString)
+	}
+	if value, ok := _u.mutation.Text(); ok {
+		_spec.SetField(trustcenterwatermarkconfighistory.FieldText, field.TypeString, value)
+	}
+	if _u.mutation.TextCleared() {
+		_spec.ClearField(trustcenterwatermarkconfighistory.FieldText, field.TypeString)
+	}
+	if value, ok := _u.mutation.FontSize(); ok {
+		_spec.SetField(trustcenterwatermarkconfighistory.FieldFontSize, field.TypeFloat64, value)
+	}
+	if value, ok := _u.mutation.AddedFontSize(); ok {
+		_spec.AddField(trustcenterwatermarkconfighistory.FieldFontSize, field.TypeFloat64, value)
+	}
+	if _u.mutation.FontSizeCleared() {
+		_spec.ClearField(trustcenterwatermarkconfighistory.FieldFontSize, field.TypeFloat64)
+	}
+	if value, ok := _u.mutation.Opacity(); ok {
+		_spec.SetField(trustcenterwatermarkconfighistory.FieldOpacity, field.TypeFloat64, value)
+	}
+	if value, ok := _u.mutation.AddedOpacity(); ok {
+		_spec.AddField(trustcenterwatermarkconfighistory.FieldOpacity, field.TypeFloat64, value)
+	}
+	if _u.mutation.OpacityCleared() {
+		_spec.ClearField(trustcenterwatermarkconfighistory.FieldOpacity, field.TypeFloat64)
+	}
+	if value, ok := _u.mutation.Rotation(); ok {
+		_spec.SetField(trustcenterwatermarkconfighistory.FieldRotation, field.TypeFloat64, value)
+	}
+	if value, ok := _u.mutation.AddedRotation(); ok {
+		_spec.AddField(trustcenterwatermarkconfighistory.FieldRotation, field.TypeFloat64, value)
+	}
+	if _u.mutation.RotationCleared() {
+		_spec.ClearField(trustcenterwatermarkconfighistory.FieldRotation, field.TypeFloat64)
+	}
+	if value, ok := _u.mutation.Color(); ok {
+		_spec.SetField(trustcenterwatermarkconfighistory.FieldColor, field.TypeString, value)
+	}
+	if _u.mutation.ColorCleared() {
+		_spec.ClearField(trustcenterwatermarkconfighistory.FieldColor, field.TypeString)
+	}
+	if value, ok := _u.mutation.Font(); ok {
+		_spec.SetField(trustcenterwatermarkconfighistory.FieldFont, field.TypeString, value)
+	}
+	if _u.mutation.FontCleared() {
+		_spec.ClearField(trustcenterwatermarkconfighistory.FieldFont, field.TypeString)
+	}
 	_spec.Node.Schema = _u.schemaConfig.TrustCenterWatermarkConfigHistory
 	ctx = internal.NewSchemaConfigContext(ctx, _u.schemaConfig)
 	_spec.AddModifiers(_u.modifiers...)
@@ -291,6 +529,187 @@ func (_u *TrustCenterWatermarkConfigHistoryUpdateOne) SetNillableDeletedBy(v *st
 // ClearDeletedBy clears the value of the "deleted_by" field.
 func (_u *TrustCenterWatermarkConfigHistoryUpdateOne) ClearDeletedBy() *TrustCenterWatermarkConfigHistoryUpdateOne {
 	_u.mutation.ClearDeletedBy()
+	return _u
+}
+
+// SetTrustCenterID sets the "trust_center_id" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdateOne) SetTrustCenterID(v string) *TrustCenterWatermarkConfigHistoryUpdateOne {
+	_u.mutation.SetTrustCenterID(v)
+	return _u
+}
+
+// SetNillableTrustCenterID sets the "trust_center_id" field if the given value is not nil.
+func (_u *TrustCenterWatermarkConfigHistoryUpdateOne) SetNillableTrustCenterID(v *string) *TrustCenterWatermarkConfigHistoryUpdateOne {
+	if v != nil {
+		_u.SetTrustCenterID(*v)
+	}
+	return _u
+}
+
+// ClearTrustCenterID clears the value of the "trust_center_id" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdateOne) ClearTrustCenterID() *TrustCenterWatermarkConfigHistoryUpdateOne {
+	_u.mutation.ClearTrustCenterID()
+	return _u
+}
+
+// SetLogoID sets the "logo_id" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdateOne) SetLogoID(v string) *TrustCenterWatermarkConfigHistoryUpdateOne {
+	_u.mutation.SetLogoID(v)
+	return _u
+}
+
+// SetNillableLogoID sets the "logo_id" field if the given value is not nil.
+func (_u *TrustCenterWatermarkConfigHistoryUpdateOne) SetNillableLogoID(v *string) *TrustCenterWatermarkConfigHistoryUpdateOne {
+	if v != nil {
+		_u.SetLogoID(*v)
+	}
+	return _u
+}
+
+// ClearLogoID clears the value of the "logo_id" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdateOne) ClearLogoID() *TrustCenterWatermarkConfigHistoryUpdateOne {
+	_u.mutation.ClearLogoID()
+	return _u
+}
+
+// SetText sets the "text" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdateOne) SetText(v string) *TrustCenterWatermarkConfigHistoryUpdateOne {
+	_u.mutation.SetText(v)
+	return _u
+}
+
+// SetNillableText sets the "text" field if the given value is not nil.
+func (_u *TrustCenterWatermarkConfigHistoryUpdateOne) SetNillableText(v *string) *TrustCenterWatermarkConfigHistoryUpdateOne {
+	if v != nil {
+		_u.SetText(*v)
+	}
+	return _u
+}
+
+// ClearText clears the value of the "text" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdateOne) ClearText() *TrustCenterWatermarkConfigHistoryUpdateOne {
+	_u.mutation.ClearText()
+	return _u
+}
+
+// SetFontSize sets the "font_size" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdateOne) SetFontSize(v float64) *TrustCenterWatermarkConfigHistoryUpdateOne {
+	_u.mutation.ResetFontSize()
+	_u.mutation.SetFontSize(v)
+	return _u
+}
+
+// SetNillableFontSize sets the "font_size" field if the given value is not nil.
+func (_u *TrustCenterWatermarkConfigHistoryUpdateOne) SetNillableFontSize(v *float64) *TrustCenterWatermarkConfigHistoryUpdateOne {
+	if v != nil {
+		_u.SetFontSize(*v)
+	}
+	return _u
+}
+
+// AddFontSize adds value to the "font_size" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdateOne) AddFontSize(v float64) *TrustCenterWatermarkConfigHistoryUpdateOne {
+	_u.mutation.AddFontSize(v)
+	return _u
+}
+
+// ClearFontSize clears the value of the "font_size" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdateOne) ClearFontSize() *TrustCenterWatermarkConfigHistoryUpdateOne {
+	_u.mutation.ClearFontSize()
+	return _u
+}
+
+// SetOpacity sets the "opacity" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdateOne) SetOpacity(v float64) *TrustCenterWatermarkConfigHistoryUpdateOne {
+	_u.mutation.ResetOpacity()
+	_u.mutation.SetOpacity(v)
+	return _u
+}
+
+// SetNillableOpacity sets the "opacity" field if the given value is not nil.
+func (_u *TrustCenterWatermarkConfigHistoryUpdateOne) SetNillableOpacity(v *float64) *TrustCenterWatermarkConfigHistoryUpdateOne {
+	if v != nil {
+		_u.SetOpacity(*v)
+	}
+	return _u
+}
+
+// AddOpacity adds value to the "opacity" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdateOne) AddOpacity(v float64) *TrustCenterWatermarkConfigHistoryUpdateOne {
+	_u.mutation.AddOpacity(v)
+	return _u
+}
+
+// ClearOpacity clears the value of the "opacity" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdateOne) ClearOpacity() *TrustCenterWatermarkConfigHistoryUpdateOne {
+	_u.mutation.ClearOpacity()
+	return _u
+}
+
+// SetRotation sets the "rotation" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdateOne) SetRotation(v float64) *TrustCenterWatermarkConfigHistoryUpdateOne {
+	_u.mutation.ResetRotation()
+	_u.mutation.SetRotation(v)
+	return _u
+}
+
+// SetNillableRotation sets the "rotation" field if the given value is not nil.
+func (_u *TrustCenterWatermarkConfigHistoryUpdateOne) SetNillableRotation(v *float64) *TrustCenterWatermarkConfigHistoryUpdateOne {
+	if v != nil {
+		_u.SetRotation(*v)
+	}
+	return _u
+}
+
+// AddRotation adds value to the "rotation" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdateOne) AddRotation(v float64) *TrustCenterWatermarkConfigHistoryUpdateOne {
+	_u.mutation.AddRotation(v)
+	return _u
+}
+
+// ClearRotation clears the value of the "rotation" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdateOne) ClearRotation() *TrustCenterWatermarkConfigHistoryUpdateOne {
+	_u.mutation.ClearRotation()
+	return _u
+}
+
+// SetColor sets the "color" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdateOne) SetColor(v string) *TrustCenterWatermarkConfigHistoryUpdateOne {
+	_u.mutation.SetColor(v)
+	return _u
+}
+
+// SetNillableColor sets the "color" field if the given value is not nil.
+func (_u *TrustCenterWatermarkConfigHistoryUpdateOne) SetNillableColor(v *string) *TrustCenterWatermarkConfigHistoryUpdateOne {
+	if v != nil {
+		_u.SetColor(*v)
+	}
+	return _u
+}
+
+// ClearColor clears the value of the "color" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdateOne) ClearColor() *TrustCenterWatermarkConfigHistoryUpdateOne {
+	_u.mutation.ClearColor()
+	return _u
+}
+
+// SetFont sets the "font" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdateOne) SetFont(v string) *TrustCenterWatermarkConfigHistoryUpdateOne {
+	_u.mutation.SetFont(v)
+	return _u
+}
+
+// SetNillableFont sets the "font" field if the given value is not nil.
+func (_u *TrustCenterWatermarkConfigHistoryUpdateOne) SetNillableFont(v *string) *TrustCenterWatermarkConfigHistoryUpdateOne {
+	if v != nil {
+		_u.SetFont(*v)
+	}
+	return _u
+}
+
+// ClearFont clears the value of the "font" field.
+func (_u *TrustCenterWatermarkConfigHistoryUpdateOne) ClearFont() *TrustCenterWatermarkConfigHistoryUpdateOne {
+	_u.mutation.ClearFont()
 	return _u
 }
 
@@ -418,6 +837,63 @@ func (_u *TrustCenterWatermarkConfigHistoryUpdateOne) sqlSave(ctx context.Contex
 	}
 	if _u.mutation.DeletedByCleared() {
 		_spec.ClearField(trustcenterwatermarkconfighistory.FieldDeletedBy, field.TypeString)
+	}
+	if value, ok := _u.mutation.TrustCenterID(); ok {
+		_spec.SetField(trustcenterwatermarkconfighistory.FieldTrustCenterID, field.TypeString, value)
+	}
+	if _u.mutation.TrustCenterIDCleared() {
+		_spec.ClearField(trustcenterwatermarkconfighistory.FieldTrustCenterID, field.TypeString)
+	}
+	if value, ok := _u.mutation.LogoID(); ok {
+		_spec.SetField(trustcenterwatermarkconfighistory.FieldLogoID, field.TypeString, value)
+	}
+	if _u.mutation.LogoIDCleared() {
+		_spec.ClearField(trustcenterwatermarkconfighistory.FieldLogoID, field.TypeString)
+	}
+	if value, ok := _u.mutation.Text(); ok {
+		_spec.SetField(trustcenterwatermarkconfighistory.FieldText, field.TypeString, value)
+	}
+	if _u.mutation.TextCleared() {
+		_spec.ClearField(trustcenterwatermarkconfighistory.FieldText, field.TypeString)
+	}
+	if value, ok := _u.mutation.FontSize(); ok {
+		_spec.SetField(trustcenterwatermarkconfighistory.FieldFontSize, field.TypeFloat64, value)
+	}
+	if value, ok := _u.mutation.AddedFontSize(); ok {
+		_spec.AddField(trustcenterwatermarkconfighistory.FieldFontSize, field.TypeFloat64, value)
+	}
+	if _u.mutation.FontSizeCleared() {
+		_spec.ClearField(trustcenterwatermarkconfighistory.FieldFontSize, field.TypeFloat64)
+	}
+	if value, ok := _u.mutation.Opacity(); ok {
+		_spec.SetField(trustcenterwatermarkconfighistory.FieldOpacity, field.TypeFloat64, value)
+	}
+	if value, ok := _u.mutation.AddedOpacity(); ok {
+		_spec.AddField(trustcenterwatermarkconfighistory.FieldOpacity, field.TypeFloat64, value)
+	}
+	if _u.mutation.OpacityCleared() {
+		_spec.ClearField(trustcenterwatermarkconfighistory.FieldOpacity, field.TypeFloat64)
+	}
+	if value, ok := _u.mutation.Rotation(); ok {
+		_spec.SetField(trustcenterwatermarkconfighistory.FieldRotation, field.TypeFloat64, value)
+	}
+	if value, ok := _u.mutation.AddedRotation(); ok {
+		_spec.AddField(trustcenterwatermarkconfighistory.FieldRotation, field.TypeFloat64, value)
+	}
+	if _u.mutation.RotationCleared() {
+		_spec.ClearField(trustcenterwatermarkconfighistory.FieldRotation, field.TypeFloat64)
+	}
+	if value, ok := _u.mutation.Color(); ok {
+		_spec.SetField(trustcenterwatermarkconfighistory.FieldColor, field.TypeString, value)
+	}
+	if _u.mutation.ColorCleared() {
+		_spec.ClearField(trustcenterwatermarkconfighistory.FieldColor, field.TypeString)
+	}
+	if value, ok := _u.mutation.Font(); ok {
+		_spec.SetField(trustcenterwatermarkconfighistory.FieldFont, field.TypeString, value)
+	}
+	if _u.mutation.FontCleared() {
+		_spec.ClearField(trustcenterwatermarkconfighistory.FieldFont, field.TypeString)
 	}
 	_spec.Node.Schema = _u.schemaConfig.TrustCenterWatermarkConfigHistory
 	ctx = internal.NewSchemaConfigContext(ctx, _u.schemaConfig)
