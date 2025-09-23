@@ -508,8 +508,6 @@ type OpenlaneGraphClient interface {
 	UpdateTrustCenterSubprocessor(ctx context.Context, updateTrustCenterSubprocessorID string, input UpdateTrustCenterSubprocessorInput, interceptors ...clientv2.RequestInterceptor) (*UpdateTrustCenterSubprocessor, error)
 	GetAllTrustCenterSubprocessorHistories(ctx context.Context, interceptors ...clientv2.RequestInterceptor) (*GetAllTrustCenterSubprocessorHistories, error)
 	GetTrustCenterSubprocessorHistories(ctx context.Context, first *int64, last *int64, where *TrustCenterSubprocessorHistoryWhereInput, interceptors ...clientv2.RequestInterceptor) (*GetTrustCenterSubprocessorHistories, error)
-	CreateBulkCSVTrustCenterWatermarkConfig(ctx context.Context, input graphql.Upload, interceptors ...clientv2.RequestInterceptor) (*CreateBulkCSVTrustCenterWatermarkConfig, error)
-	CreateBulkTrustCenterWatermarkConfig(ctx context.Context, input []*CreateTrustCenterWatermarkConfigInput, interceptors ...clientv2.RequestInterceptor) (*CreateBulkTrustCenterWatermarkConfig, error)
 	CreateTrustCenterWatermarkConfig(ctx context.Context, input CreateTrustCenterWatermarkConfigInput, interceptors ...clientv2.RequestInterceptor) (*CreateTrustCenterWatermarkConfig, error)
 	DeleteTrustCenterWatermarkConfig(ctx context.Context, deleteTrustCenterWatermarkConfigID string, interceptors ...clientv2.RequestInterceptor) (*DeleteTrustCenterWatermarkConfig, error)
 	GetAllTrustCenterWatermarkConfigs(ctx context.Context, interceptors ...clientv2.RequestInterceptor) (*GetAllTrustCenterWatermarkConfigs, error)
@@ -74284,114 +74282,47 @@ func (t *GetTrustCenterSubprocessorHistories_TrustCenterSubprocessorHistories) G
 	return t.TotalCount
 }
 
-type CreateBulkCSVTrustCenterWatermarkConfig_CreateBulkCSVTrustCenterWatermarkConfig_TrustCenterWatermarkConfigs struct {
-	CreatedAt *time.Time "json:\"createdAt,omitempty\" graphql:\"createdAt\""
-	CreatedBy *string    "json:\"createdBy,omitempty\" graphql:\"createdBy\""
-	ID        string     "json:\"id\" graphql:\"id\""
-	UpdatedAt *time.Time "json:\"updatedAt,omitempty\" graphql:\"updatedAt\""
-	UpdatedBy *string    "json:\"updatedBy,omitempty\" graphql:\"updatedBy\""
+type CreateTrustCenterWatermarkConfig_CreateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig_File struct {
+	ID           string  "json:\"id\" graphql:\"id\""
+	PresignedURL *string "json:\"presignedURL,omitempty\" graphql:\"presignedURL\""
 }
 
-func (t *CreateBulkCSVTrustCenterWatermarkConfig_CreateBulkCSVTrustCenterWatermarkConfig_TrustCenterWatermarkConfigs) GetCreatedAt() *time.Time {
+func (t *CreateTrustCenterWatermarkConfig_CreateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig_File) GetID() string {
 	if t == nil {
-		t = &CreateBulkCSVTrustCenterWatermarkConfig_CreateBulkCSVTrustCenterWatermarkConfig_TrustCenterWatermarkConfigs{}
-	}
-	return t.CreatedAt
-}
-func (t *CreateBulkCSVTrustCenterWatermarkConfig_CreateBulkCSVTrustCenterWatermarkConfig_TrustCenterWatermarkConfigs) GetCreatedBy() *string {
-	if t == nil {
-		t = &CreateBulkCSVTrustCenterWatermarkConfig_CreateBulkCSVTrustCenterWatermarkConfig_TrustCenterWatermarkConfigs{}
-	}
-	return t.CreatedBy
-}
-func (t *CreateBulkCSVTrustCenterWatermarkConfig_CreateBulkCSVTrustCenterWatermarkConfig_TrustCenterWatermarkConfigs) GetID() string {
-	if t == nil {
-		t = &CreateBulkCSVTrustCenterWatermarkConfig_CreateBulkCSVTrustCenterWatermarkConfig_TrustCenterWatermarkConfigs{}
+		t = &CreateTrustCenterWatermarkConfig_CreateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig_File{}
 	}
 	return t.ID
 }
-func (t *CreateBulkCSVTrustCenterWatermarkConfig_CreateBulkCSVTrustCenterWatermarkConfig_TrustCenterWatermarkConfigs) GetUpdatedAt() *time.Time {
+func (t *CreateTrustCenterWatermarkConfig_CreateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig_File) GetPresignedURL() *string {
 	if t == nil {
-		t = &CreateBulkCSVTrustCenterWatermarkConfig_CreateBulkCSVTrustCenterWatermarkConfig_TrustCenterWatermarkConfigs{}
+		t = &CreateTrustCenterWatermarkConfig_CreateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig_File{}
 	}
-	return t.UpdatedAt
-}
-func (t *CreateBulkCSVTrustCenterWatermarkConfig_CreateBulkCSVTrustCenterWatermarkConfig_TrustCenterWatermarkConfigs) GetUpdatedBy() *string {
-	if t == nil {
-		t = &CreateBulkCSVTrustCenterWatermarkConfig_CreateBulkCSVTrustCenterWatermarkConfig_TrustCenterWatermarkConfigs{}
-	}
-	return t.UpdatedBy
-}
-
-type CreateBulkCSVTrustCenterWatermarkConfig_CreateBulkCSVTrustCenterWatermarkConfig struct {
-	TrustCenterWatermarkConfigs []*CreateBulkCSVTrustCenterWatermarkConfig_CreateBulkCSVTrustCenterWatermarkConfig_TrustCenterWatermarkConfigs "json:\"trustCenterWatermarkConfigs,omitempty\" graphql:\"trustCenterWatermarkConfigs\""
-}
-
-func (t *CreateBulkCSVTrustCenterWatermarkConfig_CreateBulkCSVTrustCenterWatermarkConfig) GetTrustCenterWatermarkConfigs() []*CreateBulkCSVTrustCenterWatermarkConfig_CreateBulkCSVTrustCenterWatermarkConfig_TrustCenterWatermarkConfigs {
-	if t == nil {
-		t = &CreateBulkCSVTrustCenterWatermarkConfig_CreateBulkCSVTrustCenterWatermarkConfig{}
-	}
-	return t.TrustCenterWatermarkConfigs
-}
-
-type CreateBulkTrustCenterWatermarkConfig_CreateBulkTrustCenterWatermarkConfig_TrustCenterWatermarkConfigs struct {
-	CreatedAt *time.Time "json:\"createdAt,omitempty\" graphql:\"createdAt\""
-	CreatedBy *string    "json:\"createdBy,omitempty\" graphql:\"createdBy\""
-	ID        string     "json:\"id\" graphql:\"id\""
-	UpdatedAt *time.Time "json:\"updatedAt,omitempty\" graphql:\"updatedAt\""
-	UpdatedBy *string    "json:\"updatedBy,omitempty\" graphql:\"updatedBy\""
-}
-
-func (t *CreateBulkTrustCenterWatermarkConfig_CreateBulkTrustCenterWatermarkConfig_TrustCenterWatermarkConfigs) GetCreatedAt() *time.Time {
-	if t == nil {
-		t = &CreateBulkTrustCenterWatermarkConfig_CreateBulkTrustCenterWatermarkConfig_TrustCenterWatermarkConfigs{}
-	}
-	return t.CreatedAt
-}
-func (t *CreateBulkTrustCenterWatermarkConfig_CreateBulkTrustCenterWatermarkConfig_TrustCenterWatermarkConfigs) GetCreatedBy() *string {
-	if t == nil {
-		t = &CreateBulkTrustCenterWatermarkConfig_CreateBulkTrustCenterWatermarkConfig_TrustCenterWatermarkConfigs{}
-	}
-	return t.CreatedBy
-}
-func (t *CreateBulkTrustCenterWatermarkConfig_CreateBulkTrustCenterWatermarkConfig_TrustCenterWatermarkConfigs) GetID() string {
-	if t == nil {
-		t = &CreateBulkTrustCenterWatermarkConfig_CreateBulkTrustCenterWatermarkConfig_TrustCenterWatermarkConfigs{}
-	}
-	return t.ID
-}
-func (t *CreateBulkTrustCenterWatermarkConfig_CreateBulkTrustCenterWatermarkConfig_TrustCenterWatermarkConfigs) GetUpdatedAt() *time.Time {
-	if t == nil {
-		t = &CreateBulkTrustCenterWatermarkConfig_CreateBulkTrustCenterWatermarkConfig_TrustCenterWatermarkConfigs{}
-	}
-	return t.UpdatedAt
-}
-func (t *CreateBulkTrustCenterWatermarkConfig_CreateBulkTrustCenterWatermarkConfig_TrustCenterWatermarkConfigs) GetUpdatedBy() *string {
-	if t == nil {
-		t = &CreateBulkTrustCenterWatermarkConfig_CreateBulkTrustCenterWatermarkConfig_TrustCenterWatermarkConfigs{}
-	}
-	return t.UpdatedBy
-}
-
-type CreateBulkTrustCenterWatermarkConfig_CreateBulkTrustCenterWatermarkConfig struct {
-	TrustCenterWatermarkConfigs []*CreateBulkTrustCenterWatermarkConfig_CreateBulkTrustCenterWatermarkConfig_TrustCenterWatermarkConfigs "json:\"trustCenterWatermarkConfigs,omitempty\" graphql:\"trustCenterWatermarkConfigs\""
-}
-
-func (t *CreateBulkTrustCenterWatermarkConfig_CreateBulkTrustCenterWatermarkConfig) GetTrustCenterWatermarkConfigs() []*CreateBulkTrustCenterWatermarkConfig_CreateBulkTrustCenterWatermarkConfig_TrustCenterWatermarkConfigs {
-	if t == nil {
-		t = &CreateBulkTrustCenterWatermarkConfig_CreateBulkTrustCenterWatermarkConfig{}
-	}
-	return t.TrustCenterWatermarkConfigs
+	return t.PresignedURL
 }
 
 type CreateTrustCenterWatermarkConfig_CreateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig struct {
-	CreatedAt *time.Time "json:\"createdAt,omitempty\" graphql:\"createdAt\""
-	CreatedBy *string    "json:\"createdBy,omitempty\" graphql:\"createdBy\""
-	ID        string     "json:\"id\" graphql:\"id\""
-	UpdatedAt *time.Time "json:\"updatedAt,omitempty\" graphql:\"updatedAt\""
-	UpdatedBy *string    "json:\"updatedBy,omitempty\" graphql:\"updatedBy\""
+	Color         *string                                                                                            "json:\"color,omitempty\" graphql:\"color\""
+	CreatedAt     *time.Time                                                                                         "json:\"createdAt,omitempty\" graphql:\"createdAt\""
+	CreatedBy     *string                                                                                            "json:\"createdBy,omitempty\" graphql:\"createdBy\""
+	File          *CreateTrustCenterWatermarkConfig_CreateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig_File "json:\"file,omitempty\" graphql:\"file\""
+	Font          *string                                                                                            "json:\"font,omitempty\" graphql:\"font\""
+	FontSize      *float64                                                                                           "json:\"fontSize,omitempty\" graphql:\"fontSize\""
+	ID            string                                                                                             "json:\"id\" graphql:\"id\""
+	LogoID        *string                                                                                            "json:\"logoID,omitempty\" graphql:\"logoID\""
+	Opacity       *float64                                                                                           "json:\"opacity,omitempty\" graphql:\"opacity\""
+	Rotation      *float64                                                                                           "json:\"rotation,omitempty\" graphql:\"rotation\""
+	Text          *string                                                                                            "json:\"text,omitempty\" graphql:\"text\""
+	TrustCenterID *string                                                                                            "json:\"trustCenterID,omitempty\" graphql:\"trustCenterID\""
+	UpdatedAt     *time.Time                                                                                         "json:\"updatedAt,omitempty\" graphql:\"updatedAt\""
+	UpdatedBy     *string                                                                                            "json:\"updatedBy,omitempty\" graphql:\"updatedBy\""
 }
 
+func (t *CreateTrustCenterWatermarkConfig_CreateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig) GetColor() *string {
+	if t == nil {
+		t = &CreateTrustCenterWatermarkConfig_CreateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig{}
+	}
+	return t.Color
+}
 func (t *CreateTrustCenterWatermarkConfig_CreateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig) GetCreatedAt() *time.Time {
 	if t == nil {
 		t = &CreateTrustCenterWatermarkConfig_CreateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig{}
@@ -74404,11 +74335,59 @@ func (t *CreateTrustCenterWatermarkConfig_CreateTrustCenterWatermarkConfig_Trust
 	}
 	return t.CreatedBy
 }
+func (t *CreateTrustCenterWatermarkConfig_CreateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig) GetFile() *CreateTrustCenterWatermarkConfig_CreateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig_File {
+	if t == nil {
+		t = &CreateTrustCenterWatermarkConfig_CreateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig{}
+	}
+	return t.File
+}
+func (t *CreateTrustCenterWatermarkConfig_CreateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig) GetFont() *string {
+	if t == nil {
+		t = &CreateTrustCenterWatermarkConfig_CreateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig{}
+	}
+	return t.Font
+}
+func (t *CreateTrustCenterWatermarkConfig_CreateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig) GetFontSize() *float64 {
+	if t == nil {
+		t = &CreateTrustCenterWatermarkConfig_CreateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig{}
+	}
+	return t.FontSize
+}
 func (t *CreateTrustCenterWatermarkConfig_CreateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig) GetID() string {
 	if t == nil {
 		t = &CreateTrustCenterWatermarkConfig_CreateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig{}
 	}
 	return t.ID
+}
+func (t *CreateTrustCenterWatermarkConfig_CreateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig) GetLogoID() *string {
+	if t == nil {
+		t = &CreateTrustCenterWatermarkConfig_CreateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig{}
+	}
+	return t.LogoID
+}
+func (t *CreateTrustCenterWatermarkConfig_CreateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig) GetOpacity() *float64 {
+	if t == nil {
+		t = &CreateTrustCenterWatermarkConfig_CreateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig{}
+	}
+	return t.Opacity
+}
+func (t *CreateTrustCenterWatermarkConfig_CreateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig) GetRotation() *float64 {
+	if t == nil {
+		t = &CreateTrustCenterWatermarkConfig_CreateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig{}
+	}
+	return t.Rotation
+}
+func (t *CreateTrustCenterWatermarkConfig_CreateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig) GetText() *string {
+	if t == nil {
+		t = &CreateTrustCenterWatermarkConfig_CreateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig{}
+	}
+	return t.Text
+}
+func (t *CreateTrustCenterWatermarkConfig_CreateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig) GetTrustCenterID() *string {
+	if t == nil {
+		t = &CreateTrustCenterWatermarkConfig_CreateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig{}
+	}
+	return t.TrustCenterID
 }
 func (t *CreateTrustCenterWatermarkConfig_CreateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig) GetUpdatedAt() *time.Time {
 	if t == nil {
@@ -74477,14 +74456,47 @@ func (t *GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_PageInfo)
 	return t.StartCursor
 }
 
-type GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node struct {
-	CreatedAt *time.Time "json:\"createdAt,omitempty\" graphql:\"createdAt\""
-	CreatedBy *string    "json:\"createdBy,omitempty\" graphql:\"createdBy\""
-	ID        string     "json:\"id\" graphql:\"id\""
-	UpdatedAt *time.Time "json:\"updatedAt,omitempty\" graphql:\"updatedAt\""
-	UpdatedBy *string    "json:\"updatedBy,omitempty\" graphql:\"updatedBy\""
+type GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node_File struct {
+	ID           string  "json:\"id\" graphql:\"id\""
+	PresignedURL *string "json:\"presignedURL,omitempty\" graphql:\"presignedURL\""
 }
 
+func (t *GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node_File) GetID() string {
+	if t == nil {
+		t = &GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node_File{}
+	}
+	return t.ID
+}
+func (t *GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node_File) GetPresignedURL() *string {
+	if t == nil {
+		t = &GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node_File{}
+	}
+	return t.PresignedURL
+}
+
+type GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node struct {
+	Color         *string                                                                        "json:\"color,omitempty\" graphql:\"color\""
+	CreatedAt     *time.Time                                                                     "json:\"createdAt,omitempty\" graphql:\"createdAt\""
+	CreatedBy     *string                                                                        "json:\"createdBy,omitempty\" graphql:\"createdBy\""
+	File          *GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node_File "json:\"file,omitempty\" graphql:\"file\""
+	Font          *string                                                                        "json:\"font,omitempty\" graphql:\"font\""
+	FontSize      *float64                                                                       "json:\"fontSize,omitempty\" graphql:\"fontSize\""
+	ID            string                                                                         "json:\"id\" graphql:\"id\""
+	LogoID        *string                                                                        "json:\"logoID,omitempty\" graphql:\"logoID\""
+	Opacity       *float64                                                                       "json:\"opacity,omitempty\" graphql:\"opacity\""
+	Rotation      *float64                                                                       "json:\"rotation,omitempty\" graphql:\"rotation\""
+	Text          *string                                                                        "json:\"text,omitempty\" graphql:\"text\""
+	TrustCenterID *string                                                                        "json:\"trustCenterID,omitempty\" graphql:\"trustCenterID\""
+	UpdatedAt     *time.Time                                                                     "json:\"updatedAt,omitempty\" graphql:\"updatedAt\""
+	UpdatedBy     *string                                                                        "json:\"updatedBy,omitempty\" graphql:\"updatedBy\""
+}
+
+func (t *GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node) GetColor() *string {
+	if t == nil {
+		t = &GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node{}
+	}
+	return t.Color
+}
 func (t *GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node) GetCreatedAt() *time.Time {
 	if t == nil {
 		t = &GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node{}
@@ -74497,11 +74509,59 @@ func (t *GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Nod
 	}
 	return t.CreatedBy
 }
+func (t *GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node) GetFile() *GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node_File {
+	if t == nil {
+		t = &GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node{}
+	}
+	return t.File
+}
+func (t *GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node) GetFont() *string {
+	if t == nil {
+		t = &GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node{}
+	}
+	return t.Font
+}
+func (t *GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node) GetFontSize() *float64 {
+	if t == nil {
+		t = &GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node{}
+	}
+	return t.FontSize
+}
 func (t *GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node) GetID() string {
 	if t == nil {
 		t = &GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node{}
 	}
 	return t.ID
+}
+func (t *GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node) GetLogoID() *string {
+	if t == nil {
+		t = &GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node{}
+	}
+	return t.LogoID
+}
+func (t *GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node) GetOpacity() *float64 {
+	if t == nil {
+		t = &GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node{}
+	}
+	return t.Opacity
+}
+func (t *GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node) GetRotation() *float64 {
+	if t == nil {
+		t = &GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node{}
+	}
+	return t.Rotation
+}
+func (t *GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node) GetText() *string {
+	if t == nil {
+		t = &GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node{}
+	}
+	return t.Text
+}
+func (t *GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node) GetTrustCenterID() *string {
+	if t == nil {
+		t = &GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node{}
+	}
+	return t.TrustCenterID
 }
 func (t *GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node) GetUpdatedAt() *time.Time {
 	if t == nil {
@@ -74552,14 +74612,47 @@ func (t *GetAllTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs) GetTotal
 	return t.TotalCount
 }
 
-type GetTrustCenterWatermarkConfigByID_TrustCenterWatermarkConfig struct {
-	CreatedAt *time.Time "json:\"createdAt,omitempty\" graphql:\"createdAt\""
-	CreatedBy *string    "json:\"createdBy,omitempty\" graphql:\"createdBy\""
-	ID        string     "json:\"id\" graphql:\"id\""
-	UpdatedAt *time.Time "json:\"updatedAt,omitempty\" graphql:\"updatedAt\""
-	UpdatedBy *string    "json:\"updatedBy,omitempty\" graphql:\"updatedBy\""
+type GetTrustCenterWatermarkConfigByID_TrustCenterWatermarkConfig_File struct {
+	ID           string  "json:\"id\" graphql:\"id\""
+	PresignedURL *string "json:\"presignedURL,omitempty\" graphql:\"presignedURL\""
 }
 
+func (t *GetTrustCenterWatermarkConfigByID_TrustCenterWatermarkConfig_File) GetID() string {
+	if t == nil {
+		t = &GetTrustCenterWatermarkConfigByID_TrustCenterWatermarkConfig_File{}
+	}
+	return t.ID
+}
+func (t *GetTrustCenterWatermarkConfigByID_TrustCenterWatermarkConfig_File) GetPresignedURL() *string {
+	if t == nil {
+		t = &GetTrustCenterWatermarkConfigByID_TrustCenterWatermarkConfig_File{}
+	}
+	return t.PresignedURL
+}
+
+type GetTrustCenterWatermarkConfigByID_TrustCenterWatermarkConfig struct {
+	Color         *string                                                            "json:\"color,omitempty\" graphql:\"color\""
+	CreatedAt     *time.Time                                                         "json:\"createdAt,omitempty\" graphql:\"createdAt\""
+	CreatedBy     *string                                                            "json:\"createdBy,omitempty\" graphql:\"createdBy\""
+	File          *GetTrustCenterWatermarkConfigByID_TrustCenterWatermarkConfig_File "json:\"file,omitempty\" graphql:\"file\""
+	Font          *string                                                            "json:\"font,omitempty\" graphql:\"font\""
+	FontSize      *float64                                                           "json:\"fontSize,omitempty\" graphql:\"fontSize\""
+	ID            string                                                             "json:\"id\" graphql:\"id\""
+	LogoID        *string                                                            "json:\"logoID,omitempty\" graphql:\"logoID\""
+	Opacity       *float64                                                           "json:\"opacity,omitempty\" graphql:\"opacity\""
+	Rotation      *float64                                                           "json:\"rotation,omitempty\" graphql:\"rotation\""
+	Text          *string                                                            "json:\"text,omitempty\" graphql:\"text\""
+	TrustCenterID *string                                                            "json:\"trustCenterID,omitempty\" graphql:\"trustCenterID\""
+	UpdatedAt     *time.Time                                                         "json:\"updatedAt,omitempty\" graphql:\"updatedAt\""
+	UpdatedBy     *string                                                            "json:\"updatedBy,omitempty\" graphql:\"updatedBy\""
+}
+
+func (t *GetTrustCenterWatermarkConfigByID_TrustCenterWatermarkConfig) GetColor() *string {
+	if t == nil {
+		t = &GetTrustCenterWatermarkConfigByID_TrustCenterWatermarkConfig{}
+	}
+	return t.Color
+}
 func (t *GetTrustCenterWatermarkConfigByID_TrustCenterWatermarkConfig) GetCreatedAt() *time.Time {
 	if t == nil {
 		t = &GetTrustCenterWatermarkConfigByID_TrustCenterWatermarkConfig{}
@@ -74572,11 +74665,59 @@ func (t *GetTrustCenterWatermarkConfigByID_TrustCenterWatermarkConfig) GetCreate
 	}
 	return t.CreatedBy
 }
+func (t *GetTrustCenterWatermarkConfigByID_TrustCenterWatermarkConfig) GetFile() *GetTrustCenterWatermarkConfigByID_TrustCenterWatermarkConfig_File {
+	if t == nil {
+		t = &GetTrustCenterWatermarkConfigByID_TrustCenterWatermarkConfig{}
+	}
+	return t.File
+}
+func (t *GetTrustCenterWatermarkConfigByID_TrustCenterWatermarkConfig) GetFont() *string {
+	if t == nil {
+		t = &GetTrustCenterWatermarkConfigByID_TrustCenterWatermarkConfig{}
+	}
+	return t.Font
+}
+func (t *GetTrustCenterWatermarkConfigByID_TrustCenterWatermarkConfig) GetFontSize() *float64 {
+	if t == nil {
+		t = &GetTrustCenterWatermarkConfigByID_TrustCenterWatermarkConfig{}
+	}
+	return t.FontSize
+}
 func (t *GetTrustCenterWatermarkConfigByID_TrustCenterWatermarkConfig) GetID() string {
 	if t == nil {
 		t = &GetTrustCenterWatermarkConfigByID_TrustCenterWatermarkConfig{}
 	}
 	return t.ID
+}
+func (t *GetTrustCenterWatermarkConfigByID_TrustCenterWatermarkConfig) GetLogoID() *string {
+	if t == nil {
+		t = &GetTrustCenterWatermarkConfigByID_TrustCenterWatermarkConfig{}
+	}
+	return t.LogoID
+}
+func (t *GetTrustCenterWatermarkConfigByID_TrustCenterWatermarkConfig) GetOpacity() *float64 {
+	if t == nil {
+		t = &GetTrustCenterWatermarkConfigByID_TrustCenterWatermarkConfig{}
+	}
+	return t.Opacity
+}
+func (t *GetTrustCenterWatermarkConfigByID_TrustCenterWatermarkConfig) GetRotation() *float64 {
+	if t == nil {
+		t = &GetTrustCenterWatermarkConfigByID_TrustCenterWatermarkConfig{}
+	}
+	return t.Rotation
+}
+func (t *GetTrustCenterWatermarkConfigByID_TrustCenterWatermarkConfig) GetText() *string {
+	if t == nil {
+		t = &GetTrustCenterWatermarkConfigByID_TrustCenterWatermarkConfig{}
+	}
+	return t.Text
+}
+func (t *GetTrustCenterWatermarkConfigByID_TrustCenterWatermarkConfig) GetTrustCenterID() *string {
+	if t == nil {
+		t = &GetTrustCenterWatermarkConfigByID_TrustCenterWatermarkConfig{}
+	}
+	return t.TrustCenterID
 }
 func (t *GetTrustCenterWatermarkConfigByID_TrustCenterWatermarkConfig) GetUpdatedAt() *time.Time {
 	if t == nil {
@@ -74623,14 +74764,47 @@ func (t *GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_PageInfo) Ge
 	return t.StartCursor
 }
 
-type GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node struct {
-	CreatedAt *time.Time "json:\"createdAt,omitempty\" graphql:\"createdAt\""
-	CreatedBy *string    "json:\"createdBy,omitempty\" graphql:\"createdBy\""
-	ID        string     "json:\"id\" graphql:\"id\""
-	UpdatedAt *time.Time "json:\"updatedAt,omitempty\" graphql:\"updatedAt\""
-	UpdatedBy *string    "json:\"updatedBy,omitempty\" graphql:\"updatedBy\""
+type GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node_File struct {
+	ID           string  "json:\"id\" graphql:\"id\""
+	PresignedURL *string "json:\"presignedURL,omitempty\" graphql:\"presignedURL\""
 }
 
+func (t *GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node_File) GetID() string {
+	if t == nil {
+		t = &GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node_File{}
+	}
+	return t.ID
+}
+func (t *GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node_File) GetPresignedURL() *string {
+	if t == nil {
+		t = &GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node_File{}
+	}
+	return t.PresignedURL
+}
+
+type GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node struct {
+	Color         *string                                                                     "json:\"color,omitempty\" graphql:\"color\""
+	CreatedAt     *time.Time                                                                  "json:\"createdAt,omitempty\" graphql:\"createdAt\""
+	CreatedBy     *string                                                                     "json:\"createdBy,omitempty\" graphql:\"createdBy\""
+	File          *GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node_File "json:\"file,omitempty\" graphql:\"file\""
+	Font          *string                                                                     "json:\"font,omitempty\" graphql:\"font\""
+	FontSize      *float64                                                                    "json:\"fontSize,omitempty\" graphql:\"fontSize\""
+	ID            string                                                                      "json:\"id\" graphql:\"id\""
+	LogoID        *string                                                                     "json:\"logoID,omitempty\" graphql:\"logoID\""
+	Opacity       *float64                                                                    "json:\"opacity,omitempty\" graphql:\"opacity\""
+	Rotation      *float64                                                                    "json:\"rotation,omitempty\" graphql:\"rotation\""
+	Text          *string                                                                     "json:\"text,omitempty\" graphql:\"text\""
+	TrustCenterID *string                                                                     "json:\"trustCenterID,omitempty\" graphql:\"trustCenterID\""
+	UpdatedAt     *time.Time                                                                  "json:\"updatedAt,omitempty\" graphql:\"updatedAt\""
+	UpdatedBy     *string                                                                     "json:\"updatedBy,omitempty\" graphql:\"updatedBy\""
+}
+
+func (t *GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node) GetColor() *string {
+	if t == nil {
+		t = &GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node{}
+	}
+	return t.Color
+}
 func (t *GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node) GetCreatedAt() *time.Time {
 	if t == nil {
 		t = &GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node{}
@@ -74643,11 +74817,59 @@ func (t *GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node) 
 	}
 	return t.CreatedBy
 }
+func (t *GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node) GetFile() *GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node_File {
+	if t == nil {
+		t = &GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node{}
+	}
+	return t.File
+}
+func (t *GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node) GetFont() *string {
+	if t == nil {
+		t = &GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node{}
+	}
+	return t.Font
+}
+func (t *GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node) GetFontSize() *float64 {
+	if t == nil {
+		t = &GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node{}
+	}
+	return t.FontSize
+}
 func (t *GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node) GetID() string {
 	if t == nil {
 		t = &GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node{}
 	}
 	return t.ID
+}
+func (t *GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node) GetLogoID() *string {
+	if t == nil {
+		t = &GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node{}
+	}
+	return t.LogoID
+}
+func (t *GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node) GetOpacity() *float64 {
+	if t == nil {
+		t = &GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node{}
+	}
+	return t.Opacity
+}
+func (t *GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node) GetRotation() *float64 {
+	if t == nil {
+		t = &GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node{}
+	}
+	return t.Rotation
+}
+func (t *GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node) GetText() *string {
+	if t == nil {
+		t = &GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node{}
+	}
+	return t.Text
+}
+func (t *GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node) GetTrustCenterID() *string {
+	if t == nil {
+		t = &GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node{}
+	}
+	return t.TrustCenterID
 }
 func (t *GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs_Edges_Node) GetUpdatedAt() *time.Time {
 	if t == nil {
@@ -74698,14 +74920,47 @@ func (t *GetTrustCenterWatermarkConfigs_TrustCenterWatermarkConfigs) GetTotalCou
 	return t.TotalCount
 }
 
-type UpdateTrustCenterWatermarkConfig_UpdateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig struct {
-	CreatedAt *time.Time "json:\"createdAt,omitempty\" graphql:\"createdAt\""
-	CreatedBy *string    "json:\"createdBy,omitempty\" graphql:\"createdBy\""
-	ID        string     "json:\"id\" graphql:\"id\""
-	UpdatedAt *time.Time "json:\"updatedAt,omitempty\" graphql:\"updatedAt\""
-	UpdatedBy *string    "json:\"updatedBy,omitempty\" graphql:\"updatedBy\""
+type UpdateTrustCenterWatermarkConfig_UpdateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig_File struct {
+	ID           string  "json:\"id\" graphql:\"id\""
+	PresignedURL *string "json:\"presignedURL,omitempty\" graphql:\"presignedURL\""
 }
 
+func (t *UpdateTrustCenterWatermarkConfig_UpdateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig_File) GetID() string {
+	if t == nil {
+		t = &UpdateTrustCenterWatermarkConfig_UpdateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig_File{}
+	}
+	return t.ID
+}
+func (t *UpdateTrustCenterWatermarkConfig_UpdateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig_File) GetPresignedURL() *string {
+	if t == nil {
+		t = &UpdateTrustCenterWatermarkConfig_UpdateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig_File{}
+	}
+	return t.PresignedURL
+}
+
+type UpdateTrustCenterWatermarkConfig_UpdateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig struct {
+	Color         *string                                                                                            "json:\"color,omitempty\" graphql:\"color\""
+	CreatedAt     *time.Time                                                                                         "json:\"createdAt,omitempty\" graphql:\"createdAt\""
+	CreatedBy     *string                                                                                            "json:\"createdBy,omitempty\" graphql:\"createdBy\""
+	File          *UpdateTrustCenterWatermarkConfig_UpdateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig_File "json:\"file,omitempty\" graphql:\"file\""
+	Font          *string                                                                                            "json:\"font,omitempty\" graphql:\"font\""
+	FontSize      *float64                                                                                           "json:\"fontSize,omitempty\" graphql:\"fontSize\""
+	ID            string                                                                                             "json:\"id\" graphql:\"id\""
+	LogoID        *string                                                                                            "json:\"logoID,omitempty\" graphql:\"logoID\""
+	Opacity       *float64                                                                                           "json:\"opacity,omitempty\" graphql:\"opacity\""
+	Rotation      *float64                                                                                           "json:\"rotation,omitempty\" graphql:\"rotation\""
+	Text          *string                                                                                            "json:\"text,omitempty\" graphql:\"text\""
+	TrustCenterID *string                                                                                            "json:\"trustCenterID,omitempty\" graphql:\"trustCenterID\""
+	UpdatedAt     *time.Time                                                                                         "json:\"updatedAt,omitempty\" graphql:\"updatedAt\""
+	UpdatedBy     *string                                                                                            "json:\"updatedBy,omitempty\" graphql:\"updatedBy\""
+}
+
+func (t *UpdateTrustCenterWatermarkConfig_UpdateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig) GetColor() *string {
+	if t == nil {
+		t = &UpdateTrustCenterWatermarkConfig_UpdateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig{}
+	}
+	return t.Color
+}
 func (t *UpdateTrustCenterWatermarkConfig_UpdateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig) GetCreatedAt() *time.Time {
 	if t == nil {
 		t = &UpdateTrustCenterWatermarkConfig_UpdateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig{}
@@ -74718,11 +74973,59 @@ func (t *UpdateTrustCenterWatermarkConfig_UpdateTrustCenterWatermarkConfig_Trust
 	}
 	return t.CreatedBy
 }
+func (t *UpdateTrustCenterWatermarkConfig_UpdateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig) GetFile() *UpdateTrustCenterWatermarkConfig_UpdateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig_File {
+	if t == nil {
+		t = &UpdateTrustCenterWatermarkConfig_UpdateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig{}
+	}
+	return t.File
+}
+func (t *UpdateTrustCenterWatermarkConfig_UpdateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig) GetFont() *string {
+	if t == nil {
+		t = &UpdateTrustCenterWatermarkConfig_UpdateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig{}
+	}
+	return t.Font
+}
+func (t *UpdateTrustCenterWatermarkConfig_UpdateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig) GetFontSize() *float64 {
+	if t == nil {
+		t = &UpdateTrustCenterWatermarkConfig_UpdateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig{}
+	}
+	return t.FontSize
+}
 func (t *UpdateTrustCenterWatermarkConfig_UpdateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig) GetID() string {
 	if t == nil {
 		t = &UpdateTrustCenterWatermarkConfig_UpdateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig{}
 	}
 	return t.ID
+}
+func (t *UpdateTrustCenterWatermarkConfig_UpdateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig) GetLogoID() *string {
+	if t == nil {
+		t = &UpdateTrustCenterWatermarkConfig_UpdateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig{}
+	}
+	return t.LogoID
+}
+func (t *UpdateTrustCenterWatermarkConfig_UpdateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig) GetOpacity() *float64 {
+	if t == nil {
+		t = &UpdateTrustCenterWatermarkConfig_UpdateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig{}
+	}
+	return t.Opacity
+}
+func (t *UpdateTrustCenterWatermarkConfig_UpdateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig) GetRotation() *float64 {
+	if t == nil {
+		t = &UpdateTrustCenterWatermarkConfig_UpdateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig{}
+	}
+	return t.Rotation
+}
+func (t *UpdateTrustCenterWatermarkConfig_UpdateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig) GetText() *string {
+	if t == nil {
+		t = &UpdateTrustCenterWatermarkConfig_UpdateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig{}
+	}
+	return t.Text
+}
+func (t *UpdateTrustCenterWatermarkConfig_UpdateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig) GetTrustCenterID() *string {
+	if t == nil {
+		t = &UpdateTrustCenterWatermarkConfig_UpdateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig{}
+	}
+	return t.TrustCenterID
 }
 func (t *UpdateTrustCenterWatermarkConfig_UpdateTrustCenterWatermarkConfig_TrustCenterWatermarkConfig) GetUpdatedAt() *time.Time {
 	if t == nil {
@@ -83137,28 +83440,6 @@ func (t *GetTrustCenterSubprocessorHistories) GetTrustCenterSubprocessorHistorie
 		t = &GetTrustCenterSubprocessorHistories{}
 	}
 	return &t.TrustCenterSubprocessorHistories
-}
-
-type CreateBulkCSVTrustCenterWatermarkConfig struct {
-	CreateBulkCSVTrustCenterWatermarkConfig CreateBulkCSVTrustCenterWatermarkConfig_CreateBulkCSVTrustCenterWatermarkConfig "json:\"createBulkCSVTrustCenterWatermarkConfig\" graphql:\"createBulkCSVTrustCenterWatermarkConfig\""
-}
-
-func (t *CreateBulkCSVTrustCenterWatermarkConfig) GetCreateBulkCSVTrustCenterWatermarkConfig() *CreateBulkCSVTrustCenterWatermarkConfig_CreateBulkCSVTrustCenterWatermarkConfig {
-	if t == nil {
-		t = &CreateBulkCSVTrustCenterWatermarkConfig{}
-	}
-	return &t.CreateBulkCSVTrustCenterWatermarkConfig
-}
-
-type CreateBulkTrustCenterWatermarkConfig struct {
-	CreateBulkTrustCenterWatermarkConfig CreateBulkTrustCenterWatermarkConfig_CreateBulkTrustCenterWatermarkConfig "json:\"createBulkTrustCenterWatermarkConfig\" graphql:\"createBulkTrustCenterWatermarkConfig\""
-}
-
-func (t *CreateBulkTrustCenterWatermarkConfig) GetCreateBulkTrustCenterWatermarkConfig() *CreateBulkTrustCenterWatermarkConfig_CreateBulkTrustCenterWatermarkConfig {
-	if t == nil {
-		t = &CreateBulkTrustCenterWatermarkConfig{}
-	}
-	return &t.CreateBulkTrustCenterWatermarkConfig
 }
 
 type CreateTrustCenterWatermarkConfig struct {
@@ -105683,66 +105964,6 @@ func (c *Client) GetTrustCenterSubprocessorHistories(ctx context.Context, first 
 	return &res, nil
 }
 
-const CreateBulkCSVTrustCenterWatermarkConfigDocument = `mutation CreateBulkCSVTrustCenterWatermarkConfig ($input: Upload!) {
-	createBulkCSVTrustCenterWatermarkConfig(input: $input) {
-		trustCenterWatermarkConfigs {
-			createdAt
-			createdBy
-			id
-			updatedAt
-			updatedBy
-		}
-	}
-}
-`
-
-func (c *Client) CreateBulkCSVTrustCenterWatermarkConfig(ctx context.Context, input graphql.Upload, interceptors ...clientv2.RequestInterceptor) (*CreateBulkCSVTrustCenterWatermarkConfig, error) {
-	vars := map[string]any{
-		"input": input,
-	}
-
-	var res CreateBulkCSVTrustCenterWatermarkConfig
-	if err := c.Client.Post(ctx, "CreateBulkCSVTrustCenterWatermarkConfig", CreateBulkCSVTrustCenterWatermarkConfigDocument, &res, vars, interceptors...); err != nil {
-		if c.Client.ParseDataWhenErrors {
-			return &res, err
-		}
-
-		return nil, err
-	}
-
-	return &res, nil
-}
-
-const CreateBulkTrustCenterWatermarkConfigDocument = `mutation CreateBulkTrustCenterWatermarkConfig ($input: [CreateTrustCenterWatermarkConfigInput!]) {
-	createBulkTrustCenterWatermarkConfig(input: $input) {
-		trustCenterWatermarkConfigs {
-			createdAt
-			createdBy
-			id
-			updatedAt
-			updatedBy
-		}
-	}
-}
-`
-
-func (c *Client) CreateBulkTrustCenterWatermarkConfig(ctx context.Context, input []*CreateTrustCenterWatermarkConfigInput, interceptors ...clientv2.RequestInterceptor) (*CreateBulkTrustCenterWatermarkConfig, error) {
-	vars := map[string]any{
-		"input": input,
-	}
-
-	var res CreateBulkTrustCenterWatermarkConfig
-	if err := c.Client.Post(ctx, "CreateBulkTrustCenterWatermarkConfig", CreateBulkTrustCenterWatermarkConfigDocument, &res, vars, interceptors...); err != nil {
-		if c.Client.ParseDataWhenErrors {
-			return &res, err
-		}
-
-		return nil, err
-	}
-
-	return &res, nil
-}
-
 const CreateTrustCenterWatermarkConfigDocument = `mutation CreateTrustCenterWatermarkConfig ($input: CreateTrustCenterWatermarkConfigInput!) {
 	createTrustCenterWatermarkConfig(input: $input) {
 		trustCenterWatermarkConfig {
@@ -105751,6 +105972,18 @@ const CreateTrustCenterWatermarkConfigDocument = `mutation CreateTrustCenterWate
 			id
 			updatedAt
 			updatedBy
+			trustCenterID
+			file {
+				id
+				presignedURL
+			}
+			logoID
+			text
+			fontSize
+			opacity
+			rotation
+			color
+			font
 		}
 	}
 }
@@ -105813,6 +106046,18 @@ const GetAllTrustCenterWatermarkConfigsDocument = `query GetAllTrustCenterWaterm
 				id
 				updatedAt
 				updatedBy
+				trustCenterID
+				file {
+					id
+					presignedURL
+				}
+				logoID
+				text
+				fontSize
+				opacity
+				rotation
+				color
+				font
 			}
 		}
 	}
@@ -105841,6 +106086,18 @@ const GetTrustCenterWatermarkConfigByIDDocument = `query GetTrustCenterWatermark
 		id
 		updatedAt
 		updatedBy
+		trustCenterID
+		file {
+			id
+			presignedURL
+		}
+		logoID
+		text
+		fontSize
+		opacity
+		rotation
+		color
+		font
 	}
 }
 `
@@ -105878,6 +106135,18 @@ const GetTrustCenterWatermarkConfigsDocument = `query GetTrustCenterWatermarkCon
 				id
 				updatedAt
 				updatedBy
+				trustCenterID
+				file {
+					id
+					presignedURL
+				}
+				logoID
+				text
+				fontSize
+				opacity
+				rotation
+				color
+				font
 			}
 		}
 	}
@@ -105911,6 +106180,18 @@ const UpdateTrustCenterWatermarkConfigDocument = `mutation UpdateTrustCenterWate
 			id
 			updatedAt
 			updatedBy
+			trustCenterID
+			file {
+				id
+				presignedURL
+			}
+			logoID
+			text
+			fontSize
+			opacity
+			rotation
+			color
+			font
 		}
 	}
 }
@@ -107317,8 +107598,6 @@ var DocumentOperationNames = map[string]string{
 	UpdateTrustCenterSubprocessorDocument:             "UpdateTrustCenterSubprocessor",
 	GetAllTrustCenterSubprocessorHistoriesDocument:    "GetAllTrustCenterSubprocessorHistories",
 	GetTrustCenterSubprocessorHistoriesDocument:       "GetTrustCenterSubprocessorHistories",
-	CreateBulkCSVTrustCenterWatermarkConfigDocument:   "CreateBulkCSVTrustCenterWatermarkConfig",
-	CreateBulkTrustCenterWatermarkConfigDocument:      "CreateBulkTrustCenterWatermarkConfig",
 	CreateTrustCenterWatermarkConfigDocument:          "CreateTrustCenterWatermarkConfig",
 	DeleteTrustCenterWatermarkConfigDocument:          "DeleteTrustCenterWatermarkConfig",
 	GetAllTrustCenterWatermarkConfigsDocument:         "GetAllTrustCenterWatermarkConfigs",

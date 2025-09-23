@@ -275,10 +275,8 @@ type MutationResolver interface {
 	CreateBulkCSVTrustCenterSubprocessor(ctx context.Context, input graphql.Upload) (*model.TrustCenterSubprocessorBulkCreatePayload, error)
 	UpdateTrustCenterSubprocessor(ctx context.Context, id string, input generated.UpdateTrustCenterSubprocessorInput) (*model.TrustCenterSubprocessorUpdatePayload, error)
 	DeleteTrustCenterSubprocessor(ctx context.Context, id string) (*model.TrustCenterSubprocessorDeletePayload, error)
-	CreateTrustCenterWatermarkConfig(ctx context.Context, input generated.CreateTrustCenterWatermarkConfigInput) (*model.TrustCenterWatermarkConfigCreatePayload, error)
-	CreateBulkTrustCenterWatermarkConfig(ctx context.Context, input []*generated.CreateTrustCenterWatermarkConfigInput) (*model.TrustCenterWatermarkConfigBulkCreatePayload, error)
-	CreateBulkCSVTrustCenterWatermarkConfig(ctx context.Context, input graphql.Upload) (*model.TrustCenterWatermarkConfigBulkCreatePayload, error)
-	UpdateTrustCenterWatermarkConfig(ctx context.Context, id string, input generated.UpdateTrustCenterWatermarkConfigInput) (*model.TrustCenterWatermarkConfigUpdatePayload, error)
+	CreateTrustCenterWatermarkConfig(ctx context.Context, input generated.CreateTrustCenterWatermarkConfigInput, logoFile *graphql.Upload) (*model.TrustCenterWatermarkConfigCreatePayload, error)
+	UpdateTrustCenterWatermarkConfig(ctx context.Context, id string, input generated.UpdateTrustCenterWatermarkConfigInput, logoFile *graphql.Upload) (*model.TrustCenterWatermarkConfigUpdatePayload, error)
 	DeleteTrustCenterWatermarkConfig(ctx context.Context, id string) (*model.TrustCenterWatermarkConfigDeletePayload, error)
 	CreateUser(ctx context.Context, input generated.CreateUserInput, avatarFile *graphql.Upload) (*model.UserCreatePayload, error)
 	UpdateUser(ctx context.Context, id string, input generated.UpdateUserInput, avatarFile *graphql.Upload) (*model.UserUpdatePayload, error)
@@ -789,17 +787,6 @@ func (ec *executionContext) field_Mutation_createBulkCSVTrustCenterSubprocessor_
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_createBulkCSVTrustCenterWatermarkConfig_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
-	var err error
-	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload)
-	if err != nil {
-		return nil, err
-	}
-	args["input"] = arg0
-	return args, nil
-}
-
 func (ec *executionContext) field_Mutation_createBulkCSVUserSetting_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
@@ -1200,17 +1187,6 @@ func (ec *executionContext) field_Mutation_createBulkTrustCenterSubprocessor_arg
 	var err error
 	args := map[string]any{}
 	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalOCreateTrustCenterSubprocessorInput2ᚕᚖgithubᚗcomᚋtheopenlaneᚋcoreᚋinternalᚋentᚋgeneratedᚐCreateTrustCenterSubprocessorInputᚄ)
-	if err != nil {
-		return nil, err
-	}
-	args["input"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Mutation_createBulkTrustCenterWatermarkConfig_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
-	var err error
-	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalOCreateTrustCenterWatermarkConfigInput2ᚕᚖgithubᚗcomᚋtheopenlaneᚋcoreᚋinternalᚋentᚋgeneratedᚐCreateTrustCenterWatermarkConfigInputᚄ)
 	if err != nil {
 		return nil, err
 	}
@@ -1950,6 +1926,11 @@ func (ec *executionContext) field_Mutation_createTrustCenterWatermarkConfig_args
 		return nil, err
 	}
 	args["input"] = arg0
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "logoFile", ec.unmarshalOUpload2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload)
+	if err != nil {
+		return nil, err
+	}
+	args["logoFile"] = arg1
 	return args, nil
 }
 
@@ -3668,6 +3649,11 @@ func (ec *executionContext) field_Mutation_updateTrustCenterWatermarkConfig_args
 		return nil, err
 	}
 	args["input"] = arg1
+	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "logoFile", ec.unmarshalOUpload2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload)
+	if err != nil {
+		return nil, err
+	}
+	args["logoFile"] = arg2
 	return args, nil
 }
 
@@ -15791,7 +15777,7 @@ func (ec *executionContext) _Mutation_createTrustCenterWatermarkConfig(ctx conte
 		ec.fieldContext_Mutation_createTrustCenterWatermarkConfig,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().CreateTrustCenterWatermarkConfig(ctx, fc.Args["input"].(generated.CreateTrustCenterWatermarkConfigInput))
+			return ec.resolvers.Mutation().CreateTrustCenterWatermarkConfig(ctx, fc.Args["input"].(generated.CreateTrustCenterWatermarkConfigInput), fc.Args["logoFile"].(*graphql.Upload))
 		},
 		nil,
 		ec.marshalNTrustCenterWatermarkConfigCreatePayload2ᚖgithubᚗcomᚋtheopenlaneᚋcoreᚋinternalᚋgraphapiᚋmodelᚐTrustCenterWatermarkConfigCreatePayload,
@@ -15828,96 +15814,6 @@ func (ec *executionContext) fieldContext_Mutation_createTrustCenterWatermarkConf
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_createBulkTrustCenterWatermarkConfig(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_Mutation_createBulkTrustCenterWatermarkConfig,
-		func(ctx context.Context) (any, error) {
-			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().CreateBulkTrustCenterWatermarkConfig(ctx, fc.Args["input"].([]*generated.CreateTrustCenterWatermarkConfigInput))
-		},
-		nil,
-		ec.marshalNTrustCenterWatermarkConfigBulkCreatePayload2ᚖgithubᚗcomᚋtheopenlaneᚋcoreᚋinternalᚋgraphapiᚋmodelᚐTrustCenterWatermarkConfigBulkCreatePayload,
-		true,
-		true,
-	)
-}
-
-func (ec *executionContext) fieldContext_Mutation_createBulkTrustCenterWatermarkConfig(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "trustCenterWatermarkConfigs":
-				return ec.fieldContext_TrustCenterWatermarkConfigBulkCreatePayload_trustCenterWatermarkConfigs(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type TrustCenterWatermarkConfigBulkCreatePayload", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_createBulkTrustCenterWatermarkConfig_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Mutation_createBulkCSVTrustCenterWatermarkConfig(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		ec.fieldContext_Mutation_createBulkCSVTrustCenterWatermarkConfig,
-		func(ctx context.Context) (any, error) {
-			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().CreateBulkCSVTrustCenterWatermarkConfig(ctx, fc.Args["input"].(graphql.Upload))
-		},
-		nil,
-		ec.marshalNTrustCenterWatermarkConfigBulkCreatePayload2ᚖgithubᚗcomᚋtheopenlaneᚋcoreᚋinternalᚋgraphapiᚋmodelᚐTrustCenterWatermarkConfigBulkCreatePayload,
-		true,
-		true,
-	)
-}
-
-func (ec *executionContext) fieldContext_Mutation_createBulkCSVTrustCenterWatermarkConfig(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "trustCenterWatermarkConfigs":
-				return ec.fieldContext_TrustCenterWatermarkConfigBulkCreatePayload_trustCenterWatermarkConfigs(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type TrustCenterWatermarkConfigBulkCreatePayload", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_createBulkCSVTrustCenterWatermarkConfig_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Mutation_updateTrustCenterWatermarkConfig(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -15926,7 +15822,7 @@ func (ec *executionContext) _Mutation_updateTrustCenterWatermarkConfig(ctx conte
 		ec.fieldContext_Mutation_updateTrustCenterWatermarkConfig,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.resolvers.Mutation().UpdateTrustCenterWatermarkConfig(ctx, fc.Args["id"].(string), fc.Args["input"].(generated.UpdateTrustCenterWatermarkConfigInput))
+			return ec.resolvers.Mutation().UpdateTrustCenterWatermarkConfig(ctx, fc.Args["id"].(string), fc.Args["input"].(generated.UpdateTrustCenterWatermarkConfigInput), fc.Args["logoFile"].(*graphql.Upload))
 		},
 		nil,
 		ec.marshalNTrustCenterWatermarkConfigUpdatePayload2ᚖgithubᚗcomᚋtheopenlaneᚋcoreᚋinternalᚋgraphapiᚋmodelᚐTrustCenterWatermarkConfigUpdatePayload,
@@ -18392,20 +18288,6 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "createTrustCenterWatermarkConfig":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_createTrustCenterWatermarkConfig(ctx, field)
-			})
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "createBulkTrustCenterWatermarkConfig":
-			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_createBulkTrustCenterWatermarkConfig(ctx, field)
-			})
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "createBulkCSVTrustCenterWatermarkConfig":
-			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_createBulkCSVTrustCenterWatermarkConfig(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++

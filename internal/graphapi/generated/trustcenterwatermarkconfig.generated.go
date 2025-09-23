@@ -401,20 +401,6 @@ func (ec *executionContext) _TrustCenterWatermarkConfigUpdatePayload(ctx context
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNTrustCenterWatermarkConfigBulkCreatePayload2githubᚗcomᚋtheopenlaneᚋcoreᚋinternalᚋgraphapiᚋmodelᚐTrustCenterWatermarkConfigBulkCreatePayload(ctx context.Context, sel ast.SelectionSet, v model.TrustCenterWatermarkConfigBulkCreatePayload) graphql.Marshaler {
-	return ec._TrustCenterWatermarkConfigBulkCreatePayload(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNTrustCenterWatermarkConfigBulkCreatePayload2ᚖgithubᚗcomᚋtheopenlaneᚋcoreᚋinternalᚋgraphapiᚋmodelᚐTrustCenterWatermarkConfigBulkCreatePayload(ctx context.Context, sel ast.SelectionSet, v *model.TrustCenterWatermarkConfigBulkCreatePayload) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._TrustCenterWatermarkConfigBulkCreatePayload(ctx, sel, v)
-}
-
 func (ec *executionContext) marshalNTrustCenterWatermarkConfigCreatePayload2githubᚗcomᚋtheopenlaneᚋcoreᚋinternalᚋgraphapiᚋmodelᚐTrustCenterWatermarkConfigCreatePayload(ctx context.Context, sel ast.SelectionSet, v model.TrustCenterWatermarkConfigCreatePayload) graphql.Marshaler {
 	return ec._TrustCenterWatermarkConfigCreatePayload(ctx, sel, &v)
 }

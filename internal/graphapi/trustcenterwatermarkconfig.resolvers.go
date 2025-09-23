@@ -8,15 +8,13 @@ import (
 	"context"
 
 	"github.com/99designs/gqlgen/graphql"
-	"github.com/rs/zerolog/log"
 	"github.com/theopenlane/core/internal/ent/generated"
 	"github.com/theopenlane/core/internal/ent/generated/trustcenterwatermarkconfig"
 	"github.com/theopenlane/core/internal/graphapi/model"
-	"github.com/theopenlane/utils/rout"
 )
 
 // CreateTrustCenterWatermarkConfig is the resolver for the createTrustCenterWatermarkConfig field.
-func (r *mutationResolver) CreateTrustCenterWatermarkConfig(ctx context.Context, input generated.CreateTrustCenterWatermarkConfigInput) (*model.TrustCenterWatermarkConfigCreatePayload, error) {
+func (r *mutationResolver) CreateTrustCenterWatermarkConfig(ctx context.Context, input generated.CreateTrustCenterWatermarkConfigInput, logoFile *graphql.Upload) (*model.TrustCenterWatermarkConfigCreatePayload, error) {
 	res, err := withTransactionalMutation(ctx).TrustCenterWatermarkConfig.Create().SetInput(input).Save(ctx)
 	if err != nil {
 		return nil, parseRequestError(err, action{action: ActionCreate, object: "trustcenterwatermarkconfig"})
@@ -27,33 +25,8 @@ func (r *mutationResolver) CreateTrustCenterWatermarkConfig(ctx context.Context,
 	}, nil
 }
 
-// CreateBulkTrustCenterWatermarkConfig is the resolver for the createBulkTrustCenterWatermarkConfig field.
-func (r *mutationResolver) CreateBulkTrustCenterWatermarkConfig(ctx context.Context, input []*generated.CreateTrustCenterWatermarkConfigInput) (*model.TrustCenterWatermarkConfigBulkCreatePayload, error) {
-	if len(input) == 0 {
-		return nil, rout.NewMissingRequiredFieldError("input")
-	}
-
-	return r.bulkCreateTrustCenterWatermarkConfig(ctx, input)
-}
-
-// CreateBulkCSVTrustCenterWatermarkConfig is the resolver for the createBulkCSVTrustCenterWatermarkConfig field.
-func (r *mutationResolver) CreateBulkCSVTrustCenterWatermarkConfig(ctx context.Context, input graphql.Upload) (*model.TrustCenterWatermarkConfigBulkCreatePayload, error) {
-	data, err := unmarshalBulkData[generated.CreateTrustCenterWatermarkConfigInput](input)
-	if err != nil {
-		log.Error().Err(err).Msg("failed to unmarshal bulk data")
-
-		return nil, err
-	}
-
-	if len(data) == 0 {
-		return nil, rout.NewMissingRequiredFieldError("input")
-	}
-
-	return r.bulkCreateTrustCenterWatermarkConfig(ctx, data)
-}
-
 // UpdateTrustCenterWatermarkConfig is the resolver for the updateTrustCenterWatermarkConfig field.
-func (r *mutationResolver) UpdateTrustCenterWatermarkConfig(ctx context.Context, id string, input generated.UpdateTrustCenterWatermarkConfigInput) (*model.TrustCenterWatermarkConfigUpdatePayload, error) {
+func (r *mutationResolver) UpdateTrustCenterWatermarkConfig(ctx context.Context, id string, input generated.UpdateTrustCenterWatermarkConfigInput, logoFile *graphql.Upload) (*model.TrustCenterWatermarkConfigUpdatePayload, error) {
 	res, err := withTransactionalMutation(ctx).TrustCenterWatermarkConfig.Get(ctx, id)
 	if err != nil {
 		return nil, parseRequestError(err, action{action: ActionUpdate, object: "trustcenterwatermarkconfig"})
@@ -101,3 +74,33 @@ func (r *queryResolver) TrustCenterWatermarkConfig(ctx context.Context, id strin
 
 	return res, nil
 }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//    it when you're done.
+//  - You have helper methods in this file. Move them out to keep these resolver files clean.
+/*
+	func (r *mutationResolver) CreateBulkTrustCenterWatermarkConfig(ctx context.Context, input []*generated.CreateTrustCenterWatermarkConfigInput) (*model.TrustCenterWatermarkConfigBulkCreatePayload, error) {
+	if len(input) == 0 {
+		return nil, rout.NewMissingRequiredFieldError("input")
+	}
+
+	return r.bulkCreateTrustCenterWatermarkConfig(ctx, input)
+}
+func (r *mutationResolver) CreateBulkCSVTrustCenterWatermarkConfig(ctx context.Context, input graphql.Upload) (*model.TrustCenterWatermarkConfigBulkCreatePayload, error) {
+	data, err := unmarshalBulkData[generated.CreateTrustCenterWatermarkConfigInput](input)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to unmarshal bulk data")
+
+		return nil, err
+	}
+
+	if len(data) == 0 {
+		return nil, rout.NewMissingRequiredFieldError("input")
+	}
+
+	return r.bulkCreateTrustCenterWatermarkConfig(ctx, data)
+}
+*/

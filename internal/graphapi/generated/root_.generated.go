@@ -2445,276 +2445,274 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		CreateAPIToken                          func(childComplexity int, input generated.CreateAPITokenInput) int
-		CreateActionPlan                        func(childComplexity int, input generated.CreateActionPlanInput) int
-		CreateAsset                             func(childComplexity int, input generated.CreateAssetInput) int
-		CreateBulkAPIToken                      func(childComplexity int, input []*generated.CreateAPITokenInput) int
-		CreateBulkActionPlan                    func(childComplexity int, input []*generated.CreateActionPlanInput) int
-		CreateBulkAsset                         func(childComplexity int, input []*generated.CreateAssetInput) int
-		CreateBulkCSVAPIToken                   func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVActionPlan                 func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVAsset                      func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVContact                    func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVControl                    func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVControlImplementation      func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVControlObjective           func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVCustomDomain               func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVDNSVerification            func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVDocumentData               func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVEntity                     func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVEntityType                 func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVEvent                      func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVGroup                      func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVGroupMembership            func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVGroupSetting               func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVHush                       func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVInternalPolicy             func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVInvite                     func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVJobTemplate                func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVMappableDomain             func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVMappedControl              func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVNarrative                  func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVOrgMembership              func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVOrganizationSetting        func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVProcedure                  func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVProgram                    func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVProgramMembership          func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVRisk                       func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVScan                       func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVScheduledJob               func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVSubcontrol                 func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVSubprocessor               func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVSubscriber                 func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVTask                       func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVTemplate                   func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVTrustCenterCompliance      func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVTrustCenterDoc             func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVTrustCenterSubprocessor    func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVTrustCenterWatermarkConfig func(childComplexity int, input graphql.Upload) int
-		CreateBulkCSVUserSetting                func(childComplexity int, input graphql.Upload) int
-		CreateBulkContact                       func(childComplexity int, input []*generated.CreateContactInput) int
-		CreateBulkControl                       func(childComplexity int, input []*generated.CreateControlInput) int
-		CreateBulkControlImplementation         func(childComplexity int, input []*generated.CreateControlImplementationInput) int
-		CreateBulkControlObjective              func(childComplexity int, input []*generated.CreateControlObjectiveInput) int
-		CreateBulkCustomDomain                  func(childComplexity int, input []*generated.CreateCustomDomainInput) int
-		CreateBulkDNSVerification               func(childComplexity int, input []*generated.CreateDNSVerificationInput) int
-		CreateBulkDocumentData                  func(childComplexity int, input []*generated.CreateDocumentDataInput) int
-		CreateBulkEntity                        func(childComplexity int, input []*generated.CreateEntityInput) int
-		CreateBulkEntityType                    func(childComplexity int, input []*generated.CreateEntityTypeInput) int
-		CreateBulkEvent                         func(childComplexity int, input []*generated.CreateEventInput) int
-		CreateBulkGroup                         func(childComplexity int, input []*generated.CreateGroupInput) int
-		CreateBulkGroupMembership               func(childComplexity int, input []*generated.CreateGroupMembershipInput) int
-		CreateBulkGroupSetting                  func(childComplexity int, input []*generated.CreateGroupSettingInput) int
-		CreateBulkHush                          func(childComplexity int, input []*generated.CreateHushInput) int
-		CreateBulkInternalPolicy                func(childComplexity int, input []*generated.CreateInternalPolicyInput) int
-		CreateBulkInvite                        func(childComplexity int, input []*generated.CreateInviteInput) int
-		CreateBulkJobTemplate                   func(childComplexity int, input []*generated.CreateJobTemplateInput) int
-		CreateBulkMappableDomain                func(childComplexity int, input []*generated.CreateMappableDomainInput) int
-		CreateBulkMappedControl                 func(childComplexity int, input []*generated.CreateMappedControlInput) int
-		CreateBulkNarrative                     func(childComplexity int, input []*generated.CreateNarrativeInput) int
-		CreateBulkOrgMembership                 func(childComplexity int, input []*generated.CreateOrgMembershipInput) int
-		CreateBulkOrganizationSetting           func(childComplexity int, input []*generated.CreateOrganizationSettingInput) int
-		CreateBulkProcedure                     func(childComplexity int, input []*generated.CreateProcedureInput) int
-		CreateBulkProgram                       func(childComplexity int, input []*generated.CreateProgramInput) int
-		CreateBulkProgramMembership             func(childComplexity int, input []*generated.CreateProgramMembershipInput) int
-		CreateBulkRisk                          func(childComplexity int, input []*generated.CreateRiskInput) int
-		CreateBulkScan                          func(childComplexity int, input []*generated.CreateScanInput) int
-		CreateBulkScheduledJob                  func(childComplexity int, input []*generated.CreateScheduledJobInput) int
-		CreateBulkSubcontrol                    func(childComplexity int, input []*generated.CreateSubcontrolInput) int
-		CreateBulkSubprocessor                  func(childComplexity int, input []*generated.CreateSubprocessorInput) int
-		CreateBulkSubscriber                    func(childComplexity int, input []*generated.CreateSubscriberInput) int
-		CreateBulkTask                          func(childComplexity int, input []*generated.CreateTaskInput) int
-		CreateBulkTemplate                      func(childComplexity int, input []*generated.CreateTemplateInput) int
-		CreateBulkTrustCenterCompliance         func(childComplexity int, input []*generated.CreateTrustCenterComplianceInput) int
-		CreateBulkTrustCenterDoc                func(childComplexity int, input []*generated.CreateTrustCenterDocInput) int
-		CreateBulkTrustCenterSubprocessor       func(childComplexity int, input []*generated.CreateTrustCenterSubprocessorInput) int
-		CreateBulkTrustCenterWatermarkConfig    func(childComplexity int, input []*generated.CreateTrustCenterWatermarkConfigInput) int
-		CreateBulkUserSetting                   func(childComplexity int, input []*generated.CreateUserSettingInput) int
-		CreateContact                           func(childComplexity int, input generated.CreateContactInput) int
-		CreateControl                           func(childComplexity int, input generated.CreateControlInput) int
-		CreateControlImplementation             func(childComplexity int, input generated.CreateControlImplementationInput) int
-		CreateControlObjective                  func(childComplexity int, input generated.CreateControlObjectiveInput) int
-		CreateControlWithSubcontrols            func(childComplexity int, input model.CreateControlWithSubcontrolsInput) int
-		CreateControlsByClone                   func(childComplexity int, input *model.CloneControlInput) int
-		CreateCustomDomain                      func(childComplexity int, input generated.CreateCustomDomainInput) int
-		CreateDNSVerification                   func(childComplexity int, input generated.CreateDNSVerificationInput) int
-		CreateDocumentData                      func(childComplexity int, input generated.CreateDocumentDataInput) int
-		CreateEntity                            func(childComplexity int, input generated.CreateEntityInput) int
-		CreateEntityType                        func(childComplexity int, input generated.CreateEntityTypeInput) int
-		CreateEvent                             func(childComplexity int, input generated.CreateEventInput) int
-		CreateEvidence                          func(childComplexity int, input generated.CreateEvidenceInput, evidenceFiles []*graphql.Upload) int
-		CreateExport                            func(childComplexity int, input generated.CreateExportInput) int
-		CreateFullProgram                       func(childComplexity int, input model.CreateFullProgramInput) int
-		CreateGroup                             func(childComplexity int, input generated.CreateGroupInput) int
-		CreateGroupByClone                      func(childComplexity int, groupInput generated.CreateGroupInput, members []*model.GroupMembersInput, inheritGroupPermissions *string, cloneGroupMembers *string) int
-		CreateGroupMembership                   func(childComplexity int, input generated.CreateGroupMembershipInput) int
-		CreateGroupSetting                      func(childComplexity int, input generated.CreateGroupSettingInput) int
-		CreateGroupWithMembers                  func(childComplexity int, groupInput generated.CreateGroupInput, members []*model.GroupMembersInput) int
-		CreateHush                              func(childComplexity int, input generated.CreateHushInput) int
-		CreateInternalPolicy                    func(childComplexity int, input generated.CreateInternalPolicyInput) int
-		CreateInvite                            func(childComplexity int, input generated.CreateInviteInput) int
-		CreateJobResult                         func(childComplexity int, input generated.CreateJobResultInput, jobResultFiles []*graphql.Upload) int
-		CreateJobRunner                         func(childComplexity int, input generated.CreateJobRunnerInput) int
-		CreateJobRunnerRegistrationToken        func(childComplexity int, input generated.CreateJobRunnerRegistrationTokenInput) int
-		CreateJobRunnerToken                    func(childComplexity int, input generated.CreateJobRunnerTokenInput) int
-		CreateJobTemplate                       func(childComplexity int, input generated.CreateJobTemplateInput) int
-		CreateMappableDomain                    func(childComplexity int, input generated.CreateMappableDomainInput) int
-		CreateMappedControl                     func(childComplexity int, input generated.CreateMappedControlInput) int
-		CreateNarrative                         func(childComplexity int, input generated.CreateNarrativeInput) int
-		CreateOnboarding                        func(childComplexity int, input generated.CreateOnboardingInput) int
-		CreateOrgMembership                     func(childComplexity int, input generated.CreateOrgMembershipInput) int
-		CreateOrganization                      func(childComplexity int, input generated.CreateOrganizationInput, avatarFile *graphql.Upload) int
-		CreateOrganizationSetting               func(childComplexity int, input generated.CreateOrganizationSettingInput) int
-		CreateOrganizationWithMembers           func(childComplexity int, organizationInput generated.CreateOrganizationInput, avatarFile *graphql.Upload, members []*model.OrgMembersInput) int
-		CreatePersonalAccessToken               func(childComplexity int, input generated.CreatePersonalAccessTokenInput) int
-		CreateProcedure                         func(childComplexity int, input generated.CreateProcedureInput) int
-		CreateProgram                           func(childComplexity int, input generated.CreateProgramInput) int
-		CreateProgramMembership                 func(childComplexity int, input generated.CreateProgramMembershipInput) int
-		CreateProgramWithMembers                func(childComplexity int, input model.CreateProgramWithMembersInput) int
-		CreateRisk                              func(childComplexity int, input generated.CreateRiskInput) int
-		CreateScan                              func(childComplexity int, input generated.CreateScanInput) int
-		CreateScheduledJob                      func(childComplexity int, input generated.CreateScheduledJobInput) int
-		CreateScheduledJobRun                   func(childComplexity int, input generated.CreateScheduledJobRunInput) int
-		CreateStandard                          func(childComplexity int, input generated.CreateStandardInput) int
-		CreateSubcontrol                        func(childComplexity int, input generated.CreateSubcontrolInput) int
-		CreateSubprocessor                      func(childComplexity int, input generated.CreateSubprocessorInput, logoFile *graphql.Upload) int
-		CreateSubscriber                        func(childComplexity int, input generated.CreateSubscriberInput) int
-		CreateTFASetting                        func(childComplexity int, input generated.CreateTFASettingInput) int
-		CreateTask                              func(childComplexity int, input generated.CreateTaskInput) int
-		CreateTemplate                          func(childComplexity int, input generated.CreateTemplateInput, templateFiles []*graphql.Upload) int
-		CreateTrustCenter                       func(childComplexity int, input generated.CreateTrustCenterInput) int
-		CreateTrustCenterCompliance             func(childComplexity int, input generated.CreateTrustCenterComplianceInput) int
-		CreateTrustCenterDoc                    func(childComplexity int, input generated.CreateTrustCenterDocInput, trustCenterDocFile graphql.Upload) int
-		CreateTrustCenterDomain                 func(childComplexity int, input model.CreateTrustCenterDomainInput) int
-		CreateTrustCenterNda                    func(childComplexity int, input model.CreateTrustCenterNDAInput, templateFiles []*graphql.Upload) int
-		CreateTrustCenterSetting                func(childComplexity int, input generated.CreateTrustCenterSettingInput, logoFile *graphql.Upload, faviconFile *graphql.Upload) int
-		CreateTrustCenterSubprocessor           func(childComplexity int, input generated.CreateTrustCenterSubprocessorInput) int
-		CreateTrustCenterWatermarkConfig        func(childComplexity int, input generated.CreateTrustCenterWatermarkConfigInput) int
-		CreateUploadInternalPolicy              func(childComplexity int, policyFile graphql.Upload, ownerID *string) int
-		CreateUploadProcedure                   func(childComplexity int, procedureFile graphql.Upload, ownerID *string) int
-		CreateUser                              func(childComplexity int, input generated.CreateUserInput, avatarFile *graphql.Upload) int
-		CreateUserSetting                       func(childComplexity int, input generated.CreateUserSettingInput) int
-		DeleteAPIToken                          func(childComplexity int, id string) int
-		DeleteActionPlan                        func(childComplexity int, id string) int
-		DeleteAsset                             func(childComplexity int, id string) int
-		DeleteBulkExport                        func(childComplexity int, ids []string) int
-		DeleteContact                           func(childComplexity int, id string) int
-		DeleteControl                           func(childComplexity int, id string) int
-		DeleteControlImplementation             func(childComplexity int, id string) int
-		DeleteControlObjective                  func(childComplexity int, id string) int
-		DeleteCustomDomain                      func(childComplexity int, id string) int
-		DeleteDNSVerification                   func(childComplexity int, id string) int
-		DeleteDocumentData                      func(childComplexity int, id string) int
-		DeleteEntity                            func(childComplexity int, id string) int
-		DeleteEntityType                        func(childComplexity int, id string) int
-		DeleteEvent                             func(childComplexity int, id string) int
-		DeleteEvidence                          func(childComplexity int, id string) int
-		DeleteExport                            func(childComplexity int, id string) int
-		DeleteFile                              func(childComplexity int, id string) int
-		DeleteGroup                             func(childComplexity int, id string) int
-		DeleteGroupMembership                   func(childComplexity int, id string) int
-		DeleteGroupSetting                      func(childComplexity int, id string) int
-		DeleteHush                              func(childComplexity int, id string) int
-		DeleteIntegration                       func(childComplexity int, id string) int
-		DeleteInternalPolicy                    func(childComplexity int, id string) int
-		DeleteInvite                            func(childComplexity int, id string) int
-		DeleteJobResult                         func(childComplexity int, id string) int
-		DeleteJobRunner                         func(childComplexity int, id string) int
-		DeleteJobRunnerRegistrationToken        func(childComplexity int, id string) int
-		DeleteJobRunnerToken                    func(childComplexity int, id string) int
-		DeleteJobTemplate                       func(childComplexity int, id string) int
-		DeleteMappableDomain                    func(childComplexity int, id string) int
-		DeleteMappedControl                     func(childComplexity int, id string) int
-		DeleteNarrative                         func(childComplexity int, id string) int
-		DeleteOrgMembership                     func(childComplexity int, id string) int
-		DeleteOrganization                      func(childComplexity int, id string) int
-		DeleteOrganizationSetting               func(childComplexity int, id string) int
-		DeletePersonalAccessToken               func(childComplexity int, id string) int
-		DeleteProcedure                         func(childComplexity int, id string) int
-		DeleteProgram                           func(childComplexity int, id string) int
-		DeleteProgramMembership                 func(childComplexity int, id string) int
-		DeleteRisk                              func(childComplexity int, id string) int
-		DeleteScan                              func(childComplexity int, id string) int
-		DeleteScheduledJob                      func(childComplexity int, id string) int
-		DeleteScheduledJobRun                   func(childComplexity int, id string) int
-		DeleteStandard                          func(childComplexity int, id string) int
-		DeleteSubcontrol                        func(childComplexity int, id string) int
-		DeleteSubprocessor                      func(childComplexity int, id string) int
-		DeleteSubscriber                        func(childComplexity int, email string, ownerID *string) int
-		DeleteTask                              func(childComplexity int, id string) int
-		DeleteTemplate                          func(childComplexity int, id string) int
-		DeleteTrustCenter                       func(childComplexity int, id string) int
-		DeleteTrustCenterCompliance             func(childComplexity int, id string) int
-		DeleteTrustCenterDoc                    func(childComplexity int, id string) int
-		DeleteTrustCenterSetting                func(childComplexity int, id string) int
-		DeleteTrustCenterSubprocessor           func(childComplexity int, id string) int
-		DeleteTrustCenterWatermarkConfig        func(childComplexity int, id string) int
-		DeleteUser                              func(childComplexity int, id string) int
-		DeleteWebauthn                          func(childComplexity int, id string) int
-		UpdateAPIToken                          func(childComplexity int, id string, input generated.UpdateAPITokenInput) int
-		UpdateActionPlan                        func(childComplexity int, id string, input generated.UpdateActionPlanInput) int
-		UpdateAsset                             func(childComplexity int, id string, input generated.UpdateAssetInput) int
-		UpdateBulkActionPlan                    func(childComplexity int, ids []string, input generated.UpdateActionPlanInput) int
-		UpdateBulkContact                       func(childComplexity int, ids []string, input generated.UpdateContactInput) int
-		UpdateBulkControl                       func(childComplexity int, ids []string, input generated.UpdateControlInput) int
-		UpdateBulkHush                          func(childComplexity int, ids []string, input generated.UpdateHushInput) int
-		UpdateBulkInternalPolicy                func(childComplexity int, ids []string, input generated.UpdateInternalPolicyInput) int
-		UpdateBulkProcedure                     func(childComplexity int, ids []string, input generated.UpdateProcedureInput) int
-		UpdateBulkRisk                          func(childComplexity int, ids []string, input generated.UpdateRiskInput) int
-		UpdateBulkScan                          func(childComplexity int, ids []string, input generated.UpdateScanInput) int
-		UpdateBulkTask                          func(childComplexity int, ids []string, input generated.UpdateTaskInput) int
-		UpdateContact                           func(childComplexity int, id string, input generated.UpdateContactInput) int
-		UpdateControl                           func(childComplexity int, id string, input generated.UpdateControlInput) int
-		UpdateControlImplementation             func(childComplexity int, id string, input generated.UpdateControlImplementationInput) int
-		UpdateControlObjective                  func(childComplexity int, id string, input generated.UpdateControlObjectiveInput) int
-		UpdateCustomDomain                      func(childComplexity int, id string, input generated.UpdateCustomDomainInput) int
-		UpdateDNSVerification                   func(childComplexity int, id string, input generated.UpdateDNSVerificationInput) int
-		UpdateDocumentData                      func(childComplexity int, id string, input generated.UpdateDocumentDataInput) int
-		UpdateEntity                            func(childComplexity int, id string, input generated.UpdateEntityInput) int
-		UpdateEntityType                        func(childComplexity int, id string, input generated.UpdateEntityTypeInput) int
-		UpdateEvent                             func(childComplexity int, id string, input generated.UpdateEventInput) int
-		UpdateEvidence                          func(childComplexity int, id string, input generated.UpdateEvidenceInput, evidenceFiles []*graphql.Upload) int
-		UpdateExport                            func(childComplexity int, id string, input generated.UpdateExportInput, exportFiles []*graphql.Upload) int
-		UpdateGroup                             func(childComplexity int, id string, input generated.UpdateGroupInput) int
-		UpdateGroupMembership                   func(childComplexity int, id string, input generated.UpdateGroupMembershipInput) int
-		UpdateGroupSetting                      func(childComplexity int, id string, input generated.UpdateGroupSettingInput) int
-		UpdateHush                              func(childComplexity int, id string, input generated.UpdateHushInput) int
-		UpdateInternalPolicy                    func(childComplexity int, id string, input generated.UpdateInternalPolicyInput) int
-		UpdateInvite                            func(childComplexity int, id string, input generated.UpdateInviteInput) int
-		UpdateJobResult                         func(childComplexity int, id string, input generated.UpdateJobResultInput, jobResultFiles []*graphql.Upload) int
-		UpdateJobRunner                         func(childComplexity int, id string, input generated.UpdateJobRunnerInput) int
-		UpdateJobTemplate                       func(childComplexity int, id string, input generated.UpdateJobTemplateInput) int
-		UpdateMappableDomain                    func(childComplexity int, id string, input generated.UpdateMappableDomainInput) int
-		UpdateMappedControl                     func(childComplexity int, id string, input generated.UpdateMappedControlInput) int
-		UpdateNarrative                         func(childComplexity int, id string, input generated.UpdateNarrativeInput) int
-		UpdateOrgMembership                     func(childComplexity int, id string, input generated.UpdateOrgMembershipInput) int
-		UpdateOrganization                      func(childComplexity int, id string, input generated.UpdateOrganizationInput, avatarFile *graphql.Upload) int
-		UpdateOrganizationSetting               func(childComplexity int, id string, input generated.UpdateOrganizationSettingInput) int
-		UpdatePersonalAccessToken               func(childComplexity int, id string, input generated.UpdatePersonalAccessTokenInput) int
-		UpdateProcedure                         func(childComplexity int, id string, input generated.UpdateProcedureInput) int
-		UpdateProgram                           func(childComplexity int, id string, input generated.UpdateProgramInput) int
-		UpdateProgramMembership                 func(childComplexity int, id string, input generated.UpdateProgramMembershipInput) int
-		UpdateRisk                              func(childComplexity int, id string, input generated.UpdateRiskInput) int
-		UpdateScan                              func(childComplexity int, id string, input generated.UpdateScanInput) int
-		UpdateScheduledJob                      func(childComplexity int, id string, input generated.UpdateScheduledJobInput) int
-		UpdateScheduledJobRun                   func(childComplexity int, id string, input generated.UpdateScheduledJobRunInput) int
-		UpdateStandard                          func(childComplexity int, id string, input generated.UpdateStandardInput) int
-		UpdateSubcontrol                        func(childComplexity int, id string, input generated.UpdateSubcontrolInput) int
-		UpdateSubprocessor                      func(childComplexity int, id string, input generated.UpdateSubprocessorInput, logoFile *graphql.Upload) int
-		UpdateSubscriber                        func(childComplexity int, email string, input generated.UpdateSubscriberInput) int
-		UpdateTFASetting                        func(childComplexity int, input generated.UpdateTFASettingInput) int
-		UpdateTask                              func(childComplexity int, id string, input generated.UpdateTaskInput) int
-		UpdateTaskComment                       func(childComplexity int, id string, input generated.UpdateNoteInput, noteFiles []*graphql.Upload) int
-		UpdateTemplate                          func(childComplexity int, id string, input generated.UpdateTemplateInput, templateFiles []*graphql.Upload) int
-		UpdateTrustCenter                       func(childComplexity int, id string, input generated.UpdateTrustCenterInput) int
-		UpdateTrustCenterCompliance             func(childComplexity int, id string, input generated.UpdateTrustCenterComplianceInput) int
-		UpdateTrustCenterDoc                    func(childComplexity int, id string, input generated.UpdateTrustCenterDocInput) int
-		UpdateTrustCenterNda                    func(childComplexity int, id string, templateFiles []*graphql.Upload) int
-		UpdateTrustCenterSetting                func(childComplexity int, id string, input generated.UpdateTrustCenterSettingInput, logoFile *graphql.Upload, faviconFile *graphql.Upload) int
-		UpdateTrustCenterSubprocessor           func(childComplexity int, id string, input generated.UpdateTrustCenterSubprocessorInput) int
-		UpdateTrustCenterWatermarkConfig        func(childComplexity int, id string, input generated.UpdateTrustCenterWatermarkConfigInput) int
-		UpdateUser                              func(childComplexity int, id string, input generated.UpdateUserInput, avatarFile *graphql.Upload) int
-		UpdateUserSetting                       func(childComplexity int, id string, input generated.UpdateUserSettingInput) int
+		CreateAPIToken                       func(childComplexity int, input generated.CreateAPITokenInput) int
+		CreateActionPlan                     func(childComplexity int, input generated.CreateActionPlanInput) int
+		CreateAsset                          func(childComplexity int, input generated.CreateAssetInput) int
+		CreateBulkAPIToken                   func(childComplexity int, input []*generated.CreateAPITokenInput) int
+		CreateBulkActionPlan                 func(childComplexity int, input []*generated.CreateActionPlanInput) int
+		CreateBulkAsset                      func(childComplexity int, input []*generated.CreateAssetInput) int
+		CreateBulkCSVAPIToken                func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVActionPlan              func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVAsset                   func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVContact                 func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVControl                 func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVControlImplementation   func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVControlObjective        func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVCustomDomain            func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVDNSVerification         func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVDocumentData            func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVEntity                  func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVEntityType              func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVEvent                   func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVGroup                   func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVGroupMembership         func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVGroupSetting            func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVHush                    func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVInternalPolicy          func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVInvite                  func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVJobTemplate             func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVMappableDomain          func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVMappedControl           func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVNarrative               func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVOrgMembership           func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVOrganizationSetting     func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVProcedure               func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVProgram                 func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVProgramMembership       func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVRisk                    func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVScan                    func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVScheduledJob            func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVSubcontrol              func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVSubprocessor            func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVSubscriber              func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVTask                    func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVTemplate                func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVTrustCenterCompliance   func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVTrustCenterDoc          func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVTrustCenterSubprocessor func(childComplexity int, input graphql.Upload) int
+		CreateBulkCSVUserSetting             func(childComplexity int, input graphql.Upload) int
+		CreateBulkContact                    func(childComplexity int, input []*generated.CreateContactInput) int
+		CreateBulkControl                    func(childComplexity int, input []*generated.CreateControlInput) int
+		CreateBulkControlImplementation      func(childComplexity int, input []*generated.CreateControlImplementationInput) int
+		CreateBulkControlObjective           func(childComplexity int, input []*generated.CreateControlObjectiveInput) int
+		CreateBulkCustomDomain               func(childComplexity int, input []*generated.CreateCustomDomainInput) int
+		CreateBulkDNSVerification            func(childComplexity int, input []*generated.CreateDNSVerificationInput) int
+		CreateBulkDocumentData               func(childComplexity int, input []*generated.CreateDocumentDataInput) int
+		CreateBulkEntity                     func(childComplexity int, input []*generated.CreateEntityInput) int
+		CreateBulkEntityType                 func(childComplexity int, input []*generated.CreateEntityTypeInput) int
+		CreateBulkEvent                      func(childComplexity int, input []*generated.CreateEventInput) int
+		CreateBulkGroup                      func(childComplexity int, input []*generated.CreateGroupInput) int
+		CreateBulkGroupMembership            func(childComplexity int, input []*generated.CreateGroupMembershipInput) int
+		CreateBulkGroupSetting               func(childComplexity int, input []*generated.CreateGroupSettingInput) int
+		CreateBulkHush                       func(childComplexity int, input []*generated.CreateHushInput) int
+		CreateBulkInternalPolicy             func(childComplexity int, input []*generated.CreateInternalPolicyInput) int
+		CreateBulkInvite                     func(childComplexity int, input []*generated.CreateInviteInput) int
+		CreateBulkJobTemplate                func(childComplexity int, input []*generated.CreateJobTemplateInput) int
+		CreateBulkMappableDomain             func(childComplexity int, input []*generated.CreateMappableDomainInput) int
+		CreateBulkMappedControl              func(childComplexity int, input []*generated.CreateMappedControlInput) int
+		CreateBulkNarrative                  func(childComplexity int, input []*generated.CreateNarrativeInput) int
+		CreateBulkOrgMembership              func(childComplexity int, input []*generated.CreateOrgMembershipInput) int
+		CreateBulkOrganizationSetting        func(childComplexity int, input []*generated.CreateOrganizationSettingInput) int
+		CreateBulkProcedure                  func(childComplexity int, input []*generated.CreateProcedureInput) int
+		CreateBulkProgram                    func(childComplexity int, input []*generated.CreateProgramInput) int
+		CreateBulkProgramMembership          func(childComplexity int, input []*generated.CreateProgramMembershipInput) int
+		CreateBulkRisk                       func(childComplexity int, input []*generated.CreateRiskInput) int
+		CreateBulkScan                       func(childComplexity int, input []*generated.CreateScanInput) int
+		CreateBulkScheduledJob               func(childComplexity int, input []*generated.CreateScheduledJobInput) int
+		CreateBulkSubcontrol                 func(childComplexity int, input []*generated.CreateSubcontrolInput) int
+		CreateBulkSubprocessor               func(childComplexity int, input []*generated.CreateSubprocessorInput) int
+		CreateBulkSubscriber                 func(childComplexity int, input []*generated.CreateSubscriberInput) int
+		CreateBulkTask                       func(childComplexity int, input []*generated.CreateTaskInput) int
+		CreateBulkTemplate                   func(childComplexity int, input []*generated.CreateTemplateInput) int
+		CreateBulkTrustCenterCompliance      func(childComplexity int, input []*generated.CreateTrustCenterComplianceInput) int
+		CreateBulkTrustCenterDoc             func(childComplexity int, input []*generated.CreateTrustCenterDocInput) int
+		CreateBulkTrustCenterSubprocessor    func(childComplexity int, input []*generated.CreateTrustCenterSubprocessorInput) int
+		CreateBulkUserSetting                func(childComplexity int, input []*generated.CreateUserSettingInput) int
+		CreateContact                        func(childComplexity int, input generated.CreateContactInput) int
+		CreateControl                        func(childComplexity int, input generated.CreateControlInput) int
+		CreateControlImplementation          func(childComplexity int, input generated.CreateControlImplementationInput) int
+		CreateControlObjective               func(childComplexity int, input generated.CreateControlObjectiveInput) int
+		CreateControlWithSubcontrols         func(childComplexity int, input model.CreateControlWithSubcontrolsInput) int
+		CreateControlsByClone                func(childComplexity int, input *model.CloneControlInput) int
+		CreateCustomDomain                   func(childComplexity int, input generated.CreateCustomDomainInput) int
+		CreateDNSVerification                func(childComplexity int, input generated.CreateDNSVerificationInput) int
+		CreateDocumentData                   func(childComplexity int, input generated.CreateDocumentDataInput) int
+		CreateEntity                         func(childComplexity int, input generated.CreateEntityInput) int
+		CreateEntityType                     func(childComplexity int, input generated.CreateEntityTypeInput) int
+		CreateEvent                          func(childComplexity int, input generated.CreateEventInput) int
+		CreateEvidence                       func(childComplexity int, input generated.CreateEvidenceInput, evidenceFiles []*graphql.Upload) int
+		CreateExport                         func(childComplexity int, input generated.CreateExportInput) int
+		CreateFullProgram                    func(childComplexity int, input model.CreateFullProgramInput) int
+		CreateGroup                          func(childComplexity int, input generated.CreateGroupInput) int
+		CreateGroupByClone                   func(childComplexity int, groupInput generated.CreateGroupInput, members []*model.GroupMembersInput, inheritGroupPermissions *string, cloneGroupMembers *string) int
+		CreateGroupMembership                func(childComplexity int, input generated.CreateGroupMembershipInput) int
+		CreateGroupSetting                   func(childComplexity int, input generated.CreateGroupSettingInput) int
+		CreateGroupWithMembers               func(childComplexity int, groupInput generated.CreateGroupInput, members []*model.GroupMembersInput) int
+		CreateHush                           func(childComplexity int, input generated.CreateHushInput) int
+		CreateInternalPolicy                 func(childComplexity int, input generated.CreateInternalPolicyInput) int
+		CreateInvite                         func(childComplexity int, input generated.CreateInviteInput) int
+		CreateJobResult                      func(childComplexity int, input generated.CreateJobResultInput, jobResultFiles []*graphql.Upload) int
+		CreateJobRunner                      func(childComplexity int, input generated.CreateJobRunnerInput) int
+		CreateJobRunnerRegistrationToken     func(childComplexity int, input generated.CreateJobRunnerRegistrationTokenInput) int
+		CreateJobRunnerToken                 func(childComplexity int, input generated.CreateJobRunnerTokenInput) int
+		CreateJobTemplate                    func(childComplexity int, input generated.CreateJobTemplateInput) int
+		CreateMappableDomain                 func(childComplexity int, input generated.CreateMappableDomainInput) int
+		CreateMappedControl                  func(childComplexity int, input generated.CreateMappedControlInput) int
+		CreateNarrative                      func(childComplexity int, input generated.CreateNarrativeInput) int
+		CreateOnboarding                     func(childComplexity int, input generated.CreateOnboardingInput) int
+		CreateOrgMembership                  func(childComplexity int, input generated.CreateOrgMembershipInput) int
+		CreateOrganization                   func(childComplexity int, input generated.CreateOrganizationInput, avatarFile *graphql.Upload) int
+		CreateOrganizationSetting            func(childComplexity int, input generated.CreateOrganizationSettingInput) int
+		CreateOrganizationWithMembers        func(childComplexity int, organizationInput generated.CreateOrganizationInput, avatarFile *graphql.Upload, members []*model.OrgMembersInput) int
+		CreatePersonalAccessToken            func(childComplexity int, input generated.CreatePersonalAccessTokenInput) int
+		CreateProcedure                      func(childComplexity int, input generated.CreateProcedureInput) int
+		CreateProgram                        func(childComplexity int, input generated.CreateProgramInput) int
+		CreateProgramMembership              func(childComplexity int, input generated.CreateProgramMembershipInput) int
+		CreateProgramWithMembers             func(childComplexity int, input model.CreateProgramWithMembersInput) int
+		CreateRisk                           func(childComplexity int, input generated.CreateRiskInput) int
+		CreateScan                           func(childComplexity int, input generated.CreateScanInput) int
+		CreateScheduledJob                   func(childComplexity int, input generated.CreateScheduledJobInput) int
+		CreateScheduledJobRun                func(childComplexity int, input generated.CreateScheduledJobRunInput) int
+		CreateStandard                       func(childComplexity int, input generated.CreateStandardInput) int
+		CreateSubcontrol                     func(childComplexity int, input generated.CreateSubcontrolInput) int
+		CreateSubprocessor                   func(childComplexity int, input generated.CreateSubprocessorInput, logoFile *graphql.Upload) int
+		CreateSubscriber                     func(childComplexity int, input generated.CreateSubscriberInput) int
+		CreateTFASetting                     func(childComplexity int, input generated.CreateTFASettingInput) int
+		CreateTask                           func(childComplexity int, input generated.CreateTaskInput) int
+		CreateTemplate                       func(childComplexity int, input generated.CreateTemplateInput, templateFiles []*graphql.Upload) int
+		CreateTrustCenter                    func(childComplexity int, input generated.CreateTrustCenterInput) int
+		CreateTrustCenterCompliance          func(childComplexity int, input generated.CreateTrustCenterComplianceInput) int
+		CreateTrustCenterDoc                 func(childComplexity int, input generated.CreateTrustCenterDocInput, trustCenterDocFile graphql.Upload) int
+		CreateTrustCenterDomain              func(childComplexity int, input model.CreateTrustCenterDomainInput) int
+		CreateTrustCenterNda                 func(childComplexity int, input model.CreateTrustCenterNDAInput, templateFiles []*graphql.Upload) int
+		CreateTrustCenterSetting             func(childComplexity int, input generated.CreateTrustCenterSettingInput, logoFile *graphql.Upload, faviconFile *graphql.Upload) int
+		CreateTrustCenterSubprocessor        func(childComplexity int, input generated.CreateTrustCenterSubprocessorInput) int
+		CreateTrustCenterWatermarkConfig     func(childComplexity int, input generated.CreateTrustCenterWatermarkConfigInput, logoFile *graphql.Upload) int
+		CreateUploadInternalPolicy           func(childComplexity int, policyFile graphql.Upload, ownerID *string) int
+		CreateUploadProcedure                func(childComplexity int, procedureFile graphql.Upload, ownerID *string) int
+		CreateUser                           func(childComplexity int, input generated.CreateUserInput, avatarFile *graphql.Upload) int
+		CreateUserSetting                    func(childComplexity int, input generated.CreateUserSettingInput) int
+		DeleteAPIToken                       func(childComplexity int, id string) int
+		DeleteActionPlan                     func(childComplexity int, id string) int
+		DeleteAsset                          func(childComplexity int, id string) int
+		DeleteBulkExport                     func(childComplexity int, ids []string) int
+		DeleteContact                        func(childComplexity int, id string) int
+		DeleteControl                        func(childComplexity int, id string) int
+		DeleteControlImplementation          func(childComplexity int, id string) int
+		DeleteControlObjective               func(childComplexity int, id string) int
+		DeleteCustomDomain                   func(childComplexity int, id string) int
+		DeleteDNSVerification                func(childComplexity int, id string) int
+		DeleteDocumentData                   func(childComplexity int, id string) int
+		DeleteEntity                         func(childComplexity int, id string) int
+		DeleteEntityType                     func(childComplexity int, id string) int
+		DeleteEvent                          func(childComplexity int, id string) int
+		DeleteEvidence                       func(childComplexity int, id string) int
+		DeleteExport                         func(childComplexity int, id string) int
+		DeleteFile                           func(childComplexity int, id string) int
+		DeleteGroup                          func(childComplexity int, id string) int
+		DeleteGroupMembership                func(childComplexity int, id string) int
+		DeleteGroupSetting                   func(childComplexity int, id string) int
+		DeleteHush                           func(childComplexity int, id string) int
+		DeleteIntegration                    func(childComplexity int, id string) int
+		DeleteInternalPolicy                 func(childComplexity int, id string) int
+		DeleteInvite                         func(childComplexity int, id string) int
+		DeleteJobResult                      func(childComplexity int, id string) int
+		DeleteJobRunner                      func(childComplexity int, id string) int
+		DeleteJobRunnerRegistrationToken     func(childComplexity int, id string) int
+		DeleteJobRunnerToken                 func(childComplexity int, id string) int
+		DeleteJobTemplate                    func(childComplexity int, id string) int
+		DeleteMappableDomain                 func(childComplexity int, id string) int
+		DeleteMappedControl                  func(childComplexity int, id string) int
+		DeleteNarrative                      func(childComplexity int, id string) int
+		DeleteOrgMembership                  func(childComplexity int, id string) int
+		DeleteOrganization                   func(childComplexity int, id string) int
+		DeleteOrganizationSetting            func(childComplexity int, id string) int
+		DeletePersonalAccessToken            func(childComplexity int, id string) int
+		DeleteProcedure                      func(childComplexity int, id string) int
+		DeleteProgram                        func(childComplexity int, id string) int
+		DeleteProgramMembership              func(childComplexity int, id string) int
+		DeleteRisk                           func(childComplexity int, id string) int
+		DeleteScan                           func(childComplexity int, id string) int
+		DeleteScheduledJob                   func(childComplexity int, id string) int
+		DeleteScheduledJobRun                func(childComplexity int, id string) int
+		DeleteStandard                       func(childComplexity int, id string) int
+		DeleteSubcontrol                     func(childComplexity int, id string) int
+		DeleteSubprocessor                   func(childComplexity int, id string) int
+		DeleteSubscriber                     func(childComplexity int, email string, ownerID *string) int
+		DeleteTask                           func(childComplexity int, id string) int
+		DeleteTemplate                       func(childComplexity int, id string) int
+		DeleteTrustCenter                    func(childComplexity int, id string) int
+		DeleteTrustCenterCompliance          func(childComplexity int, id string) int
+		DeleteTrustCenterDoc                 func(childComplexity int, id string) int
+		DeleteTrustCenterSetting             func(childComplexity int, id string) int
+		DeleteTrustCenterSubprocessor        func(childComplexity int, id string) int
+		DeleteTrustCenterWatermarkConfig     func(childComplexity int, id string) int
+		DeleteUser                           func(childComplexity int, id string) int
+		DeleteWebauthn                       func(childComplexity int, id string) int
+		UpdateAPIToken                       func(childComplexity int, id string, input generated.UpdateAPITokenInput) int
+		UpdateActionPlan                     func(childComplexity int, id string, input generated.UpdateActionPlanInput) int
+		UpdateAsset                          func(childComplexity int, id string, input generated.UpdateAssetInput) int
+		UpdateBulkActionPlan                 func(childComplexity int, ids []string, input generated.UpdateActionPlanInput) int
+		UpdateBulkContact                    func(childComplexity int, ids []string, input generated.UpdateContactInput) int
+		UpdateBulkControl                    func(childComplexity int, ids []string, input generated.UpdateControlInput) int
+		UpdateBulkHush                       func(childComplexity int, ids []string, input generated.UpdateHushInput) int
+		UpdateBulkInternalPolicy             func(childComplexity int, ids []string, input generated.UpdateInternalPolicyInput) int
+		UpdateBulkProcedure                  func(childComplexity int, ids []string, input generated.UpdateProcedureInput) int
+		UpdateBulkRisk                       func(childComplexity int, ids []string, input generated.UpdateRiskInput) int
+		UpdateBulkScan                       func(childComplexity int, ids []string, input generated.UpdateScanInput) int
+		UpdateBulkTask                       func(childComplexity int, ids []string, input generated.UpdateTaskInput) int
+		UpdateContact                        func(childComplexity int, id string, input generated.UpdateContactInput) int
+		UpdateControl                        func(childComplexity int, id string, input generated.UpdateControlInput) int
+		UpdateControlImplementation          func(childComplexity int, id string, input generated.UpdateControlImplementationInput) int
+		UpdateControlObjective               func(childComplexity int, id string, input generated.UpdateControlObjectiveInput) int
+		UpdateCustomDomain                   func(childComplexity int, id string, input generated.UpdateCustomDomainInput) int
+		UpdateDNSVerification                func(childComplexity int, id string, input generated.UpdateDNSVerificationInput) int
+		UpdateDocumentData                   func(childComplexity int, id string, input generated.UpdateDocumentDataInput) int
+		UpdateEntity                         func(childComplexity int, id string, input generated.UpdateEntityInput) int
+		UpdateEntityType                     func(childComplexity int, id string, input generated.UpdateEntityTypeInput) int
+		UpdateEvent                          func(childComplexity int, id string, input generated.UpdateEventInput) int
+		UpdateEvidence                       func(childComplexity int, id string, input generated.UpdateEvidenceInput, evidenceFiles []*graphql.Upload) int
+		UpdateExport                         func(childComplexity int, id string, input generated.UpdateExportInput, exportFiles []*graphql.Upload) int
+		UpdateGroup                          func(childComplexity int, id string, input generated.UpdateGroupInput) int
+		UpdateGroupMembership                func(childComplexity int, id string, input generated.UpdateGroupMembershipInput) int
+		UpdateGroupSetting                   func(childComplexity int, id string, input generated.UpdateGroupSettingInput) int
+		UpdateHush                           func(childComplexity int, id string, input generated.UpdateHushInput) int
+		UpdateInternalPolicy                 func(childComplexity int, id string, input generated.UpdateInternalPolicyInput) int
+		UpdateInvite                         func(childComplexity int, id string, input generated.UpdateInviteInput) int
+		UpdateJobResult                      func(childComplexity int, id string, input generated.UpdateJobResultInput, jobResultFiles []*graphql.Upload) int
+		UpdateJobRunner                      func(childComplexity int, id string, input generated.UpdateJobRunnerInput) int
+		UpdateJobTemplate                    func(childComplexity int, id string, input generated.UpdateJobTemplateInput) int
+		UpdateMappableDomain                 func(childComplexity int, id string, input generated.UpdateMappableDomainInput) int
+		UpdateMappedControl                  func(childComplexity int, id string, input generated.UpdateMappedControlInput) int
+		UpdateNarrative                      func(childComplexity int, id string, input generated.UpdateNarrativeInput) int
+		UpdateOrgMembership                  func(childComplexity int, id string, input generated.UpdateOrgMembershipInput) int
+		UpdateOrganization                   func(childComplexity int, id string, input generated.UpdateOrganizationInput, avatarFile *graphql.Upload) int
+		UpdateOrganizationSetting            func(childComplexity int, id string, input generated.UpdateOrganizationSettingInput) int
+		UpdatePersonalAccessToken            func(childComplexity int, id string, input generated.UpdatePersonalAccessTokenInput) int
+		UpdateProcedure                      func(childComplexity int, id string, input generated.UpdateProcedureInput) int
+		UpdateProgram                        func(childComplexity int, id string, input generated.UpdateProgramInput) int
+		UpdateProgramMembership              func(childComplexity int, id string, input generated.UpdateProgramMembershipInput) int
+		UpdateRisk                           func(childComplexity int, id string, input generated.UpdateRiskInput) int
+		UpdateScan                           func(childComplexity int, id string, input generated.UpdateScanInput) int
+		UpdateScheduledJob                   func(childComplexity int, id string, input generated.UpdateScheduledJobInput) int
+		UpdateScheduledJobRun                func(childComplexity int, id string, input generated.UpdateScheduledJobRunInput) int
+		UpdateStandard                       func(childComplexity int, id string, input generated.UpdateStandardInput) int
+		UpdateSubcontrol                     func(childComplexity int, id string, input generated.UpdateSubcontrolInput) int
+		UpdateSubprocessor                   func(childComplexity int, id string, input generated.UpdateSubprocessorInput, logoFile *graphql.Upload) int
+		UpdateSubscriber                     func(childComplexity int, email string, input generated.UpdateSubscriberInput) int
+		UpdateTFASetting                     func(childComplexity int, input generated.UpdateTFASettingInput) int
+		UpdateTask                           func(childComplexity int, id string, input generated.UpdateTaskInput) int
+		UpdateTaskComment                    func(childComplexity int, id string, input generated.UpdateNoteInput, noteFiles []*graphql.Upload) int
+		UpdateTemplate                       func(childComplexity int, id string, input generated.UpdateTemplateInput, templateFiles []*graphql.Upload) int
+		UpdateTrustCenter                    func(childComplexity int, id string, input generated.UpdateTrustCenterInput) int
+		UpdateTrustCenterCompliance          func(childComplexity int, id string, input generated.UpdateTrustCenterComplianceInput) int
+		UpdateTrustCenterDoc                 func(childComplexity int, id string, input generated.UpdateTrustCenterDocInput) int
+		UpdateTrustCenterNda                 func(childComplexity int, id string, templateFiles []*graphql.Upload) int
+		UpdateTrustCenterSetting             func(childComplexity int, id string, input generated.UpdateTrustCenterSettingInput, logoFile *graphql.Upload, faviconFile *graphql.Upload) int
+		UpdateTrustCenterSubprocessor        func(childComplexity int, id string, input generated.UpdateTrustCenterSubprocessorInput) int
+		UpdateTrustCenterWatermarkConfig     func(childComplexity int, id string, input generated.UpdateTrustCenterWatermarkConfigInput, logoFile *graphql.Upload) int
+		UpdateUser                           func(childComplexity int, id string, input generated.UpdateUserInput, avatarFile *graphql.Upload) int
+		UpdateUserSetting                    func(childComplexity int, id string, input generated.UpdateUserSettingInput) int
 	}
 
 	Narrative struct {
@@ -17449,18 +17447,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.Mutation.CreateBulkCSVTrustCenterSubprocessor(childComplexity, args["input"].(graphql.Upload)), true
 
-	case "Mutation.createBulkCSVTrustCenterWatermarkConfig":
-		if e.complexity.Mutation.CreateBulkCSVTrustCenterWatermarkConfig == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_createBulkCSVTrustCenterWatermarkConfig_args(ctx, rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.CreateBulkCSVTrustCenterWatermarkConfig(childComplexity, args["input"].(graphql.Upload)), true
-
 	case "Mutation.createBulkCSVUserSetting":
 		if e.complexity.Mutation.CreateBulkCSVUserSetting == nil {
 			break
@@ -17904,18 +17890,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Mutation.CreateBulkTrustCenterSubprocessor(childComplexity, args["input"].([]*generated.CreateTrustCenterSubprocessorInput)), true
-
-	case "Mutation.createBulkTrustCenterWatermarkConfig":
-		if e.complexity.Mutation.CreateBulkTrustCenterWatermarkConfig == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_createBulkTrustCenterWatermarkConfig_args(ctx, rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.CreateBulkTrustCenterWatermarkConfig(childComplexity, args["input"].([]*generated.CreateTrustCenterWatermarkConfigInput)), true
 
 	case "Mutation.createBulkUserSetting":
 		if e.complexity.Mutation.CreateBulkUserSetting == nil {
@@ -18647,7 +18621,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateTrustCenterWatermarkConfig(childComplexity, args["input"].(generated.CreateTrustCenterWatermarkConfigInput)), true
+		return e.complexity.Mutation.CreateTrustCenterWatermarkConfig(childComplexity, args["input"].(generated.CreateTrustCenterWatermarkConfigInput), args["logoFile"].(*graphql.Upload)), true
 
 	case "Mutation.createUploadInternalPolicy":
 		if e.complexity.Mutation.CreateUploadInternalPolicy == nil {
@@ -20123,7 +20097,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateTrustCenterWatermarkConfig(childComplexity, args["id"].(string), args["input"].(generated.UpdateTrustCenterWatermarkConfigInput)), true
+		return e.complexity.Mutation.UpdateTrustCenterWatermarkConfig(childComplexity, args["id"].(string), args["input"].(generated.UpdateTrustCenterWatermarkConfigInput), args["logoFile"].(*graphql.Upload)), true
 
 	case "Mutation.updateUser":
 		if e.complexity.Mutation.UpdateUser == nil {
@@ -103043,25 +103017,8 @@ extend type Mutation{
         values of the trustCenterWatermarkConfig
         """
         input: CreateTrustCenterWatermarkConfigInput!
+        logoFile: Upload
     ): TrustCenterWatermarkConfigCreatePayload!
-    """
-    Create multiple new trustCenterWatermarkConfigs
-    """
-    createBulkTrustCenterWatermarkConfig(
-        """
-        values of the trustCenterWatermarkConfig
-        """
-        input: [CreateTrustCenterWatermarkConfigInput!]
-    ): TrustCenterWatermarkConfigBulkCreatePayload!
-    """
-    Create multiple new trustCenterWatermarkConfigs via file upload
-    """
-    createBulkCSVTrustCenterWatermarkConfig(
-        """
-        csv file containing values of the trustCenterWatermarkConfig
-        """
-        input: Upload!
-    ): TrustCenterWatermarkConfigBulkCreatePayload!
     """
     Update an existing trustCenterWatermarkConfig
     """
@@ -103074,6 +103031,7 @@ extend type Mutation{
         New values for the trustCenterWatermarkConfig
         """
         input: UpdateTrustCenterWatermarkConfigInput!
+        logoFile: Upload
     ): TrustCenterWatermarkConfigUpdatePayload!
     """
     Delete an existing trustCenterWatermarkConfig
