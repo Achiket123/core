@@ -508,12 +508,12 @@ type OpenlaneGraphClient interface {
 	UpdateTrustCenterSubprocessor(ctx context.Context, updateTrustCenterSubprocessorID string, input UpdateTrustCenterSubprocessorInput, interceptors ...clientv2.RequestInterceptor) (*UpdateTrustCenterSubprocessor, error)
 	GetAllTrustCenterSubprocessorHistories(ctx context.Context, interceptors ...clientv2.RequestInterceptor) (*GetAllTrustCenterSubprocessorHistories, error)
 	GetTrustCenterSubprocessorHistories(ctx context.Context, first *int64, last *int64, where *TrustCenterSubprocessorHistoryWhereInput, interceptors ...clientv2.RequestInterceptor) (*GetTrustCenterSubprocessorHistories, error)
-	CreateTrustCenterWatermarkConfig(ctx context.Context, input CreateTrustCenterWatermarkConfigInput, interceptors ...clientv2.RequestInterceptor) (*CreateTrustCenterWatermarkConfig, error)
+	CreateTrustCenterWatermarkConfig(ctx context.Context, input CreateTrustCenterWatermarkConfigInput, logoFile *graphql.Upload, interceptors ...clientv2.RequestInterceptor) (*CreateTrustCenterWatermarkConfig, error)
 	DeleteTrustCenterWatermarkConfig(ctx context.Context, deleteTrustCenterWatermarkConfigID string, interceptors ...clientv2.RequestInterceptor) (*DeleteTrustCenterWatermarkConfig, error)
 	GetAllTrustCenterWatermarkConfigs(ctx context.Context, interceptors ...clientv2.RequestInterceptor) (*GetAllTrustCenterWatermarkConfigs, error)
 	GetTrustCenterWatermarkConfigByID(ctx context.Context, trustCenterWatermarkConfigID string, interceptors ...clientv2.RequestInterceptor) (*GetTrustCenterWatermarkConfigByID, error)
 	GetTrustCenterWatermarkConfigs(ctx context.Context, first *int64, last *int64, where *TrustCenterWatermarkConfigWhereInput, interceptors ...clientv2.RequestInterceptor) (*GetTrustCenterWatermarkConfigs, error)
-	UpdateTrustCenterWatermarkConfig(ctx context.Context, updateTrustCenterWatermarkConfigID string, input UpdateTrustCenterWatermarkConfigInput, interceptors ...clientv2.RequestInterceptor) (*UpdateTrustCenterWatermarkConfig, error)
+	UpdateTrustCenterWatermarkConfig(ctx context.Context, updateTrustCenterWatermarkConfigID string, input UpdateTrustCenterWatermarkConfigInput, logoFile *graphql.Upload, interceptors ...clientv2.RequestInterceptor) (*UpdateTrustCenterWatermarkConfig, error)
 	GetAllTrustCenterWatermarkConfigHistories(ctx context.Context, interceptors ...clientv2.RequestInterceptor) (*GetAllTrustCenterWatermarkConfigHistories, error)
 	GetTrustCenterWatermarkConfigHistories(ctx context.Context, first *int64, last *int64, where *TrustCenterWatermarkConfigHistoryWhereInput, interceptors ...clientv2.RequestInterceptor) (*GetTrustCenterWatermarkConfigHistories, error)
 	CreateUser(ctx context.Context, input CreateUserInput, interceptors ...clientv2.RequestInterceptor) (*CreateUser, error)
@@ -105964,8 +105964,8 @@ func (c *Client) GetTrustCenterSubprocessorHistories(ctx context.Context, first 
 	return &res, nil
 }
 
-const CreateTrustCenterWatermarkConfigDocument = `mutation CreateTrustCenterWatermarkConfig ($input: CreateTrustCenterWatermarkConfigInput!) {
-	createTrustCenterWatermarkConfig(input: $input) {
+const CreateTrustCenterWatermarkConfigDocument = `mutation CreateTrustCenterWatermarkConfig ($input: CreateTrustCenterWatermarkConfigInput!, $logoFile: Upload) {
+	createTrustCenterWatermarkConfig(input: $input, logoFile: $logoFile) {
 		trustCenterWatermarkConfig {
 			createdAt
 			createdBy
@@ -105989,9 +105989,10 @@ const CreateTrustCenterWatermarkConfigDocument = `mutation CreateTrustCenterWate
 }
 `
 
-func (c *Client) CreateTrustCenterWatermarkConfig(ctx context.Context, input CreateTrustCenterWatermarkConfigInput, interceptors ...clientv2.RequestInterceptor) (*CreateTrustCenterWatermarkConfig, error) {
+func (c *Client) CreateTrustCenterWatermarkConfig(ctx context.Context, input CreateTrustCenterWatermarkConfigInput, logoFile *graphql.Upload, interceptors ...clientv2.RequestInterceptor) (*CreateTrustCenterWatermarkConfig, error) {
 	vars := map[string]any{
-		"input": input,
+		"input":    input,
+		"logoFile": logoFile,
 	}
 
 	var res CreateTrustCenterWatermarkConfig
@@ -106172,8 +106173,8 @@ func (c *Client) GetTrustCenterWatermarkConfigs(ctx context.Context, first *int6
 	return &res, nil
 }
 
-const UpdateTrustCenterWatermarkConfigDocument = `mutation UpdateTrustCenterWatermarkConfig ($updateTrustCenterWatermarkConfigId: ID!, $input: UpdateTrustCenterWatermarkConfigInput!) {
-	updateTrustCenterWatermarkConfig(id: $updateTrustCenterWatermarkConfigId, input: $input) {
+const UpdateTrustCenterWatermarkConfigDocument = `mutation UpdateTrustCenterWatermarkConfig ($updateTrustCenterWatermarkConfigId: ID!, $input: UpdateTrustCenterWatermarkConfigInput!, $logoFile: Upload) {
+	updateTrustCenterWatermarkConfig(id: $updateTrustCenterWatermarkConfigId, input: $input, logoFile: $logoFile) {
 		trustCenterWatermarkConfig {
 			createdAt
 			createdBy
@@ -106197,10 +106198,11 @@ const UpdateTrustCenterWatermarkConfigDocument = `mutation UpdateTrustCenterWate
 }
 `
 
-func (c *Client) UpdateTrustCenterWatermarkConfig(ctx context.Context, updateTrustCenterWatermarkConfigID string, input UpdateTrustCenterWatermarkConfigInput, interceptors ...clientv2.RequestInterceptor) (*UpdateTrustCenterWatermarkConfig, error) {
+func (c *Client) UpdateTrustCenterWatermarkConfig(ctx context.Context, updateTrustCenterWatermarkConfigID string, input UpdateTrustCenterWatermarkConfigInput, logoFile *graphql.Upload, interceptors ...clientv2.RequestInterceptor) (*UpdateTrustCenterWatermarkConfig, error) {
 	vars := map[string]any{
 		"updateTrustCenterWatermarkConfigId": updateTrustCenterWatermarkConfigID,
 		"input":                              input,
+		"logoFile":                           logoFile,
 	}
 
 	var res UpdateTrustCenterWatermarkConfig
