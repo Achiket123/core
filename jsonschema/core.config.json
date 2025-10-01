@@ -1336,6 +1336,107 @@
       "additionalProperties": false,
       "type": "object"
     },
+    "storage.ProviderConfig": {
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enabled indicates if object storage is enabled"
+        },
+        "keys": {
+          "$ref": "#/$defs/[]string",
+          "description": "Keys are the form field keys that will be processed for uploads"
+        },
+        "maxSizeMB": {
+          "type": "integer",
+          "description": "MaxSizeMB is the maximum file size allowed in MB"
+        },
+        "maxMemoryMB": {
+          "type": "integer",
+          "description": "MaxMemoryMB is the maximum memory to use for file uploads in MB"
+        },
+        "devMode": {
+          "type": "boolean",
+          "description": "DevMode enables simple file upload handling for local development and testing"
+        },
+        "providers": {
+          "$ref": "#/$defs/storage.ProviderConfigs",
+          "description": "Providers contains configuration for each storage provider"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "ProviderConfig contains configuration for object storage providers"
+    },
+    "storage.ProviderConfigs": {
+      "properties": {
+        "s3": {
+          "$ref": "#/$defs/storage.ProviderCredentials",
+          "description": "S3 provider configuration"
+        },
+        "cloudflareR2": {
+          "$ref": "#/$defs/storage.ProviderCredentials",
+          "description": "CloudflareR2 provider configuration"
+        },
+        "gcs": {
+          "$ref": "#/$defs/storage.ProviderCredentials",
+          "description": "GCS provider configuration"
+        },
+        "disk": {
+          "$ref": "#/$defs/storage.ProviderCredentials",
+          "description": "Disk provider configuration"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "ProviderConfigs contains configuration for all storage providers This is structured to allow easy extension for additional providers in the future"
+    },
+    "storage.ProviderCredentials": {
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enabled indicates if this provider is enabled"
+        },
+        "accessKeyID": {
+          "type": "string",
+          "description": "AccessKeyID for cloud providers"
+        },
+        "secretAccessKey": {
+          "type": "string",
+          "description": "SecretAccessKey for cloud providers"
+        },
+        "region": {
+          "type": "string",
+          "description": "Region for cloud providers"
+        },
+        "bucket": {
+          "type": "string",
+          "description": "Bucket name for cloud providers"
+        },
+        "endpoint": {
+          "type": "string",
+          "description": "Endpoint for custom endpoints"
+        },
+        "projectID": {
+          "type": "string",
+          "description": "ProjectID for GCS"
+        },
+        "credentialsJSON": {
+          "type": "string",
+          "description": "CredentialsJSON for GCS"
+        },
+        "accountID": {
+          "type": "string",
+          "description": "AccountID for Cloudflare R2"
+        },
+        "apiToken": {
+          "type": "string",
+          "description": "APIToken for Cloudflare R2"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "ProviderCredentials contains credentials and configuration for a storage provider Given most provides had a smiliar set of credentials and only some minor exceptions we consolidated into a single struct to make it easier to manage and extend"
+    },
     "tokens.Config": {
       "properties": {
         "kid": {
@@ -1545,7 +1646,7 @@
       "description": "Ratelimit contains the configuration for the rate limiter"
     },
     "objectStorage": {
-      "$ref": "#/$defs/objects.Config",
+      "$ref": "#/$defs/storage.ProviderConfig",
       "description": "ObjectStorage contains the configuration for the object storage backend"
     },
     "subscription": {
