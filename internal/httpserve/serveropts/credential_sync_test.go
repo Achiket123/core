@@ -44,8 +44,6 @@ func (suite *CredentialSyncTestSuite) TestCredentialsMatch() {
 				Endpoint:        "test_endpoint",
 				ProjectID:       "test_project",
 				AccountID:       "test_account",
-				Region:          "us-east-1",   // Should be ignored
-				Bucket:          "test-bucket", // Should be ignored
 			},
 			want: true,
 		},
@@ -90,8 +88,6 @@ func (suite *CredentialSyncTestSuite) TestCredentialHashConsistency() {
 			Endpoint:        "test_endpoint",
 			ProjectID:       "test_project",
 			AccountID:       "test_account",
-			Region:          "us-east-1",
-			Bucket:          "test-bucket",
 		}
 
 		credSet := models.CredentialSet{
@@ -116,12 +112,10 @@ func (suite *CredentialSyncTestSuite) TestCredentialHashConsistency() {
 		}
 
 		creds1 := baseCreds
-		creds1.Region = "us-east-1"
-		creds1.Bucket = "bucket1"
+		// Region and Bucket are not part of ProviderCredentials, so we skip these assignments
 
 		creds2 := baseCreds
-		creds2.Region = "us-west-2"
-		creds2.Bucket = "bucket2"
+		// Region and Bucket are not part of ProviderCredentials, so we skip these assignments
 
 		hash1 := suite.service.GenerateCredentialHash(creds1)
 		hash2 := suite.service.GenerateCredentialHash(creds2)
@@ -207,13 +201,15 @@ func (suite *CredentialSyncTestSuite) TestSyncConfigCredentials() {
 		ctx = ent.NewContext(ctx, suite.db)
 
 		// Configure service with S3 credentials
-		config := &storage.ProviderConfigs{
-			S3: storage.ProviderCredentials{
-				Enabled:         true,
-				AccessKeyID:     "test_access_key",
-				SecretAccessKey: "test_secret_key",
-				Region:          "us-east-1",
-				Bucket:          "test-bucket",
+		config := &storage.Providers{
+			S3: storage.ProviderConfigs{
+				Enabled: true,
+				Region:  "us-east-1",
+				Bucket:  "test-bucket",
+				Credentials: storage.ProviderCredentials{
+					AccessKeyID:     "test_access_key",
+					SecretAccessKey: "test_secret_key",
+				},
 			},
 		}
 
@@ -246,13 +242,15 @@ func (suite *CredentialSyncTestSuite) TestSyncConfigCredentials() {
 		ctx = privacy.DecisionContext(ctx, privacy.Allow)
 		ctx = ent.NewContext(ctx, suite.db)
 
-		config := &storage.ProviderConfigs{
-			S3: storage.ProviderCredentials{
-				Enabled:         true,
-				AccessKeyID:     "same_key",
-				SecretAccessKey: "same_secret",
-				Region:          "us-east-1",
-				Bucket:          "test-bucket",
+		config := &storage.Providers{
+			S3: storage.ProviderConfigs{
+				Enabled: true,
+				Region:  "us-east-1",
+				Bucket:  "test-bucket",
+				Credentials: storage.ProviderCredentials{
+					AccessKeyID:     "same_key",
+					SecretAccessKey: "same_secret",
+				},
 			},
 		}
 
@@ -292,13 +290,15 @@ func (suite *CredentialSyncTestSuite) TestSyncConfigCredentials() {
 		ctx = privacy.DecisionContext(ctx, privacy.Allow)
 		ctx = ent.NewContext(ctx, suite.db)
 
-		config := &storage.ProviderConfigs{
-			S3: storage.ProviderCredentials{
-				Enabled:         true,
-				AccessKeyID:     "initial_key",
-				SecretAccessKey: "initial_secret",
-				Region:          "us-east-1",
-				Bucket:          "test-bucket",
+		config := &storage.Providers{
+			S3: storage.ProviderConfigs{
+				Enabled: true,
+				Region:  "us-east-1",
+				Bucket:  "test-bucket",
+				Credentials: storage.ProviderCredentials{
+					AccessKeyID:     "initial_key",
+					SecretAccessKey: "initial_secret",
+				},
 			},
 		}
 
@@ -311,8 +311,8 @@ func (suite *CredentialSyncTestSuite) TestSyncConfigCredentials() {
 		require.NoError(t, err)
 
 		// Update credentials and sync again
-		config.S3.AccessKeyID = "updated_key"
-		config.S3.SecretAccessKey = "updated_secret"
+		config.S3.Credentials.AccessKeyID = "updated_key"
+		config.S3.Credentials.SecretAccessKey = "updated_secret"
 
 		err = service.SyncConfigCredentials(ctx)
 		require.NoError(t, err)
@@ -364,13 +364,15 @@ func (suite *CredentialSyncTestSuite) TestGetActiveSystemProvider() {
 		ctx = ent.NewContext(ctx, suite.db)
 
 		// Configure service with S3 credentials
-		config := &storage.ProviderConfigs{
-			S3: storage.ProviderCredentials{
-				Enabled:         true,
-				AccessKeyID:     "test_key_1",
-				SecretAccessKey: "test_secret_1",
-				Region:          "us-east-1",
-				Bucket:          "test-bucket",
+		config := &storage.Providers{
+			S3: storage.ProviderConfigs{
+				Enabled: true,
+				Region:  "us-east-1",
+				Bucket:  "test-bucket",
+				Credentials: storage.ProviderCredentials{
+					AccessKeyID:     "test_key_1",
+					SecretAccessKey: "test_secret_1",
+				},
 			},
 		}
 
@@ -383,8 +385,8 @@ func (suite *CredentialSyncTestSuite) TestGetActiveSystemProvider() {
 		require.NoError(t, err)
 
 		// Update config with new credentials
-		config.S3.AccessKeyID = "test_key_2"
-		config.S3.SecretAccessKey = "test_secret_2"
+		config.S3.Credentials.AccessKeyID = "test_key_2"
+		config.S3.Credentials.SecretAccessKey = "test_secret_2"
 
 		// Run sync again to create second integration
 		err = service.SyncConfigCredentials(ctx)

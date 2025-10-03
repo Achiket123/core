@@ -31,7 +31,7 @@ func TestDiskBuilder_WithCredentials(t *testing.T) {
 func TestDiskBuilder_WithConfig(t *testing.T) {
 	builder := diskprovider.NewDiskBuilder()
 	config := map[string]any{
-		"bucket":   "/tmp/test-storage",
+		"bucket":      "/tmp/test-storage",
 		"create_dirs": true,
 	}
 
@@ -215,7 +215,7 @@ func TestDiskBuilder_ConfigMapping(t *testing.T) {
 
 	// Test various config value types
 	config := map[string]any{
-		"bucket":   "/tmp/config-test",
+		"bucket":      "/tmp/config-test",
 		"create_dirs": true,
 		"permissions": 0755,
 	}

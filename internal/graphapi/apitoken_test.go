@@ -338,7 +338,7 @@ func TestLastUsedAPIToken(t *testing.T) {
 		BearerToken: token.Token,
 	}
 
-	graphClient, err := testutils.TestClientWithAuth(suite.client.db,
+	graphClient, err := testutils.TestClientWithAuth(suite.client.db, suite.client.objectStore,
 		openlaneclient.WithCredentials(authHeader),
 	)
 	assert.NilError(t, err)

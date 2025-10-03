@@ -9,7 +9,7 @@ import (
 	"github.com/theopenlane/core/internal/ent/generated"
 	"github.com/theopenlane/core/internal/ent/generated/file"
 	"github.com/theopenlane/core/internal/ent/generated/hook"
-	"github.com/theopenlane/core/pkg/objects/storage"
+	storagetypes "github.com/theopenlane/core/pkg/objects/storage/types"
 )
 
 var (
@@ -73,16 +73,26 @@ func HookFileDelete() ent.Hook {
 
 				for _, f := range files {
 					if f.StoragePath != "" && m.ObjectManager != nil {
-						// Convert ent File to storage.File
-						storageFile := &storage.File{
+						// Convert ent File to storagetypes.File
+						storageFile := &storagetypes.File{
 							ID:           f.ID,
 							OriginalName: f.ProvidedFileName,
-							FileMetadata: storage.FileMetadata{
-								Key: f.StoragePath,
-								//OrganizationID: f.StorageVolume, // Using StorageVolume as organization ID
-								ContentType: f.DetectedContentType,
-								Size:        f.PersistedFileSize,
+							FileMetadata: storagetypes.FileMetadata{
+								Key:           f.StoragePath,
+								ContentType:   f.DetectedContentType,
+								Size:          f.PersistedFileSize,
+								ProviderHints: &storagetypes.ProviderHints{},
 							},
+						}
+
+						// Set integration ID from edges
+						for _, integration := range f.Edges.Integrations {
+							storageFile.FileMetadata.ProviderHints.IntegrationID = integration.ID
+						}
+
+						// Set hush ID from edges
+						for _, secret := range f.Edges.Secrets {
+							storageFile.FileMetadata.ProviderHints.HushID = secret.ID
 						}
 
 						// Convert metadata from map[string]interface{} to map[string]string
@@ -98,21 +108,10 @@ func HookFileDelete() ent.Hook {
 
 						// Set provider-specific fields if available
 						if f.StorageProvider != "" {
-							storageFile.ProviderType = storage.ProviderType(f.StorageProvider)
+							storageFile.ProviderType = storagetypes.ProviderType(f.StorageProvider)
 						}
 
-						// Use the integration and hush that were used to store this file
-						// These relationships should exist if the file was stored via integration
-						for _, integration := range f.Edges.Integrations {
-							storageFile.IntegrationID = integration.ID
-							break // Use the first (and should be only) integration
-						}
-						for _, secret := range f.Edges.Secrets {
-							storageFile.HushID = secret.ID
-							break // Use the first (and should be only) secret
-						}
-
-						if err := m.ObjectManager.Delete(ctx, storageFile); err != nil {
+						if err := m.ObjectManager.Delete(ctx, storageFile, nil); err != nil {
 							log.Error().Err(err).Str("file_id", f.ID).Msg("failed to delete file from storage")
 							// Continue with other files rather than failing the entire operation
 						}

@@ -222,7 +222,6 @@ func TestTypesWithDifferentClientTypes(t *testing.T) {
 	assert.NotNil(t, mapPool)
 }
 
-
 // TestTypeConstraints verifies that the generic constraints work as expected
 func TestTypeConstraints(t *testing.T) {
 	// These should compile and work with any type due to [T any] constraint

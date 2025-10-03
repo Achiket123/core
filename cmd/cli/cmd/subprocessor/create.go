@@ -60,8 +60,8 @@ func createValidation() (input openlaneclient.CreateSubprocessorInput, logoFile 
 		}
 
 		logoFile = &graphql.Upload{
-			File:        file.File,
-			Filename:    file.Filename,
+			File:        file.RawFile,
+			Filename:    file.OriginalName,
 			Size:        file.Size,
 			ContentType: file.ContentType,
 		}

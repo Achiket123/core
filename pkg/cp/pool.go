@@ -45,7 +45,6 @@ func (p *ClientPool[T]) RemoveClient(key ClientCacheKey) {
 	delete(p.clients, key)
 }
 
-
 // CleanExpired removes expired clients from the pool and returns the count of removed clients
 func (p *ClientPool[T]) CleanExpired() int {
 	p.mu.Lock()

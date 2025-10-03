@@ -54,6 +54,18 @@ func (s *ObjectService) Upload(ctx context.Context, provider Provider, reader io
 		}
 	}
 
+	// Validate the file before uploading
+	tempFile := File{
+		FieldName:    opts.Key,
+		OriginalName: fileName,
+		FileMetadata: FileMetadata{
+			ContentType: contentType,
+		},
+	}
+	if err := s.validationFunc(tempFile); err != nil {
+		return nil, err
+	}
+
 	storageOpts := &UploadOptions{
 		FileName:    fileName,
 		ContentType: contentType,

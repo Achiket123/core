@@ -83,8 +83,8 @@ func createValidation(cobraCmd *cobra.Command) (input openlaneclient.CreateJobRe
 			return input, nil, err
 		}
 		uploads = append(uploads, &graphql.Upload{
-			File:        u.File,
-			Filename:    u.Filename,
+			File:        u.RawFile,
+			Filename:    u.OriginalName,
 			Size:        u.Size,
 			ContentType: u.ContentType,
 		})

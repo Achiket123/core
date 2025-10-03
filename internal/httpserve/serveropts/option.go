@@ -38,6 +38,7 @@ import (
 	"github.com/theopenlane/core/internal/graphapi"
 	"github.com/theopenlane/core/internal/httpserve/config"
 	"github.com/theopenlane/core/internal/httpserve/server"
+	objmw "github.com/theopenlane/core/internal/middleware/objects"
 	"github.com/theopenlane/core/internal/objects"
 	"github.com/theopenlane/core/pkg/cp"
 	"github.com/theopenlane/core/pkg/entitlements"
@@ -574,8 +575,8 @@ func createStorageServiceFromConfig(config storage.ProviderConfig, entClient *en
 	// Add resolution rules for storage providers - "what storage provider should be used for this request?"
 	addProviderRules(resolver, config, entClient)
 
-	// Create and return the storage service
-	service := objects.NewService(resolver, clientService)
+	// Create and return the storage service with MIME type validation
+	service := objects.NewService(resolver, clientService, objmw.MimeTypeValidator)
 
 	// Log dev mode if enabled (no special configuration needed - handled by rules)
 	if config.DevMode {

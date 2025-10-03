@@ -162,7 +162,7 @@ func (suite *CredentialSyncTestSuite) SetupTest() {
 	suite.db = db
 
 	// add the client
-	suite.api, err = coreutils.TestClient(suite.db)
+	suite.api, err = coreutils.TestClient(suite.db, suite.objectStore)
 	require.NoError(t, err)
 
 	// Create a test user and use their personal org for system integrations
@@ -202,7 +202,7 @@ func (suite *CredentialSyncTestSuite) SetupTest() {
 	suite.service = serveropts.NewCredentialSyncService(
 		suite.db,
 		clientService,
-		&storage.ProviderConfigs{},
+		&storage.Providers{},
 	)
 }
 

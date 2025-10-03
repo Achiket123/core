@@ -10,6 +10,7 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/gocarina/gocsv"
 	"github.com/rs/zerolog/log"
+	"github.com/samber/lo"
 	"github.com/vektah/gqlparser/v2/ast"
 
 	"github.com/theopenlane/echox/middleware/echocontext"
@@ -106,8 +107,9 @@ func injectFileUploader(u *objects.Service) graphql.FieldMiddleware {
 		for _, f := range uploads {
 			// Get organization ID from context for provider hints
 			orgID, _ := auth.GetOrganizationIDFromContext(ctx)
-			if orgID != "" {
-				// Update file upload with organization context for provider resolution
+			// Only set organization as correlated object if there's no parent already set
+			// The CorrelatedObject fields are used for provider resolution, but Parent fields are for permissions
+			if orgID != "" && f.Parent.ID == "" {
 				f.CorrelatedObjectID = orgID
 				f.CorrelatedObjectType = "organization"
 			}
@@ -115,29 +117,37 @@ func injectFileUploader(u *objects.Service) graphql.FieldMiddleware {
 			// Create the file in the database using the existing helper
 			entFile, err := objmw.CreateFileRecord(ctx, f)
 			if err != nil {
-				log.Error().Err(err).Str("file", f.Filename).Msg("failed to create file")
+				log.Error().Err(err).Str("file", f.OriginalName).Msg("failed to create file")
 				return nil, err
 			}
 
-			// Build upload options using consolidated helper
-			hints := &storage.ProviderHints{
-				OrganizationID: orgID,
-				Metadata: map[string]string{
-					"key":         f.Key,
-					"object_type": f.CorrelatedObjectType,
+			// Build upload options with provider hints
+			uploadOpts := &storage.UploadOptions{
+				FileName: f.OriginalName,
+				FileMetadata: storage.FileMetadata{
+					Key: f.FieldName, // Set the field name for validation
+					ProviderHints: &storage.ProviderHints{
+						OrganizationID: orgID,
+						Metadata: map[string]string{
+							"key":         f.Key,
+							"object_type": f.CorrelatedObjectType,
+						},
+					},
 				},
 			}
-			uploadOpts := pkgobjects.BuildStandardUploadOptions(f, hints)
 
 			// Upload to storage using consolidated function
-			uploadedFile, err := u.Upload(ctx, f.File, uploadOpts)
+			uploadedFile, err := u.Upload(ctx, f.RawFile, uploadOpts)
 			if err != nil {
-				log.Error().Err(err).Str("file", f.Filename).Msg("failed to upload file")
+				log.Error().Err(err).Str("file", f.OriginalName).Msg("failed to upload file")
 				return nil, err
 			}
 
 			// Use database entity ID and update with storage metadata
 			uploadedFile.ID = entFile.ID
+			// Preserve FieldName and Parent from original file
+			uploadedFile.FieldName = f.FieldName
+			uploadedFile.Parent = f.Parent
 			// Update database with storage metadata using existing helper
 			if err := objmw.UpdateFileWithStorageMetadata(ctx, entFile, *uploadedFile); err != nil {
 				log.Error().Err(err).Msg("failed to update file with storage metadata")
@@ -393,16 +403,21 @@ func retrieveObjectDetails(rctx *graphql.FieldContext, key string, upload *stora
 				objectID, ok := rctx.Args["id"].(string)
 				if ok {
 					upload.CorrelatedObjectID = objectID
+					upload.Parent.ID = objectID
 				}
 
-				upload.CorrelatedObjectType = stripOperation(rctx.Field.Name)
-				upload.Key = arg.Name
+				objectType := stripOperation(rctx.Field.Name)
+				upload.CorrelatedObjectType = objectType
+				upload.Parent.Type = objectType
+				upload.FieldName = arg.Name
+				upload.Key = arg.Name // Also set Key in FileMetadata for backwards compatibility
 
 				return upload, nil
 			}
 		}
 	}
 
+	log.Debug().Str("key", key).Msg("unable to determine object type - no matching upload argument found")
 	return upload, ErrUnableToDetermineObjectType
 }
 
@@ -423,15 +438,19 @@ func argIsUpload(arg *ast.Argument) bool {
 	return false
 }
 
-// stripOperation strips the operation from the field name, e.g. updateUser becomes user
+// stripOperation strips the operation from the field name and converts to snake_case
+// e.g. updateUser becomes user, createTrustCenterDoc becomes trust_center_doc
 func stripOperation(field string) string {
 	operations := []string{"create", "update", "delete", "get"}
 
 	for _, op := range operations {
 		if strings.HasPrefix(field, op) {
-			return strings.ReplaceAll(field, op, "")
+			// Strip the operation prefix
+			stripped := strings.ReplaceAll(field, op, "")
+			// Convert camelCase to snake_case
+			return lo.SnakeCase(stripped)
 		}
 	}
 
-	return field
+	return lo.SnakeCase(field)
 }

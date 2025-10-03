@@ -218,7 +218,7 @@ func (suite *HandlerTestSuite) SetupTest() {
 	suite.db = db
 
 	// add the client
-	suite.api, err = coreutils.TestClient(suite.db)
+	suite.api, err = coreutils.TestClient(suite.db, suite.objectStore)
 	require.NoError(t, err)
 
 	// setup router with schema registry

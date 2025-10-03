@@ -25,7 +25,7 @@ type mockProvider struct {
 
 // ProviderType implements storagetypes.Provider.
 func (m *mockProvider) ProviderType() storagetypes.ProviderType {
-	panic("unimplemented")
+	return storagetypes.ProviderType(m.name)
 }
 
 func (m *mockProvider) Upload(ctx context.Context, reader io.Reader, opts *storagetypes.UploadFileOptions) (*storagetypes.UploadedFileMetadata, error) {
@@ -35,16 +35,16 @@ func (m *mockProvider) Upload(ctx context.Context, reader io.Reader, opts *stora
 			Size:         100,
 			ContentType:  opts.ContentType,
 			ProviderType: storagetypes.ProviderType(m.name),
-		},
-		ProviderHints: &storagetypes.ProviderHints{
-			IntegrationID:  "hint-integration",
-			HushID:         "hint-hush",
-			OrganizationID: "hint-org",
+			ProviderHints: &storagetypes.ProviderHints{
+				IntegrationID:  "hint-integration",
+				HushID:         "hint-hush",
+				OrganizationID: "hint-org",
+			},
 		},
 	}, nil
 }
 
-func (m *mockProvider) Download(ctx context.Context, opts *storagetypes.DownloadFileOptions) (*storagetypes.DownloadedFileMetadata, error) {
+func (m *mockProvider) Download(ctx context.Context, file *storagetypes.File, opts *storagetypes.DownloadFileOptions) (*storagetypes.DownloadedFileMetadata, error) {
 	// Return a fixed size download to match test expectations
 	content := make([]byte, 100) // 100 bytes to match test
 	for i := range content {
@@ -56,15 +56,23 @@ func (m *mockProvider) Download(ctx context.Context, opts *storagetypes.Download
 	}, nil
 }
 
-func (m *mockProvider) Delete(ctx context.Context, key string) error {
+func (m *mockProvider) Delete(ctx context.Context, file *storagetypes.File, opts *storagetypes.DeleteFileOptions) error {
 	return nil
 }
 
-func (m *mockProvider) GetPresignedURL(key string, expires time.Duration) (string, error) {
-	return fmt.Sprintf("https://%s.example.com/presigned/%s", m.name, key), nil
+func (m *mockProvider) GetPresignedURL(ctx context.Context, file *storagetypes.File, opts *storagetypes.PresignedURLOptions) (string, error) {
+	key := ""
+	expires := time.Hour
+	if file != nil {
+		key = file.ID
+	}
+	if opts != nil && opts.Duration > 0 {
+		expires = opts.Duration
+	}
+	return fmt.Sprintf("https://%s.example.com/presigned/%s?expires=%d", m.name, key, int64(expires.Seconds())), nil
 }
 
-func (m *mockProvider) Exists(ctx context.Context, key string) (bool, error) {
+func (m *mockProvider) Exists(ctx context.Context, file *storagetypes.File) (bool, error) {
 	return true, nil
 }
 
@@ -219,14 +227,16 @@ func TestService_Upload_TypedContextResolution(t *testing.T) {
 			ctx := tt.setupContext()
 			reader := strings.NewReader("test content")
 			opts := &storage.UploadOptions{
-				FileName:      "test-file.txt",
-				ContentType:   "text/plain",
-				ProviderHints: &storagetypes.ProviderHints{},
+				FileName:    "test-file.txt",
+				ContentType: "text/plain",
+				FileMetadata: storagetypes.FileMetadata{
+					ProviderHints: &storagetypes.ProviderHints{},
+				},
 			}
 
 			file, err := service.Upload(ctx, reader, opts)
 			require.NoError(t, err)
-			assert.Equal(t, "test-file.txt", file.Name)
+			assert.Equal(t, "test-file.txt", file.OriginalName)
 			assert.Equal(t, tt.expectedProvider, string(file.ProviderType))
 		})
 	}
@@ -236,7 +246,7 @@ func TestService_Download_TypedContextResolution(t *testing.T) {
 	service := createTestService()
 
 	// Create a test file with metadata
-	testFile := &storage.File{
+	testFile := &storagetypes.File{
 		ID:           "test-file-id",
 		OriginalName: "test-file.txt",
 		FileMetadata: storagetypes.FileMetadata{
@@ -248,7 +258,8 @@ func TestService_Download_TypedContextResolution(t *testing.T) {
 
 	ctx := auth.NewTestContextWithOrgID(ulids.New().String(), ulids.New().String())
 
-	result, err := service.Download(ctx, testFile)
+	downloadOpts := &storage.DownloadOptions{}
+	result, err := service.Download(ctx, nil, testFile, downloadOpts)
 	require.NoError(t, err)
 	require.NotNil(t, result)
 
@@ -260,16 +271,18 @@ func TestService_Download_TypedContextResolution(t *testing.T) {
 func TestService_GetPresignedURL_TypedContextResolution(t *testing.T) {
 	service := createTestService()
 
-	testFile := &storage.File{
+	testFile := &storagetypes.File{
 		ID:           "test-file-id",
 		OriginalName: "test-file.txt",
 		FileMetadata: storagetypes.FileMetadata{
-			Key:            "test-file-id", // Use same value as ID for testing
-			Size:           100,
-			ContentType:    "text/plain",
-			IntegrationID:  "test-integration",
-			HushID:         "test-hush",
-			OrganizationID: "test-org",
+			Key:         "test-file-id", // Use same value as ID for testing
+			Size:        100,
+			ContentType: "text/plain",
+			ProviderHints: &storagetypes.ProviderHints{
+				IntegrationID:  "test-integration",
+				HushID:         "test-hush",
+				OrganizationID: "test-org",
+			},
 		},
 	}
 
@@ -284,23 +297,50 @@ func TestService_GetPresignedURL_TypedContextResolution(t *testing.T) {
 func TestService_Delete_TypedContextResolution(t *testing.T) {
 	service := createTestService()
 
-	testFile := &storage.File{
-		ID:   "test-file-id",
-		Name: "test-file.txt",
+	testFile := &storagetypes.File{
+		ID:           "test-file-id",
+		OriginalName: "test-file.txt",
 		FileMetadata: storagetypes.FileMetadata{
-			Key:            "test-file-id", // Use same value as ID for testing
-			Size:           100,
-			ContentType:    "text/plain",
-			IntegrationID:  "test-integration",
-			HushID:         "test-hush",
-			OrganizationID: "test-org",
+			Key:         "test-file-id", // Use same value as ID for testing
+			Size:        100,
+			ContentType: "text/plain",
+			ProviderHints: &storagetypes.ProviderHints{
+				IntegrationID:  "test-integration",
+				HushID:         "test-hush",
+				OrganizationID: "test-org",
+			},
 		},
 	}
 
 	ctx := auth.NewTestContextWithOrgID(ulids.New().String(), ulids.New().String())
 
-	err := service.Delete(ctx, testFile)
+	err := service.Delete(ctx, testFile, &storagetypes.DeleteFileOptions{})
 	require.NoError(t, err)
+}
+
+func TestService_Exists_TypedContextResolution(t *testing.T) {
+	service := createTestService()
+
+	testFile := &storagetypes.File{
+		ID:           "test-file-id",
+		OriginalName: "test-file.txt",
+		FileMetadata: storagetypes.FileMetadata{
+			Key:         "test-file-id", // Use same value as ID for testing
+			Size:        100,
+			ContentType: "text/plain",
+			ProviderHints: &storagetypes.ProviderHints{
+				IntegrationID:  "test-integration",
+				HushID:         "test-hush",
+				OrganizationID: "test-org",
+			},
+		},
+	}
+
+	ctx := auth.NewTestContextWithOrgID(ulids.New().String(), ulids.New().String())
+
+	exists, err := service.Exists(ctx, testFile)
+	require.NoError(t, err)
+	assert.True(t, exists)
 }
 
 func TestService_BuildResolutionContext(t *testing.T) {
@@ -311,10 +351,12 @@ func TestService_BuildResolutionContext(t *testing.T) {
 	opts := &storage.UploadOptions{
 		FileName:    "test-file.txt",
 		ContentType: "text/plain",
-		ProviderHints: &storagetypes.ProviderHints{
-			IntegrationID:  "hint-integration",
-			HushID:         "hint-hush",
-			OrganizationID: "hint-org",
+		FileMetadata: storagetypes.FileMetadata{
+			ProviderHints: &storagetypes.ProviderHints{
+				IntegrationID:  "hint-integration",
+				HushID:         "hint-hush",
+				OrganizationID: "hint-org",
+			},
 		},
 	}
 
@@ -335,20 +377,22 @@ func TestService_BuildResolutionContextForFile(t *testing.T) {
 
 	ctx := auth.NewTestContextWithOrgID(ulids.New().String(), ulids.New().String())
 
-	file := &storage.File{
-		ID:   "test-file-id",
-		Name: "test-file.txt",
+	file := &storagetypes.File{
+		ID:           "test-file-id",
+		OriginalName: "test-file.txt",
 		FileMetadata: storagetypes.FileMetadata{
-			IntegrationID:  "file-integration",
-			HushID:         "file-hush",
-			OrganizationID: "file-org",
+			ProviderHints: &storagetypes.ProviderHints{
+				IntegrationID:  "file-integration",
+				HushID:         "file-hush",
+				OrganizationID: "file-org",
+			},
 		},
 	}
 
 	enrichedCtx := service.buildResolutionContextForFile(ctx, file)
 
 	// Verify context contains expected values
-	contextFile := cp.GetValue[*storage.File](enrichedCtx)
+	contextFile := cp.GetValue[*storagetypes.File](enrichedCtx)
 	assert.True(t, contextFile.IsPresent())
 	assert.Equal(t, file, contextFile.MustGet())
 }
@@ -363,9 +407,11 @@ func TestService_ResolveProvider_ErrorHandling(t *testing.T) {
 	ctx := auth.NewTestContextWithOrgID(ulids.New().String(), ulids.New().String())
 
 	opts := &storage.UploadOptions{
-		FileName:      "test-file.txt",
-		ContentType:   "text/plain",
-		ProviderHints: &storagetypes.ProviderHints{},
+		FileName:    "test-file.txt",
+		ContentType: "text/plain",
+		FileMetadata: storagetypes.FileMetadata{
+			ProviderHints: &storagetypes.ProviderHints{},
+		},
 	}
 
 	reader := strings.NewReader("test content")
@@ -383,17 +429,19 @@ func TestService_ResolveProviderForFile_ErrorHandling(t *testing.T) {
 
 	ctx := auth.NewTestContextWithOrgID(ulids.New().String(), ulids.New().String())
 
-	testFile := &storage.File{
+	testFile := &storagetypes.File{
 		ID: "test-file-id",
 		FileMetadata: storagetypes.FileMetadata{
-			Key:            "test-file-id", // Use same value as ID for testing
-			IntegrationID:  "test-integration",
-			HushID:         "test-hush",
-			OrganizationID: "test-org",
+			Key: "test-file-id", // Use same value as ID for testing
+			ProviderHints: &storagetypes.ProviderHints{
+				IntegrationID:  "test-integration",
+				HushID:         "test-hush",
+				OrganizationID: "test-org",
+			},
 		},
 	}
 
-	_, err := service.Download(ctx, testFile)
+	_, err := service.Download(ctx, nil, testFile, &storage.DownloadOptions{})
 	assert.Error(t, err)
 	assert.ErrorIs(t, err, ErrProviderResolutionFailed)
 }

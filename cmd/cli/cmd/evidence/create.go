@@ -144,8 +144,8 @@ func createValidation(ctx context.Context, client *openlaneclient.OpenlaneClient
 		}
 
 		uploads = append(uploads, &graphql.Upload{
-			File:        u.File,
-			Filename:    u.Filename,
+			File:        u.RawFile,
+			Filename:    u.OriginalName,
 			Size:        u.Size,
 			ContentType: u.ContentType,
 		})

@@ -351,4 +351,3 @@ func TestStructFromCredentials(t *testing.T) {
 		})
 	}
 }
-

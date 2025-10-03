@@ -20,8 +20,8 @@ func TestQueryFile(t *testing.T) {
 	assert.NilError(t, err)
 
 	uploadFile := &graphql.Upload{
-		File:        uf.File,
-		Filename:    uf.Filename,
+		File:        uf.RawFile,
+		Filename:    uf.OriginalName,
 		Size:        uf.Size,
 		ContentType: uf.ContentType,
 	}
@@ -47,8 +47,8 @@ func TestQueryFile(t *testing.T) {
 	assert.NilError(t, err)
 
 	uploadFile = &graphql.Upload{
-		File:        avatarFile.File,
-		Filename:    avatarFile.Filename,
+		File:        avatarFile.RawFile,
+		Filename:    avatarFile.OriginalName,
 		Size:        avatarFile.Size,
 		ContentType: avatarFile.ContentType,
 	}
@@ -176,8 +176,8 @@ func TestQueryFiles(t *testing.T) {
 	assert.NilError(t, err)
 
 	uploadFile := &graphql.Upload{
-		File:        uf.File,
-		Filename:    uf.Filename,
+		File:        uf.RawFile,
+		Filename:    uf.OriginalName,
 		Size:        uf.Size,
 		ContentType: uf.ContentType,
 	}
@@ -203,8 +203,8 @@ func TestQueryFiles(t *testing.T) {
 	assert.NilError(t, err)
 
 	uploadFile = &graphql.Upload{
-		File:        avatarFile.File,
-		Filename:    avatarFile.Filename,
+		File:        avatarFile.RawFile,
+		Filename:    avatarFile.OriginalName,
 		Size:        avatarFile.Size,
 		ContentType: avatarFile.ContentType,
 	}

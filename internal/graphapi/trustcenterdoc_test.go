@@ -13,7 +13,7 @@ import (
 	"github.com/theopenlane/core/internal/ent/generated"
 	"github.com/theopenlane/core/internal/graphapi/testclient"
 	"github.com/theopenlane/core/pkg/enums"
-	"github.com/theopenlane/core/pkg/objects"
+	objects "github.com/theopenlane/core/pkg/objects/storage"
 	"github.com/theopenlane/iam/auth"
 	"github.com/theopenlane/iam/fgax"
 )
@@ -165,8 +165,8 @@ func TestMutationCreateTrustCenterDoc(t *testing.T) {
 		pdfFile, err := objects.NewUploadFile("testdata/uploads/hello.pdf")
 		assert.NilError(t, err)
 		return &graphql.Upload{
-			File:        pdfFile.File,
-			Filename:    pdfFile.Filename,
+			File:        pdfFile.RawFile,
+			Filename:    pdfFile.OriginalName,
 			Size:        pdfFile.Size,
 			ContentType: pdfFile.ContentType,
 		}
@@ -176,8 +176,8 @@ func TestMutationCreateTrustCenterDoc(t *testing.T) {
 		txtFile, err := objects.NewUploadFile("testdata/uploads/hello.txt")
 		assert.NilError(t, err)
 		return &graphql.Upload{
-			File:        txtFile.File,
-			Filename:    txtFile.Filename,
+			File:        txtFile.RawFile,
+			Filename:    txtFile.OriginalName,
 			Size:        txtFile.Size,
 			ContentType: txtFile.ContentType,
 		}
@@ -356,7 +356,7 @@ func TestMutationCreateTrustCenterDoc(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run("Create "+tc.name, func(t *testing.T) {
 			if tc.file != nil {
-				expectUpload(t, suite.client.objectStore.Storage, []graphql.Upload{*tc.file})
+				expectUpload(t, suite.client.mockProvider, []graphql.Upload{*tc.file})
 			}
 
 			resp, err := tc.client.CreateTrustCenterDoc(tc.ctx, tc.input, *tc.file)
@@ -706,8 +706,8 @@ func TestTrustCenterDocUpdateSysAdmin(t *testing.T) {
 		pdfFile, err := objects.NewUploadFile("testdata/uploads/hello.pdf")
 		assert.NilError(t, err)
 		return &graphql.Upload{
-			File:        pdfFile.File,
-			Filename:    pdfFile.Filename,
+			File:        pdfFile.RawFile,
+			Filename:    pdfFile.OriginalName,
 			Size:        pdfFile.Size,
 			ContentType: pdfFile.ContentType,
 		}
@@ -762,8 +762,8 @@ func TestTrustCenterDocWatermarkingFGATuples(t *testing.T) {
 		pdfFile, err := objects.NewUploadFile("testdata/uploads/hello.pdf")
 		assert.NilError(t, err)
 		return &graphql.Upload{
-			File:        pdfFile.File,
-			Filename:    pdfFile.Filename,
+			File:        pdfFile.RawFile,
+			Filename:    pdfFile.OriginalName,
 			Size:        pdfFile.Size,
 			ContentType: pdfFile.ContentType,
 		}
@@ -792,7 +792,7 @@ func TestTrustCenterDocWatermarkingFGATuples(t *testing.T) {
 
 	t.Run("create publicly visible document with watermarking - should create tuples for original file only", func(t *testing.T) {
 		file := createPDFUpload()
-		expectUpload(t, suite.client.objectStore.Storage, []graphql.Upload{*file})
+		expectUpload(t, suite.client.mockProvider, []graphql.Upload{*file})
 
 		input := testclient.CreateTrustCenterDocInput{
 			Title:               "Public Watermarked Document",
@@ -833,7 +833,7 @@ func TestTrustCenterDocWatermarkingFGATuples(t *testing.T) {
 
 		// Upload a watermarked file
 		watermarkedFile := createPDFUpload()
-		expectUpload(t, suite.client.objectStore.Storage, []graphql.Upload{*watermarkedFile})
+		expectUpload(t, suite.client.mockProvider, []graphql.Upload{*watermarkedFile})
 
 		input := testclient.UpdateTrustCenterDocInput{
 			Title: lo.ToPtr("Updated with Watermarked File"),

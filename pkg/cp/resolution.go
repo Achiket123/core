@@ -38,7 +38,6 @@ func (r *Resolver[T]) AddRule(rule ResolutionRule[T]) *Resolver[T] {
 	return r
 }
 
-
 // SetDefaultRule is a method that sets a fallback rule that always matches
 func (r *Resolver[T]) SetDefaultRule(rule ResolutionRule[T]) *Resolver[T] {
 	r.defaultRule = mo.Some(rule)

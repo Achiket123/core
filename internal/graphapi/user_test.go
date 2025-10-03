@@ -207,8 +207,8 @@ func TestMutationUpdateUser(t *testing.T) {
 		{
 			name: "update avatar",
 			avatarFile: &graphql.Upload{
-				File:        avatarFile.File,
-				Filename:    avatarFile.Filename,
+				File:        avatarFile.RawFile,
+				Filename:    avatarFile.OriginalName,
 				Size:        avatarFile.Size,
 				ContentType: avatarFile.ContentType,
 			},
@@ -223,8 +223,8 @@ func TestMutationUpdateUser(t *testing.T) {
 		{
 			name: "update avatar with invalid file",
 			avatarFile: &graphql.Upload{
-				File:        invalidAvatarFile.File,
-				Filename:    invalidAvatarFile.Filename,
+				File:        invalidAvatarFile.RawFile,
+				Filename:    invalidAvatarFile.OriginalName,
 				Size:        invalidAvatarFile.Size,
 				ContentType: invalidAvatarFile.ContentType,
 			},

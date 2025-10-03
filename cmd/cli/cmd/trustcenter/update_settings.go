@@ -112,8 +112,8 @@ func updateSettingsValidation() (id string, input openlaneclient.UpdateTrustCent
 		}
 
 		logoFile = &graphql.Upload{
-			File:        file.File,
-			Filename:    file.Filename,
+			File:        file.RawFile,
+			Filename:    file.OriginalName,
 			Size:        file.Size,
 			ContentType: file.ContentType,
 		}
@@ -126,8 +126,8 @@ func updateSettingsValidation() (id string, input openlaneclient.UpdateTrustCent
 		}
 
 		faviconFile = &graphql.Upload{
-			File:        file.File,
-			Filename:    file.Filename,
+			File:        file.RawFile,
+			Filename:    file.OriginalName,
 			Size:        file.Size,
 			ContentType: file.ContentType,
 		}

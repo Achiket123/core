@@ -3,6 +3,7 @@ package objects
 import (
 	"context"
 	"io"
+	"time"
 
 	"github.com/rs/zerolog"
 	"github.com/theopenlane/core/pkg/cp"
@@ -19,11 +20,18 @@ type Service struct {
 }
 
 // NewService creates a new storage orchestration service
-func NewService(resolver *cp.Resolver[storage.Provider], clientService *cp.ClientService[storage.Provider]) *Service {
+func NewService(resolver *cp.Resolver[storage.Provider], clientService *cp.ClientService[storage.Provider], validationFunc ...storage.ValidationFunc) *Service {
+	objectService := storage.NewObjectService()
+
+	// Configure validation if provided
+	if len(validationFunc) > 0 && validationFunc[0] != nil {
+		objectService = objectService.WithValidation(validationFunc[0])
+	}
+
 	return &Service{
 		resolver:      resolver,
 		clientService: clientService,
-		objectService: storage.NewObjectService(),
+		objectService: objectService,
 	}
 }
 
@@ -62,14 +70,18 @@ func (s *Service) Download(ctx context.Context, provider storage.Provider, file 
 }
 
 // GetPresignedURL gets a presigned URL for a file using provider resolution
-//func (s *Service) GetPresignedURL(ctx context.Context, file *storage.File, duration time.Duration) (string, error) {
-//	provider, err := s.resolveUploadProvider(ctx, file)
-//	if err != nil {
-//		return "", err
-//	}
-//
-//	return s.objectService.GetPresignedURL(ctx, provider, file, duration)
-//}
+func (s *Service) GetPresignedURL(ctx context.Context, file *storagetypes.File, duration time.Duration) (string, error) {
+	provider, err := s.resolveDownloadProvider(ctx, file)
+	if err != nil {
+		return "", err
+	}
+
+	opts := &storagetypes.PresignedURLOptions{
+		Duration: duration,
+	}
+
+	return s.objectService.GetPresignedURL(ctx, provider, file, opts)
+}
 
 // Delete deletes a file using provider resolution
 func (s *Service) Delete(ctx context.Context, file *storagetypes.File, opts *storagetypes.DeleteFileOptions) error {
@@ -79,6 +91,16 @@ func (s *Service) Delete(ctx context.Context, file *storagetypes.File, opts *sto
 	}
 
 	return s.objectService.Delete(ctx, provider, file, opts)
+}
+
+// Exists checks if a file exists using provider resolution
+func (s *Service) Exists(ctx context.Context, file *storagetypes.File) (bool, error) {
+	provider, err := s.resolveDownloadProvider(ctx, file)
+	if err != nil {
+		return false, err
+	}
+
+	return provider.Exists(ctx, file)
 }
 
 // Skipper returns the configured skipper function

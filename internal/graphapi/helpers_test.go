@@ -88,7 +88,9 @@ func TestRetrieveObjectDetails(t *testing.T) {
 			},
 			expected: &storage.File{
 				CorrelatedObjectType: "User",
-				Key:                  "file",
+				FileMetadata: storage.FileMetadata{
+					Key: "file",
+				},
 			},
 			expectedErr: nil,
 		},
@@ -148,7 +150,7 @@ func TestRetrieveObjectDetails(t *testing.T) {
 			}
 
 			upload := &storage.File{
-				Filename: "meow.txt",
+				OriginalName: "meow.txt",
 			}
 
 			result, err := retrieveObjectDetails(rctx, tt.key, upload)
@@ -159,7 +161,7 @@ func TestRetrieveObjectDetails(t *testing.T) {
 
 			assert.NilError(t, err)
 			assert.Check(t, is.Equal(tt.expected.CorrelatedObjectType, result.CorrelatedObjectType))
-			assert.Check(t, is.Equal(tt.expected.Key, result.Key))
+			assert.Check(t, is.Equal(tt.expected.FileMetadata.Key, result.FileMetadata.Key))
 		})
 	}
 }

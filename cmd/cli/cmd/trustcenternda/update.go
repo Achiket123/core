@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/theopenlane/core/cmd/cli/cmd"
-	"github.com/theopenlane/core/pkg/objects"
+	objects "github.com/theopenlane/core/pkg/objects/storage"
 )
 
 var updateCmd = &cobra.Command{
@@ -47,8 +47,8 @@ func updateValidation() (string, *graphql.Upload, error) {
 		return "", nil, err
 	}
 	ndaUpload := &graphql.Upload{
-		File:        ndaUploadFile.File,
-		Filename:    ndaUploadFile.Filename,
+		File:        ndaUploadFile.RawFile,
+		Filename:    ndaUploadFile.OriginalName,
 		Size:        ndaUploadFile.Size,
 		ContentType: ndaUploadFile.ContentType,
 	}

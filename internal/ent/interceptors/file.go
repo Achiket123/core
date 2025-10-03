@@ -14,7 +14,7 @@ import (
 	"github.com/theopenlane/core/internal/ent/generated/file"
 	"github.com/theopenlane/core/internal/ent/generated/intercept"
 	"github.com/theopenlane/core/internal/ent/generated/organization"
-	"github.com/theopenlane/core/pkg/objects/storage"
+	storagetypes "github.com/theopenlane/core/pkg/objects/storage/types"
 )
 
 // InterceptorFile is an ent interceptor that filters the file query on the organization id
@@ -127,26 +127,15 @@ func setPresignedURL(ctx context.Context, file *generated.File, q *generated.Fil
 		return nil
 	}
 
-	// Convert ent File to storage.File
-	storageFile := &storage.File{
-		ID:   file.ID,
-		Name: file.ProvidedFileName,
-		FileMetadata: storage.FileMetadata{
-			Key:            file.StoragePath,
-			OrganizationID: file.StorageVolume,
-			ContentType:    file.DetectedContentType,
-			Size:           file.PersistedFileSize,
+	// Convert ent File to storagetypes.File
+	storageFile := &storagetypes.File{
+		ID:           file.ID,
+		OriginalName: file.ProvidedFileName,
+		FileMetadata: storagetypes.FileMetadata{
+			Key:         file.StoragePath,
+			ContentType: file.DetectedContentType,
+			Size:        file.PersistedFileSize,
 		},
-	}
-
-	// Check if integration and hush IDs are stored in metadata
-	if file.Metadata != nil {
-		if integrationID, ok := file.Metadata["integration_id"].(string); ok {
-			storageFile.IntegrationID = integrationID
-		}
-		if hushID, ok := file.Metadata["hush_id"].(string); ok {
-			storageFile.HushID = hushID
-		}
 	}
 
 	// Convert metadata from map[string]interface{} to map[string]string
@@ -162,7 +151,7 @@ func setPresignedURL(ctx context.Context, file *generated.File, q *generated.Fil
 
 	// Set provider-specific fields if available
 	if file.StorageProvider != "" {
-		storageFile.ProviderType = storage.ProviderType(file.StorageProvider)
+		storageFile.ProviderType = storagetypes.ProviderType(file.StorageProvider)
 	}
 
 	url, err := q.ObjectManager.GetPresignedURL(ctx, storageFile, presignedURLDuration)

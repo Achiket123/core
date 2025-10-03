@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/theopenlane/core/cmd/cli/cmd"
-	"github.com/theopenlane/core/pkg/objects"
+	objects "github.com/theopenlane/core/pkg/objects/storage"
 	"github.com/theopenlane/core/pkg/openlaneclient"
 )
 
@@ -50,8 +50,8 @@ func createValidation() (openlaneclient.CreateTrustCenterNDAInput, *graphql.Uplo
 		return input, nil, err
 	}
 	ndaUpload := &graphql.Upload{
-		File:        ndaUploadFile.File,
-		Filename:    ndaUploadFile.Filename,
+		File:        ndaUploadFile.RawFile,
+		Filename:    ndaUploadFile.OriginalName,
 		Size:        ndaUploadFile.Size,
 		ContentType: ndaUploadFile.ContentType,
 	}

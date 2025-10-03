@@ -279,14 +279,14 @@ func TestMutationCreateEvidence(t *testing.T) {
 			},
 			files: []*graphql.Upload{
 				{
-					File:        pngFile.File,
-					Filename:    pngFile.Filename,
+					File:        pngFile.RawFile,
+					Filename:    pngFile.OriginalName,
 					Size:        pngFile.Size,
 					ContentType: pngFile.ContentType,
 				},
 				{
-					File:        csvFile.File,
-					Filename:    csvFile.Filename,
+					File:        csvFile.RawFile,
+					Filename:    csvFile.OriginalName,
 					Size:        csvFile.Size,
 					ContentType: csvFile.ContentType,
 				},
@@ -321,8 +321,8 @@ func TestMutationCreateEvidence(t *testing.T) {
 			},
 			files: []*graphql.Upload{
 				{
-					File:        pdfFile.File,
-					Filename:    pdfFile.Filename,
+					File:        pdfFile.RawFile,
+					Filename:    pdfFile.OriginalName,
 					Size:        pdfFile.Size,
 					ContentType: pdfFile.ContentType,
 				},
@@ -337,8 +337,8 @@ func TestMutationCreateEvidence(t *testing.T) {
 			},
 			files: []*graphql.Upload{
 				{
-					File:        txtFile.File,
-					Filename:    txtFile.Filename,
+					File:        txtFile.RawFile,
+					Filename:    txtFile.OriginalName,
 					Size:        txtFile.Size,
 					ContentType: txtFile.ContentType,
 				},
@@ -561,8 +561,8 @@ func TestMutationUpdateEvidence(t *testing.T) {
 			},
 			files: []*graphql.Upload{
 				{
-					File:        pdfFile.File,
-					Filename:    pdfFile.Filename,
+					File:        pdfFile.RawFile,
+					Filename:    pdfFile.OriginalName,
 					Size:        pdfFile.Size,
 					ContentType: pdfFile.ContentType,
 				},

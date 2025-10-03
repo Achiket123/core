@@ -29,11 +29,11 @@ var SystemOrganizationID = "01101101011010010111010001100010"
 type CredentialSyncService struct {
 	entClient     *generated.Client
 	clientService *cp.ClientService[storage.Provider]
-	config        *storage.ProviderConfigs
+	config        *storage.Providers
 }
 
 // NewCredentialSyncService creates a new credential synchronization service
-func NewCredentialSyncService(entClient *generated.Client, clientService *cp.ClientService[storage.Provider], config *storage.ProviderConfigs) *CredentialSyncService {
+func NewCredentialSyncService(entClient *generated.Client, clientService *cp.ClientService[storage.Provider], config *storage.Providers) *CredentialSyncService {
 	return &CredentialSyncService{
 		entClient:     entClient,
 		clientService: clientService,
@@ -43,28 +43,26 @@ func NewCredentialSyncService(entClient *generated.Client, clientService *cp.Cli
 
 // SyncConfigCredentials synchronizes config file credentials with database records on startup
 func (css *CredentialSyncService) SyncConfigCredentials(ctx context.Context) error {
-	providers := map[string]storage.ProviderCredentials{
+	providerMap := map[string]storage.ProviderConfigs{
 		string(storage.S3Provider):   css.config.S3,
 		string(storage.R2Provider):   css.config.CloudflareR2,
 		string(storage.GCSProvider):  css.config.GCS,
 		string(storage.DiskProvider): css.config.Disk,
 	}
 
-	for providerType, configCreds := range providers {
-		if !configCreds.Enabled {
+	for providerType, providerCfg := range providerMap {
+		if !providerCfg.Enabled {
 			continue
 		}
-
-		if err := css.syncProvider(ctx, providerType, configCreds); err != nil {
+		if err := css.syncProvider(ctx, providerType, providerCfg); err != nil {
 			return err
 		}
 	}
-
 	return nil
 }
 
 // syncProvider synchronizes a single provider's credentials
-func (css *CredentialSyncService) syncProvider(ctx context.Context, providerType string, configCreds storage.ProviderCredentials) error {
+func (css *CredentialSyncService) syncProvider(ctx context.Context, providerType string, providerCfg storage.ProviderConfigs) error {
 	// Get current active system integration for this provider using ent client
 	integrations, err := css.entClient.Integration.Query().
 		Where(
@@ -81,7 +79,7 @@ func (css *CredentialSyncService) syncProvider(ctx context.Context, providerType
 	var activeInteg *generated.Integration
 	for _, integ := range integrations {
 		// Check if credentials match config
-		if css.CredentialsMatch(integ.Edges.Secrets[0], configCreds) {
+		if css.CredentialsMatch(integ.Edges.Secrets[0], providerCfg.Credentials) {
 			zerolog.Ctx(ctx).Debug().Msgf("credentials already up to date for provider %s integration %s", providerType, integ.ID)
 			return nil
 		}
@@ -92,7 +90,7 @@ func (css *CredentialSyncService) syncProvider(ctx context.Context, providerType
 	}
 
 	// Create new integration + hush for updated config credentials
-	newInteg, err := css.createSystemIntegration(ctx, providerType, configCreds)
+	newInteg, err := css.createSystemIntegration(ctx, providerType, providerCfg)
 	if err != nil {
 		zerolog.Ctx(ctx).Error().Err(err).Msgf("failed to create system integration for provider %s", providerType)
 		return err
@@ -141,19 +139,19 @@ func (css *CredentialSyncService) GenerateCredentialHashFromSet(credSet models.C
 }
 
 // createSystemIntegration creates a new system integration and hush record
-func (css *CredentialSyncService) createSystemIntegration(ctx context.Context, providerType string, configCreds storage.ProviderCredentials) (*generated.Integration, error) {
+func (css *CredentialSyncService) createSystemIntegration(ctx context.Context, providerType string, providerCfg storage.ProviderConfigs) (*generated.Integration, error) {
 	credSet := models.CredentialSet{
-		AccessKeyID:     configCreds.AccessKeyID,
-		SecretAccessKey: configCreds.SecretAccessKey,
-		Endpoint:        configCreds.Endpoint,
-		ProjectID:       configCreds.ProjectID,
-		AccountID:       configCreds.AccountID,
+		AccessKeyID:     providerCfg.Credentials.AccessKeyID,
+		SecretAccessKey: providerCfg.Credentials.SecretAccessKey,
+		Endpoint:        providerCfg.Credentials.Endpoint,
+		ProjectID:       providerCfg.Credentials.ProjectID,
+		AccountID:       providerCfg.Credentials.AccountID,
 	}
 
 	// Create metadata for the integration
 	metadata := map[string]any{
-		"region":          configCreds.Region,
-		"bucket":          configCreds.Bucket,
+		"region":          providerCfg.Region,
+		"bucket":          providerCfg.Bucket,
 		"source":          "system_config",
 		"synchronized_at": time.Now(),
 	}

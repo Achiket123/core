@@ -1,7 +1,8 @@
 package objects
 
 import (
-	"github.com/theopenlane/core/pkg/objects"
+	pkgobjects "github.com/theopenlane/core/pkg/objects"
+	"github.com/theopenlane/core/pkg/objects/storage"
 )
 
 var importSchemaMimeTypes = []string{
@@ -45,11 +46,11 @@ var validMimeTypes = map[string][]string{
 }
 
 // MimeTypeValidator returns a validation function for the given key
-var MimeTypeValidator objects.ValidationFunc = func(f objects.File) error {
+var MimeTypeValidator storage.ValidationFunc = func(f storage.File) error {
 	if mimes, ok := validMimeTypes[f.FieldName]; ok {
-		return objects.MimeTypeValidator(mimes...)(f)
+		return pkgobjects.MimeTypeValidator(mimes...)(f)
 	}
 
 	// Default to sharedMimeTypes if the type isn't in the map
-	return objects.MimeTypeValidator(sharedMimeTypes...)(f)
+	return pkgobjects.MimeTypeValidator(sharedMimeTypes...)(f)
 }

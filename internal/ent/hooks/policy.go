@@ -46,10 +46,7 @@ func checkPolicyFile[T utils.GenericMutation](ctx context.Context, m T) (context
 	key := "policyFile"
 
 	// Get files using the new helper
-	files, err := objects.GetFilesForKey(ctx, key)
-	if err != nil {
-		return ctx, err
-	}
+	files, _ := objects.FilesFromContextWithKey(ctx, key)
 
 	// Return early if no files
 	if len(files) == 0 {

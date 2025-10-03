@@ -931,8 +931,8 @@ func TestMutationUpdateTrustCenterSetting(t *testing.T) {
 				assert.NilError(t, err)
 
 				logoFile = &graphql.Upload{
-					File:        uploadFile.File,
-					Filename:    uploadFile.Filename,
+					File:        uploadFile.RawFile,
+					Filename:    uploadFile.OriginalName,
 					Size:        uploadFile.Size,
 					ContentType: uploadFile.ContentType,
 				}

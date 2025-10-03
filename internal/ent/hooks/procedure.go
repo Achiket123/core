@@ -100,10 +100,7 @@ func checkProcedureFile[T utils.GenericMutation](ctx context.Context, m T) (cont
 	key := "procedureFile"
 
 	// get the file from the context, if it exists
-	file, err := pkgobjects.FilesFromContextWithKey(ctx, key)
-	if err != nil {
-		return ctx, err
-	}
+	file, _ := pkgobjects.FilesFromContextWithKey(ctx, key)
 
 	// return early if no file is provided
 	if file == nil {

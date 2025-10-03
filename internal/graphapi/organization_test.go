@@ -211,8 +211,8 @@ func TestMutationCreateOrganization(t *testing.T) {
 			displayName:    gofakeit.LetterN(50),
 			orgDescription: gofakeit.HipsterSentence(10),
 			avatarFile: &graphql.Upload{
-				File:        avatarFile.File,
-				Filename:    avatarFile.Filename,
+				File:        avatarFile.RawFile,
+				Filename:    avatarFile.OriginalName,
 				Size:        avatarFile.Size,
 				ContentType: avatarFile.ContentType,
 			},
@@ -374,8 +374,8 @@ func TestMutationCreateOrganization(t *testing.T) {
 			name:    "invalid avatar file",
 			orgName: ulids.New().String(), // use ulid to ensure uniqueness
 			avatarFile: &graphql.Upload{
-				File:        invalidAvatarFile.File,
-				Filename:    invalidAvatarFile.Filename,
+				File:        invalidAvatarFile.RawFile,
+				Filename:    invalidAvatarFile.OriginalName,
 				Size:        invalidAvatarFile.Size,
 				ContentType: invalidAvatarFile.ContentType,
 			},
@@ -708,8 +708,8 @@ func TestMutationUpdateOrganization(t *testing.T) {
 				Description: &descriptionUpdate,
 			},
 			avatarFile: &graphql.Upload{
-				File:        avatarFile.File,
-				Filename:    avatarFile.Filename,
+				File:        avatarFile.RawFile,
+				Filename:    avatarFile.OriginalName,
 				Size:        avatarFile.Size,
 				ContentType: avatarFile.ContentType,
 			},
@@ -759,8 +759,8 @@ func TestMutationUpdateOrganization(t *testing.T) {
 			name:  "update avatar, invalid file",
 			orgID: org.ID,
 			avatarFile: &graphql.Upload{
-				File:        invalidAvatarFile.File,
-				Filename:    invalidAvatarFile.Filename,
+				File:        invalidAvatarFile.RawFile,
+				Filename:    invalidAvatarFile.OriginalName,
 				Size:        invalidAvatarFile.Size,
 				ContentType: invalidAvatarFile.ContentType,
 			},

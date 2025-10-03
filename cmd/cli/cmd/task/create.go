@@ -93,8 +93,8 @@ func create(ctx context.Context) error {
 		cobra.CheckErr(err)
 
 		o, err := client.CreateBulkCSVTask(ctx, graphql.Upload{
-			File:        u.File,
-			Filename:    u.Filename,
+			File:        u.RawFile,
+			Filename:    u.OriginalName,
 			Size:        u.Size,
 			ContentType: u.ContentType,
 		})

@@ -61,8 +61,8 @@ func updateValidation() (id string, input openlaneclient.UpdateOrganizationInput
 		}
 
 		avatarFile = &graphql.Upload{
-			File:        file.File,
-			Filename:    file.Filename,
+			File:        file.RawFile,
+			Filename:    file.OriginalName,
 			Size:        file.Size,
 			ContentType: file.ContentType,
 		}

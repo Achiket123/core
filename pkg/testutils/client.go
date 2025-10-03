@@ -50,11 +50,19 @@ func (l localRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) 
 }
 
 // TestClient creates a new OpenlaneClient for testing
-func TestClient(c *ent.Client, opts ...openlaneclient.ClientOption) (*testclient.TestClient, error) {
-	service, err := MockStorageService(nil, nil)
-	if err != nil {
-		return nil, err
+func TestClient(c *ent.Client, objectStore *objects.Service, opts ...openlaneclient.ClientOption) (*testclient.TestClient, error) {
+	var service *objects.Service
+	var err error
+
+	if objectStore != nil {
+		service = objectStore
+	} else {
+		service, err = MockStorageService(nil, nil)
+		if err != nil {
+			return nil, err
+		}
 	}
+
 	e := testEchoServer(c, service, false)
 
 	// setup interceptors
@@ -90,11 +98,19 @@ func TestRestClient(c *ent.Client, opts ...openlaneclient.ClientOption) (*openla
 }
 
 // TestClientWithAuth creates a new OpenlaneClient for testing that includes the auth middleware
-func TestClientWithAuth(c *ent.Client, opts ...openlaneclient.ClientOption) (*testclient.TestClient, error) {
-	service, err := MockStorageService(nil, nil)
-	if err != nil {
-		return nil, err
+func TestClientWithAuth(c *ent.Client, objectStore *objects.Service, opts ...openlaneclient.ClientOption) (*testclient.TestClient, error) {
+	var service *objects.Service
+	var err error
+
+	if objectStore != nil {
+		service = objectStore
+	} else {
+		service, err = MockStorageService(nil, nil)
+		if err != nil {
+			return nil, err
+		}
 	}
+
 	e := testEchoServer(c, service, true)
 
 	// setup interceptors
@@ -248,7 +264,7 @@ func MockStorageServiceWithValidationAndProvider(t *testing.T, uploader storage.
 	resolver.SetDefaultRule(defaultRule)
 
 	// Create objects.Service - simplified for tests
-	service := objects.NewService(resolver, clientService)
+	service := objects.NewService(resolver, clientService, validationFunc)
 
 	// Return service and provider for test setup
 	return service, mockProvider, nil

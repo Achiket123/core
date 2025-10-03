@@ -11,7 +11,6 @@ import (
 	"github.com/theopenlane/utils/contextx"
 )
 
-
 // WithValue is a simplified helper that adds any typed value directly to context
 func WithValue[T any](ctx context.Context, value T) context.Context {
 	return contextx.With(ctx, value)

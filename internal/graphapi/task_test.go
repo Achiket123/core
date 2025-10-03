@@ -928,8 +928,8 @@ func TestMutationUpdateTask(t *testing.T) {
 			},
 			files: []*graphql.Upload{
 				{
-					File:        pngFile.File,
-					Filename:    pngFile.Filename,
+					File:        pngFile.RawFile,
+					Filename:    pngFile.OriginalName,
 					Size:        pngFile.Size,
 					ContentType: pngFile.ContentType,
 				},
@@ -945,8 +945,8 @@ func TestMutationUpdateTask(t *testing.T) {
 			},
 			files: []*graphql.Upload{
 				{
-					File:        pdfFile.File,
-					Filename:    pdfFile.Filename,
+					File:        pdfFile.RawFile,
+					Filename:    pdfFile.OriginalName,
 					Size:        pdfFile.Size,
 					ContentType: pdfFile.ContentType,
 				},

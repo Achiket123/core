@@ -37,10 +37,7 @@ func checkNoteFiles[T utils.GenericMutation](ctx context.Context, m T) (context.
 	key := "noteFiles"
 
 	// get the file from the context, if it exists
-	file, err := pkgobjects.FilesFromContextWithKey(ctx, key)
-	if err != nil {
-		return ctx, err
-	}
+	file, _ := pkgobjects.FilesFromContextWithKey(ctx, key)
 
 	if file == nil {
 		return ctx, nil

@@ -30,6 +30,7 @@ import (
 	ent "github.com/theopenlane/core/internal/ent/generated"
 	"github.com/theopenlane/core/internal/entdb"
 	"github.com/theopenlane/core/internal/graphapi/testclient"
+	objmw "github.com/theopenlane/core/internal/middleware/objects"
 	"github.com/theopenlane/core/internal/objects"
 	"github.com/theopenlane/core/pkg/entitlements"
 	"github.com/theopenlane/core/pkg/entitlements/mocks"
@@ -201,12 +202,12 @@ func (suite *GraphTestSuite) SetupSuite(t *testing.T) {
 	db, err := entdb.NewTestClient(ctx, suite.tf, jobOpts, opts)
 	requireNoError(err)
 
-	c.objectStore, c.mockProvider, err = coreutils.MockStorageServiceWithValidationAndProvider(t, nil, nil)
+	c.objectStore, c.mockProvider, err = coreutils.MockStorageServiceWithValidationAndProvider(t, nil, objmw.MimeTypeValidator)
 	requireNoError(err)
 
 	// assign values
 	c.db = db
-	c.api, err = coreutils.TestClient(c.db)
+	c.api, err = coreutils.TestClient(c.db, c.objectStore)
 	requireNoError(err)
 
 	suite.client = c
@@ -233,10 +234,12 @@ func expectUpload(t *testing.T, mockProvider *mock_shared.MockProvider, expected
 
 	for _, upload := range expectedUploads {
 		mockProvider.On("GetScheme").Return(&mockScheme).Once()
-		mockProvider.On("Upload", mock.Anything, mock.Anything, mock.Anything).Return(&storage.UploadedFileMetadata{
+		mockProvider.On("ProviderType").Return(storage.DiskProvider).Maybe()
+		mockProvider.On("Upload", mock.Anything, mock.Anything, mock.Anything).Return(&storage.UploadedMetadata{
 			FileMetadata: storage.FileMetadata{
-				Key:  "test-key",
-				Size: upload.Size,
+				Key:          "test-key",
+				Size:         upload.Size,
+				ProviderType: storage.DiskProvider,
 			},
 		}, nil).Once()
 	}
@@ -251,10 +254,12 @@ func expectUploadNillable(t *testing.T, mockProvider *mock_shared.MockProvider, 
 	for _, upload := range expectedUploads {
 		if upload != nil {
 			mockProvider.On("GetScheme").Return(&mockScheme).Once()
-			mockProvider.On("Upload", mock.Anything, mock.Anything, mock.Anything).Return(&storage.UploadedFileMetadata{
+			mockProvider.On("ProviderType").Return(storage.DiskProvider).Maybe()
+			mockProvider.On("Upload", mock.Anything, mock.Anything, mock.Anything).Return(&storage.UploadedMetadata{
 				FileMetadata: storage.FileMetadata{
-					Key:  "test-key",
-					Size: upload.Size,
+					Key:          "test-key",
+					Size:         upload.Size,
+					ProviderType: storage.DiskProvider,
 				},
 			}, nil).Once()
 		}

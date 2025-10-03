@@ -10,7 +10,7 @@ import (
 
 	"github.com/theopenlane/core/cmd/cli/cmd"
 	"github.com/theopenlane/core/pkg/enums"
-	"github.com/theopenlane/core/pkg/objects"
+	objects "github.com/theopenlane/core/pkg/objects/storage"
 	"github.com/theopenlane/core/pkg/openlaneclient"
 )
 
@@ -84,8 +84,8 @@ func createValidation() (*openlaneclient.CreateTrustCenterWatermarkConfigInput, 
 			return nil, nil, err
 		}
 		fileUpload = &graphql.Upload{
-			File:        upload.File,
-			Filename:    upload.Filename,
+			File:        upload.RawFile,
+			Filename:    upload.OriginalName,
 			Size:        upload.Size,
 			ContentType: upload.ContentType,
 		}

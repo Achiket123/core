@@ -94,10 +94,7 @@ func checkExportFiles(ctx context.Context, m *generated.ExportMutation) (context
 	key := "exportFiles"
 
 	// get the file from the context, if it exists
-	file, err := pkgobjects.FilesFromContextWithKey(ctx, key)
-	if err != nil {
-		return ctx, err
-	}
+	file, _ := pkgobjects.FilesFromContextWithKey(ctx, key)
 
 	if file == nil {
 		return ctx, nil
