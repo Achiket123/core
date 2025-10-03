@@ -611,8 +611,8 @@ func addProviderRules(resolver *cp.Resolver[storage.Provider], config storage.Pr
 			WhenFunc(func(ctx context.Context) bool {
 				return cp.GetValueEquals(ctx, models.CatalogTrustCenterModule)
 			}).
-			Resolve(func(_ context.Context) (*cp.ResolvedProvider, error) {
-				return querySystemProvider(entClient, storage.R2Provider)
+			Resolve(func(ctx context.Context) (*cp.ResolvedProvider, error) {
+				return querySystemProvider(ctx, entClient, storage.R2Provider)
 			})
 		resolver.AddRule(trustCenterRule)
 	}
@@ -623,8 +623,8 @@ func addProviderRules(resolver *cp.Resolver[storage.Provider], config storage.Pr
 			WhenFunc(func(ctx context.Context) bool {
 				return cp.GetValueEquals(ctx, models.CatalogComplianceModule)
 			}).
-			Resolve(func(_ context.Context) (*cp.ResolvedProvider, error) {
-				return querySystemProvider(entClient, storage.S3Provider)
+			Resolve(func(ctx context.Context) (*cp.ResolvedProvider, error) {
+				return querySystemProvider(ctx, entClient, storage.S3Provider)
 			})
 		resolver.AddRule(complianceRule)
 	}
@@ -632,9 +632,7 @@ func addProviderRules(resolver *cp.Resolver[storage.Provider], config storage.Pr
 }
 
 // querySystemProvider queries for active system integration created by CredentialSync
-func querySystemProvider(entClient *ent.Client, providerType storage.ProviderType) (*cp.ResolvedProvider, error) {
-	ctx := context.Background()
-
+func querySystemProvider(ctx context.Context, entClient *ent.Client, providerType storage.ProviderType) (*cp.ResolvedProvider, error) {
 	// Query for system integrations (using the SystemOrganizationID from CredentialSync)
 	integrations, err := entClient.Integration.Query().
 		Where(

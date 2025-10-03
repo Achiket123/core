@@ -148,6 +148,9 @@ func checkOrgAccess(ctx context.Context, relation, organizationID string) error 
 	}
 
 	// deny if it was a mutation is not allowed
+	zerolog.Ctx(ctx).Err(err).Str("relation", relation).Str("organization_id", organizationID).
+		Msg("access denied for organization based on fga")
+
 	return generated.ErrPermissionDenied
 }
 

@@ -11,6 +11,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler/extension"
 	"github.com/99designs/gqlgen/graphql/handler/lru"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
+	"github.com/labstack/gommon/log"
 	"github.com/theopenlane/core/internal/graphapi"
 	"github.com/theopenlane/core/internal/graphapi/directives"
 	gqlgenerated "github.com/theopenlane/core/internal/graphapi/generated"
@@ -18,6 +19,7 @@ import (
 	"github.com/theopenlane/core/internal/graphapi/testclient"
 	"github.com/theopenlane/core/internal/objects"
 	"github.com/theopenlane/core/pkg/cp"
+	"github.com/theopenlane/core/pkg/logx"
 	"github.com/theopenlane/core/pkg/middleware/auth"
 	mock_shared "github.com/theopenlane/core/pkg/objects/mocks"
 	"github.com/theopenlane/core/pkg/objects/storage"
@@ -132,9 +134,19 @@ func testEchoServer(c *ent.Client, u *objects.Service, includeMiddleware bool) *
 
 	e := echo.New()
 
+	logger := logx.CreateLogger(log.ERROR, true)
+	e.Logger = logger
+
 	if includeMiddleware {
 		e.Use(echocontext.EchoContextToContextMiddleware())
 		e.Use(auth.Authenticate(createAuthConfig(c)))
+		e.Use(logx.LoggingMiddleware(logx.Config{
+			Logger:          logger,
+			RequestIDHeader: "X-Request-ID",
+			RequestIDKey:    "request_id",
+			HandleError:     true,
+		}))
+
 	}
 
 	e.POST("/query", func(c echo.Context) error {

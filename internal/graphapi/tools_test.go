@@ -105,11 +105,12 @@ func TestMain(m *testing.M) {
 }
 
 func (suite *GraphTestSuite) SetupSuite(t *testing.T) {
+	ctx := context.Background()
+
 	zerolog.SetGlobalLevel(zerolog.Disabled)
 
 	if testing.Verbose() {
 		zerolog.SetGlobalLevel(zerolog.ErrorLevel)
-	}
 
 	// setup db container
 	suite.tf = entdb.NewTestFixture()
@@ -123,8 +124,6 @@ func (suite *GraphTestSuite) SetupSuite(t *testing.T) {
 			"OPENFGA_LIST_OBJECTS_ITERATOR_CACHE_ENABLED": "false",
 		},
 		))
-
-	ctx := context.Background()
 
 	// setup fga client
 	fgaClient, err := suite.ofgaTF.NewFgaClient(ctx)

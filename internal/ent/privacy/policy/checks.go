@@ -70,7 +70,7 @@ func CanCreateObjectsUnderParents(edges []string) privacy.MutationRuleFunc {
 		if err := CheckEdgesForAddedAccess(ctx, m, edgesToCheck); err != nil {
 			zerolog.Ctx(ctx).Error().Err(err).Msg("access not allowed to parent, cannot authorize creation")
 
-			return privacy.Deny
+			return privacy.Denyf("access not allowed to parent, cannot authorize creation")
 		}
 
 		return privacy.Allow
@@ -81,7 +81,7 @@ func CanCreateObjectsUnderParents(edges []string) privacy.MutationRuleFunc {
 func CheckOrgReadAccess() privacy.QueryRule {
 	return privacy.QueryRuleFunc(func(ctx context.Context, q ent.Query) error {
 		if _, hasAnon := auth.AnonymousTrustCenterUserFromContext(ctx); hasAnon {
-			return privacy.Deny
+			return privacy.Denyf("anonymous trust center users are not allowed to access this resource")
 		}
 		// check if the user has access to view the organization
 		// check the query first for the IDS
@@ -275,7 +275,7 @@ func ensureObjectInOrganization(ctx context.Context, m ent.Mutation, edge string
 	mut, ok := m.(utils.GenericMutation)
 	if !ok {
 		zerolog.Ctx(ctx).Error().Msg("unable to determine access")
-		return privacy.Deny
+		return privacy.Denyf("unable to determine access to object in organization")
 	}
 
 	// check view access to the organization instead if the edge is an organization
@@ -286,7 +286,7 @@ func ensureObjectInOrganization(ctx context.Context, m ent.Mutation, edge string
 
 		zerolog.Ctx(ctx).Error().Msg("user does not have access to the organization")
 
-		return privacy.Deny
+		return privacy.Denyf("user does not have access to the organization")
 	}
 
 	// check if the object is in the organization
@@ -297,7 +297,7 @@ func ensureObjectInOrganization(ctx context.Context, m ent.Mutation, edge string
 	if err := mut.Client().Driver().Query(ctx, query, []any{objectID, orgID}, &rows); err != nil {
 		zerolog.Ctx(ctx).Error().Err(err).Msg("failed to check for object in organization")
 
-		return privacy.Deny
+		return privacy.Denyf("failed to check for object in organization")
 	}
 
 	defer rows.Close()
@@ -310,5 +310,5 @@ func ensureObjectInOrganization(ctx context.Context, m ent.Mutation, edge string
 	}
 
 	// fall back to deny if the object is not in the organization
-	return privacy.Deny
+	return privacy.Denyf("object is not in the organization")
 }

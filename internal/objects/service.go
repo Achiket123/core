@@ -141,7 +141,7 @@ func (s *Service) resolveUploadProvider(ctx context.Context, opts *storage.Uploa
 
 	// Get organization ID from auth context
 	orgID, err := auth.GetOrganizationIDFromContext(ctx)
-	if err != nil {
+	if err != nil || orgID == "" {
 		return nil, ErrNoOrganizationID
 	}
 

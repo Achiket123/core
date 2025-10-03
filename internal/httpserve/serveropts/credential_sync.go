@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 
 	"github.com/theopenlane/core/internal/ent/generated"
 	"github.com/theopenlane/core/internal/ent/generated/integration"
@@ -195,6 +196,8 @@ func (css *CredentialSyncService) GetActiveSystemProvider(ctx context.Context, p
 		WithSecrets().
 		All(ctx)
 	if err != nil {
+		log.Error().Err(err).Msgf("failed to query integrations for provider %s", providerType)
+
 		return nil, err
 	}
 

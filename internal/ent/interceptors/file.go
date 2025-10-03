@@ -69,11 +69,6 @@ func InterceptorPresignedURL() ent.Interceptor {
 			// get the fields that were queried and check for the presignedURL field
 			fields := graphutils.CheckForRequestedField(ctx, "presignedURL")
 
-			// if the presignedURL field is queried, we need to load integration and secret edges
-			if fields {
-				q.WithIntegrations().WithSecrets()
-			}
-
 			v, err := next.Query(ctx, q)
 			if err != nil {
 				return nil, err
