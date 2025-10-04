@@ -10,7 +10,6 @@ import (
 	"github.com/theopenlane/core/internal/ent/generated/hook"
 	"github.com/theopenlane/core/internal/ent/privacy/utils"
 	"github.com/theopenlane/core/pkg/objects"
-	pkgobjects "github.com/theopenlane/core/pkg/objects"
 )
 
 // HookEvidenceFiles runs on evidence mutations to check for uploaded files
@@ -34,7 +33,7 @@ func HookEvidenceFiles() ent.Hook {
 			}
 
 			// check for uploaded files (e.g. avatar image)
-			fileIDs := pkgobjects.GetFileIDsFromContext(ctx)
+			fileIDs := objects.GetFileIDsFromContext(ctx)
 			if len(fileIDs) > 0 {
 				var err error
 

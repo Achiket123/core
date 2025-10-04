@@ -87,12 +87,12 @@ func HookFileDelete() ent.Hook {
 
 						// Set integration ID from edges
 						for _, integration := range f.Edges.Integrations {
-							storageFile.FileMetadata.ProviderHints.IntegrationID = integration.ID
+							storageFile.ProviderHints.IntegrationID = integration.ID
 						}
 
 						// Set hush ID from edges
 						for _, secret := range f.Edges.Secrets {
-							storageFile.FileMetadata.ProviderHints.HushID = secret.ID
+							storageFile.ProviderHints.HushID = secret.ID
 						}
 
 						// Convert metadata from map[string]interface{} to map[string]string

@@ -40,7 +40,7 @@ type Config struct {
 
 // NewDiskProvider creates a new disk provider instance
 func NewDiskProvider(cfg *Config) (*Provider, error) {
-	if lo.IsEmpty(cfg.Bucket) {
+	if cfg == nil || lo.IsEmpty(cfg.Bucket) {
 		return nil, ErrInvalidFolderPath
 	}
 
@@ -84,7 +84,7 @@ func (p *Provider) Upload(_ context.Context, reader io.Reader, opts *storagetype
 }
 
 // Download implements storagetypes.Provider
-func (p *Provider) Download(_ context.Context, file *storagetypes.File, opts *storagetypes.DownloadFileOptions) (*storagetypes.DownloadedFileMetadata, error) {
+func (p *Provider) Download(_ context.Context, file *storagetypes.File, _ *storagetypes.DownloadFileOptions) (*storagetypes.DownloadedFileMetadata, error) {
 	filePath := filepath.Join(p.config.Bucket, file.Key)
 	fileData, err := os.ReadFile(filePath)
 	if err != nil {
@@ -98,12 +98,16 @@ func (p *Provider) Download(_ context.Context, file *storagetypes.File, opts *st
 }
 
 // Delete implements storagetypes.Provider
-func (p *Provider) Delete(_ context.Context, file *storagetypes.File, opts *storagetypes.DeleteFileOptions) error {
-	return os.Remove(filepath.Join(p.config.Bucket, file.Key))
+func (p *Provider) Delete(_ context.Context, file *storagetypes.File, _ *storagetypes.DeleteFileOptions) error {
+	err := os.Remove(filepath.Join(p.config.Bucket, file.Key))
+	if os.IsNotExist(err) {
+		return nil
+	}
+	return err
 }
 
 // GetPresignedURL implements storagetypes.Provider
-func (p *Provider) GetPresignedURL(_ context.Context, file *storagetypes.File, opts *storagetypes.PresignedURLOptions) (string, error) {
+func (p *Provider) GetPresignedURL(_ context.Context, file *storagetypes.File, _ *storagetypes.PresignedURLOptions) (string, error) {
 	if p.config.LocalURL == "" {
 		return "", ErrMissingLocalURL
 	}

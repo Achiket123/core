@@ -22,6 +22,12 @@ import (
 // ErrNoActiveIntegration is returned when no active system integration is found for a provider
 var ErrNoActiveIntegration = errors.New("no active system integration found")
 
+// ErrNoSystemIntegration is returned when no system integration is found for a provider
+var ErrNoSystemIntegration = errors.New("no system integration found")
+
+// ErrNoIntegrationWithSecrets is returned when no active integration with secrets is found for a provider
+var ErrNoIntegrationWithSecrets = errors.New("no active integration with secrets found")
+
 // SystemOrganizationID is a special organization ID used for system integrations
 // This should be set to a unique value for each test run
 var SystemOrganizationID = "01101101011010010111010001100010"

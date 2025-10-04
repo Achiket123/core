@@ -459,6 +459,9 @@ func TestAnonymousUserCanQueryTrustCenterNDA(t *testing.T) {
 	assert.Assert(t, resp != nil)
 
 	// check we can't create a second NDA
+	if len(expectUploads) > 0 {
+		expectUpload(t, suite.client.mockProvider, expectUploads)
+	}
 	_, err = suite.client.api.CreateTrustCenterNda(testUser1.UserCtx, input, uploads)
 	assert.ErrorContains(t, err, "template already exists")
 

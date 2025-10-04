@@ -111,6 +111,7 @@ func (suite *GraphTestSuite) SetupSuite(t *testing.T) {
 
 	if testing.Verbose() {
 		zerolog.SetGlobalLevel(zerolog.ErrorLevel)
+	}
 
 	// setup db container
 	suite.tf = entdb.NewTestFixture()

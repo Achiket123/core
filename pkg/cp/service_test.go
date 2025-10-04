@@ -303,7 +303,7 @@ func TestConcurrentServiceAccess(t *testing.T) {
 	}()
 
 	// Wait for all goroutines
-	for range 4 {
+	for range 2 {
 		<-done
 	}
 }

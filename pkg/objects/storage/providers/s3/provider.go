@@ -206,7 +206,7 @@ func (p *Provider) Download(ctx context.Context, file *storagetypes.File, opts *
 }
 
 // Delete implements storagetypes.Provider
-func (p *Provider) Delete(ctx context.Context, file *storagetypes.File, opts *storagetypes.DeleteFileOptions) error {
+func (p *Provider) Delete(ctx context.Context, file *storagetypes.File, _ *storagetypes.DeleteFileOptions) error {
 	_, err := p.client.DeleteObject(ctx, &s3.DeleteObjectInput{
 		Bucket: aws.String(p.config.Bucket),
 		Key:    aws.String(file.Key),
@@ -216,7 +216,7 @@ func (p *Provider) Delete(ctx context.Context, file *storagetypes.File, opts *st
 }
 
 // GetPresignedURL implements storagetypes.Provider
-func (p *Provider) GetPresignedURL(ctx context.Context, file *storagetypes.File, opts *storagetypes.PresignedURLOptions) (string, error) {
+func (p *Provider) GetPresignedURL(_ context.Context, file *storagetypes.File, opts *storagetypes.PresignedURLOptions) (string, error) {
 	if opts.Duration == 0 {
 		opts.Duration = DefaultPresignedURLExpiry
 	}

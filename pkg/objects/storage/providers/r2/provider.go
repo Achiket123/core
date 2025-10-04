@@ -129,7 +129,7 @@ func (p *Provider) Upload(ctx context.Context, reader io.Reader, opts *storagety
 }
 
 // Download implements storagetypes.Provider
-func (p *Provider) Download(ctx context.Context, file *storagetypes.File, opts *storagetypes.DownloadFileOptions) (*storagetypes.DownloadedFileMetadata, error) {
+func (p *Provider) Download(ctx context.Context, file *storagetypes.File, _ *storagetypes.DownloadFileOptions) (*storagetypes.DownloadedFileMetadata, error) {
 	head, err := p.client.HeadObject(ctx, &s3.HeadObjectInput{
 		Bucket: aws.String(p.config.Bucket),
 		Key:    aws.String(file.Key),
@@ -156,7 +156,7 @@ func (p *Provider) Download(ctx context.Context, file *storagetypes.File, opts *
 }
 
 // Delete implements storagetypes.Provider
-func (p *Provider) Delete(ctx context.Context, file *storagetypes.File, opts *storagetypes.DeleteFileOptions) error {
+func (p *Provider) Delete(ctx context.Context, file *storagetypes.File, _ *storagetypes.DeleteFileOptions) error {
 	_, err := p.client.DeleteObject(ctx, &s3.DeleteObjectInput{
 		Bucket: aws.String(p.config.Bucket),
 		Key:    aws.String(file.Key),
@@ -166,7 +166,7 @@ func (p *Provider) Delete(ctx context.Context, file *storagetypes.File, opts *st
 }
 
 // GetPresignedURL implements storagetypes.Provider
-func (p *Provider) GetPresignedURL(ctx context.Context, file *storagetypes.File, opts *storagetypes.PresignedURLOptions) (string, error) {
+func (p *Provider) GetPresignedURL(_ context.Context, file *storagetypes.File, opts *storagetypes.PresignedURLOptions) (string, error) {
 	expires := opts.Duration
 	if expires == 0 {
 		expires = DefaultPresignedURLExpiry

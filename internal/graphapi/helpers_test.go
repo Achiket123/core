@@ -24,32 +24,32 @@ func TestStripOperation(t *testing.T) {
 		{
 			name:     "Create operation",
 			input:    "createUser",
-			expected: "User",
+			expected: "user",
 		},
 		{
 			name:     "Update operation",
 			input:    "updateUser",
-			expected: "User",
+			expected: "user",
 		},
 		{
 			name:     "Delete operation",
 			input:    "deleteUser",
-			expected: "User",
+			expected: "user",
 		},
 		{
 			name:     "Get operation",
 			input:    "getUser",
-			expected: "User",
+			expected: "user",
 		},
 		{
 			name:     "No operation",
 			input:    "User",
-			expected: "User",
+			expected: "user",
 		},
 		{
 			name:     "Non-matching prefix",
 			input:    "fetchUser",
-			expected: "fetchUser",
+			expected: "fetch_user",
 		},
 	}
 
@@ -87,7 +87,7 @@ func TestRetrieveObjectDetails(t *testing.T) {
 				},
 			},
 			expected: &storage.File{
-				CorrelatedObjectType: "User",
+				CorrelatedObjectType: "user",
 				FileMetadata: storage.FileMetadata{
 					Key: "file",
 				},

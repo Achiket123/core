@@ -1,7 +1,5 @@
 package objects
 
-import "errors"
-
 // Mutation represents any ent mutation that can provide ID and Type
 type Mutation interface {
 	ID() (string, error)
@@ -28,7 +26,7 @@ func NewGenericMutationAdapter[T any](mutation T, idFunc func(T) (string, bool),
 func (a *GenericMutationAdapter[T]) ID() (string, error) {
 	id, exists := a.idFunc(a.mutation)
 	if !exists {
-		return "", errors.New("mutation ID not found")
+		return "", ErrMutationIDNotFound
 	}
 
 	return id, nil

@@ -642,7 +642,7 @@ func querySystemProvider(ctx context.Context, entClient *ent.Client, providerTyp
 		WithSecrets().
 		All(ctx)
 	if err != nil || len(integrations) == 0 {
-		return nil, fmt.Errorf("no system integration found for provider %s", providerType)
+		return nil, fmt.Errorf("%w for provider %s", ErrNoSystemIntegration, providerType)
 	}
 
 	// Find the most recent integration (CredentialSync keeps the newest active)
@@ -655,7 +655,7 @@ func querySystemProvider(ctx context.Context, entClient *ent.Client, providerTyp
 	}
 
 	if activeInteg == nil {
-		return nil, fmt.Errorf("no active integration with secrets found for provider %s", providerType)
+		return nil, fmt.Errorf("%w for provider %s", ErrNoIntegrationWithSecrets, providerType)
 	}
 
 	// Extract credentials from the hush record using StructToCredentials
