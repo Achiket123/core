@@ -356,6 +356,10 @@ func TestService_BuildResolutionContext(t *testing.T) {
 				IntegrationID:  "hint-integration",
 				HushID:         "hint-hush",
 				OrganizationID: "hint-org",
+				Module:         models.CatalogComplianceModule,
+				Metadata: map[string]string{
+					"size_bytes": "256",
+				},
 			},
 		},
 	}
@@ -370,6 +374,10 @@ func TestService_BuildResolutionContext(t *testing.T) {
 	hints := cp.GetValue[*storagetypes.ProviderHints](enrichedCtx)
 	assert.True(t, hints.IsPresent())
 	assert.Equal(t, "hint-integration", hints.MustGet().IntegrationID)
+
+	moduleHint := cp.GetHint(enrichedCtx, ModuleHintKey())
+	assert.True(t, moduleHint.IsPresent())
+	assert.Equal(t, models.CatalogComplianceModule, moduleHint.MustGet())
 }
 
 func TestService_BuildResolutionContextForFile(t *testing.T) {
@@ -385,6 +393,7 @@ func TestService_BuildResolutionContextForFile(t *testing.T) {
 				IntegrationID:  "file-integration",
 				HushID:         "file-hush",
 				OrganizationID: "file-org",
+				Module:         models.CatalogTrustCenterModule,
 			},
 		},
 	}
@@ -395,6 +404,10 @@ func TestService_BuildResolutionContextForFile(t *testing.T) {
 	contextFile := cp.GetValue[*storagetypes.File](enrichedCtx)
 	assert.True(t, contextFile.IsPresent())
 	assert.Equal(t, file, contextFile.MustGet())
+
+	moduleHint := cp.GetHint(enrichedCtx, ModuleHintKey())
+	assert.True(t, moduleHint.IsPresent())
+	assert.Equal(t, models.CatalogTrustCenterModule, moduleHint.MustGet())
 }
 
 func TestService_ResolveProvider_ErrorHandling(t *testing.T) {

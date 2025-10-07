@@ -51,7 +51,7 @@ tasks:
   setup:storage:minio:
     desc: Launch MinIO for S3-compatible storage
     cmds:
-      - docker-compose up -d minio
+      - docker-compose up -d minio --remove-orphans
       - sleep 3
 
   run:

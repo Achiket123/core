@@ -22,7 +22,7 @@ tasks:
     desc: brings up the compose environment for the core server
     deps: [build]
     cmds:
-      - "docker compose -f ./docker/docker-compose-redis.yml -f ./docker/docker-compose-fga.yml -f ./docker/docker-compose-riverboat.yml -f ./docker/docker-compose.yml up -d"
+      - "docker compose -f ./docker/docker-compose-redis.yml -f ./docker/docker-compose-fga.yml -f ./docker/docker-compose-riverboat.yml -f ./docker/docker-compose.yml up -d --remove-orphans"
 
   core:down:
     dir: ..
@@ -34,7 +34,7 @@ tasks:
     dir: ..
     desc: brings up the compose environment for the core server based on published image
     cmds:
-      - "docker compose -f ./docker/docker-compose-redis.yml -f ./docker/docker-compose-fga.yml -f ./docker/docker-compose-riverboat.yml -f ./docker/docker-compose-published.yml up -d"
+      - "docker compose -f ./docker/docker-compose-redis.yml -f ./docker/docker-compose-fga.yml -f ./docker/docker-compose-riverboat.yml -f ./docker/docker-compose-published.yml up -d --remove-orphans"
 
   all:up:
     dir: ..
@@ -82,7 +82,7 @@ tasks:
     dir: ..
     desc: brings up the compose environment for postgres development
     cmds:
-      - "docker compose -f ./docker/docker-compose-pg.yml up -d"
+      - "docker compose -f ./docker/docker-compose-pg.yml up -d --remove-orphans"
 
   postgres:down:
     dir: ..
@@ -120,13 +120,13 @@ tasks:
     dir: ..
     desc: brings up the compose environment for redis
     cmds:
-      - "docker compose -f ./docker/docker-compose-prometheus.yml up -d"
+      - "docker compose -f ./docker/docker-compose-prometheus.yml up -d --remove-orphans"
 
   dex:
     dir: ..
     desc: launches the Dex IdP and test UI for SSO development
     cmds:
-      - "docker compose -f ./docker/docker-compose-oidc.yml up -d dex sso-ui tokens-ui"
+      - "docker compose -f ./docker/docker-compose-oidc.yml up -d dex sso-ui tokens-ui --remove-orphans"
 
   windmill:
     dir: ..
@@ -143,7 +143,7 @@ tasks:
             echo "ghcr.io/windmill-labs/windmill-ee:main"
           fi
     cmds:
-      - "COMPOSE_PROFILES=windmill docker compose -f ./docker/docker-compose-windmill.yml up -d"
+      - "COMPOSE_PROFILES=windmill docker compose -f ./docker/docker-compose-windmill.yml up -d --remove-orphans"
 
   windmill:full:
     dir: ..
@@ -160,7 +160,7 @@ tasks:
             echo "ghcr.io/windmill-labs/windmill-ee:main"
           fi
     cmds:
-      - "COMPOSE_PROFILES=windmill-full docker compose -f ./docker/docker-compose-windmill.yml up -d"
+      - "COMPOSE_PROFILES=windmill-full docker compose -f ./docker/docker-compose-windmill.yml up -d --remove-orphans"
 
   windmill:down:
     dir: ..

@@ -8,13 +8,12 @@ import (
 	"github.com/stretchr/testify/require"
 
 	ent "github.com/theopenlane/core/internal/ent/generated"
+	"github.com/theopenlane/core/internal/ent/generated/hush"
 	"github.com/theopenlane/core/internal/ent/generated/integration"
-	"github.com/theopenlane/core/internal/ent/generated/privacy"
 	"github.com/theopenlane/core/internal/httpserve/serveropts"
 	"github.com/theopenlane/core/pkg/cp"
 	"github.com/theopenlane/core/pkg/models"
 	"github.com/theopenlane/core/pkg/objects/storage"
-	"github.com/theopenlane/iam/auth"
 
 	// import generated runtime which is required to prevent cyclical dependencies
 	_ "github.com/theopenlane/core/internal/ent/generated/runtime"
@@ -189,16 +188,15 @@ func (suite *CredentialSyncTestSuite) TestSyncConfigCredentials() {
 	t := suite.T()
 
 	// Clean up any existing integrations before each test
-	cleanupCtx := auth.NewTestContextWithOrgID(suite.testUserID, suite.testOrgID)
-	cleanupCtx = privacy.DecisionContext(cleanupCtx, privacy.Allow)
-	cleanupCtx = ent.NewContext(cleanupCtx, suite.db)
-	_, err := suite.db.Integration.Delete().Where(integration.KindEQ(string(storage.S3Provider))).Exec(cleanupCtx)
+	cleanupCtx := suite.systemContext()
+	_, err := suite.db.Integration.Delete().Where(
+		integration.KindEQ(string(storage.S3Provider)),
+		integration.SystemOwnedEQ(true),
+	).Exec(cleanupCtx)
 	require.NoError(t, err)
 
 	t.Run("initial sync creates integrations and secrets", func(t *testing.T) {
-		ctx := auth.NewTestContextWithOrgID(suite.testUserID, suite.testOrgID)
-		ctx = privacy.DecisionContext(ctx, privacy.Allow)
-		ctx = ent.NewContext(ctx, suite.db)
+		ctx := suite.systemContext()
 
 		// Configure service with S3 credentials
 		config := &storage.Providers{
@@ -231,8 +229,13 @@ func (suite *CredentialSyncTestSuite) TestSyncConfigCredentials() {
 
 		// Verify integration was created
 		integrations, err := suite.db.Integration.Query().
-			Where(integration.KindEQ(string(storage.S3Provider))).
-			WithSecrets().
+			Where(
+				integration.KindEQ(string(storage.S3Provider)),
+				integration.SystemOwnedEQ(true),
+			).
+			WithSecrets(func(q *ent.HushQuery) {
+				q.Where(hush.SystemOwnedEQ(true))
+			}).
 			All(ctx)
 		require.NoError(t, err)
 		assert.Len(t, integrations, 1)
@@ -246,9 +249,7 @@ func (suite *CredentialSyncTestSuite) TestSyncConfigCredentials() {
 	})
 
 	t.Run("sync with same credentials doesn't create duplicate", func(t *testing.T) {
-		ctx := auth.NewTestContextWithOrgID(suite.testUserID, suite.testOrgID)
-		ctx = privacy.DecisionContext(ctx, privacy.Allow)
-		ctx = ent.NewContext(ctx, suite.db)
+		ctx := suite.systemContext()
 
 		config := &storage.Providers{
 			S3: storage.ProviderConfigs{
@@ -279,7 +280,10 @@ func (suite *CredentialSyncTestSuite) TestSyncConfigCredentials() {
 		require.NoError(t, err)
 
 		countBefore, err := suite.db.Integration.Query().
-			Where(integration.KindEQ(string(storage.S3Provider))).
+			Where(
+				integration.KindEQ(string(storage.S3Provider)),
+				integration.SystemOwnedEQ(true),
+			).
 			Count(ctx)
 		require.NoError(t, err)
 
@@ -287,7 +291,10 @@ func (suite *CredentialSyncTestSuite) TestSyncConfigCredentials() {
 		require.NoError(t, err)
 
 		countAfter, err := suite.db.Integration.Query().
-			Where(integration.KindEQ(string(storage.S3Provider))).
+			Where(
+				integration.KindEQ(string(storage.S3Provider)),
+				integration.SystemOwnedEQ(true),
+			).
 			Count(ctx)
 		require.NoError(t, err)
 
@@ -296,15 +303,14 @@ func (suite *CredentialSyncTestSuite) TestSyncConfigCredentials() {
 
 	t.Run("sync with updated credentials creates new integration", func(t *testing.T) {
 		// Clean up any existing integrations before this specific test
-		cleanupCtx := auth.NewTestContextWithOrgID(suite.testUserID, suite.testOrgID)
-		cleanupCtx = privacy.DecisionContext(cleanupCtx, privacy.Allow)
-		cleanupCtx = ent.NewContext(cleanupCtx, suite.db)
-		_, err = suite.db.Integration.Delete().Where(integration.KindEQ(string(storage.S3Provider))).Exec(cleanupCtx)
+		cleanupCtx := suite.systemContext()
+		_, err = suite.db.Integration.Delete().Where(
+			integration.KindEQ(string(storage.S3Provider)),
+			integration.SystemOwnedEQ(true),
+		).Exec(cleanupCtx)
 		require.NoError(t, err)
 
-		ctx := auth.NewTestContextWithOrgID(suite.testUserID, suite.testOrgID)
-		ctx = privacy.DecisionContext(ctx, privacy.Allow)
-		ctx = ent.NewContext(ctx, suite.db)
+		ctx := suite.systemContext()
 
 		config := &storage.Providers{
 			S3: storage.ProviderConfigs{
@@ -343,14 +349,19 @@ func (suite *CredentialSyncTestSuite) TestSyncConfigCredentials() {
 
 		// Should have 2 integrations now
 		integrations, err := suite.db.Integration.Query().
-			Where(integration.KindEQ(string(storage.S3Provider))).
-			WithSecrets().
+			Where(
+				integration.KindEQ(string(storage.S3Provider)),
+				integration.SystemOwnedEQ(true),
+			).
+			WithSecrets(func(q *ent.HushQuery) {
+				q.Where(hush.SystemOwnedEQ(true))
+			}).
 			All(ctx)
 		require.NoError(t, err)
 		assert.Len(t, integrations, 2)
 
 		// Verify the latest one has updated credentials
-		latest, err := service.GetActiveSystemProvider(ctx, string(storage.S3Provider))
+		latest, err := service.GetActiveSystemProvider(ctx, storage.S3Provider)
 		require.NoError(t, err)
 		assert.Equal(t, "updated_key", latest.Edges.Secrets[0].CredentialSet.AccessKeyID)
 	})
@@ -360,32 +371,30 @@ func (suite *CredentialSyncTestSuite) TestGetActiveSystemProvider() {
 	t := suite.T()
 
 	// Clean up any existing integrations before each test
-	cleanupCtx := auth.NewTestContextWithOrgID(suite.testUserID, suite.testOrgID)
-	cleanupCtx = privacy.DecisionContext(cleanupCtx, privacy.Allow)
-	cleanupCtx = ent.NewContext(cleanupCtx, suite.db)
-	_, err := suite.db.Integration.Delete().Where(integration.KindEQ(string(storage.S3Provider))).Exec(cleanupCtx)
+	cleanupCtx := suite.systemContext()
+	_, err := suite.db.Integration.Delete().Where(
+		integration.KindEQ(string(storage.S3Provider)),
+		integration.SystemOwnedEQ(true),
+	).Exec(cleanupCtx)
 	require.NoError(t, err)
 
 	t.Run("no integrations returns error", func(t *testing.T) {
-		ctx := auth.NewTestContextWithOrgID(suite.testUserID, suite.testOrgID)
-		ctx = privacy.DecisionContext(ctx, privacy.Allow)
-		ctx = ent.NewContext(ctx, suite.db)
+		ctx := suite.systemContext()
 
-		_, err := suite.service.GetActiveSystemProvider(ctx, "nonexistent")
+		_, err := suite.service.GetActiveSystemProvider(ctx, storage.ProviderType("nonexistent"))
 		assert.ErrorIs(t, err, serveropts.ErrNoActiveIntegration)
 	})
 
 	t.Run("returns most recent integration by synchronized_at", func(t *testing.T) {
 		// Clean up any existing integrations before this specific test
-		cleanupCtx := auth.NewTestContextWithOrgID(suite.testUserID, suite.testOrgID)
-		cleanupCtx = privacy.DecisionContext(cleanupCtx, privacy.Allow)
-		cleanupCtx = ent.NewContext(cleanupCtx, suite.db)
-		_, err = suite.db.Integration.Delete().Where(integration.KindEQ(string(storage.S3Provider))).Exec(cleanupCtx)
+		cleanupCtx := suite.systemContext()
+		_, err = suite.db.Integration.Delete().Where(
+			integration.KindEQ(string(storage.S3Provider)),
+			integration.SystemOwnedEQ(true),
+		).Exec(cleanupCtx)
 		require.NoError(t, err)
 
-		ctx := auth.NewTestContextWithOrgID(suite.testUserID, suite.testOrgID)
-		ctx = privacy.DecisionContext(ctx, privacy.Allow)
-		ctx = ent.NewContext(ctx, suite.db)
+		ctx := suite.systemContext()
 
 		// Configure service with S3 credentials
 		config := &storage.Providers{
@@ -425,7 +434,7 @@ func (suite *CredentialSyncTestSuite) TestGetActiveSystemProvider() {
 		require.NoError(t, err)
 
 		// Verify GetActiveSystemProvider returns the most recent one
-		active, err := service.GetActiveSystemProvider(ctx, string(storage.S3Provider))
+		active, err := service.GetActiveSystemProvider(ctx, storage.S3Provider)
 		require.NoError(t, err)
 		assert.Equal(t, "test_key_2", active.Edges.Secrets[0].CredentialSet.AccessKeyID)
 		assert.Equal(t, "test_secret_2", active.Edges.Secrets[0].CredentialSet.SecretAccessKey)

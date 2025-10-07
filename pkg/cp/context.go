@@ -25,3 +25,55 @@ func GetValue[T any](ctx context.Context) mo.Option[T] {
 func GetValueEquals[T comparable](ctx context.Context, expected T) bool {
 	return GetValue[T](ctx).OrElse(*new(T)) == expected
 }
+
+// HintKey defines a typed key for storing hints in context
+type HintKey[T any] struct {
+	name string
+}
+
+// NewHintKey creates a new typed hint key
+func NewHintKey[T any](name string) HintKey[T] {
+	return HintKey[T]{name: name}
+}
+
+// WithHint stores a specific hint value in the context
+func WithHint[T any](ctx context.Context, key HintKey[T], value T) context.Context {
+	storage := cloneHintStorage(contextx.FromOr(ctx, hintStorage{}))
+	storage[key.name] = value
+	return contextx.With(ctx, storage)
+}
+
+// GetHint retrieves a specific hint value from the context
+func GetHint[T any](ctx context.Context, key HintKey[T]) mo.Option[T] {
+	if storage, ok := contextx.From[hintStorage](ctx); ok {
+		if value, exists := storage[key.name]; exists {
+			if typed, ok := value.(T); ok {
+				return mo.Some(typed)
+			}
+		}
+	}
+
+	return mo.None[T]()
+}
+
+// Name returns the human-readable identifier for the hint key. Primarily useful for debugging/logging.
+func (k HintKey[T]) Name() string {
+	return k.name
+}
+
+type (
+	hintStorage map[string]any
+)
+
+func cloneHintStorage(in hintStorage) hintStorage {
+	if len(in) == 0 {
+		return make(hintStorage)
+	}
+
+	out := make(hintStorage, len(in)+1)
+	for key, value := range in {
+		out[key] = value
+	}
+
+	return out
+}

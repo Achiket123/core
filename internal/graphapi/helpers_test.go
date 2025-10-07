@@ -1,6 +1,8 @@
 package graphapi
 
 import (
+	"io"
+	"strings"
 	"testing"
 
 	"github.com/99designs/gqlgen/graphql"
@@ -10,6 +12,7 @@ import (
 	is "gotest.tools/v3/assert/cmp"
 
 	"github.com/theopenlane/core/internal/ent/generated"
+	pkgobjects "github.com/theopenlane/core/pkg/objects"
 	"github.com/theopenlane/core/pkg/objects/storage"
 )
 
@@ -228,7 +231,7 @@ func TestGetBulkUploadOwnerInput(t *testing.T) {
 
 	tests := []struct {
 		name        string
-		input       []*generated.CreateProcedureInput // used as an example, should work with any type
+		input       []*generated.CreateProcedureInput
 		expected    *string
 		expectedErr error
 	}{
@@ -293,4 +296,116 @@ func TestGetBulkUploadOwnerInput(t *testing.T) {
 			assert.Check(t, is.DeepEqual(tt.expected, result))
 		})
 	}
+}
+
+func TestFileBuffering(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name               string
+		fileSize           int
+		expectBuffered     bool
+		expectOriginalKept bool
+	}{
+		{
+			name:           "Small file gets buffered",
+			fileSize:       1024,
+			expectBuffered: true,
+		},
+		{
+			name:               "Large file exceeds limit",
+			fileSize:           pkgobjects.MaxInMemorySize + 1,
+			expectOriginalKept: true,
+		},
+		{
+			name:           "File at max size gets buffered",
+			fileSize:       pkgobjects.MaxInMemorySize,
+			expectBuffered: true,
+		},
+		{
+			name:           "Empty file gets buffered",
+			fileSize:       0,
+			expectBuffered: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			data := strings.Repeat("a", tt.fileSize)
+			reader := strings.NewReader(data)
+
+			file := storage.File{
+				RawFile: reader,
+			}
+
+			// Simulate the buffering logic from injectFileUploader
+			if file.RawFile != nil {
+				buffered, err := pkgobjects.NewBufferedReaderFromReader(file.RawFile)
+				if err == nil {
+					file.RawFile = buffered
+				}
+			}
+
+			if tt.expectBuffered {
+				_, ok := file.RawFile.(*pkgobjects.BufferedReader)
+				assert.Check(t, ok, "expected BufferedReader but got different type")
+
+				readData, err := io.ReadAll(file.RawFile)
+				assert.NilError(t, err)
+				assert.Check(t, is.Equal(tt.fileSize, len(readData)))
+			}
+
+			if tt.expectOriginalKept {
+				_, ok := file.RawFile.(*pkgobjects.BufferedReader)
+				assert.Check(t, !ok, "expected original reader but got BufferedReader")
+			}
+		})
+	}
+}
+
+func TestFileBufferingWithReadSeeker(t *testing.T) {
+	t.Parallel()
+
+	data := []byte("test data")
+	bufferedReader := pkgobjects.NewBufferedReader(data)
+
+	file := storage.File{
+		RawFile:      bufferedReader,
+		OriginalName: "test.txt",
+	}
+
+	// Simulate the buffering logic - should keep the existing BufferedReader
+	if file.RawFile != nil {
+		newBuffered, err := pkgobjects.NewBufferedReaderFromReader(file.RawFile)
+		if err == nil {
+			file.RawFile = newBuffered
+		} else if err != pkgobjects.ErrFileSizeExceedsLimit {
+			t.Errorf("unexpected error: %v", err)
+		}
+	}
+
+	result, ok := file.RawFile.(*pkgobjects.BufferedReader)
+	assert.Check(t, ok, "expected BufferedReader")
+	assert.Check(t, is.Equal(int64(len(data)), result.Size()))
+}
+
+func TestFileBufferingNilReader(t *testing.T) {
+	t.Parallel()
+
+	file := storage.File{
+		RawFile:      nil,
+		OriginalName: "test.txt",
+	}
+
+	// Simulate the buffering logic with nil reader
+	if file.RawFile != nil {
+		buffered, err := pkgobjects.NewBufferedReaderFromReader(file.RawFile)
+		if err == nil {
+			file.RawFile = buffered
+		} else if err != pkgobjects.ErrFileSizeExceedsLimit {
+			t.Errorf("unexpected error: %v", err)
+		}
+	}
+
+	assert.Check(t, file.RawFile == nil, "expected nil RawFile")
 }

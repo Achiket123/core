@@ -10,16 +10,19 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"slices"
 	"strings"
 	"time"
 
 	"github.com/redis/go-redis/v9"
 
+	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	echoprometheus "github.com/theopenlane/echo-prometheus"
 	echo "github.com/theopenlane/echox"
 
 	"github.com/theopenlane/entx"
+	"github.com/theopenlane/iam/auth"
 	"github.com/theopenlane/iam/fgax"
 	"github.com/theopenlane/iam/providers/webauthn"
 	"github.com/theopenlane/iam/sessions"
@@ -27,12 +30,15 @@ import (
 	"github.com/theopenlane/iam/totp"
 	"github.com/theopenlane/riverboat/pkg/riverqueue"
 	"github.com/theopenlane/utils/cache"
+	"github.com/theopenlane/utils/contextx"
 	"github.com/theopenlane/utils/ulids"
 
 	"github.com/theopenlane/echox/middleware/echocontext"
 
 	ent "github.com/theopenlane/core/internal/ent/generated"
+	"github.com/theopenlane/core/internal/ent/generated/hush"
 	"github.com/theopenlane/core/internal/ent/generated/integration"
+	"github.com/theopenlane/core/internal/ent/generated/privacy"
 	"github.com/theopenlane/core/internal/ent/hush/crypto"
 	"github.com/theopenlane/core/internal/graphapi"
 	"github.com/theopenlane/core/internal/httpserve/config"
@@ -54,6 +60,7 @@ import (
 	disk "github.com/theopenlane/core/pkg/objects/storage/providers/disk"
 	r2provider "github.com/theopenlane/core/pkg/objects/storage/providers/r2"
 	s3provider "github.com/theopenlane/core/pkg/objects/storage/providers/s3"
+	storagetypes "github.com/theopenlane/core/pkg/objects/storage/types"
 	"github.com/theopenlane/core/pkg/summarizer"
 	"github.com/theopenlane/core/pkg/windmill"
 )
@@ -445,13 +452,37 @@ func WithCORS() ServerOption {
 // WithObjectStorage sets up the object storage for the server
 func WithObjectStorage() ServerOption {
 	return newApplyFunc(func(s *ServerOptions) {
-		// Create StorageService with resolver and cp using real config
-		storageService := createStorageServiceFromConfig(s.Config.Settings.ObjectStorage, s.Config.Handler.DBClient)
+		// Create StorageService with resolver and cp using runtime config
+		storageService := createStorageServiceFromConfig(s.Config.Settings.ObjectStorage)
 
 		// Store in config for access
 		s.Config.StorageService = storageService
 
+		validateConfiguredStorageProviders(s.Config.Settings.ObjectStorage)
+
 		log.Info().Msg("Object storage initialized")
+	})
+}
+
+// WithStorageCredentialSync synchronizes configured storage credentials into the database once dependencies are ready
+func WithStorageCredentialSync() ServerOption {
+	return newApplyFunc(func(s *ServerOptions) {
+		if s.Config.Settings.ObjectStorage.DevMode {
+			return
+		}
+
+		if s.Config.Handler.DBClient == nil {
+			log.Warn().Msg("skipping storage credential sync: database client not ready")
+			return
+		}
+
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+
+	credentialSync := NewCredentialSyncService(s.Config.Handler.DBClient, nil, &s.Config.Settings.ObjectStorage.Providers)
+		if err := credentialSync.SyncConfigCredentials(ctx); err != nil {
+			log.Error().Err(err).Msg("failed to sync storage credentials to database")
+		}
 	})
 }
 
@@ -548,30 +579,151 @@ func WithCrypto() ServerOption {
 const (
 	// DefaultClientPoolTTL is the default TTL for client pool entries
 	DefaultClientPoolTTL = 15 * time.Minute
+	defaultDevBucket     = "/tmp/dev-storage"
+	defaultS3Region      = "us-east-1"
 )
 
+func validateConfiguredStorageProviders(cfg storage.ProviderConfig) {
+	if !cfg.Enabled {
+		log.Info().Msg("object storage disabled; skipping validation")
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	if cfg.DevMode {
+		if cfg.Providers.Disk.Enabled {
+			bucket := cfg.Providers.Disk.Bucket
+			if bucket == "" {
+				bucket = defaultDevBucket
+			}
+
+			if err := ensureDirectoryExists(bucket); err != nil {
+				log.Warn().Err(err).Str("path", bucket).Msg("unable to ensure development storage directory")
+			}
+		}
+
+		return
+	}
+
+	validateDiskProvider(ctx, cfg.Providers.Disk)
+	validateS3Provider(ctx, cfg.Providers.S3)
+	validateR2Provider(ctx, cfg.Providers.CloudflareR2)
+
+	if cfg.Providers.GCS.Enabled {
+		log.Warn().Msg("skipping GCS provider validation (not implemented)")
+	}
+}
+
+func validateDiskProvider(ctx context.Context, cfg storage.ProviderConfigs) {
+	if !cfg.Enabled {
+		return
+	}
+
+	bucket := cfg.Bucket
+	if bucket == "" {
+		bucket = defaultDevBucket
+	}
+
+	options := storage.NewProviderOptions(
+		storage.WithBucket(bucket),
+		storage.WithBasePath(bucket),
+	)
+	if cfg.Endpoint != "" {
+		options.Apply(storage.WithLocalURL(cfg.Endpoint))
+	}
+
+	provider, err := disk.NewDiskBuilder().WithCredentials(cfg.Credentials).WithConfig(options).Build(ctx)
+	if err != nil {
+		log.Warn().Err(err).Str("provider", "disk").Msg("disk storage validation failed")
+		return
+	}
+	defer provider.Close()
+
+	validateBuckets("disk", provider, bucket)
+}
+
+func validateS3Provider(ctx context.Context, cfg storage.ProviderConfigs) {
+	if !cfg.Enabled {
+		return
+	}
+
+	options := storage.NewProviderOptions()
+	if cfg.Bucket != "" {
+		options.Apply(storage.WithBucket(cfg.Bucket))
+	}
+	region := cfg.Region
+	if region == "" {
+		region = defaultS3Region
+	}
+	options.Apply(storage.WithRegion(region))
+	if cfg.Endpoint != "" {
+		options.Apply(storage.WithEndpoint(cfg.Endpoint))
+	}
+
+	provider, err := s3provider.NewS3Builder().WithCredentials(cfg.Credentials).WithConfig(options).Build(ctx)
+	if err != nil {
+		log.Warn().Err(err).Str("provider", "s3").Msg("s3 storage validation failed")
+		return
+	}
+	defer provider.Close()
+
+	validateBuckets("s3", provider, cfg.Bucket)
+}
+
+func validateR2Provider(ctx context.Context, cfg storage.ProviderConfigs) {
+	if !cfg.Enabled {
+		return
+	}
+
+	options := storage.NewProviderOptions()
+	if cfg.Bucket != "" {
+		options.Apply(storage.WithBucket(cfg.Bucket))
+	}
+	if cfg.Endpoint != "" {
+		options.Apply(storage.WithEndpoint(cfg.Endpoint))
+	}
+
+	provider, err := r2provider.NewR2Builder().WithCredentials(cfg.Credentials).WithConfig(options).Build(ctx)
+	if err != nil {
+		log.Warn().Err(err).Str("provider", "r2").Msg("r2 storage validation failed")
+		return
+	}
+	defer provider.Close()
+
+	validateBuckets("r2", provider, cfg.Bucket)
+}
+
+func validateBuckets(providerName string, provider storagetypes.Provider, expectedBucket string) {
+	buckets, err := provider.ListBuckets()
+	if err != nil {
+		log.Warn().Err(err).Str("provider", providerName).Msg("unable to list buckets during storage validation")
+		return
+	}
+
+	log.Info().Str("provider", providerName).Strs("available_buckets", buckets).Msg("storage provider connectivity verified")
+
+	if expectedBucket != "" && !slices.Contains(buckets, expectedBucket) {
+		log.Warn().Str("provider", providerName).Str("expected_bucket", expectedBucket).Strs("available_buckets", buckets).Msg("configured bucket not present in provider")
+	}
+}
+
+func ensureDirectoryExists(path string) error {
+	if path == "" {
+		return nil
+	}
+
+	return os.MkdirAll(path, os.ModePerm)
+}
+
 // createStorageServiceFromConfig creates a storage service configured from the provided settings
-func createStorageServiceFromConfig(config storage.ProviderConfig, entClient *ent.Client) *objects.Service {
+func createStorageServiceFromConfig(config storage.ProviderConfig) *objects.Service {
 	// Create cp components with configurable TTL
 	pool := cp.NewClientPool[storage.Provider](DefaultClientPoolTTL)
-	clientService := cp.NewClientService[
+	clientService := cp.NewClientService(pool, cp.WithConfigClone[
 		storage.Provider,
-		storage.ProviderCredentials,
-		*storage.ProviderOptions,
-	](pool, cp.WithConfigClone[
-		storage.Provider,
-		storage.ProviderCredentials,
-		*storage.ProviderOptions,
-	](cloneProviderOptions))
-
-	// Initialize credential sync service and sync config credentials to database
-	if !config.DevMode {
-		credentialSync := NewCredentialSyncService(entClient, clientService, &config.Providers)
-		if err := credentialSync.SyncConfigCredentials(context.Background()); err != nil {
-			log.Error().Err(err).Msg("failed to sync storage credentials to database")
-			// Continue with service creation even if sync fails - we can fall back to config-based providers
-		}
-	}
+		storage.ProviderCredentials](cloneProviderOptions))
 
 	// Register storage provider builders
 	clientService.RegisterBuilder(cp.ProviderType(storage.S3Provider), s3provider.NewS3Builder())
@@ -582,7 +734,7 @@ func createStorageServiceFromConfig(config storage.ProviderConfig, entClient *en
 	resolver := cp.NewResolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]()
 
 	// Add resolution rules for storage providers - "what storage provider should be used for this request?"
-	addProviderRules(resolver, config, entClient)
+	addProviderRules(resolver, config)
 
 	// Create and return the storage service with MIME type validation
 	service := objects.NewService(objects.Config{
@@ -600,12 +752,12 @@ func createStorageServiceFromConfig(config storage.ProviderConfig, entClient *en
 }
 
 // addProviderRules adds resolution rules for storage providers starting with dev mode and then business specific rules
-func addProviderRules(resolver *cp.Resolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions], config storage.ProviderConfig, entClient *ent.Client) {
+func addProviderRules(resolver *cp.Resolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions], config storage.ProviderConfig) {
 	// If in dev mode, add a rule that always resolves to disk storage
 	if config.DevMode {
 		options := storage.NewProviderOptions(
-			storage.WithBucket("/tmp/dev-storage"),
-			storage.WithBasePath("/tmp/dev-storage"),
+			storage.WithBucket(defaultDevBucket),
+			storage.WithBasePath(defaultDevBucket),
 			storage.WithExtra("dev_mode", true),
 		)
 
@@ -622,41 +774,126 @@ func addProviderRules(resolver *cp.Resolver[storage.Provider, storage.ProviderCr
 		return
 	}
 
-	// Trust Center Module → Cloudflare R2 (system integration)
-	if config.Providers.CloudflareR2.Enabled {
-		trustCenterRule := cp.NewRule[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]().
-			WhenFunc(func(ctx context.Context) bool {
-				return cp.GetValueEquals(ctx, models.CatalogTrustCenterModule)
-			}).
-			Resolve(func(ctx context.Context) (*cp.ResolvedProvider[storage.ProviderCredentials, *storage.ProviderOptions], error) {
-				return querySystemProvider(ctx, entClient, storage.R2Provider)
-			})
-		resolver.AddRule(trustCenterRule)
+	moduleHint := objects.ModuleHintKey()
+	preferredProviderHint := objects.PreferredProviderHintKey()
+	knownProviderHint := objects.KnownProviderHintKey()
+
+	providerEnabled := func(provider storage.ProviderType) bool {
+		switch provider {
+		case storage.R2Provider:
+			return config.Providers.CloudflareR2.Enabled
+		case storage.S3Provider:
+			return config.Providers.S3.Enabled
+		case storage.DiskProvider:
+			return config.Providers.Disk.Enabled
+		default:
+			return false
+		}
 	}
 
-	// Compliance Module → AWS S3 (system integration)
-	if config.Providers.S3.Enabled {
-		complianceRule := cp.NewRule[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]().
-			WhenFunc(func(ctx context.Context) bool {
-				return cp.GetValueEquals(ctx, models.CatalogComplianceModule)
-			}).
-			Resolve(func(ctx context.Context) (*cp.ResolvedProvider[storage.ProviderCredentials, *storage.ProviderOptions], error) {
-				return querySystemProvider(ctx, entClient, storage.S3Provider)
-			})
-		resolver.AddRule(complianceRule)
+	resolveProvider := func(ctx context.Context, provider storage.ProviderType) (*cp.ResolvedProvider[storage.ProviderCredentials, *storage.ProviderOptions], error) {
+		if resolved, err := querySystemProvider(ctx, provider); err == nil {
+			return resolved, nil
+		} else if err != nil && !errors.Is(err, ErrNoSystemIntegration) && !errors.Is(err, ErrNoIntegrationWithSecrets) {
+			zerolog.Ctx(ctx).Warn().Err(err).Str("provider", string(provider)).Msg("system provider lookup failed, falling back to config")
+		}
+
+		return resolveProviderFromConfig(provider, config)
 	}
 
+	knownRule := cp.NewRule[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]().
+		WhenFunc(func(ctx context.Context) bool {
+			known := cp.GetHint(ctx, knownProviderHint)
+			if !known.IsPresent() {
+				return false
+			}
+
+			return providerEnabled(known.MustGet())
+		}).
+		Resolve(func(ctx context.Context) (*cp.ResolvedProvider[storage.ProviderCredentials, *storage.ProviderOptions], error) {
+			provider := cp.GetHint(ctx, knownProviderHint).MustGet()
+			return resolveProvider(ctx, provider)
+		})
+	resolver.AddRule(knownRule)
+
+	trustCenterRule := cp.NewRule[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]().
+		WhenFunc(func(ctx context.Context) bool {
+			if !providerEnabled(storage.R2Provider) {
+				return false
+			}
+
+			module := cp.GetHint(ctx, moduleHint)
+			return module.IsPresent() && module.MustGet() == models.CatalogTrustCenterModule
+		}).
+		Resolve(func(ctx context.Context) (*cp.ResolvedProvider[storage.ProviderCredentials, *storage.ProviderOptions], error) {
+			return resolveProvider(ctx, storage.R2Provider)
+		})
+	resolver.AddRule(trustCenterRule)
+
+	complianceRule := cp.NewRule[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]().
+		WhenFunc(func(ctx context.Context) bool {
+			if !providerEnabled(storage.S3Provider) {
+				return false
+			}
+
+			module := cp.GetHint(ctx, moduleHint)
+			return module.IsPresent() && module.MustGet() == models.CatalogComplianceModule
+		}).
+		Resolve(func(ctx context.Context) (*cp.ResolvedProvider[storage.ProviderCredentials, *storage.ProviderOptions], error) {
+			return resolveProvider(ctx, storage.S3Provider)
+		})
+	resolver.AddRule(complianceRule)
+
+	preferredRule := cp.NewRule[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]().
+		WhenFunc(func(ctx context.Context) bool {
+			preferred := cp.GetHint(ctx, preferredProviderHint)
+			if !preferred.IsPresent() {
+				return false
+			}
+
+			return providerEnabled(preferred.MustGet())
+		}).
+		Resolve(func(ctx context.Context) (*cp.ResolvedProvider[storage.ProviderCredentials, *storage.ProviderOptions], error) {
+			provider := cp.GetHint(ctx, preferredProviderHint).MustGet()
+			return resolveProvider(ctx, provider)
+		})
+	resolver.AddRule(preferredRule)
+
+	fallbackOrder := []storage.ProviderType{storage.S3Provider, storage.R2Provider, storage.DiskProvider}
+	for _, provider := range fallbackOrder {
+		if !providerEnabled(provider) {
+			continue
+		}
+
+		fallbackRule := cp.NewRule[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]().
+			WhenFunc(func(ctx context.Context) bool {
+				return true
+			}).
+			Resolve(func(ctx context.Context) (*cp.ResolvedProvider[storage.ProviderCredentials, *storage.ProviderOptions], error) {
+				return resolveProvider(ctx, provider)
+			})
+		resolver.AddRule(fallbackRule)
+		break
+	}
 }
 
 // querySystemProvider queries for active system integration created by CredentialSync
-func querySystemProvider(ctx context.Context, entClient *ent.Client, providerType storage.ProviderType) (*cp.ResolvedProvider[storage.ProviderCredentials, *storage.ProviderOptions], error) {
-	// Query for system integrations (using the SystemOrganizationID from CredentialSync)
+func querySystemProvider(ctx context.Context, providerType storage.ProviderType) (*cp.ResolvedProvider[storage.ProviderCredentials, *storage.ProviderOptions], error) {
+	entClient := ent.FromContext(ctx)
+	if entClient == nil {
+		return nil, ErrNoSystemIntegration
+	}
+
+	ctx = systemOwnedQueryContext(ctx, entClient)
+
 	integrations, err := entClient.Integration.Query().
 		Where(
-			integration.OwnerIDEQ(SystemOrganizationID),
 			integration.KindEQ(string(providerType)),
+			integration.SystemOwnedEQ(true),
 		).
-		WithSecrets().
+		WithSecrets(func(q *ent.HushQuery) {
+			q.Where(hush.SystemOwnedEQ(true))
+		}).
 		All(ctx)
 	if err != nil || len(integrations) == 0 {
 		return nil, fmt.Errorf("%w for provider %s", ErrNoSystemIntegration, providerType)
@@ -665,9 +902,28 @@ func querySystemProvider(ctx context.Context, entClient *ent.Client, providerTyp
 	// Find the most recent integration (CredentialSync keeps the newest active)
 	var activeInteg *ent.Integration
 	for _, integ := range integrations {
-		if len(integ.Edges.Secrets) > 0 {
+		if len(integ.Edges.Secrets) == 0 {
+			continue
+		}
+
+		if activeInteg == nil {
 			activeInteg = integ
-			break // Use first integration with secrets
+			continue
+		}
+
+		current, ok := integ.Metadata["synchronized_at"].(string)
+		if !ok {
+			continue
+		}
+		best, ok := activeInteg.Metadata["synchronized_at"].(string)
+		if !ok {
+			activeInteg = integ
+			continue
+		}
+		currentTime, errCurrent := time.Parse(time.RFC3339, current)
+		bestTime, errBest := time.Parse(time.RFC3339, best)
+		if errCurrent == nil && (errBest != nil || currentTime.After(bestTime)) {
+			activeInteg = integ
 		}
 	}
 
@@ -676,14 +932,14 @@ func querySystemProvider(ctx context.Context, entClient *ent.Client, providerTyp
 	}
 
 	// Extract credentials from the hush record
-	hush := activeInteg.Edges.Secrets[0]
+	secret := activeInteg.Edges.Secrets[0]
 	credentials := storage.ProviderCredentials{
-		AccessKeyID:     hush.CredentialSet.AccessKeyID,
-		SecretAccessKey: hush.CredentialSet.SecretAccessKey,
-		Endpoint:        hush.CredentialSet.Endpoint,
-		ProjectID:       hush.CredentialSet.ProjectID,
-		AccountID:       hush.CredentialSet.AccountID,
-		APIToken:        hush.CredentialSet.APIToken,
+		AccessKeyID:     secret.CredentialSet.AccessKeyID,
+		SecretAccessKey: secret.CredentialSet.SecretAccessKey,
+		Endpoint:        secret.CredentialSet.Endpoint,
+		ProjectID:       secret.CredentialSet.ProjectID,
+		AccountID:       secret.CredentialSet.AccountID,
+		APIToken:        secret.CredentialSet.APIToken,
 	}
 
 	// Extract config from integration metadata
@@ -723,6 +979,90 @@ func querySystemProvider(ctx context.Context, entClient *ent.Client, providerTyp
 		Credentials: credentials,
 		Config:      options,
 	}, nil
+}
+
+func resolveProviderFromConfig(provider storage.ProviderType, config storage.ProviderConfig) (*cp.ResolvedProvider[storage.ProviderCredentials, *storage.ProviderOptions], error) {
+	options, creds, err := providerOptionsFromConfig(provider, config)
+	if err != nil {
+		return nil, err
+	}
+
+	return &cp.ResolvedProvider[storage.ProviderCredentials, *storage.ProviderOptions]{
+		Type:        cp.ProviderType(provider),
+		Credentials: creds,
+		Config:      options,
+	}, nil
+}
+
+func providerOptionsFromConfig(provider storage.ProviderType, config storage.ProviderConfig) (*storage.ProviderOptions, storage.ProviderCredentials, error) {
+	var providerCfg storage.ProviderConfigs
+
+	switch provider {
+	case storage.S3Provider:
+		providerCfg = config.Providers.S3
+	case storage.R2Provider:
+		providerCfg = config.Providers.CloudflareR2
+	case storage.GCSProvider:
+		providerCfg = config.Providers.GCS
+	case storage.DiskProvider:
+		providerCfg = config.Providers.Disk
+	default:
+		return nil, storage.ProviderCredentials{}, fmt.Errorf("unsupported provider: %s", provider)
+	}
+
+	if !providerCfg.Enabled {
+		return nil, storage.ProviderCredentials{}, fmt.Errorf("provider %s is disabled", provider)
+	}
+
+	options := storage.NewProviderOptions(storage.WithCredentials(providerCfg.Credentials))
+
+	switch provider {
+	case storage.S3Provider:
+		if providerCfg.Bucket != "" {
+			options.Apply(storage.WithBucket(providerCfg.Bucket))
+		}
+		region := providerCfg.Region
+		if region == "" {
+			region = defaultS3Region
+		}
+		options.Apply(storage.WithRegion(region))
+		if providerCfg.Endpoint != "" {
+			options.Apply(storage.WithEndpoint(providerCfg.Endpoint))
+		}
+	case storage.R2Provider, storage.GCSProvider:
+		if providerCfg.Bucket != "" {
+			options.Apply(storage.WithBucket(providerCfg.Bucket))
+		}
+		if providerCfg.Endpoint != "" {
+			options.Apply(storage.WithEndpoint(providerCfg.Endpoint))
+		}
+	case storage.DiskProvider:
+		bucket := providerCfg.Bucket
+		if bucket == "" {
+			bucket = defaultDevBucket
+		}
+		options.Apply(storage.WithBucket(bucket), storage.WithBasePath(bucket))
+		if providerCfg.Endpoint != "" {
+			options.Apply(storage.WithLocalURL(providerCfg.Endpoint))
+		}
+	}
+
+	return options, providerCfg.Credentials, nil
+}
+
+func systemOwnedQueryContext(ctx context.Context, entClient *ent.Client) context.Context {
+	user := &auth.AuthenticatedUser{
+		SubjectID:          "system-storage-resolver",
+		SubjectName:        "System Storage Resolver",
+		AuthenticationType: auth.APITokenAuthentication,
+		IsSystemAdmin:      true,
+	}
+
+	ctx = auth.WithAuthenticatedUser(ctx, user)
+	ctx = auth.WithSystemAdminContext(ctx, user)
+	ctx = contextx.With(ctx, auth.OrganizationCreationContextKey{})
+	ctx = privacy.DecisionContext(ctx, privacy.Allow)
+	return ent.NewContext(ctx, entClient)
 }
 
 func stringValue(value any) (string, bool) {

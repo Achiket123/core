@@ -10,6 +10,8 @@ import (
 	"log"
 	"net/url"
 	"os"
+	"path/filepath"
+	"runtime"
 	"strings"
 
 	"github.com/99designs/gqlgen/graphql"
@@ -26,6 +28,22 @@ var (
 	evidenceFile = flag.String("file", "", "Path to evidence file")
 	verbose      = flag.Bool("v", false, "Verbose output")
 )
+
+func exampleDir() string {
+	if _, file, _, ok := runtime.Caller(0); ok {
+		return filepath.Dir(file)
+	}
+
+	return "."
+}
+
+func resolveExamplePath(parts ...string) string {
+	return filepath.Join(append([]string{exampleDir()}, parts...)...)
+}
+
+func defaultEvidenceFile() string {
+	return resolveExamplePath("..", "multi-tenant", "testdata", "sample-files", "document.json")
+}
 
 func main() {
 	flag.Parse()
@@ -65,8 +83,7 @@ func main() {
 	if *evidenceFile != "" {
 		filePath = *evidenceFile
 	} else {
-		// Use a sample file from testdata
-		filePath = "../multi-tenant/testdata/sample-files/document.json"
+		filePath = defaultEvidenceFile()
 	}
 
 	if *verbose {
@@ -112,7 +129,7 @@ func initializeClient(baseURL *url.URL, token string) (*openlaneclient.OpenlaneC
 	config := openlaneclient.NewDefaultConfig()
 
 	// Load org ID for PAT header
-	orgID, _ := os.ReadFile(".benchmark-org-id")
+	orgID, _ := os.ReadFile(resolveExamplePath(".benchmark-org-id"))
 	if len(orgID) > 0 {
 		config.Interceptors = append(config.Interceptors, openlaneclient.WithOrganizationHeader(strings.TrimSpace(string(orgID))))
 	}

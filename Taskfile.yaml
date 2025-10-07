@@ -538,71 +538,64 @@ tasks:
       - rover install --plugin router@v1.50.0
 
   e2e:setup:
-    desc: Setup end-to-end testing with multi-provider object storage
+    desc: Prepare end-to-end fixtures and start storage services
     dir: ./pkg/objects/examples/multi-provider
     cmds:
-      - docker-compose up -d
-      - sleep 5
-      - go run setup/main.go
-      - mkdir -p ../../../../tmp/file_uploads
-      - task: e2e:config
-
-  e2e:config:
-    desc: Generate config file for e2e testing with all storage providers
-    dir: .
-    cmds:
+      - docker-compose up -d --remove-orphans
+      - go run -tags examples setup/main.go
       - |
-        cat > config/config.e2e.yaml <<EOF
-        objectStorage:
-          enabled: true
-          devMode: false
-          maxMemoryMB: 50
-          maxSizeMB: 100
-          keys:
-            - "uploadFile"
-          providers:
-            s3:
-              enabled: true
-              bucket: "provider1-bucket"
-              endpoint: "http://localhost:9000"
-              region: "us-east-1"
-              credentials:
-                accessKeyID: "provider1"
-                secretAccessKey: "provider1secret"
-            disk:
-              enabled: true
-              bucket: "./tmp/file_uploads"
-              endpoint: ""
-              region: ""
-              credentials: {}
-            gcs:
-              enabled: true
-              bucket: "gcs-provider1-bucket"
-              endpoint: "http://localhost:4443/storage/v1/"
-              region: ""
-              credentials:
-                projectID: "test-project"
-        EOF
+        repo_root=$(git rev-parse --show-toplevel)
+        mkdir -p "$repo_root/tmp/file_uploads"
+
+  e2e:script:
+    desc: Run the e2e helper script
+    cmds:
+      - scripts/e2e_test.sh {{.CMD | default "run"}}
+
+  e2e:pat:create:
+    desc: Bootstrap the e2e example credentials and stage the PAT
+    cmds:
+      - scripts/e2e_test.sh export
 
   e2e:teardown:
     desc: Teardown e2e testing environment
     dir: ./pkg/objects/examples/multi-provider
     cmds:
       - docker-compose down -v
-      - rm -rf ../../../../tmp/file_uploads
-      - rm -f ../../../../config/config.e2e.yaml
+      - |
+        repo_root=$(git rev-parse --show-toplevel)
+        rm -rf "$repo_root/tmp/file_uploads"
+      - scripts/e2e_test.sh clean
 
-  e2e:run:
-    desc: Run server with e2e configuration
+  e2e:serve:
+    desc: Start server with e2e configuration (run this in terminal 1)
     deps: ['e2e:setup']
     dotenv: ["{{.ENV}}/.env-dev"]
-    env:
-      CORE_AUTHZ_HOSTURL: http://localhost:8080
+    vars:
+      BASE_CONFIG: "{{.ENV}}/.config.yaml"
+      E2E_CONFIG: "config/config.e2e.yaml"
+      CONFIG_SOURCES: "{{.BASE_CONFIG}},{{.E2E_CONFIG}}"
+    preconditions:
+      - sh: test -f {{.BASE_CONFIG}}
+        msg: "base config {{.BASE_CONFIG}} not found; ensure your local configuration is in place"
+      - sh: test -f {{.E2E_CONFIG}}
+        msg: "e2e overlay config missing at {{.E2E_CONFIG}}"
     cmds:
       - task: compose:redis
       - task: compose:fga
       - task: compose:riverboat
-      - go run main.go serve --debug --pretty --config config/config.e2e.yaml
+      - go run main.go serve --debug --pretty --config {{.CONFIG_SOURCES}}
+
+  e2e:test:
+    desc: Run e2e tests (run this in terminal 2 after e2e:serve is running)
+    cmds:
+      - scripts/e2e_test.sh run
+
+  e2e:run:
+    desc: Setup and run e2e tests (assumes server is already running)
+    deps: ['e2e:setup']
+    cmds:
+      - task: e2e:test
 
   e2e:benchmark:
     desc: Run e2e benchmarks with multi-provider storage (requires server running)

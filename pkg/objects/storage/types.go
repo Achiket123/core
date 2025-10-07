@@ -3,6 +3,7 @@ package storage
 import (
 	"context"
 	"io"
+	"maps"
 	"net/http"
 	"time"
 
@@ -208,13 +209,14 @@ func (p *ProviderOptions) Clone() *ProviderOptions {
 	if p == nil {
 		return nil
 	}
+
 	clone := *p
+
 	if len(p.extras) > 0 {
 		clone.extras = make(map[string]any, len(p.extras))
-		for k, v := range p.extras {
-			clone.extras[k] = v
-		}
+		maps.Copy(clone.extras, p.extras)
 	}
+
 	return &clone
 }
 
@@ -275,6 +277,8 @@ func (p *ProviderOptions) Extra(key string) (any, bool) {
 	if p == nil || len(p.extras) == 0 {
 		return nil, false
 	}
+
 	val, ok := p.extras[key]
+
 	return val, ok
 }

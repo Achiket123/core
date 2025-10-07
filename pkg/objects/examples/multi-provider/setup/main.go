@@ -131,8 +131,10 @@ func setupMinIOUsers(ctx context.Context, users []minioUser) error {
 		// Create user
 		cmd := exec.CommandContext(ctx, "docker", "exec", "objects-example-minio",
 			"mc", "admin", "user", "add", "local", user.username, user.password)
-		if err := cmd.Run(); err != nil {
-			return fmt.Errorf("failed to create user %s: %w", user.username, err)
+		if output, err := cmd.CombinedOutput(); err != nil {
+			if !bytes.Contains(output, []byte("already exists")) {
+				return fmt.Errorf("failed to create user %s: %w - %s", user.username, err, output)
+			}
 		}
 
 		// Create bucket
@@ -142,8 +144,8 @@ func setupMinIOUsers(ctx context.Context, users []minioUser) error {
 			return fmt.Errorf("failed to create bucket %s: %w", user.bucket, err)
 		}
 
-		// Create and apply policy
-		if err := createMinIOPolicy(ctx, user); err != nil {
+		// Attach built-in readwrite policy to user
+		if err := attachMinIOPolicy(ctx, user.username); err != nil {
 			return err
 		}
 	}
@@ -151,41 +153,13 @@ func setupMinIOUsers(ctx context.Context, users []minioUser) error {
 	return nil
 }
 
-func createMinIOPolicy(ctx context.Context, user minioUser) error {
-	policy := map[string]interface{}{
-		"Version": "2012-10-17",
-		"Statement": []map[string]interface{}{
-			{
-				"Effect": "Allow",
-				"Action": []string{"s3:*"},
-				"Resource": []string{
-					fmt.Sprintf("arn:aws:s3:::%s", user.bucket),
-					fmt.Sprintf("arn:aws:s3:::%s/*", user.bucket),
-				},
-			},
-		},
-	}
-
-	policyJSON, err := json.Marshal(policy)
-	if err != nil {
-		return err
-	}
-
-	policyName := fmt.Sprintf("%s-policy", user.username)
-
-	// Create policy
-	cmd := exec.CommandContext(ctx, "docker", "exec", "-i", "objects-example-minio",
-		"mc", "admin", "policy", "create", "local", policyName)
-	cmd.Stdin = bytes.NewReader(policyJSON)
-	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("failed to create policy: %w", err)
-	}
-
-	// Attach policy to user
-	cmd = exec.CommandContext(ctx, "docker", "exec", "objects-example-minio",
-		"mc", "admin", "policy", "attach", "local", policyName, "--user", user.username)
-	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("failed to attach policy: %w", err)
+func attachMinIOPolicy(ctx context.Context, username string) error {
+	cmd := exec.CommandContext(ctx, "docker", "exec", "objects-example-minio",
+		"mc", "admin", "policy", "attach", "local", "readwrite", "--user", username)
+	if output, err := cmd.CombinedOutput(); err != nil {
+		if !bytes.Contains(output, []byte("already mapped")) {
+			return fmt.Errorf("failed to attach policy: %w - %s", err, output)
+		}
 	}
 
 	return nil

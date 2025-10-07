@@ -86,7 +86,25 @@ if client.IsPresent() {
 ### Resolver & Rules
 
 The resolver encapsulates the decision tree that picks credentials/config per
-request:
+request. Several similarly named types collaborate to make that happen:
+
+- **`Resolution[Creds, Conf]`** – the result a rule returns. It records the
+  provider type plus the credential/config structs your builders expect
+  (`pkg/cp/resolution.go:10`).
+- **`ResolutionRule[T, Creds, Conf]`** – a function wrapper that inspects the
+  context and either returns `Some(Resolution)` or `None` to skip the rule
+  (`pkg/cp/resolution.go:18`).
+- **`Resolver[T, Creds, Conf]`** – an ordered list of rules (with an optional
+  default) evaluated until one produces a resolution (`pkg/cp/resolution.go:47`).
+- **`RuleBuilder[T, Creds, Conf]`** – a fluent DSL for constructing a
+  `ResolutionRule`. Chain `WhenFunc` predicates to guard execution, then call
+  `Resolve` with the function that produces a provider
+  (`pkg/cp/rules.go:14`).
+- **`ResolvedProvider[Creds, Conf]`** – the value returned from that resolver
+  function. The builder converts it into a `Resolution` for the outer
+  machinery (`pkg/cp/rules.go:35`).
+
+Putting those pieces together looks like this:
 
 ```go
 resolver := cp.NewResolver[
@@ -118,9 +136,12 @@ lookups, call external services, or compose other resolvers.
 
 ### Context Helpers
 
-`cp.WithValue` and `cp.GetValue` wrap `context.Context` using
+`cp.WithValue` / `cp.GetValue` wrap `context.Context` using
 `github.com/theopenlane/utils/contextx`, letting you stash arbitrary typed
-values that your rules can inspect without bespoke keys.
+values that your rules can inspect without bespoke keys. For richer metadata,
+`cp.NewHintKey`, `cp.WithHint`, and `cp.GetHint` provide structured, typed hint
+storage—handy for sharing things like "known provider", "preferred provider", or
+"feature module" across multiple rules.
 
 ---
 

@@ -11,12 +11,14 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 	"github.com/theopenlane/emailtemplates"
+	"github.com/theopenlane/iam/auth"
 	"github.com/theopenlane/iam/fgax"
 	fgatest "github.com/theopenlane/iam/fgax/testutils"
 	"github.com/theopenlane/iam/sessions"
 	"github.com/theopenlane/iam/tokens"
 	"github.com/theopenlane/iam/totp"
 	"github.com/theopenlane/riverboat/pkg/riverqueue"
+	"github.com/theopenlane/utils/contextx"
 	"github.com/theopenlane/utils/testutils"
 
 	"github.com/theopenlane/core/internal/ent/entconfig"
@@ -200,20 +202,12 @@ func (suite *CredentialSyncTestSuite) SetupTest() {
 
 	suite.testOrgID = personalOrg.ID
 
-	// Use the personal org as the system org for testing
-	serveropts.SystemOrganizationID = suite.testOrgID
-
 	// Create credential sync service after database is ready
 	clientPool := cp.NewClientPool[storage.Provider](time.Hour)
-	clientService := cp.NewClientService[
+	clientService := cp.NewClientService(clientPool, cp.WithConfigClone[
 		storage.Provider,
-		storage.ProviderCredentials,
-		*storage.ProviderOptions,
-	](clientPool, cp.WithConfigClone[
-		storage.Provider,
-		storage.ProviderCredentials,
-		*storage.ProviderOptions,
-	](cloneProviderOptions))
+		storage.ProviderCredentials](cloneProviderOptions))
+
 	suite.service = serveropts.NewCredentialSyncService(
 		suite.db,
 		clientService,
@@ -222,9 +216,6 @@ func (suite *CredentialSyncTestSuite) SetupTest() {
 }
 
 func (suite *CredentialSyncTestSuite) TearDownTest() {
-	// Restore original SystemOrganizationID to prevent test interference
-	serveropts.SystemOrganizationID = "01101101011010010111010001100010"
-
 	if suite.db != nil {
 		err := suite.db.CloseAll()
 		require.NoError(suite.T(), err)
@@ -237,4 +228,24 @@ func (suite *CredentialSyncTestSuite) TearDownSuite() {
 	// terminate all fga containers
 	err := suite.ofgaTF.TeardownFixture()
 	require.NoError(suite.T(), err)
+}
+
+func (suite *CredentialSyncTestSuite) systemContext() context.Context {
+	ctx := context.Background()
+	user := &auth.AuthenticatedUser{
+		SubjectID:          suite.testUserID,
+		SubjectName:        "Credential Sync Test User",
+		OrganizationID:     suite.testOrgID,
+		OrganizationIDs:    []string{suite.testOrgID},
+		AuthenticationType: auth.APITokenAuthentication,
+		IsSystemAdmin:      true,
+		ActiveSubscription: true,
+	}
+
+	ctx = auth.WithAuthenticatedUser(ctx, user)
+	ctx = auth.WithSystemAdminContext(ctx, user)
+	ctx = contextx.With(ctx, auth.OrganizationCreationContextKey{})
+	ctx = privacy.DecisionContext(ctx, privacy.Allow)
+
+	return ent.NewContext(ctx, suite.db)
 }

@@ -33,29 +33,20 @@ func HookTrustCenterWatermarkConfig() ent.Hook {
 
 func checkTrustCenterWatermarkConfigFiles(ctx context.Context, m *generated.TrustCenterWatermarkConfigMutation) (context.Context, error) {
 	key := "logoFile"
-	// get the file from the context, if it exists
-	file, _ := objects.FilesFromContextWithKey(ctx, key)
 
-	// return early if no file is provided
-	if file == nil {
+	files, _ := objects.FilesFromContextWithKey(ctx, key)
+	if len(files) == 0 {
 		return ctx, nil
 	}
 
-	// we should only have one file
-	if len(file) > 1 {
+	if len(files) > 1 {
 		return ctx, ErrNotSingularUpload
 	}
-	if len(file) == 0 {
-		return ctx, nil
-	}
-	if file[0].FieldName != key {
-		return ctx, nil
-	}
 
-	file[0].Parent.ID, _ = m.ID()
-	file[0].Parent.Type = "trust_center_watermark_config"
+	adapter := objects.NewGenericMutationAdapter(m,
+		func(mut *generated.TrustCenterWatermarkConfigMutation) (string, bool) { return mut.ID() },
+		func(mut *generated.TrustCenterWatermarkConfigMutation) string { return mut.Type() },
+	)
 
-	ctx = objects.UpdateFileInContextByKey(ctx, key, file[0])
-
-	return ctx, nil
+	return objects.ProcessFilesForMutation(ctx, adapter, key, "trust_center_watermark_config")
 }

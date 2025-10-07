@@ -40,24 +40,15 @@ func HookJobResultFiles() ent.Hook {
 func checkJobResultFiles[T utils.GenericMutation](ctx context.Context, m T) (context.Context, error) {
 	key := "jobResultFiles"
 
-	// get the file from the context, if it exists
-	file, _ := pkgobjects.FilesFromContextWithKey(ctx, key)
-
-	// return early if no file is provided
-	if file == nil {
+	files, _ := pkgobjects.FilesFromContextWithKey(ctx, key)
+	if len(files) == 0 {
 		return ctx, nil
 	}
 
-	// set the parent ID and type for the file(s)
-	for i, f := range file {
-		// this should always be true, but check just in case
-		if f.FieldName == key {
-			file[i].Parent.ID, _ = m.ID()
-			file[i].Parent.Type = m.Type()
+	adapter := pkgobjects.NewGenericMutationAdapter(m,
+		func(mut T) (string, bool) { return mut.ID() },
+		func(mut T) string { return mut.Type() },
+	)
 
-			ctx = pkgobjects.UpdateFileInContextByKey(ctx, key, file[i])
-		}
-	}
-
-	return ctx, nil
+	return pkgobjects.ProcessFilesForMutation(ctx, adapter, key)
 }

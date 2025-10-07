@@ -283,11 +283,26 @@ func GetFileIDsFromContext(ctx context.Context) []string {
 }
 
 // ReaderToSeeker function takes an io.Reader as input and returns an io.ReadSeeker which can be used to upload files to the object storage
+// If the reader is already a ReadSeeker (e.g., BufferedReader from injectFileUploader), it returns it directly.
+// For files under MaxInMemorySize (10MB), it uses in-memory buffering for efficiency.
+// For larger files, it falls back to temporary file storage.
 func ReaderToSeeker(r io.Reader) (io.ReadSeeker, error) {
 	if r == nil {
 		return nil, nil
 	}
 
+	// If already a ReadSeeker, return it directly
+	if seeker, ok := r.(io.ReadSeeker); ok {
+		return seeker, nil
+	}
+
+	// Try to use in-memory buffering for small files
+	br, err := NewBufferedReaderFromReader(r)
+	if err == nil {
+		return br, nil
+	}
+
+	// If file is too large or buffering fails, fall back to temp file
 	tmpfile, err := os.CreateTemp("", "upload-")
 	if err != nil {
 		return nil, err

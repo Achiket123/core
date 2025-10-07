@@ -256,15 +256,9 @@ func MockStorageServiceWithValidationAndProvider(t *testing.T, uploader storage.
 
 	// Create cp components
 	pool := cp.NewClientPool[storage.Provider](time.Minute)
-	clientService := cp.NewClientService[
+	clientService := cp.NewClientService(pool, cp.WithConfigClone[
 		storage.Provider,
-		storage.ProviderCredentials,
-		*storage.ProviderOptions,
-	](pool, cp.WithConfigClone[
-		storage.Provider,
-		storage.ProviderCredentials,
-		*storage.ProviderOptions,
-	](func(in *storage.ProviderOptions) *storage.ProviderOptions {
+		storage.ProviderCredentials](func(in *storage.ProviderOptions) *storage.ProviderOptions {
 		if in == nil {
 			return nil
 		}
@@ -281,7 +275,7 @@ func MockStorageServiceWithValidationAndProvider(t *testing.T, uploader storage.
 	resolver := cp.NewResolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]()
 
 	// Add default rule that always returns mock provider
-	defaultRule := cp.DefaultRule[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions](cp.Resolution[storage.ProviderCredentials, *storage.ProviderOptions]{
+	defaultRule := cp.DefaultRule[storage.Provider](cp.Resolution[storage.ProviderCredentials, *storage.ProviderOptions]{
 		ClientType:  cp.ProviderType("mock"),
 		Credentials: storage.ProviderCredentials{},
 		Config:      storage.NewProviderOptions(storage.WithExtra("validation", validationFunc != nil)),

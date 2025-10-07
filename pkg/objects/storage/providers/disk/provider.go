@@ -8,11 +8,13 @@ import (
 	"path/filepath"
 	"strings"
 
-	storage "github.com/theopenlane/core/pkg/objects/storage"
-	storagetypes "github.com/theopenlane/core/pkg/objects/storage/types"
-
 	"github.com/rs/zerolog/log"
 	"github.com/samber/lo"
+
+	"github.com/theopenlane/core/pkg/metrics"
+	"github.com/theopenlane/core/pkg/objects"
+	storage "github.com/theopenlane/core/pkg/objects/storage"
+	storagetypes "github.com/theopenlane/core/pkg/objects/storage/types"
 )
 
 const (
@@ -55,6 +57,9 @@ func NewDiskProvider(options *storage.ProviderOptions) (*Provider, error) {
 
 // Upload implements storagetypes.Provider
 func (p *Provider) Upload(_ context.Context, reader io.Reader, opts *storagetypes.UploadFileOptions) (*storagetypes.UploadedFileMetadata, error) {
+	// Try to infer size from reader if available for metadata purposes
+	size, sizeKnown := objects.InferReaderSize(reader)
+
 	f, err := os.Create(filepath.Join(p.options.Bucket, opts.FileName))
 	if err != nil {
 		return nil, err
@@ -63,14 +68,24 @@ func (p *Provider) Upload(_ context.Context, reader io.Reader, opts *storagetype
 	defer f.Close()
 
 	n, err := io.Copy(f, reader)
+	if err != nil {
+		return nil, err
+	}
+
+	// Use actual bytes written if size wasn't known upfront
+	if !sizeKnown {
+		size = n
+	}
+
+	metrics.RecordStorageUpload("disk", size)
 
 	return &storagetypes.UploadedFileMetadata{
 		FileMetadata: storagetypes.FileMetadata{
 			Key:    opts.FileName,
-			Size:   n,
+			Size:   size,
 			Folder: opts.FolderDestination,
 		},
-	}, err
+	}, nil
 }
 
 // Download implements storagetypes.Provider
@@ -81,9 +96,12 @@ func (p *Provider) Download(_ context.Context, file *storagetypes.File, _ *stora
 		return nil, err
 	}
 
+	downloadedSize := int64(len(fileData))
+	metrics.RecordStorageDownload("disk", downloadedSize)
+
 	return &storagetypes.DownloadedFileMetadata{
 		File: fileData,
-		Size: int64(len(fileData)),
+		Size: downloadedSize,
 	}, nil
 }
 
@@ -91,9 +109,16 @@ func (p *Provider) Download(_ context.Context, file *storagetypes.File, _ *stora
 func (p *Provider) Delete(_ context.Context, file *storagetypes.File, _ *storagetypes.DeleteFileOptions) error {
 	err := os.Remove(filepath.Join(p.options.Bucket, file.Key))
 	if os.IsNotExist(err) {
+		metrics.RecordStorageDelete("disk")
 		return nil
 	}
-	return err
+	if err != nil {
+		return err
+	}
+
+	metrics.RecordStorageDelete("disk")
+
+	return nil
 }
 
 // GetPresignedURL implements storagetypes.Provider

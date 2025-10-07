@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"strings"
+	"time"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/gocarina/gocsv"
@@ -25,6 +26,7 @@ import (
 	objmw "github.com/theopenlane/core/internal/middleware/objects"
 	"github.com/theopenlane/core/internal/objects"
 	"github.com/theopenlane/core/pkg/events/soiree"
+	"github.com/theopenlane/core/pkg/metrics"
 	pkgobjects "github.com/theopenlane/core/pkg/objects"
 	"github.com/theopenlane/core/pkg/objects/storage"
 )
@@ -82,16 +84,28 @@ func injectFileUploader(u *objects.Service) graphql.FieldMiddleware {
 		for k, files := range filesMap {
 			// skip the input key
 			if k == inputKey {
-				log.Debug().Str("key", k).Msg("skipping input key, this is for bulk upload")
 				continue
 			}
 
 			for _, fileUpload := range files {
+				// Buffer the file in memory if small enough, otherwise leave as-is
+				if fileUpload.RawFile != nil {
+					buffered, err := pkgobjects.NewBufferedReaderFromReader(fileUpload.RawFile)
+					if err == nil {
+						fileUpload.RawFile = buffered
+						metrics.RecordFileBufferingStrategy("memory")
+					} else {
+						// File too large or memory pressure - will use disk buffering in provider
+						metrics.RecordFileBufferingStrategy("disk")
+					}
+				}
+
 				// Add object details using existing logic
 				enhanced, err := retrieveObjectDetails(rctx, k, &fileUpload)
 				if err != nil {
 					return nil, err
 				}
+
 				uploads = append(uploads, *enhanced)
 			}
 		}
@@ -101,10 +115,21 @@ func injectFileUploader(u *objects.Service) graphql.FieldMiddleware {
 			return next(ctx)
 		}
 
+		// Clean up any temporary files created by multipart form parser
+		ec, err := echocontext.EchoContextFromContext(ctx)
+		if err == nil && ec.Request().MultipartForm != nil {
+			defer ec.Request().MultipartForm.RemoveAll()
+		}
+
 		// Process uploads using consolidated functions
 		// First, create database records for all uploads
 		var uploadedFiles []storage.File
 		for _, f := range uploads {
+			// Track upload for metrics and graceful shutdown
+			pkgobjects.AddUpload()
+			metrics.StartFileUpload()
+			startTime := time.Now()
+
 			// Get organization ID from context for provider hints
 			orgID, _ := auth.GetOrganizationIDFromContext(ctx)
 			// Only set organization as correlated object if there's no parent already set
@@ -118,43 +143,39 @@ func injectFileUploader(u *objects.Service) graphql.FieldMiddleware {
 			entFile, err := objmw.CreateFileRecord(ctx, f)
 			if err != nil {
 				log.Error().Err(err).Str("file", f.OriginalName).Msg("failed to create file")
+				metrics.FinishFileUpload("error", time.Since(startTime).Seconds())
+				pkgobjects.DoneUpload()
 				return nil, err
 			}
 
-			// Build upload options with provider hints
-			uploadOpts := &storage.UploadOptions{
-				FileName: f.OriginalName,
-				FileMetadata: storage.FileMetadata{
-					Key: f.FieldName, // Set the field name for validation
-					ProviderHints: &storage.ProviderHints{
-						OrganizationID: orgID,
-						Metadata: map[string]string{
-							"key":         f.Key,
-							"object_type": f.CorrelatedObjectType,
-						},
-					},
-				},
-			}
+			uploadOpts := buildUploadOptionsFromFile(f, orgID)
 
 			// Upload to storage using consolidated function
 			uploadedFile, err := u.Upload(ctx, f.RawFile, uploadOpts)
 			if err != nil {
 				log.Error().Err(err).Str("file", f.OriginalName).Msg("failed to upload file")
+				metrics.FinishFileUpload("error", time.Since(startTime).Seconds())
+				pkgobjects.DoneUpload()
 				return nil, err
 			}
 
+			if closer, ok := f.RawFile.(io.Closer); ok {
+				_ = closer.Close()
+			}
+
 			// Use database entity ID and update with storage metadata
-			uploadedFile.ID = entFile.ID
-			// Preserve FieldName and Parent from original file
-			uploadedFile.FieldName = f.FieldName
-			uploadedFile.Parent = f.Parent
+			mergeUploadedFileMetadata(uploadedFile, entFile.ID, f)
 			// Update database with storage metadata using existing helper
 			if err := objmw.UpdateFileWithStorageMetadata(ctx, entFile, *uploadedFile); err != nil {
 				log.Error().Err(err).Msg("failed to update file with storage metadata")
+				metrics.FinishFileUpload("error", time.Since(startTime).Seconds())
+				pkgobjects.DoneUpload()
 				return nil, err
 			}
 
 			uploadedFiles = append(uploadedFiles, *uploadedFile)
+			metrics.FinishFileUpload("success", time.Since(startTime).Seconds())
+			pkgobjects.DoneUpload()
 		}
 
 		// Store files in context using consolidated helper, grouped by field name
@@ -174,8 +195,7 @@ func injectFileUploader(u *objects.Service) graphql.FieldMiddleware {
 		// add the uploaded files to the echo context if there are any
 		// this is useful for using other middleware that depends on the echo context
 		// and the uploaded files (e.g. body dump middleware)
-		ec, err := echocontext.EchoContextFromContext(ctx)
-		if err == nil {
+		if ec != nil {
 			ec.SetRequest(ec.Request().WithContext(ctx))
 		}
 
@@ -418,6 +438,7 @@ func retrieveObjectDetails(rctx *graphql.FieldContext, key string, upload *stora
 	}
 
 	log.Debug().Str("key", key).Msg("unable to determine object type - no matching upload argument found")
+
 	return upload, ErrUnableToDetermineObjectType
 }
 
@@ -453,4 +474,45 @@ func stripOperation(field string) string {
 	}
 
 	return lo.SnakeCase(field)
+}
+
+func buildUploadOptionsFromFile(f storage.File, orgID string) *storage.UploadOptions {
+	hints := f.ProviderHints
+	if hints == nil {
+		hints = &storage.ProviderHints{}
+	}
+
+	objects.PopulateProviderHints(&f, orgID)
+
+	contentType := f.ContentType
+	if contentType == "" || strings.EqualFold(contentType, "application/octet-stream") {
+		if f.RawFile != nil {
+			if detected, err := storage.DetectContentType(f.RawFile); err == nil && detected != "" {
+				contentType = detected
+				f.ContentType = detected
+			}
+		}
+	}
+
+	return &storage.UploadOptions{
+		FileName:          f.OriginalName,
+		ContentType:       contentType,
+		Bucket:            f.Bucket,
+		FolderDestination: f.Folder,
+		FileMetadata: storage.FileMetadata{
+			Key:           f.FieldName,
+			ProviderHints: f.ProviderHints,
+		},
+	}
+}
+
+func mergeUploadedFileMetadata(dest *storage.File, entFileID string, src storage.File) {
+	dest.ID = entFileID
+	dest.FieldName = src.FieldName
+	dest.Parent = src.Parent
+	dest.CorrelatedObjectID = src.CorrelatedObjectID
+	dest.CorrelatedObjectType = src.CorrelatedObjectType
+	if len(dest.Metadata) == 0 && len(src.Metadata) > 0 {
+		dest.Metadata = src.Metadata
+	}
 }

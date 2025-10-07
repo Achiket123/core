@@ -99,28 +99,21 @@ func importURLToSchema(m importSchemaMutation) error {
 func checkProcedureFile[T utils.GenericMutation](ctx context.Context, m T) (context.Context, error) {
 	key := "procedureFile"
 
-	// get the file from the context, if it exists
-	file, _ := pkgobjects.FilesFromContextWithKey(ctx, key)
-
-	// return early if no file is provided
-	if file == nil {
+	files, _ := pkgobjects.FilesFromContextWithKey(ctx, key)
+	if len(files) == 0 {
 		return ctx, nil
 	}
 
-	// we should only have one file
-	if len(file) > 1 {
+	if len(files) > 1 {
 		return ctx, ErrNotSingularUpload
 	}
 
-	// this should always be true, but check just in case
-	if file[0].FieldName == key {
-		file[0].Parent.ID, _ = m.ID()
-		file[0].Parent.Type = strcase.SnakeCase(m.Type())
+	adapter := pkgobjects.NewGenericMutationAdapter(m,
+		func(mut T) (string, bool) { return mut.ID() },
+		func(mut T) string { return mut.Type() },
+	)
 
-		ctx = pkgobjects.UpdateFileInContextByKey(ctx, key, file[0])
-	}
-
-	return ctx, nil
+	return pkgobjects.ProcessFilesForMutation(ctx, adapter, key, strcase.SnakeCase(m.Type()))
 }
 
 // HookProcedure checks to see if we have an uploaded file.

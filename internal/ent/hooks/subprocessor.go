@@ -32,25 +32,23 @@ func HookSubprocessor() ent.Hook {
 func checkSubprocessorLogoFile(ctx context.Context, m *generated.SubprocessorMutation) (context.Context, error) {
 	logoKey := "logoFile"
 
-	// get the file from the context, if it exists
-	logoFile, _ := pkgobjects.FilesFromContextWithKey(ctx, logoKey)
-	if logoFile == nil {
+	logoFiles, _ := pkgobjects.FilesFromContextWithKey(ctx, logoKey)
+	if len(logoFiles) == 0 {
 		return ctx, nil
 	}
 
-	// this should always be true, but check just in case
-	if logoFile[0].FieldName == logoKey {
-		// we should only have one file
-		if len(logoFile) > 1 {
-			return ctx, ErrTooManyLogoFiles
-		}
-		m.SetLogoLocalFileID(logoFile[0].ID)
-
-		logoFile[0].Parent.ID, _ = m.ID()
-		logoFile[0].Parent.Type = "trust_center_setting"
-
-		ctx = pkgobjects.UpdateFileInContextByKey(ctx, logoKey, logoFile[0])
+	if len(logoFiles) > 1 {
+		return ctx, ErrTooManyLogoFiles
 	}
+
+	m.SetLogoLocalFileID(logoFiles[0].ID)
+
+	adapter := pkgobjects.NewGenericMutationAdapter(m,
+		func(mut *generated.SubprocessorMutation) (string, bool) { return mut.ID() },
+		func(mut *generated.SubprocessorMutation) string { return mut.Type() },
+	)
+
+	ctx, _ = pkgobjects.ProcessFilesForMutation(ctx, adapter, logoKey, "subprocessor")
 
 	return ctx, nil
 }

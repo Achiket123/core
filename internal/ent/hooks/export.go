@@ -93,21 +93,15 @@ func handleExportUpdate(ctx context.Context, m *generated.ExportMutation, next e
 func checkExportFiles(ctx context.Context, m *generated.ExportMutation) (context.Context, error) {
 	key := "exportFiles"
 
-	// get the file from the context, if it exists
-	file, _ := pkgobjects.FilesFromContextWithKey(ctx, key)
-
-	if file == nil {
+	files, _ := pkgobjects.FilesFromContextWithKey(ctx, key)
+	if len(files) == 0 {
 		return ctx, nil
 	}
 
-	for i, f := range file {
-		if f.FieldName == key {
-			file[i].Parent.ID, _ = m.ID()
-			file[i].Parent.Type = m.Type()
+	adapter := pkgobjects.NewGenericMutationAdapter(m,
+		func(mut *generated.ExportMutation) (string, bool) { return mut.ID() },
+		func(mut *generated.ExportMutation) string { return mut.Type() },
+	)
 
-			ctx = pkgobjects.UpdateFileInContextByKey(ctx, key, file[i])
-		}
-	}
-
-	return ctx, nil
+	return pkgobjects.ProcessFilesForMutation(ctx, adapter, key)
 }

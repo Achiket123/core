@@ -1,7 +1,6 @@
 package s3
 
 import (
-	"bytes"
 	"context"
 	"errors"
 	"io"
@@ -14,13 +13,13 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/rs/zerolog/log"
+	"github.com/samber/lo"
 	"github.com/samber/mo"
 
+	"github.com/theopenlane/core/pkg/metrics"
 	"github.com/theopenlane/core/pkg/objects"
 	storage "github.com/theopenlane/core/pkg/objects/storage"
 	storagetypes "github.com/theopenlane/core/pkg/objects/storage/types"
-
-	"github.com/samber/lo"
 )
 
 const (
@@ -141,6 +140,10 @@ func createS3Provider(cfg providerConfig) mo.Result[*Provider] {
 
 	// Create credentials with cache as in original
 	creds := aws.NewCredentialsCache(credentials.NewStaticCredentialsProvider(cfg.options.Credentials.AccessKeyID, cfg.options.Credentials.SecretAccessKey, ""))
+	log.Info().Str("provider", string(storagetypes.S3Provider)).
+		Str("access_key", cfg.options.Credentials.AccessKeyID).
+		Str("endpoint", cfg.options.Endpoint).
+		Msg("building s3 provider")
 
 	awsConfig := aws.Config{}
 	if cfg.awsConfig != nil {
@@ -155,6 +158,9 @@ func createS3Provider(cfg providerConfig) mo.Result[*Provider] {
 
 	if cfg.options.Endpoint != "" {
 		awsConfig.BaseEndpoint = aws.String(cfg.options.Endpoint)
+		if !cfg.usePathStyle {
+			cfg.usePathStyle = true
+		}
 	}
 
 	// Create S3 client with same configuration as original
@@ -189,18 +195,32 @@ func (p *Provider) ProviderType() storagetypes.ProviderType {
 
 // Upload implements storagetypes.Provider
 func (p *Provider) Upload(ctx context.Context, reader io.Reader, opts *storagetypes.UploadFileOptions) (*storagetypes.UploadedFileMetadata, error) {
-	b := new(bytes.Buffer)
-	reader = io.TeeReader(reader, b)
+	// Try to infer size from reader if available
+	size, sizeKnown := objects.InferReaderSize(reader)
 
-	n, err := io.Copy(io.Discard, reader)
+	// Convert reader to ReadSeeker using BufferedReader for small files or temp file for large files
+	seeker, err := objects.ReaderToSeeker(reader)
 	if err != nil {
 		return nil, err
 	}
 
-	// Use objects.ReaderToSeeker as in original
-	seeker, err := objects.ReaderToSeeker(b)
-	if err != nil {
-		return nil, err
+	// If size wasn't known upfront, get it from the seeker
+	if !sizeKnown {
+		if sized, ok := seeker.(objects.SizedReader); ok {
+			size = sized.Size()
+		} else {
+			// Fall back to seeking to end to get size
+			endPos, seekErr := seeker.Seek(0, io.SeekEnd)
+			if seekErr != nil {
+				return nil, seekErr
+			}
+			size = endPos
+			// Reset to beginning
+			_, seekErr = seeker.Seek(0, io.SeekStart)
+			if seekErr != nil {
+				return nil, seekErr
+			}
+		}
 	}
 
 	_, err = p.client.PutObject(ctx, &s3.PutObjectInput{
@@ -214,10 +234,12 @@ func (p *Provider) Upload(ctx context.Context, reader io.Reader, opts *storagety
 		return nil, err
 	}
 
+	metrics.RecordStorageUpload("s3", size)
+
 	return &storagetypes.UploadedFileMetadata{
 		FileMetadata: storagetypes.FileMetadata{
 			Key:    opts.FileName,
-			Size:   n,
+			Size:   size,
 			Folder: opts.FolderDestination,
 		},
 	}, nil
@@ -247,9 +269,12 @@ func (p *Provider) Download(ctx context.Context, file *storagetypes.File, opts *
 		return nil, err
 	}
 
+	downloadedSize := int64(len(w.Bytes()))
+	metrics.RecordStorageDownload("s3", downloadedSize)
+
 	return &storagetypes.DownloadedFileMetadata{
 		File: w.Bytes(),
-		Size: int64(len(w.Bytes())),
+		Size: downloadedSize,
 	}, nil
 }
 
@@ -259,8 +284,13 @@ func (p *Provider) Delete(ctx context.Context, file *storagetypes.File, _ *stora
 		Bucket: aws.String(p.options.Bucket),
 		Key:    aws.String(file.Key),
 	})
+	if err != nil {
+		return err
+	}
 
-	return err
+	metrics.RecordStorageDelete("s3")
+
+	return nil
 }
 
 // GetPresignedURL implements storagetypes.Provider

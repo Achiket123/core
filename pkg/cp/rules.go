@@ -28,6 +28,7 @@ func DefaultRule[T any, Creds any, Conf any](resolution Resolution[Creds, Conf])
 // WhenFunc adds a custom condition function
 func (b *RuleBuilder[T, Creds, Conf]) WhenFunc(condition func(context.Context) bool) *RuleBuilder[T, Creds, Conf] {
 	b.conditions = append(b.conditions, condition)
+
 	return b
 }
 

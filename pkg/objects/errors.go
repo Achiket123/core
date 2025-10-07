@@ -11,4 +11,10 @@ var (
 	ErrProviderHintsRequired = errors.New("provider hints required for file upload")
 	// ErrMutationIDNotFound is returned when mutation ID is not found
 	ErrMutationIDNotFound = errors.New("mutation ID not found")
+	// ErrReaderCannotBeNil is returned when a nil reader is provided to BufferedReader
+	ErrReaderCannotBeNil = errors.New("reader cannot be nil")
+	// ErrFailedToReadData is returned when reading data from a reader fails
+	ErrFailedToReadData = errors.New("failed to read data from reader")
+	// ErrFileSizeExceedsLimit is returned when file size exceeds the specified limit
+	ErrFileSizeExceedsLimit = errors.New("file size exceeds limit")
 )

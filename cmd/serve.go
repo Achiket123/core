@@ -21,6 +21,7 @@ import (
 	"github.com/theopenlane/core/internal/httpserve/server"
 	"github.com/theopenlane/core/internal/httpserve/serveropts"
 	"github.com/theopenlane/core/pkg/events/soiree"
+	pkgobjects "github.com/theopenlane/core/pkg/objects"
 )
 
 var serveCmd = &cobra.Command{
@@ -164,6 +165,10 @@ func serve(ctx context.Context) error {
 	go func() {
 		<-ctx.Done()
 
+		// Wait for in-flight file uploads to complete before shutting down
+		log.Info().Msg("waiting for file uploads to complete")
+		pkgobjects.WaitForUploads()
+
 		if err := entdb.GracefulClose(context.Background(), dbClient, time.Second); err != nil {
 			log.Ctx(ctx).Error().Err(err).Msg("error closing database")
 		}
@@ -180,6 +185,9 @@ func serve(ctx context.Context) error {
 
 	// Add Driver to the Handlers Config
 	so.Config.Handler.DBClient = dbClient
+
+	// sync object storage credentials once DB client is available
+	so.AddServerOptions(serveropts.WithStorageCredentialSync())
 
 	// Add redis client to Handlers Config
 	so.Config.Handler.RedisClient = redisClient

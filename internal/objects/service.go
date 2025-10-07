@@ -140,9 +140,14 @@ func (s *Service) resolveUploadProvider(ctx context.Context, opts *storage.Uploa
 	enrichedCtx := s.buildResolutionContext(ctx, opts)
 	resolution := s.resolver.Resolve(enrichedCtx)
 
-	res := resolution.OrEmpty()
+	if !resolution.IsPresent() {
+		logStorageResolutionFailure(ctx, opts)
+		return nil, ErrProviderResolutionFailed
+	}
+
+	res := resolution.MustGet()
 	if res.ClientType == "" {
-		zerolog.Ctx(ctx).Error().Msg("storage provider resolution failed")
+		logStorageResolutionFailure(ctx, opts)
 		return nil, ErrProviderResolutionFailed
 	}
 
@@ -161,7 +166,7 @@ func (s *Service) resolveUploadProvider(ctx context.Context, opts *storage.Uploa
 
 	client := s.clientService.GetClient(ctx, cacheKey, res.ClientType, res.Credentials, res.Config)
 	if !client.IsPresent() {
-		zerolog.Ctx(ctx).Error().Msg("failed to create provider from resolution")
+		logStorageResolutionFailure(ctx, opts)
 		return nil, ErrProviderResolutionFailed
 	}
 
@@ -208,9 +213,36 @@ func (s *Service) buildResolutionContext(ctx context.Context, opts *storage.Uplo
 	// Add provider hints if present
 	if opts.ProviderHints != nil {
 		ctx = cp.WithValue(ctx, opts.ProviderHints)
+		ctx = ApplyProviderHints(ctx, opts.ProviderHints)
 	}
 
 	return ctx
+}
+
+func logStorageResolutionFailure(ctx context.Context, opts *storage.UploadOptions) {
+	event := zerolog.Ctx(ctx).Error()
+
+	if orgID, err := auth.GetOrganizationIDFromContext(ctx); err == nil && orgID != "" {
+		event = event.Str("org_id", orgID)
+	}
+
+	if opts != nil {
+		event = event.Str("bucket_hint", opts.Bucket).Str("upload_key", opts.Key)
+		if hints := opts.ProviderHints; hints != nil {
+			event = event.
+				Str("known_provider", string(hints.KnownProvider)).
+				Str("preferred_provider", string(hints.PreferredProvider)).
+				Str("hint_org_id", hints.OrganizationID).
+				Str("hint_integration_id", hints.IntegrationID).
+				Str("hint_hush_id", hints.HushID)
+
+			if len(hints.Metadata) > 0 {
+				event = event.Interface("hint_metadata", hints.Metadata)
+			}
+		}
+	}
+
+	event.Msg("storage provider resolution failed")
 }
 
 // buildResolutionContextForFile builds context for provider resolution from file metadata
@@ -224,6 +256,7 @@ func (s *Service) buildResolutionContextForFile(ctx context.Context, file *stora
 
 	// Add the entire file
 	ctx = cp.WithValue(ctx, file)
+	ctx = ApplyProviderHints(ctx, file.ProviderHints)
 
 	return ctx
 }

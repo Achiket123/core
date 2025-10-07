@@ -1,3 +1,11 @@
+authz:
+  enabled: true
+  hostUrl: http://localhost:8080
+  createNewModel: true
+  storeName: openlane-e2e
+  ignoreDuplicateKeyError: true
+  credentials:
+    apiToken: QKwHEmWX99RnFh28eSRJ3GWlfb2FQkL7toh1GJpzch1mMkVeMg
 objectStorage:
   enabled: true
   devMode: false
@@ -13,7 +21,7 @@ objectStorage:
       region: "us-east-1"
       credentials:
         accessKeyID: "provider1"
-        secretAccessKey: "provider1secret"
+        accessKeySecret: "provider1secret"
     disk:
       enabled: true
       bucket: "./tmp/file_uploads"

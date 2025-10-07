@@ -36,21 +36,15 @@ func HookNoteFiles() ent.Hook {
 func checkNoteFiles[T utils.GenericMutation](ctx context.Context, m T) (context.Context, error) {
 	key := "noteFiles"
 
-	// get the file from the context, if it exists
-	file, _ := pkgobjects.FilesFromContextWithKey(ctx, key)
-
-	if file == nil {
+	files, _ := pkgobjects.FilesFromContextWithKey(ctx, key)
+	if len(files) == 0 {
 		return ctx, nil
 	}
 
-	for i, f := range file {
-		if f.FieldName == key {
-			file[i].Parent.ID, _ = m.ID()
-			file[i].Parent.Type = m.Type()
+	adapter := pkgobjects.NewGenericMutationAdapter(m,
+		func(mut T) (string, bool) { return mut.ID() },
+		func(mut T) string { return mut.Type() },
+	)
 
-			ctx = pkgobjects.UpdateFileInContextByKey(ctx, key, file[i])
-		}
-	}
-
-	return ctx, nil
+	return pkgobjects.ProcessFilesForMutation(ctx, adapter, key)
 }

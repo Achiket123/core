@@ -12,8 +12,13 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 
+	"github.com/theopenlane/iam/auth"
+	"github.com/theopenlane/utils/contextx"
+
 	"github.com/theopenlane/core/internal/ent/generated"
+	"github.com/theopenlane/core/internal/ent/generated/hush"
 	"github.com/theopenlane/core/internal/ent/generated/integration"
+	"github.com/theopenlane/core/internal/ent/generated/privacy"
 	"github.com/theopenlane/core/pkg/cp"
 	"github.com/theopenlane/core/pkg/models"
 	"github.com/theopenlane/core/pkg/objects/storage"
@@ -28,15 +33,30 @@ var ErrNoSystemIntegration = errors.New("no system integration found")
 // ErrNoIntegrationWithSecrets is returned when no active integration with secrets is found for a provider
 var ErrNoIntegrationWithSecrets = errors.New("no active integration with secrets found")
 
-// SystemOrganizationID is a special organization ID used for system integrations
-// This should be set to a unique value for each test run
-var SystemOrganizationID = "01101101011010010111010001100010"
-
 // CredentialSyncService manages synchronization between config file credentials and database records
 type CredentialSyncService struct {
 	entClient     *generated.Client
 	clientService *cp.ClientService[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]
 	config        *storage.Providers
+}
+
+func (css *CredentialSyncService) systemOperationContext(ctx context.Context) context.Context {
+	user := &auth.AuthenticatedUser{
+		SubjectID:          "system-credential-sync",
+		SubjectName:        "System Credential Sync",
+		AuthenticationType: auth.APITokenAuthentication,
+		IsSystemAdmin:      true,
+		OrganizationID:     "",
+		OrganizationIDs:    nil,
+		ActiveSubscription: true,
+	}
+
+	ctx = auth.WithAuthenticatedUser(ctx, user)
+	ctx = auth.WithSystemAdminContext(ctx, user)
+	ctx = contextx.With(ctx, auth.OrganizationCreationContextKey{})
+	ctx = privacy.DecisionContext(ctx, privacy.Allow)
+
+	return generated.NewContext(ctx, css.entClient)
 }
 
 // NewCredentialSyncService creates a new credential synchronization service
@@ -50,11 +70,13 @@ func NewCredentialSyncService(entClient *generated.Client, clientService *cp.Cli
 
 // SyncConfigCredentials synchronizes config file credentials with database records on startup
 func (css *CredentialSyncService) SyncConfigCredentials(ctx context.Context) error {
-	providerMap := map[string]storage.ProviderConfigs{
-		string(storage.S3Provider):   css.config.S3,
-		string(storage.R2Provider):   css.config.CloudflareR2,
-		string(storage.GCSProvider):  css.config.GCS,
-		string(storage.DiskProvider): css.config.Disk,
+	ctx = css.systemOperationContext(ctx)
+
+	providerMap := map[storage.ProviderType]storage.ProviderConfigs{
+		storage.S3Provider:   css.config.S3,
+		storage.R2Provider:   css.config.CloudflareR2,
+		storage.GCSProvider:  css.config.GCS,
+		storage.DiskProvider: css.config.Disk,
 	}
 
 	for providerType, providerCfg := range providerMap {
@@ -69,14 +91,18 @@ func (css *CredentialSyncService) SyncConfigCredentials(ctx context.Context) err
 }
 
 // syncProvider synchronizes a single provider's credentials
-func (css *CredentialSyncService) syncProvider(ctx context.Context, providerType string, providerCfg storage.ProviderConfigs) error {
+func (css *CredentialSyncService) syncProvider(ctx context.Context, providerType storage.ProviderType, providerCfg storage.ProviderConfigs) error {
+	ctx = css.systemOperationContext(ctx)
+
 	// Get current active system integration for this provider using ent client
 	integrations, err := css.entClient.Integration.Query().
 		Where(
-			integration.OwnerIDEQ(SystemOrganizationID),
-			integration.KindEQ(providerType),
+			integration.KindEQ(string(providerType)),
+			integration.SystemOwnedEQ(true),
 		).
-		WithSecrets().
+		WithSecrets(func(q *generated.HushQuery) {
+			q.Where(hush.SystemOwnedEQ(true))
+		}).
 		All(ctx)
 	if err != nil {
 		return err
@@ -85,8 +111,13 @@ func (css *CredentialSyncService) syncProvider(ctx context.Context, providerType
 	// Find active integration with non-expired credentials
 	var activeInteg *generated.Integration
 	for _, integ := range integrations {
+		if len(integ.Edges.Secrets) == 0 {
+			continue
+		}
+
+		secret := integ.Edges.Secrets[0]
 		// Check if credentials match config
-		if css.CredentialsMatch(integ.Edges.Secrets[0], providerCfg.Credentials) {
+		if css.CredentialsMatch(secret, providerCfg.Credentials) {
 			zerolog.Ctx(ctx).Debug().Msgf("credentials already up to date for provider %s integration %s", providerType, integ.ID)
 			return nil
 		}
@@ -113,6 +144,10 @@ func (css *CredentialSyncService) syncProvider(ctx context.Context, providerType
 
 // CredentialsMatch checks if the stored credentials match the config credentials
 func (css *CredentialSyncService) CredentialsMatch(secret *generated.Hush, configCreds storage.ProviderCredentials) bool {
+	if secret == nil {
+		return false
+	}
+
 	// Generate hash of config credentials for comparison
 	configHash := css.GenerateCredentialHash(configCreds)
 
@@ -136,7 +171,9 @@ func (css *CredentialSyncService) GenerateCredentialHashFromSet(credSet models.C
 }
 
 // createSystemIntegration creates a new system integration and hush record
-func (css *CredentialSyncService) createSystemIntegration(ctx context.Context, providerType string, providerCfg storage.ProviderConfigs) (*generated.Integration, error) {
+func (css *CredentialSyncService) createSystemIntegration(ctx context.Context, providerType storage.ProviderType, providerCfg storage.ProviderConfigs) (*generated.Integration, error) {
+	systemCtx := css.systemOperationContext(ctx)
+
 	credSet := models.CredentialSet{
 		AccessKeyID:     providerCfg.Credentials.AccessKeyID,
 		SecretAccessKey: providerCfg.Credentials.SecretAccessKey,
@@ -145,7 +182,6 @@ func (css *CredentialSyncService) createSystemIntegration(ctx context.Context, p
 		AccountID:       providerCfg.Credentials.AccountID,
 	}
 
-	// Create metadata for the integration
 	metadata := map[string]any{
 		"region":          providerCfg.Region,
 		"bucket":          providerCfg.Bucket,
@@ -153,43 +189,63 @@ func (css *CredentialSyncService) createSystemIntegration(ctx context.Context, p
 		"synchronized_at": time.Now(),
 	}
 
-	// Create hush record first
-	hush, err := css.entClient.Hush.Create().
+	if providerCfg.Endpoint != "" {
+		metadata["endpoint"] = providerCfg.Endpoint
+	}
+
+	if providerType == storage.DiskProvider {
+		metadata["base_path"] = providerCfg.Bucket
+		if providerCfg.Endpoint != "" {
+			metadata["local_url"] = providerCfg.Endpoint
+		}
+	}
+
+	hushRecord, err := css.entClient.Hush.Create().
 		SetName(fmt.Sprintf("%s_system_credentials", providerType)).
+		SetDescription(fmt.Sprintf("System configuration credentials for %s storage", providerType)).
+		SetKind(string(providerType)).
 		SetMetadata(metadata).
 		SetCredentialSet(credSet).
-		Save(ctx)
+		SetSystemOwned(true).
+		SetSystemInternalID(fmt.Sprintf("storage:%s:config", providerType)).
+		SetInternalNotes("Managed via server configuration").
+		Save(systemCtx)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create hush record: %w", err)
 	}
 
-	// Create integration record
-	integration, err := css.entClient.Integration.Create().
+	integrationRecord, err := css.entClient.Integration.Create().
 		SetName(fmt.Sprintf("System %s Storage", providerType)).
 		SetDescription(fmt.Sprintf("System-level %s storage integration", providerType)).
-		SetKind(providerType).
+		SetKind(string(providerType)).
 		SetIntegrationType("storage").
-		SetOwnerID(SystemOrganizationID).
 		SetMetadata(metadata).
-		AddSecrets(hush).
-		Save(ctx)
+		SetSystemOwned(true).
+		SetSystemInternalID(fmt.Sprintf("storage:%s:config", providerType)).
+		SetInternalNotes("Managed via server configuration").
+		AddSecrets(hushRecord).
+		Save(systemCtx)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create integration record: %w", err)
 	}
 
-	zerolog.Ctx(ctx).Info().Msgf("created system integration %s for config credentials for provider %s", integration.ID, providerType)
+	zerolog.Ctx(ctx).Info().Msgf("created system integration %s for config credentials for provider %s", integrationRecord.ID, providerType)
 
-	return integration, nil
+	return integrationRecord, nil
 }
 
 // GetActiveSystemProvider returns the active system provider for a given type
-func (css *CredentialSyncService) GetActiveSystemProvider(ctx context.Context, providerType string) (*generated.Integration, error) {
+func (css *CredentialSyncService) GetActiveSystemProvider(ctx context.Context, providerType storage.ProviderType) (*generated.Integration, error) {
+	ctx = css.systemOperationContext(ctx)
+
 	integrations, err := css.entClient.Integration.Query().
 		Where(
-			integration.OwnerIDEQ(SystemOrganizationID),
-			integration.KindEQ(providerType),
+			integration.KindEQ(string(providerType)),
+			integration.SystemOwnedEQ(true),
 		).
-		WithSecrets().
+		WithSecrets(func(q *generated.HushQuery) {
+			q.Where(hush.SystemOwnedEQ(true))
+		}).
 		All(ctx)
 	if err != nil {
 		log.Error().Err(err).Msgf("failed to query integrations for provider %s", providerType)
@@ -197,7 +253,6 @@ func (css *CredentialSyncService) GetActiveSystemProvider(ctx context.Context, p
 		return nil, err
 	}
 
-	// Find the most recently created integration
 	var newest *generated.Integration
 	var newestTime time.Time
 

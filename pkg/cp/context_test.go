@@ -175,3 +175,41 @@ func TestGetValueEquals(t *testing.T) {
 	assert.True(t, GetValueEquals(emptyCtx, 0))                    // 0 is zero value
 	assert.True(t, GetValueEquals(emptyCtx, models.OrgModule(""))) // empty enum is zero value
 }
+
+func TestWithHintMultipleValues(t *testing.T) {
+	ctx := context.Background()
+
+	keyOne := NewHintKey[string]("example.one")
+	keyTwo := NewHintKey[string]("example.two")
+
+	ctx = WithHint(ctx, keyOne, "first")
+	ctx = WithHint(ctx, keyTwo, "second")
+
+	one := GetHint(ctx, keyOne)
+	require.True(t, one.IsPresent())
+	assert.Equal(t, "first", one.MustGet())
+
+	two := GetHint(ctx, keyTwo)
+	require.True(t, two.IsPresent())
+	assert.Equal(t, "second", two.MustGet())
+}
+
+func TestHintSetApply(t *testing.T) {
+	ctx := context.Background()
+	stringKey := NewHintKey[string]("string")
+	intKey := NewHintKey[int]("int")
+
+	hintSet := NewHintSet()
+	AddHint(hintSet, stringKey, "value")
+	AddHint(hintSet, intKey, 42)
+
+	ctx = hintSet.Apply(ctx)
+
+	stringHint := GetHint(ctx, stringKey)
+	require.True(t, stringHint.IsPresent())
+	assert.Equal(t, "value", stringHint.MustGet())
+
+	intHint := GetHint(ctx, intKey)
+	require.True(t, intHint.IsPresent())
+	assert.Equal(t, 42, intHint.MustGet())
+}
