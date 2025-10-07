@@ -1,2 +1,0 @@
-- Is there some reason / rationale as to why we never inject a client but we do the GetClient operations?
-- Generate README for pkg/objects, internal/objects, internal/middleware/objects

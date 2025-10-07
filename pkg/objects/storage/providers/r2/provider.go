@@ -15,6 +15,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/rs/zerolog/log"
 
+	storage "github.com/theopenlane/core/pkg/objects/storage"
 	storagetypes "github.com/theopenlane/core/pkg/objects/storage/types"
 )
 
@@ -30,7 +31,7 @@ const (
 // Provider implements the storagetypes.Provider interface for Cloudflare R2
 type Provider struct {
 	client             *s3.Client
-	config             *Config
+	options            *storage.ProviderOptions
 	presignClient      *s3.PresignClient
 	downloader         *manager.Downloader
 	uploader           *manager.Uploader
@@ -38,48 +39,34 @@ type Provider struct {
 	objNotExistsWaiter *s3.ObjectNotExistsWaiter
 }
 
-// Config contains configuration for R2 provider
-type Config struct {
-	Bucket          string
-	AccountID       string
-	AccessKeyID     string
-	SecretAccessKey string
-	APIToken        string
-	Endpoint        string
-	Region          string
-}
-
 // NewR2Provider creates a new R2 provider instance
-func NewR2Provider(cfg *Config) (*Provider, error) {
-	if cfg == nil {
+func NewR2Provider(options *storage.ProviderOptions) (*Provider, error) {
+	if options == nil {
 		return nil, ErrR2BucketRequired
 	}
-	if cfg.Bucket == "" {
+	if options.Bucket == "" {
 		return nil, ErrR2BucketRequired
 	}
-	if cfg.AccountID == "" {
+	if options.Credentials.AccountID == "" {
 		return nil, ErrR2AccountIDRequired
 	}
-	if cfg.AccessKeyID == "" || cfg.SecretAccessKey == "" {
+	if options.Credentials.AccessKeyID == "" || options.Credentials.SecretAccessKey == "" {
 		return nil, ErrR2CredentialsMissing
 	}
 
-	// Set up R2-specific endpoint
-	endpoint := fmt.Sprintf("https://%s.r2.cloudflarestorage.com", cfg.AccountID)
-	if cfg.Endpoint != "" {
-		endpoint = cfg.Endpoint
+	endpoint := options.Endpoint
+	if endpoint == "" {
+		endpoint = fmt.Sprintf("https://%s.r2.cloudflarestorage.com", options.Credentials.AccountID)
 	}
 
-	creds := credentials.NewStaticCredentialsProvider(cfg.AccessKeyID, cfg.SecretAccessKey, "")
+	creds := credentials.NewStaticCredentialsProvider(options.Credentials.AccessKeyID, options.Credentials.SecretAccessKey, "")
 
-	// Create AWS config with R2 endpoint
 	awsConfig := aws.Config{
-		Region:       "auto", // R2 uses "auto" as the region
+		Region:       "auto",
 		Credentials:  creds,
 		BaseEndpoint: aws.String(endpoint),
 	}
 
-	// Create S3 client configured for R2
 	client := s3.NewFromConfig(awsConfig, func(o *s3.Options) {
 		o.BaseEndpoint = aws.String(endpoint)
 		o.Region = "auto"
@@ -88,7 +75,7 @@ func NewR2Provider(cfg *Config) (*Provider, error) {
 
 	return &Provider{
 		client:             client,
-		config:             cfg,
+		options:            options.Clone(),
 		downloader:         manager.NewDownloader(client),
 		uploader:           manager.NewUploader(client),
 		presignClient:      s3.NewPresignClient(client),
@@ -110,7 +97,7 @@ func (p *Provider) Upload(ctx context.Context, reader io.Reader, opts *storagety
 	seeker := bytes.NewReader(b.Bytes())
 
 	_, err = p.client.PutObject(ctx, &s3.PutObjectInput{
-		Bucket:      aws.String(p.config.Bucket),
+		Bucket:      aws.String(p.options.Bucket),
 		Key:         aws.String(opts.FileName),
 		Body:        seeker,
 		ContentType: aws.String(opts.ContentType),
@@ -131,7 +118,7 @@ func (p *Provider) Upload(ctx context.Context, reader io.Reader, opts *storagety
 // Download implements storagetypes.Provider
 func (p *Provider) Download(ctx context.Context, file *storagetypes.File, _ *storagetypes.DownloadFileOptions) (*storagetypes.DownloadedFileMetadata, error) {
 	head, err := p.client.HeadObject(ctx, &s3.HeadObjectInput{
-		Bucket: aws.String(p.config.Bucket),
+		Bucket: aws.String(p.options.Bucket),
 		Key:    aws.String(file.Key),
 	})
 	if err != nil {
@@ -142,7 +129,7 @@ func (p *Provider) Download(ctx context.Context, file *storagetypes.File, _ *sto
 	w := manager.NewWriteAtBuffer(buf)
 
 	_, err = p.downloader.Download(ctx, w, &s3.GetObjectInput{
-		Bucket: aws.String(p.config.Bucket),
+		Bucket: aws.String(p.options.Bucket),
 		Key:    aws.String(file.Key),
 	})
 	if err != nil {
@@ -158,7 +145,7 @@ func (p *Provider) Download(ctx context.Context, file *storagetypes.File, _ *sto
 // Delete implements storagetypes.Provider
 func (p *Provider) Delete(ctx context.Context, file *storagetypes.File, _ *storagetypes.DeleteFileOptions) error {
 	_, err := p.client.DeleteObject(ctx, &s3.DeleteObjectInput{
-		Bucket: aws.String(p.config.Bucket),
+		Bucket: aws.String(p.options.Bucket),
 		Key:    aws.String(file.Key),
 	})
 
@@ -173,7 +160,7 @@ func (p *Provider) GetPresignedURL(_ context.Context, file *storagetypes.File, o
 	}
 
 	presignURL, err := p.presignClient.PresignGetObject(context.Background(), &s3.GetObjectInput{
-		Bucket:                     aws.String(p.config.Bucket),
+		Bucket:                     aws.String(p.options.Bucket),
 		Key:                        aws.String(file.Key),
 		ResponseContentType:        aws.String("application/octet-stream"),
 		ResponseContentDisposition: aws.String("attachment"),
@@ -197,7 +184,7 @@ func (p *Provider) GetPresignedURL(_ context.Context, file *storagetypes.File, o
 // Exists checks if an object exists in R2
 func (p *Provider) Exists(ctx context.Context, file *storagetypes.File) (bool, error) {
 	_, err := p.client.HeadObject(ctx, &s3.HeadObjectInput{
-		Bucket: aws.String(p.config.Bucket),
+		Bucket: aws.String(p.options.Bucket),
 		Key:    aws.String(file.Key),
 	})
 	if err != nil {

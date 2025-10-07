@@ -183,20 +183,61 @@ keywatcher:
     keyDir: ./keys
     secretManager: ""
 objectStorage:
-    accessKey: ""
-    credentialsJSON: ""
-    defaultBucket: file_uploads
+    devMode: false
     enabled: true
-    endpoint: ""
     keys:
-        - uploadFile
-    localURL: http://localhost:17608/files/
+        - '"uploadFile"'
     maxMemoryMB: 0
     maxSizeMB: 0
-    provider: ""
-    region: ""
-    secretKey: ""
-    usePathStyle: false
+    providers:
+        cloudflareR2:
+            bucket: ""
+            credentials:
+                accessKeyID: ""
+                accountID: ""
+                apiToken: ""
+                endpoint: ""
+                projectID: ""
+                secretAccessKey: ""
+            enabled: false
+            endpoint: ""
+            region: ""
+        disk:
+            bucket: ""
+            credentials:
+                accessKeyID: ""
+                accountID: ""
+                apiToken: ""
+                endpoint: ""
+                projectID: ""
+                secretAccessKey: ""
+            enabled: false
+            endpoint: ""
+            region: ""
+        gcs:
+            bucket: ""
+            credentials:
+                accessKeyID: ""
+                accountID: ""
+                apiToken: ""
+                endpoint: ""
+                projectID: ""
+                secretAccessKey: ""
+            enabled: false
+            endpoint: ""
+            region: ""
+        s3:
+            bucket: ""
+            credentials:
+                accessKeyID: ""
+                accountID: ""
+                apiToken: ""
+                endpoint: ""
+                projectID: ""
+                secretAccessKey: ""
+            enabled: false
+            endpoint: ""
+            region: ""
 ratelimit:
     burst: 30
     enabled: false

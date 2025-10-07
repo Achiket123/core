@@ -40,6 +40,13 @@ import (
 	_ "github.com/theopenlane/core/internal/ent/generated/runtime"
 )
 
+func cloneProviderOptions(in *storage.ProviderOptions) *storage.ProviderOptions {
+	if in == nil {
+		return nil
+	}
+	return in.Clone()
+}
+
 const (
 	fgaModelFile = "../../../fga/model/model.fga"
 )
@@ -198,7 +205,15 @@ func (suite *CredentialSyncTestSuite) SetupTest() {
 
 	// Create credential sync service after database is ready
 	clientPool := cp.NewClientPool[storage.Provider](time.Hour)
-	clientService := cp.NewClientService(clientPool)
+	clientService := cp.NewClientService[
+		storage.Provider,
+		storage.ProviderCredentials,
+		*storage.ProviderOptions,
+	](clientPool, cp.WithConfigClone[
+		storage.Provider,
+		storage.ProviderCredentials,
+		*storage.ProviderOptions,
+	](cloneProviderOptions))
 	suite.service = serveropts.NewCredentialSyncService(
 		suite.db,
 		clientService,

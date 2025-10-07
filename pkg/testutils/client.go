@@ -256,7 +256,20 @@ func MockStorageServiceWithValidationAndProvider(t *testing.T, uploader storage.
 
 	// Create cp components
 	pool := cp.NewClientPool[storage.Provider](time.Minute)
-	clientService := cp.NewClientService(pool)
+	clientService := cp.NewClientService[
+		storage.Provider,
+		storage.ProviderCredentials,
+		*storage.ProviderOptions,
+	](pool, cp.WithConfigClone[
+		storage.Provider,
+		storage.ProviderCredentials,
+		*storage.ProviderOptions,
+	](func(in *storage.ProviderOptions) *storage.ProviderOptions {
+		if in == nil {
+			return nil
+		}
+		return in.Clone()
+	}))
 
 	// Register mock provider builder
 	mockBuilder := &testProviderBuilder{
@@ -265,18 +278,22 @@ func MockStorageServiceWithValidationAndProvider(t *testing.T, uploader storage.
 	clientService.RegisterBuilder(cp.ProviderType("mock"), mockBuilder)
 
 	// Create resolver with default rule that selects mock provider
-	resolver := cp.NewResolver[storage.Provider]()
+	resolver := cp.NewResolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]()
 
 	// Add default rule that always returns mock provider
-	defaultRule := cp.DefaultRule[storage.Provider](cp.Resolution{
+	defaultRule := cp.DefaultRule[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions](cp.Resolution[storage.ProviderCredentials, *storage.ProviderOptions]{
 		ClientType:  cp.ProviderType("mock"),
-		Credentials: map[string]string{"type": "mock"},
-		Config:      map[string]any{"validation": validationFunc != nil},
+		Credentials: storage.ProviderCredentials{},
+		Config:      storage.NewProviderOptions(storage.WithExtra("validation", validationFunc != nil)),
 	})
 	resolver.SetDefaultRule(defaultRule)
 
 	// Create objects.Service - simplified for tests
-	service := objects.NewService(resolver, clientService, validationFunc)
+	service := objects.NewService(objects.Config{
+		Resolver:       resolver,
+		ClientService:  clientService,
+		ValidationFunc: validationFunc,
+	})
 
 	// Return service and provider for test setup
 	return service, mockProvider, nil
@@ -287,11 +304,11 @@ type testProviderBuilder struct {
 	provider *mock_shared.MockProvider
 }
 
-func (b *testProviderBuilder) WithCredentials(credentials map[string]string) cp.ClientBuilder[storage.Provider] {
+func (b *testProviderBuilder) WithCredentials(storage.ProviderCredentials) cp.ClientBuilder[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions] {
 	return b
 }
 
-func (b *testProviderBuilder) WithConfig(config map[string]any) cp.ClientBuilder[storage.Provider] {
+func (b *testProviderBuilder) WithConfig(*storage.ProviderOptions) cp.ClientBuilder[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions] {
 	return b
 }
 

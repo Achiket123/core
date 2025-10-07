@@ -6,7 +6,18 @@
       "Bash(task go:build)",
       "Bash(ZEROLOG_LEVEL=debug go test -run \"TestMutationCreateEvidence/Create_happy_path,_all_input\")",
       "Bash(ZEROLOG_LEVEL=debug go test -v -run \"TestMutationCreateEvidence/Create_happy_path,_all_input\")",
-      "Read(//Users/manderson/newnewcore/core/pkg/objects/**)"
+      "Read(//Users/manderson/newnewcore/core/pkg/objects/**)",
+      "Bash(task setup)",
+      "Bash(task benchmark-pooling:*)",
+      "Bash(task benchmark-multitenant:*)",
+      "Bash(task benchmark-resolver:*)",
+      "Bash(task benchmark-memory:*)",
+      "Bash(task benchmark-3000:*)",
+      "Bash(ZEROLOG_LEVEL=error go test -bench=BenchmarkMultiProvider3000Clients -benchmem -benchtime=30s)",
+      "Bash(ZEROLOG_LEVEL=error go test -bench=BenchmarkMultiProvider3000Clients -benchmem -benchtime=5s)",
+      "Bash(task:*)",
+      "Bash(go run:*)",
+      "Bash(go doc:*)"
     ],
     "deny": [],
     "ask": []

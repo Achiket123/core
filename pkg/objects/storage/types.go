@@ -172,3 +172,109 @@ type ProviderCredentials struct {
 	// APIToken for Cloudflare R2
 	APIToken string `json:"apiToken" koanf:"apiToken"`
 }
+
+// ProviderOption configures runtime provider options
+type ProviderOption func(*ProviderOptions)
+
+// ProviderOptions captures runtime configuration shared across storage providers
+type ProviderOptions struct {
+	Credentials ProviderCredentials
+	Bucket      string
+	Region      string
+	Endpoint    string
+	BasePath    string
+	LocalURL    string
+	extras      map[string]any
+}
+
+// NewProviderOptions constructs ProviderOptions applying the supplied options
+func NewProviderOptions(opts ...ProviderOption) *ProviderOptions {
+	po := &ProviderOptions{}
+	po.Apply(opts...)
+	return po
+}
+
+// Apply applies option functions to ProviderOptions
+func (p *ProviderOptions) Apply(opts ...ProviderOption) {
+	for _, opt := range opts {
+		if opt != nil {
+			opt(p)
+		}
+	}
+}
+
+// Clone returns a deep copy of ProviderOptions
+func (p *ProviderOptions) Clone() *ProviderOptions {
+	if p == nil {
+		return nil
+	}
+	clone := *p
+	if len(p.extras) > 0 {
+		clone.extras = make(map[string]any, len(p.extras))
+		for k, v := range p.extras {
+			clone.extras[k] = v
+		}
+	}
+	return &clone
+}
+
+// WithCredentials sets provider credentials
+func WithCredentials(creds ProviderCredentials) ProviderOption {
+	return func(p *ProviderOptions) {
+		p.Credentials = creds
+	}
+}
+
+// WithBucket sets the bucket/path value
+func WithBucket(bucket string) ProviderOption {
+	return func(p *ProviderOptions) {
+		p.Bucket = bucket
+	}
+}
+
+// WithRegion sets the region value
+func WithRegion(region string) ProviderOption {
+	return func(p *ProviderOptions) {
+		p.Region = region
+	}
+}
+
+// WithEndpoint sets the custom endpoint
+func WithEndpoint(endpoint string) ProviderOption {
+	return func(p *ProviderOptions) {
+		p.Endpoint = endpoint
+	}
+}
+
+// WithBasePath sets the local base path for disk providers
+func WithBasePath(path string) ProviderOption {
+	return func(p *ProviderOptions) {
+		p.BasePath = path
+	}
+}
+
+// WithLocalURL sets the local URL used for presigned links
+func WithLocalURL(url string) ProviderOption {
+	return func(p *ProviderOptions) {
+		p.LocalURL = url
+	}
+}
+
+// WithExtra attaches provider specific metadata
+func WithExtra(key string, value any) ProviderOption {
+	return func(p *ProviderOptions) {
+		if p.extras == nil {
+			p.extras = make(map[string]any)
+		}
+		p.extras[key] = value
+	}
+}
+
+// Extra returns provider specific metadata
+func (p *ProviderOptions) Extra(key string) (any, bool) {
+	if p == nil || len(p.extras) == 0 {
+		return nil, false
+	}
+	val, ok := p.extras[key]
+	return val, ok
+}

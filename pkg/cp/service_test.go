@@ -7,11 +7,12 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/theopenlane/core/pkg/models"
 )
 
 // mockBuilder is a test implementation of ClientBuilder
 type mockBuilder struct {
-	credentials   map[string]string
+	credentials   models.CredentialSet
 	config        map[string]any
 	buildFunc     func(ctx context.Context) (string, error)
 	clientType    string
@@ -19,12 +20,12 @@ type mockBuilder struct {
 	returnedValue string
 }
 
-func (m *mockBuilder) WithCredentials(credentials map[string]string) ClientBuilder[string] {
+func (m *mockBuilder) WithCredentials(credentials models.CredentialSet) ClientBuilder[string, models.CredentialSet, map[string]any] {
 	m.credentials = credentials
 	return m
 }
 
-func (m *mockBuilder) WithConfig(config map[string]any) ClientBuilder[string] {
+func (m *mockBuilder) WithConfig(config map[string]any) ClientBuilder[string, models.CredentialSet, map[string]any] {
 	m.config = config
 	return m
 }
@@ -46,7 +47,7 @@ func (m *mockBuilder) ClientType() ProviderType {
 // TestNewClientService tests the NewClientService function
 func TestNewClientService(t *testing.T) {
 	pool := NewClientPool[string](5 * time.Minute)
-	service := NewClientService(pool)
+	service := NewClientService[string, models.CredentialSet, map[string]any](pool)
 
 	assert.NotNil(t, service)
 	assert.Equal(t, pool, service.pool)
@@ -57,7 +58,7 @@ func TestNewClientService(t *testing.T) {
 // TestRegisterBuilder tests the RegisterBuilder method
 func TestRegisterBuilder(t *testing.T) {
 	pool := NewClientPool[string](5 * time.Minute)
-	service := NewClientService(pool)
+	service := NewClientService[string, models.CredentialSet, map[string]any](pool)
 
 	builder1 := &mockBuilder{clientType: "storage"}
 	builder2 := &mockBuilder{clientType: "slack"}
@@ -84,10 +85,10 @@ func TestRegisterBuilder(t *testing.T) {
 func TestGetClientFromService(t *testing.T) {
 	tests := []struct {
 		name          string
-		setupService  func() *ClientService[string]
+		setupService  func() *ClientService[string, models.CredentialSet, map[string]any]
 		key           ClientCacheKey
 		clientType    string
-		credentials   map[string]string
+		credentials   models.CredentialSet
 		config        map[string]any
 		expectPresent bool
 		expectedValue string
@@ -95,9 +96,9 @@ func TestGetClientFromService(t *testing.T) {
 	}{
 		{
 			name: "get from cache",
-			setupService: func() *ClientService[string] {
+			setupService: func() *ClientService[string, models.CredentialSet, map[string]any] {
 				pool := NewClientPool[string](5 * time.Minute)
-				service := NewClientService(pool)
+				service := NewClientService[string, models.CredentialSet, map[string]any](pool)
 
 				// Pre-populate cache
 				key := ClientCacheKey{
@@ -121,9 +122,9 @@ func TestGetClientFromService(t *testing.T) {
 		},
 		{
 			name: "build new client",
-			setupService: func() *ClientService[string] {
+			setupService: func() *ClientService[string, models.CredentialSet, map[string]any] {
 				pool := NewClientPool[string](5 * time.Minute)
-				service := NewClientService(pool)
+				service := NewClientService[string, models.CredentialSet, map[string]any](pool)
 
 				builder := &mockBuilder{
 					returnedValue: "new-client",
@@ -139,8 +140,8 @@ func TestGetClientFromService(t *testing.T) {
 				HushID:          "hush1",
 			},
 			clientType: "storage",
-			credentials: map[string]string{
-				"key": "value",
+			credentials: models.CredentialSet{
+				AccessKeyID: "test-key",
 			},
 			config: map[string]any{
 				"option": "value",
@@ -151,9 +152,9 @@ func TestGetClientFromService(t *testing.T) {
 		},
 		{
 			name: "builder not found",
-			setupService: func() *ClientService[string] {
+			setupService: func() *ClientService[string, models.CredentialSet, map[string]any] {
 				pool := NewClientPool[string](5 * time.Minute)
-				return NewClientService(pool)
+				return NewClientService[string, models.CredentialSet, map[string]any](pool)
 			},
 			key: ClientCacheKey{
 				TenantID:        "tenant1",
@@ -165,9 +166,9 @@ func TestGetClientFromService(t *testing.T) {
 		},
 		{
 			name: "builder returns error",
-			setupService: func() *ClientService[string] {
+			setupService: func() *ClientService[string, models.CredentialSet, map[string]any] {
 				pool := NewClientPool[string](5 * time.Minute)
-				service := NewClientService(pool)
+				service := NewClientService[string, models.CredentialSet, map[string]any](pool)
 
 				builder := &mockBuilder{
 					returnError: true,
@@ -214,11 +215,11 @@ func TestGetClientFromService(t *testing.T) {
 // TestGetClientWithCredentials tests that credentials are passed to builder
 func TestGetClientWithCredentials(t *testing.T) {
 	pool := NewClientPool[string](5 * time.Minute)
-	service := NewClientService(pool)
+	service := NewClientService[string, models.CredentialSet, map[string]any](pool)
 
-	expectedCredentials := map[string]string{
-		"access_key": "key123",
-		"secret_key": "secret456",
+	expectedCredentials := models.CredentialSet{
+		AccessKeyID:     "key123",
+		SecretAccessKey: "secret456",
 	}
 
 	expectedConfig := map[string]any{
@@ -253,7 +254,7 @@ func TestGetClientWithCredentials(t *testing.T) {
 // TestPool tests the Pool method
 func TestPool(t *testing.T) {
 	pool := NewClientPool[string](5 * time.Minute)
-	service := NewClientService(pool)
+	service := NewClientService[string, models.CredentialSet, map[string]any](pool)
 
 	assert.Same(t, pool, service.Pool())
 }
@@ -261,7 +262,7 @@ func TestPool(t *testing.T) {
 // TestConcurrentServiceAccess tests thread safety of the service
 func TestConcurrentServiceAccess(t *testing.T) {
 	pool := NewClientPool[string](5 * time.Minute)
-	service := NewClientService(pool)
+	service := NewClientService[string, models.CredentialSet, map[string]any](pool)
 
 	// Register multiple builders
 	for i := 0; i < 10; i++ {
@@ -297,7 +298,7 @@ func TestConcurrentServiceAccess(t *testing.T) {
 				IntegrationType: clientType,
 				HushID:          string(rune(i)),
 			}
-			service.GetClient(context.Background(), key, ProviderType(clientType), nil, nil)
+			service.GetClient(context.Background(), key, ProviderType(clientType), models.CredentialSet{}, nil)
 		}
 		done <- true
 	}()
@@ -311,7 +312,7 @@ func TestConcurrentServiceAccess(t *testing.T) {
 // TestGetClientContextPropagation tests that context is properly propagated to builders
 func TestGetClientContextPropagation(t *testing.T) {
 	pool := NewClientPool[string](5 * time.Minute)
-	service := NewClientService(pool)
+	service := NewClientService[string, models.CredentialSet, map[string]any](pool)
 
 	contextKey := struct{}{}
 	expectedValue := "context-value"
@@ -335,24 +336,24 @@ func TestGetClientContextPropagation(t *testing.T) {
 		HushID:          "hush1",
 	}
 
-	result := service.GetClient(ctx, key, ProviderType("storage"), nil, nil)
+	result := service.GetClient(ctx, key, ProviderType("storage"), models.CredentialSet{}, nil)
 	assert.True(t, result.IsPresent())
 }
 
 // callTrackingBuilder tracks the order of method calls
 type callTrackingBuilder struct {
 	callOrder   *[]string
-	credentials map[string]string
+	credentials models.CredentialSet
 	config      map[string]any
 }
 
-func (b *callTrackingBuilder) WithCredentials(credentials map[string]string) ClientBuilder[string] {
+func (b *callTrackingBuilder) WithCredentials(credentials models.CredentialSet) ClientBuilder[string, models.CredentialSet, map[string]any] {
 	*b.callOrder = append(*b.callOrder, "WithCredentials")
 	b.credentials = credentials
 	return b
 }
 
-func (b *callTrackingBuilder) WithConfig(config map[string]any) ClientBuilder[string] {
+func (b *callTrackingBuilder) WithConfig(config map[string]any) ClientBuilder[string, models.CredentialSet, map[string]any] {
 	*b.callOrder = append(*b.callOrder, "WithConfig")
 	b.config = config
 	return b
@@ -371,7 +372,7 @@ func (b *callTrackingBuilder) ClientType() ProviderType {
 func TestBuilderInterface(t *testing.T) {
 	// This test ensures the builder interface methods are called in the correct order
 	pool := NewClientPool[string](5 * time.Minute)
-	service := NewClientService(pool)
+	service := NewClientService[string, models.CredentialSet, map[string]any](pool)
 
 	callOrder := []string{}
 	builder := &callTrackingBuilder{
@@ -386,7 +387,7 @@ func TestBuilderInterface(t *testing.T) {
 		HushID:          "hush1",
 	}
 
-	credentials := map[string]string{"key": "value"}
+	credentials := models.CredentialSet{AccessKeyID: "test-key"}
 	config := map[string]any{"option": "value"}
 
 	result := service.GetClient(context.Background(), key, ProviderType("storage"), credentials, config)
@@ -399,7 +400,7 @@ func TestBuilderInterface(t *testing.T) {
 // TestServiceWithComplexClientType tests the service with a more complex client type
 func TestServiceWithComplexClientType(t *testing.T) {
 	pool := NewClientPool[complexClient](5 * time.Minute)
-	service := NewClientService(pool)
+	service := NewClientService[complexClient, models.CredentialSet, map[string]any](pool)
 
 	builder := &mockcomplexBuilder{}
 	service.RegisterBuilder(ProviderType("complex"), builder)
@@ -410,7 +411,7 @@ func TestServiceWithComplexClientType(t *testing.T) {
 		HushID:          "hush1",
 	}
 
-	result := service.GetClient(context.Background(), key, ProviderType("complex"), map[string]string{"key": "value"}, map[string]any{"option": "value"})
+	result := service.GetClient(context.Background(), key, ProviderType("complex"), models.CredentialSet{AccessKeyID: "test-key"}, map[string]any{"option": "value"})
 	assert.True(t, result.IsPresent())
 
 	client := result.MustGet()
@@ -420,7 +421,7 @@ func TestServiceWithComplexClientType(t *testing.T) {
 
 // mockcomplexBuilder properly implements ClientBuilder[complexClient]
 type mockcomplexBuilder struct {
-	credentials map[string]string
+	credentials models.CredentialSet
 	config      map[string]any
 }
 
@@ -430,12 +431,12 @@ type complexClient struct {
 	Config   map[string]any
 }
 
-func (m *mockcomplexBuilder) WithCredentials(credentials map[string]string) ClientBuilder[complexClient] {
+func (m *mockcomplexBuilder) WithCredentials(credentials models.CredentialSet) ClientBuilder[complexClient, models.CredentialSet, map[string]any] {
 	m.credentials = credentials
 	return m
 }
 
-func (m *mockcomplexBuilder) WithConfig(config map[string]any) ClientBuilder[complexClient] {
+func (m *mockcomplexBuilder) WithConfig(config map[string]any) ClientBuilder[complexClient, models.CredentialSet, map[string]any] {
 	m.config = config
 	return m
 }
@@ -452,17 +453,17 @@ func (m *mockcomplexBuilder) ClientType() ProviderType {
 	return ProviderType("complex")
 }
 
-// TestEmptyCredentialsAndConfig tests that nil credentials and config are handled
+// TestEmptyCredentialsAndConfig tests that empty credentials and config are handled
 func TestEmptyCredentialsAndConfig(t *testing.T) {
 	pool := NewClientPool[string](5 * time.Minute)
-	service := NewClientService(pool)
+	service := NewClientService[string, models.CredentialSet, map[string]any](pool)
 
 	var capturedBuilder *mockBuilder
 	capturedBuilder = &mockBuilder{
 		clientType: "storage",
 		buildFunc: func(ctx context.Context) (string, error) {
-			// Verify nil was passed through correctly
-			assert.Nil(t, capturedBuilder.credentials)
+			// Verify empty credentials and nil config were passed through correctly
+			assert.Equal(t, models.CredentialSet{}, capturedBuilder.credentials)
 			assert.Nil(t, capturedBuilder.config)
 			return "client-no-config", nil
 		},
@@ -477,6 +478,75 @@ func TestEmptyCredentialsAndConfig(t *testing.T) {
 		HushID:          "hush1",
 	}
 
-	result := service.GetClient(context.Background(), key, ProviderType("storage"), nil, nil)
+	result := service.GetClient(context.Background(), key, ProviderType("storage"), models.CredentialSet{}, nil)
 	assert.True(t, result.IsPresent())
+}
+
+// TestGetClientClonesCredentials tests that credentials and config are cloned to prevent mutation
+func TestGetClientClonesCredentials(t *testing.T) {
+	pool := NewClientPool[string](5 * time.Minute)
+	cloneFn := func(c models.CredentialSet) models.CredentialSet {
+		return models.CredentialSet{
+			AccessKeyID:     c.AccessKeyID,
+			SecretAccessKey: c.SecretAccessKey,
+			Endpoint:        c.Endpoint,
+			ProjectID:       c.ProjectID,
+			AccountID:       c.AccountID,
+			APIToken:        c.APIToken,
+		}
+	}
+	configCloneFn := func(c map[string]any) map[string]any {
+		clone := make(map[string]any, len(c))
+		for k, v := range c {
+			clone[k] = v
+		}
+		return clone
+	}
+	service := NewClientService[string, models.CredentialSet, map[string]any](pool, WithCredentialClone[string, models.CredentialSet, map[string]any](cloneFn), WithConfigClone[string, models.CredentialSet, map[string]any](configCloneFn))
+
+	// Original credentials and config that will be mutated
+	credentials := models.CredentialSet{
+		AccessKeyID:     "original_key",
+		SecretAccessKey: "original_secret",
+	}
+
+	config := map[string]any{
+		"region":  "us-west-2",
+		"timeout": 30,
+	}
+
+	builder := &mockBuilder{
+		clientType:    "storage",
+		returnedValue: "test-client",
+	}
+
+	service.RegisterBuilder(ProviderType("storage"), builder)
+
+	key := ClientCacheKey{
+		TenantID:        "tenant1",
+		IntegrationType: "storage",
+	}
+
+	// Get client (should clone credentials and config)
+	result := service.GetClient(context.Background(), key, ProviderType("storage"), credentials, config)
+	assert.True(t, result.IsPresent())
+
+	// Verify builder received correct values
+	assert.Equal(t, "original_key", builder.credentials.AccessKeyID)
+	assert.Equal(t, "original_secret", builder.credentials.SecretAccessKey)
+	assert.Equal(t, "us-west-2", builder.config["region"])
+	assert.Equal(t, 30, builder.config["timeout"])
+
+	// Mutate original credentials
+	credentials.AccessKeyID = "mutated_key"
+	credentials.SecretAccessKey = "mutated_secret"
+	config["region"] = "eu-west-1"
+	config["timeout"] = 60
+
+	// Verify the builder received copies (not references to original)
+	// The builder's credentials should still have original values because they were cloned
+	assert.Equal(t, "original_key", builder.credentials.AccessKeyID)
+	assert.Equal(t, "original_secret", builder.credentials.SecretAccessKey)
+	assert.Equal(t, "us-west-2", builder.config["region"])
+	assert.Equal(t, 30, builder.config["timeout"])
 }

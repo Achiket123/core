@@ -16,21 +16,21 @@ type MockStorageProvider struct {
 }
 
 func TestNewRule(t *testing.T) {
-	rule := NewRule[MockStorageProvider]()
+	rule := NewRule[MockStorageProvider, models.CredentialSet, map[string]any]()
 
 	assert.NotNil(t, rule)
 	assert.Empty(t, rule.conditions)
 }
 
 func TestDefaultRule(t *testing.T) {
-	resolution := Resolution{
+	resolution := Resolution[models.CredentialSet, map[string]any]{
 		ClientType:  "test-provider",
-		Credentials: map[string]string{"key": "value"},
+		Credentials: models.CredentialSet{AccessKeyID: "test-key"},
 		Config:      map[string]any{"timeout": 30},
-		CacheKey:    "default-cache-key",
+		CacheKey:    ClientCacheKey{TenantID: "tenant", IntegrationType: "test", IntegrationID: "integration-test"},
 	}
 
-	rule := DefaultRule[MockStorageProvider](resolution)
+	rule := DefaultRule[MockStorageProvider, models.CredentialSet, map[string]any](resolution)
 
 	// Test that it always returns the resolution regardless of context
 	ctx := context.Background()
@@ -41,17 +41,17 @@ func TestDefaultRule(t *testing.T) {
 }
 
 func TestRuleBuilder_WhenFunc_StringMatch(t *testing.T) {
-	builder := NewRule[MockStorageProvider]()
+	builder := NewRule[MockStorageProvider, models.CredentialSet, map[string]any]()
 
 	// Add condition that checks for specific string value
 	rule := builder.
 		WhenFunc(func(ctx context.Context) bool {
 			return GetValueEquals(ctx, "test-org-id")
 		}).
-		Resolve(func(_ context.Context) (*ResolvedProvider, error) {
-			return &ResolvedProvider{
+		Resolve(func(_ context.Context) (*ResolvedProvider[models.CredentialSet, map[string]any], error) {
+			return &ResolvedProvider[models.CredentialSet, map[string]any]{
 				Type:        "s3",
-				Credentials: map[string]string{"region": "us-east-1"},
+				Credentials: models.CredentialSet{Endpoint: "us-east-1"},
 				Config:      map[string]any{"bucket": "test-bucket"},
 			}, nil
 		})
@@ -63,7 +63,7 @@ func TestRuleBuilder_WhenFunc_StringMatch(t *testing.T) {
 	require.True(t, result.IsPresent())
 	resolution := result.MustGet()
 	assert.Equal(t, ProviderType("s3"), resolution.ClientType)
-	assert.Equal(t, "us-east-1", resolution.Credentials["region"])
+	assert.Equal(t, "us-east-1", resolution.Credentials.Endpoint)
 
 	// Test with non-matching context
 	ctx = WithValue(context.Background(), "other-org-id")
@@ -73,17 +73,17 @@ func TestRuleBuilder_WhenFunc_StringMatch(t *testing.T) {
 }
 
 func TestRuleBuilder_WhenFunc_ModuleMatch(t *testing.T) {
-	builder := NewRule[MockStorageProvider]()
+	builder := NewRule[MockStorageProvider, models.CredentialSet, map[string]any]()
 
 	// Add condition that checks for specific module
 	rule := builder.
 		WhenFunc(func(ctx context.Context) bool {
 			return GetValueEquals(ctx, models.CatalogTrustCenterModule)
 		}).
-		Resolve(func(_ context.Context) (*ResolvedProvider, error) {
-			return &ResolvedProvider{
+		Resolve(func(_ context.Context) (*ResolvedProvider[models.CredentialSet, map[string]any], error) {
+			return &ResolvedProvider[models.CredentialSet, map[string]any]{
 				Type:        "r2",
-				Credentials: map[string]string{"account_id": "test-account"},
+				Credentials: models.CredentialSet{AccountID: "test-account"},
 				Config:      map[string]any{"endpoint": "https://r2.example.com"},
 			}, nil
 		})
@@ -95,7 +95,7 @@ func TestRuleBuilder_WhenFunc_ModuleMatch(t *testing.T) {
 	require.True(t, result.IsPresent())
 	resolution := result.MustGet()
 	assert.Equal(t, ProviderType("r2"), resolution.ClientType)
-	assert.Equal(t, "test-account", resolution.Credentials["account_id"])
+	assert.Equal(t, "test-account", resolution.Credentials.AccountID)
 
 	// Test with different module
 	ctx = WithValue(context.Background(), models.CatalogComplianceModule)
@@ -105,7 +105,7 @@ func TestRuleBuilder_WhenFunc_ModuleMatch(t *testing.T) {
 }
 
 func TestRuleBuilder_WhenFunc_MultipleConditions(t *testing.T) {
-	builder := NewRule[MockStorageProvider]()
+	builder := NewRule[MockStorageProvider, models.CredentialSet, map[string]any]()
 
 	// Add multiple conditions
 	rule := builder.
@@ -115,10 +115,10 @@ func TestRuleBuilder_WhenFunc_MultipleConditions(t *testing.T) {
 		WhenFunc(func(ctx context.Context) bool {
 			return GetValueEquals(ctx, "evidence")
 		}).
-		Resolve(func(_ context.Context) (*ResolvedProvider, error) {
-			return &ResolvedProvider{
+		Resolve(func(_ context.Context) (*ResolvedProvider[models.CredentialSet, map[string]any], error) {
+			return &ResolvedProvider[models.CredentialSet, map[string]any]{
 				Type:        "gcs",
-				Credentials: map[string]string{"project_id": "test-project"},
+				Credentials: models.CredentialSet{ProjectID: "test-project"},
 				Config:      map[string]any{"location": "us-central1"},
 			}, nil
 		})
@@ -147,7 +147,7 @@ func TestRuleBuilder_WhenFunc_MultipleConditions(t *testing.T) {
 }
 
 func TestRuleBuilder_Resolve(t *testing.T) {
-	builder := NewRule[MockStorageProvider]()
+	builder := NewRule[MockStorageProvider, models.CredentialSet, map[string]any]()
 
 	// Counter to track function calls
 	callCount := 0
@@ -156,17 +156,17 @@ func TestRuleBuilder_Resolve(t *testing.T) {
 		WhenFunc(func(ctx context.Context) bool {
 			return GetValueEquals(ctx, "dynamic-org")
 		}).
-		Resolve(func(ctx context.Context) (*ResolvedProvider, error) {
+		Resolve(func(ctx context.Context) (*ResolvedProvider[models.CredentialSet, map[string]any], error) {
 			callCount++
 
 			// Simulate dynamic resolution based on context
 			orgID := GetValue[string](ctx).OrElse("unknown")
 
-			return &ResolvedProvider{
+			return &ResolvedProvider[models.CredentialSet, map[string]any]{
 				Type: "disk",
-				Credentials: map[string]string{
-					"organization_id": orgID,
-					"path":            "/storage/" + orgID,
+				Credentials: models.CredentialSet{
+					AccessKeyID: orgID,
+					Endpoint:    "/storage/" + orgID,
 				},
 				Config: map[string]any{
 					"permissions": "0755",
@@ -182,8 +182,8 @@ func TestRuleBuilder_Resolve(t *testing.T) {
 	require.True(t, result.IsPresent())
 	resolution := result.MustGet()
 	assert.Equal(t, ProviderType("disk"), resolution.ClientType)
-	assert.Equal(t, "dynamic-org", resolution.Credentials["organization_id"])
-	assert.Equal(t, "/storage/dynamic-org", resolution.Credentials["path"])
+	assert.Equal(t, "dynamic-org", resolution.Credentials.AccessKeyID)
+	assert.Equal(t, "/storage/dynamic-org", resolution.Credentials.Endpoint)
 	assert.Equal(t, "0755", resolution.Config["permissions"])
 	assert.Equal(t, 1, callCount)
 
@@ -196,13 +196,13 @@ func TestRuleBuilder_Resolve(t *testing.T) {
 }
 
 func TestRuleBuilder_Resolve_Error(t *testing.T) {
-	builder := NewRule[MockStorageProvider]()
+	builder := NewRule[MockStorageProvider, models.CredentialSet, map[string]any]()
 
 	rule := builder.
 		WhenFunc(func(ctx context.Context) bool {
 			return true // Always match
 		}).
-		Resolve(func(ctx context.Context) (*ResolvedProvider, error) {
+		Resolve(func(ctx context.Context) (*ResolvedProvider[models.CredentialSet, map[string]any], error) {
 			return nil, assert.AnError // Return error
 		})
 
@@ -213,13 +213,13 @@ func TestRuleBuilder_Resolve_Error(t *testing.T) {
 }
 
 func TestRuleBuilder_Resolve_NilProvider(t *testing.T) {
-	builder := NewRule[MockStorageProvider]()
+	builder := NewRule[MockStorageProvider, models.CredentialSet, map[string]any]()
 
 	rule := builder.
 		WhenFunc(func(ctx context.Context) bool {
 			return true // Always match
 		}).
-		Resolve(func(ctx context.Context) (*ResolvedProvider, error) {
+		Resolve(func(ctx context.Context) (*ResolvedProvider[models.CredentialSet, map[string]any], error) {
 			return nil, nil // Return nil provider
 		})
 
@@ -231,7 +231,7 @@ func TestRuleBuilder_Resolve_NilProvider(t *testing.T) {
 
 func TestRuleBuilder_ComplexScenario(t *testing.T) {
 	// Test a complex scenario that mimics real-world usage
-	builder := NewRule[MockStorageProvider]()
+	builder := NewRule[MockStorageProvider, models.CredentialSet, map[string]any]()
 
 	// Use a closure variable to track call count
 	callCount := 0
@@ -245,7 +245,7 @@ func TestRuleBuilder_ComplexScenario(t *testing.T) {
 			// Check if it's evidence feature
 			return GetValueEquals(ctx, "evidence")
 		}).
-		Resolve(func(ctx context.Context) (*ResolvedProvider, error) {
+		Resolve(func(ctx context.Context) (*ResolvedProvider[models.CredentialSet, map[string]any], error) {
 			// Dynamic resolution for large evidence files in trust center
 			feature := GetValue[string](ctx).OrElse("unknown") // This will be "evidence"
 
@@ -274,10 +274,10 @@ func TestRuleBuilder_ComplexScenario(t *testing.T) {
 				return nil, nil
 			}
 
-			return &ResolvedProvider{
+			return &ResolvedProvider[models.CredentialSet, map[string]any]{
 				Type: providerType,
-				Credentials: map[string]string{
-					"feature": feature,
+				Credentials: models.CredentialSet{
+					Endpoint: feature,
 				},
 				Config: config,
 			}, nil

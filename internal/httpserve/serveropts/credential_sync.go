@@ -35,12 +35,12 @@ var SystemOrganizationID = "01101101011010010111010001100010"
 // CredentialSyncService manages synchronization between config file credentials and database records
 type CredentialSyncService struct {
 	entClient     *generated.Client
-	clientService *cp.ClientService[storage.Provider]
+	clientService *cp.ClientService[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]
 	config        *storage.Providers
 }
 
 // NewCredentialSyncService creates a new credential synchronization service
-func NewCredentialSyncService(entClient *generated.Client, clientService *cp.ClientService[storage.Provider], config *storage.Providers) *CredentialSyncService {
+func NewCredentialSyncService(entClient *generated.Client, clientService *cp.ClientService[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions], config *storage.Providers) *CredentialSyncService {
 	return &CredentialSyncService{
 		entClient:     entClient,
 		clientService: clientService,
@@ -123,24 +123,14 @@ func (css *CredentialSyncService) CredentialsMatch(secret *generated.Hush, confi
 
 // GenerateCredentialHash creates a hash of credential data for comparison
 func (css *CredentialSyncService) GenerateCredentialHash(creds storage.ProviderCredentials) string {
-	normalized := cp.StructToCredentials(creds)
-
-	// Remove metadata fields that shouldn't affect credential matching
-	delete(normalized, "region")
-	delete(normalized, "bucket")
-	delete(normalized, "enabled")
-	delete(normalized, "credentials_json")
-
-	data, _ := json.Marshal(normalized)
+	data, _ := json.Marshal(creds)
 	hash := md5.Sum(data) //nolint:gosec // MD5 is used only for checksum comparison, not security
 	return hex.EncodeToString(hash[:])
 }
 
 // GenerateCredentialHashFromSet creates a hash from a CredentialSet
 func (css *CredentialSyncService) GenerateCredentialHashFromSet(credSet models.CredentialSet) string {
-	normalized := cp.StructToCredentials(credSet)
-
-	data, _ := json.Marshal(normalized)
+	data, _ := json.Marshal(credSet)
 	hash := md5.Sum(data) //nolint:gosec // MD5 is used only for checksum comparison, not security
 	return hex.EncodeToString(hash[:])
 }

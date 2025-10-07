@@ -41,6 +41,8 @@ linters:
       - pkg/events/soiree/examples/*
       - pkg/middleware/ratelimiter/examples/*
       - internal/ent/hush/examples/*
+      - pkg/objects/examples/*
+      - pkg/cp/examples/*
 formatters:
   enable:
     - gofmt

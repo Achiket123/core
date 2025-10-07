@@ -8,7 +8,7 @@ repos:
     rev: v6.0.0
     hooks:
       - id: trailing-whitespace
-        exclude: jsonschema/api-docs.md|internal/graphapi/generated/.+\.go|internal/graphapi/clientschema/.+\.graphql
+        exclude: jsonschema/api-docs.md|internal/graphapi/generated/.+\.go|internal/graphapi/clientschema/.+\.graphql|pkg/objects/examples/.+/multi-provider/.+\.go|pkg/objects/examples/.+/multi-tenant/.+\.go|pkg/objects/examples/.+/simple/.+\.go
       - id: detect-private-key
   - repo: https://github.com/google/yamlfmt
     rev: v0.17.2

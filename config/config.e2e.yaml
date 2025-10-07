@@ -1,0 +1,29 @@
+objectStorage:
+  enabled: true
+  devMode: false
+  maxMemoryMB: 50
+  maxSizeMB: 100
+  keys:
+    - "uploadFile"
+  providers:
+    s3:
+      enabled: true
+      bucket: "provider1-bucket"
+      endpoint: "http://localhost:9000"
+      region: "us-east-1"
+      credentials:
+        accessKeyID: "provider1"
+        secretAccessKey: "provider1secret"
+    disk:
+      enabled: true
+      bucket: "./tmp/file_uploads"
+      endpoint: ""
+      region: ""
+      credentials: {}
+    gcs:
+      enabled: true
+      bucket: "gcs-provider1-bucket"
+      endpoint: "http://localhost:4443/storage/v1/"
+      region: ""
+      credentials:
+        projectID: "test-project"

@@ -14,23 +14,30 @@ import (
 
 // Service orchestrates storage operations using cp provider resolution
 type Service struct {
-	resolver      *cp.Resolver[storage.Provider]
-	clientService *cp.ClientService[storage.Provider]
+	resolver      *cp.Resolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]
+	clientService *cp.ClientService[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]
 	objectService *storage.ObjectService
 }
 
+// Config holds configuration for creating a new Service
+type Config struct {
+	Resolver       *cp.Resolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]
+	ClientService  *cp.ClientService[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]
+	ValidationFunc storage.ValidationFunc
+}
+
 // NewService creates a new storage orchestration service
-func NewService(resolver *cp.Resolver[storage.Provider], clientService *cp.ClientService[storage.Provider], validationFunc ...storage.ValidationFunc) *Service {
+func NewService(cfg Config) *Service {
 	objectService := storage.NewObjectService()
 
 	// Configure validation if provided
-	if len(validationFunc) > 0 && validationFunc[0] != nil {
-		objectService = objectService.WithValidation(validationFunc[0])
+	if cfg.ValidationFunc != nil {
+		objectService = objectService.WithValidation(cfg.ValidationFunc)
 	}
 
 	return &Service{
-		resolver:      resolver,
-		clientService: clientService,
+		resolver:      cfg.Resolver,
+		clientService: cfg.ClientService,
 		objectService: objectService,
 	}
 }

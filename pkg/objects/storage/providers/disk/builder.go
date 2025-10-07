@@ -5,13 +5,14 @@ import (
 
 	"github.com/samber/mo"
 	"github.com/theopenlane/core/pkg/cp"
+	storage "github.com/theopenlane/core/pkg/objects/storage"
 	storagetypes "github.com/theopenlane/core/pkg/objects/storage/types"
 )
 
 // Builder creates disk providers for the client pool
 type Builder struct {
-	credentials map[string]string
-	options     map[string]any
+	credentials storage.ProviderCredentials
+	options     *storage.ProviderOptions
 }
 
 // NewDiskBuilder creates a new Builder
@@ -20,40 +21,45 @@ func NewDiskBuilder() *Builder {
 }
 
 // WithCredentials implements cp.ClientBuilder
-func (b *Builder) WithCredentials(credentials map[string]string) cp.ClientBuilder[storagetypes.Provider] {
+func (b *Builder) WithCredentials(credentials storage.ProviderCredentials) cp.ClientBuilder[storagetypes.Provider, storage.ProviderCredentials, *storage.ProviderOptions] {
 	b.credentials = credentials
 	return b
 }
 
 // WithConfig implements cp.ClientBuilder
-func (b *Builder) WithConfig(config map[string]any) cp.ClientBuilder[storagetypes.Provider] {
-	b.options = config
+func (b *Builder) WithConfig(config *storage.ProviderOptions) cp.ClientBuilder[storagetypes.Provider, storage.ProviderCredentials, *storage.ProviderOptions] {
+	if config == nil {
+		b.options = storage.NewProviderOptions()
+	} else {
+		b.options = config.Clone()
+	}
 
 	return b
 }
 
 // Build implements cp.ClientBuilder
 func (b *Builder) Build(context.Context) (storagetypes.Provider, error) {
-	bucket := b.credentials["bucket"]
-
-	// Check config options if credentials don't have bucket
-	if bucket == "" && b.options != nil {
-		if configBucket, ok := b.options["bucket"].(string); ok {
-			bucket = configBucket
-		}
+	if b.options == nil {
+		b.options = storage.NewProviderOptions()
 	}
 
-	if bucket == "" {
-		// Use current working directory as default
-		bucket = "./storage"
+	cfg := b.options.Clone()
+	cfg.Credentials = b.credentials
+
+	if cfg.Bucket == "" {
+		cfg.Bucket = "./storage"
 	}
 
-	config := &Config{
-		Bucket:   bucket,
-		LocalURL: b.credentials["local_url"],
+	if cfg.LocalURL == "" {
+		cfg.LocalURL = b.credentials.Endpoint
 	}
 
-	return NewDiskProvider(config)
+	provider, err := NewDiskProvider(cfg)
+	if err != nil {
+		return nil, err
+	}
+
+	return provider, nil
 }
 
 // ClientType implements cp.ClientBuilder
@@ -61,13 +67,17 @@ func (b *Builder) ClientType() cp.ProviderType {
 	return cp.ProviderType(storagetypes.DiskProvider)
 }
 
-// NewDiskProviderFromCredentials creates a disk provider from credential map
-func NewDiskProviderFromCredentials(credentials map[string]string) mo.Result[storagetypes.Provider] {
-	builder := NewDiskBuilder().WithCredentials(credentials)
-	provider, err := builder.Build(context.Background())
+// NewDiskProviderFromCredentials creates a disk provider from credential struct
+func NewDiskProviderFromCredentials(credentials storage.ProviderCredentials) mo.Result[storagetypes.Provider] {
+	options := storage.NewProviderOptions(
+		storage.WithCredentials(credentials),
+		storage.WithBucket("./storage"),
+		storage.WithLocalURL(credentials.Endpoint),
+	)
+	provider, err := NewDiskProvider(options)
 	if err != nil {
 		return mo.Err[storagetypes.Provider](err)
 	}
 
-	return mo.Ok(provider)
+	return mo.Ok[storagetypes.Provider](provider)
 }

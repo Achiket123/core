@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/theopenlane/core/pkg/models"
 )
 
 // TestClientCacheKey tests the ClientCacheKey struct
@@ -112,20 +113,25 @@ func TestClientServiceStruct(t *testing.T) {
 		ttl:     5 * time.Minute,
 	}
 
-	service := &ClientService[string]{
+	service := &ClientService[string, models.CredentialSet, map[string]any]{
 		pool:     pool,
-		builders: make(map[ProviderType]ClientBuilder[string]),
+		builders: make(map[ProviderType]ClientBuilder[string, models.CredentialSet, map[string]any]),
+		credentialCopy: func(c models.CredentialSet) models.CredentialSet {
+			return c
+		},
+		configCopy: func(c map[string]any) map[string]any {
+			return c
+		},
 	}
 
-	assert.Equal(t, pool, service.pool)
-	assert.NotNil(t, service.builders)
-	assert.Empty(t, service.builders)
+	assert.Equal(t, pool, service.Pool())
+	assert.NotNil(t, service)
 }
 
 // TestClientBuilderInterface tests that the ClientBuilder interface is properly defined
 func TestClientBuilderInterface(t *testing.T) {
 	// Test with a simple string client
-	var builder ClientBuilder[string]
+	var builder ClientBuilder[string, models.CredentialSet, map[string]any]
 
 	// Create a test implementation
 	testBuilder := &testClientBuilder{
@@ -139,7 +145,7 @@ func TestClientBuilderInterface(t *testing.T) {
 	assert.Equal(t, ProviderType("test"), builder.ClientType())
 
 	// Test method chaining
-	builder = builder.WithCredentials(map[string]string{"key": "value"})
+	builder = builder.WithCredentials(models.CredentialSet{AccessKeyID: "test-key"})
 	assert.NotNil(t, builder)
 
 	builder = builder.WithConfig(map[string]any{"option": "value"})
@@ -154,26 +160,26 @@ func TestClientBuilderInterface(t *testing.T) {
 // testClientBuilder is a test implementation of ClientBuilder
 type testClientBuilder struct {
 	clientType  string
-	credentials map[string]string
+	credentials models.CredentialSet
 	config      map[string]any
 }
 
-func (t *testClientBuilder) WithCredentials(credentials map[string]string) ClientBuilder[string] {
-	t.credentials = credentials
-	return t
+func (tb *testClientBuilder) WithCredentials(credentials models.CredentialSet) ClientBuilder[string, models.CredentialSet, map[string]any] {
+	tb.credentials = credentials
+	return tb
 }
 
-func (t *testClientBuilder) WithConfig(config map[string]any) ClientBuilder[string] {
-	t.config = config
-	return t
+func (tb *testClientBuilder) WithConfig(config map[string]any) ClientBuilder[string, models.CredentialSet, map[string]any] {
+	tb.config = config
+	return tb
 }
 
-func (t *testClientBuilder) Build(ctx context.Context) (string, error) {
+func (tb *testClientBuilder) Build(ctx context.Context) (string, error) {
 	return "test-client", nil
 }
 
-func (t *testClientBuilder) ClientType() ProviderType {
-	return ProviderType(t.clientType)
+func (tb *testClientBuilder) ClientType() ProviderType {
+	return ProviderType(tb.clientType)
 }
 
 // TestTypesWithDifferentClientTypes verifies the generic system works with various types

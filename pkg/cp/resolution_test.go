@@ -7,6 +7,7 @@ import (
 	"github.com/samber/mo"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/theopenlane/core/pkg/models"
 )
 
 // Mock client type for testing
@@ -15,7 +16,7 @@ type MockClient struct {
 }
 
 func TestNewResolver(t *testing.T) {
-	resolver := NewResolver[MockClient]()
+	resolver := NewResolver[MockClient, models.CredentialSet, map[string]any]()
 
 	assert.NotNil(t, resolver)
 	assert.Empty(t, resolver.rules)
@@ -23,11 +24,11 @@ func TestNewResolver(t *testing.T) {
 }
 
 func TestResolver_AddRule(t *testing.T) {
-	resolver := NewResolver[MockClient]()
+	resolver := NewResolver[MockClient, models.CredentialSet, map[string]any]()
 
-	rule := ResolutionRule[MockClient]{
-		Evaluate: func(ctx context.Context) mo.Option[Resolution] {
-			return mo.Some(Resolution{ClientType: "test"})
+	rule := ResolutionRule[MockClient, models.CredentialSet, map[string]any]{
+		Evaluate: func(ctx context.Context) mo.Option[Resolution[models.CredentialSet, map[string]any]] {
+			return mo.Some(Resolution[models.CredentialSet, map[string]any]{ClientType: "test"})
 		},
 	}
 
@@ -40,11 +41,11 @@ func TestResolver_AddRule(t *testing.T) {
 }
 
 func TestResolver_SetDefaultRule(t *testing.T) {
-	resolver := NewResolver[MockClient]()
+	resolver := NewResolver[MockClient, models.CredentialSet, map[string]any]()
 
-	defaultRule := ResolutionRule[MockClient]{
-		Evaluate: func(ctx context.Context) mo.Option[Resolution] {
-			return mo.Some(Resolution{ClientType: "default"})
+	defaultRule := ResolutionRule[MockClient, models.CredentialSet, map[string]any]{
+		Evaluate: func(ctx context.Context) mo.Option[Resolution[models.CredentialSet, map[string]any]] {
+			return mo.Some(Resolution[models.CredentialSet, map[string]any]{ClientType: "default"})
 		},
 	}
 
@@ -57,21 +58,21 @@ func TestResolver_SetDefaultRule(t *testing.T) {
 }
 
 func TestResolver_Resolve_FallsBackToDefault(t *testing.T) {
-	resolver := NewResolver[MockClient]()
+	resolver := NewResolver[MockClient, models.CredentialSet, map[string]any]()
 
 	// Add rule that won't match
-	rule := ResolutionRule[MockClient]{
-		Evaluate: func(ctx context.Context) mo.Option[Resolution] {
+	rule := ResolutionRule[MockClient, models.CredentialSet, map[string]any]{
+		Evaluate: func(ctx context.Context) mo.Option[Resolution[models.CredentialSet, map[string]any]] {
 			if testType := GetValue[string](ctx); testType.IsPresent() && testType.MustGet() == "specific" {
-				return mo.Some(Resolution{ClientType: "specific"})
+				return mo.Some(Resolution[models.CredentialSet, map[string]any]{ClientType: "specific"})
 			}
-			return mo.None[Resolution]()
+			return mo.None[Resolution[models.CredentialSet, map[string]any]]()
 		},
 	}
 
-	defaultRule := ResolutionRule[MockClient]{
-		Evaluate: func(ctx context.Context) mo.Option[Resolution] {
-			return mo.Some(Resolution{ClientType: "default"})
+	defaultRule := ResolutionRule[MockClient, models.CredentialSet, map[string]any]{
+		Evaluate: func(ctx context.Context) mo.Option[Resolution[models.CredentialSet, map[string]any]] {
+			return mo.Some(Resolution[models.CredentialSet, map[string]any]{ClientType: "default"})
 		},
 	}
 
@@ -87,12 +88,12 @@ func TestResolver_Resolve_FallsBackToDefault(t *testing.T) {
 }
 
 func TestResolver_Resolve_NoMatch(t *testing.T) {
-	resolver := NewResolver[MockClient]()
+	resolver := NewResolver[MockClient, models.CredentialSet, map[string]any]()
 
 	// Add rule that won't match
-	rule := ResolutionRule[MockClient]{
-		Evaluate: func(ctx context.Context) mo.Option[Resolution] {
-			return mo.None[Resolution]()
+	rule := ResolutionRule[MockClient, models.CredentialSet, map[string]any]{
+		Evaluate: func(ctx context.Context) mo.Option[Resolution[models.CredentialSet, map[string]any]] {
+			return mo.None[Resolution[models.CredentialSet, map[string]any]]()
 		},
 	}
 
@@ -105,13 +106,13 @@ func TestResolver_Resolve_NoMatch(t *testing.T) {
 }
 
 func TestResolver_Resolve_WithCacheKey(t *testing.T) {
-	resolver := NewResolver[MockClient]()
+	resolver := NewResolver[MockClient, models.CredentialSet, map[string]any]()
 
-	rule := ResolutionRule[MockClient]{
-		Evaluate: func(ctx context.Context) mo.Option[Resolution] {
-			return mo.Some(Resolution{
+	rule := ResolutionRule[MockClient, models.CredentialSet, map[string]any]{
+		Evaluate: func(ctx context.Context) mo.Option[Resolution[models.CredentialSet, map[string]any]] {
+			return mo.Some(Resolution[models.CredentialSet, map[string]any]{
 				ClientType: "test",
-				CacheKey:   "existing-key",
+				CacheKey:   ClientCacheKey{TenantID: "tenant", IntegrationType: "test", IntegrationID: "integration-test"},
 			})
 		},
 	}
@@ -123,27 +124,27 @@ func TestResolver_Resolve_WithCacheKey(t *testing.T) {
 
 	require.True(t, result.IsPresent())
 	resolution := result.MustGet()
-	assert.Equal(t, "existing-key", resolution.CacheKey)
+	assert.Equal(t, ClientCacheKey{TenantID: "tenant", IntegrationType: "test", IntegrationID: "integration-test"}, resolution.CacheKey)
 }
 
 func TestResolution_Structure(t *testing.T) {
-	resolution := Resolution{
+	resolution := Resolution[models.CredentialSet, map[string]any]{
 		ClientType: "test-client",
-		Credentials: map[string]string{
-			"username": "user",
-			"password": "pass",
+		Credentials: models.CredentialSet{
+			AccessKeyID:     "user",
+			SecretAccessKey: "pass",
 		},
 		Config: map[string]any{
 			"timeout": 30,
 			"retries": 3,
 		},
-		CacheKey: "test-cache-key",
+		CacheKey: ClientCacheKey{TenantID: "tenant", IntegrationType: "test", IntegrationID: "integration-test"},
 	}
 
 	assert.Equal(t, ProviderType("test-client"), resolution.ClientType)
-	assert.Equal(t, "user", resolution.Credentials["username"])
-	assert.Equal(t, "pass", resolution.Credentials["password"])
+	assert.Equal(t, "user", resolution.Credentials.AccessKeyID)
+	assert.Equal(t, "pass", resolution.Credentials.SecretAccessKey)
 	assert.Equal(t, 30, resolution.Config["timeout"])
 	assert.Equal(t, 3, resolution.Config["retries"])
-	assert.Equal(t, "test-cache-key", resolution.CacheKey)
+	assert.Equal(t, "tenant", resolution.CacheKey.TenantID)
 }

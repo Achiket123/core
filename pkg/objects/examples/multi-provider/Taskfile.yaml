@@ -1,0 +1,61 @@
+version: '3'
+
+vars:
+  BIN_DIR: bin
+  MAIN_BIN: bin/multi-provider
+  SETUP_BIN: bin/setup
+  TEARDOWN_BIN: bin/teardown
+  TAGS: examples
+
+tasks:
+  default:
+    desc: Build infrastructure and run the multi-provider example
+    cmds:
+      - task: run
+
+  build:
+    desc: Build binaries for setup, teardown, and the example
+    cmds:
+      - mkdir -p {{.BIN_DIR}}
+      - go build -tags {{.TAGS}} -o {{.SETUP_BIN}} ./setup
+      - go build -tags {{.TAGS}} -o {{.TEARDOWN_BIN}} ./teardown
+      - go build -tags {{.TAGS}} -o {{.MAIN_BIN}} .
+
+  setup:
+    desc: Launch support services and seed storage providers
+    deps:
+      - build
+    cmds:
+      - ./{{.SETUP_BIN}}
+
+  run:
+    desc: Execute the multi-provider workflow (includes setup)
+    deps:
+      - setup
+    cmds:
+      - ./{{.MAIN_BIN}}
+
+  teardown:
+    desc: Stop support services and clean up resources
+    deps:
+      - build
+    cmds:
+      - ./{{.TEARDOWN_BIN}} || true
+      - docker-compose down --remove-orphans || true
+
+  logs:
+    desc: Tail Docker service logs
+    cmds:
+      - docker-compose logs -f
+
+  status:
+    desc: Show Docker container status
+    cmds:
+      - docker-compose ps
+
+  clean:
+    desc: Remove build artifacts and temporary data
+    cmds:
+      - task: teardown
+      - rm -rf tmp
+      - rm -rf {{.BIN_DIR}}

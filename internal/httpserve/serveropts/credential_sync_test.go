@@ -214,7 +214,15 @@ func (suite *CredentialSyncTestSuite) TestSyncConfigCredentials() {
 		}
 
 		clientPool := cp.NewClientPool[storage.Provider](time.Hour)
-		clientService := cp.NewClientService(clientPool)
+		clientService := cp.NewClientService[
+			storage.Provider,
+			storage.ProviderCredentials,
+			*storage.ProviderOptions,
+		](clientPool, cp.WithConfigClone[
+			storage.Provider,
+			storage.ProviderCredentials,
+			*storage.ProviderOptions,
+		](cloneProviderOptions))
 		service := serveropts.NewCredentialSyncService(suite.db, clientService, config)
 
 		// Run sync
@@ -255,7 +263,15 @@ func (suite *CredentialSyncTestSuite) TestSyncConfigCredentials() {
 		}
 
 		clientPool := cp.NewClientPool[storage.Provider](time.Hour)
-		clientService := cp.NewClientService(clientPool)
+		clientService := cp.NewClientService[
+			storage.Provider,
+			storage.ProviderCredentials,
+			*storage.ProviderOptions,
+		](clientPool, cp.WithConfigClone[
+			storage.Provider,
+			storage.ProviderCredentials,
+			*storage.ProviderOptions,
+		](cloneProviderOptions))
 		service := serveropts.NewCredentialSyncService(suite.db, clientService, config)
 
 		// Run sync twice
@@ -303,7 +319,15 @@ func (suite *CredentialSyncTestSuite) TestSyncConfigCredentials() {
 		}
 
 		clientPool := cp.NewClientPool[storage.Provider](time.Hour)
-		clientService := cp.NewClientService(clientPool)
+		clientService := cp.NewClientService[
+			storage.Provider,
+			storage.ProviderCredentials,
+			*storage.ProviderOptions,
+		](clientPool, cp.WithConfigClone[
+			storage.Provider,
+			storage.ProviderCredentials,
+			*storage.ProviderOptions,
+		](cloneProviderOptions))
 		service := serveropts.NewCredentialSyncService(suite.db, clientService, config)
 
 		// Initial sync
@@ -377,7 +401,15 @@ func (suite *CredentialSyncTestSuite) TestGetActiveSystemProvider() {
 		}
 
 		clientPool := cp.NewClientPool[storage.Provider](time.Hour)
-		clientService := cp.NewClientService(clientPool)
+		clientService := cp.NewClientService[
+			storage.Provider,
+			storage.ProviderCredentials,
+			*storage.ProviderOptions,
+		](clientPool, cp.WithConfigClone[
+			storage.Provider,
+			storage.ProviderCredentials,
+			*storage.ProviderOptions,
+		](cloneProviderOptions))
 		service := serveropts.NewCredentialSyncService(suite.db, clientService, config)
 
 		// Run sync to create first integration

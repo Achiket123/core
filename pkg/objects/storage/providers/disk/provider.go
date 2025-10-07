@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	storage "github.com/theopenlane/core/pkg/objects/storage"
 	storagetypes "github.com/theopenlane/core/pkg/objects/storage/types"
 
 	"github.com/rs/zerolog/log"
@@ -23,49 +24,38 @@ const (
 
 // Provider implements the storagetypes.Provider interface for local filesystem storage
 type Provider struct {
-	config            *Config
+	options           *storage.ProviderOptions
 	Scheme            string
 	destinationFolder string
 }
 
-// Config contains configuration for disk provider
-type Config struct {
-	BasePath string
-	Bucket   string
-	Key      string
-	// LocalURL is the URL to use for the "presigned" URL for the file
-	// e.g for local development, this can be http://localhost:17608/files/
-	LocalURL string
-}
-
 // NewDiskProvider creates a new disk provider instance
-func NewDiskProvider(cfg *Config) (*Provider, error) {
-	if cfg == nil || lo.IsEmpty(cfg.Bucket) {
+func NewDiskProvider(options *storage.ProviderOptions) (*Provider, error) {
+	if options == nil || lo.IsEmpty(options.Bucket) {
 		return nil, ErrInvalidFolderPath
 	}
 
 	disk := &Provider{
-		config: cfg,
-		Scheme: "file://",
+		options: options.Clone(),
+		Scheme:  "file://",
 	}
 
-	// create directory if it does not exist
 	if _, err := disk.ListBuckets(); os.IsNotExist(err) {
-		log.Info().Str("folder", cfg.Bucket).Msg("directory does not exist, creating directory")
+		log.Info().Str("folder", options.Bucket).Msg("directory does not exist, creating directory")
 
-		if err := os.MkdirAll(cfg.Bucket, os.ModePerm); err != nil {
+		if err := os.MkdirAll(options.Bucket, os.ModePerm); err != nil {
 			return nil, fmt.Errorf("%w: failed to create directory", ErrInvalidFolderPath)
 		}
 	}
 
-	disk.destinationFolder = cfg.Bucket
+	disk.destinationFolder = options.Bucket
 
 	return disk, nil
 }
 
 // Upload implements storagetypes.Provider
 func (p *Provider) Upload(_ context.Context, reader io.Reader, opts *storagetypes.UploadFileOptions) (*storagetypes.UploadedFileMetadata, error) {
-	f, err := os.Create(filepath.Join(p.config.Bucket, opts.FileName))
+	f, err := os.Create(filepath.Join(p.options.Bucket, opts.FileName))
 	if err != nil {
 		return nil, err
 	}
@@ -85,7 +75,7 @@ func (p *Provider) Upload(_ context.Context, reader io.Reader, opts *storagetype
 
 // Download implements storagetypes.Provider
 func (p *Provider) Download(_ context.Context, file *storagetypes.File, _ *storagetypes.DownloadFileOptions) (*storagetypes.DownloadedFileMetadata, error) {
-	filePath := filepath.Join(p.config.Bucket, file.Key)
+	filePath := filepath.Join(p.options.Bucket, file.Key)
 	fileData, err := os.ReadFile(filePath)
 	if err != nil {
 		return nil, err
@@ -99,7 +89,7 @@ func (p *Provider) Download(_ context.Context, file *storagetypes.File, _ *stora
 
 // Delete implements storagetypes.Provider
 func (p *Provider) Delete(_ context.Context, file *storagetypes.File, _ *storagetypes.DeleteFileOptions) error {
-	err := os.Remove(filepath.Join(p.config.Bucket, file.Key))
+	err := os.Remove(filepath.Join(p.options.Bucket, file.Key))
 	if os.IsNotExist(err) {
 		return nil
 	}
@@ -108,18 +98,18 @@ func (p *Provider) Delete(_ context.Context, file *storagetypes.File, _ *storage
 
 // GetPresignedURL implements storagetypes.Provider
 func (p *Provider) GetPresignedURL(_ context.Context, file *storagetypes.File, _ *storagetypes.PresignedURLOptions) (string, error) {
-	if p.config.LocalURL == "" {
+	if p.options.LocalURL == "" {
 		return "", ErrMissingLocalURL
 	}
 
-	base := strings.TrimRight(p.config.LocalURL, "/")
+	base := strings.TrimRight(p.options.LocalURL, "/")
 
 	return fmt.Sprintf("%s/%s", base, file.Key), nil
 }
 
 // Exists checks if a file exists on disk
 func (p *Provider) Exists(_ context.Context, file *storagetypes.File) (bool, error) {
-	fullPath := filepath.Join(p.config.Bucket, file.Key)
+	fullPath := filepath.Join(p.options.Bucket, file.Key)
 
 	_, err := os.Stat(fullPath)
 	if err != nil {
@@ -145,11 +135,11 @@ func (p *Provider) Close() error {
 
 // ListBuckets lists the local bucket if it exists
 func (p *Provider) ListBuckets() ([]string, error) {
-	if _, err := os.Stat(p.config.Bucket); err != nil {
+	if _, err := os.Stat(p.options.Bucket); err != nil {
 		return nil, err
 	}
 
-	return []string{p.config.Bucket}, nil
+	return []string{p.options.Bucket}, nil
 }
 
 func (p *Provider) ProviderType() storagetypes.ProviderType {

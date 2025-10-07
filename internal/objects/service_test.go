@@ -95,11 +95,11 @@ type mockBuilder struct {
 	provider *mockProvider
 }
 
-func (m *mockBuilder) WithCredentials(credentials map[string]string) cp.ClientBuilder[storage.Provider] {
+func (m *mockBuilder) WithCredentials(storage.ProviderCredentials) cp.ClientBuilder[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions] {
 	return m
 }
 
-func (m *mockBuilder) WithConfig(config map[string]any) cp.ClientBuilder[storage.Provider] {
+func (m *mockBuilder) WithConfig(*storage.ProviderOptions) cp.ClientBuilder[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions] {
 	return m
 }
 
@@ -111,60 +111,49 @@ func (m *mockBuilder) ClientType() cp.ProviderType {
 	return cp.ProviderType(m.provider.name)
 }
 
+func cloneProviderOptions(in *storage.ProviderOptions) *storage.ProviderOptions {
+	if in == nil {
+		return nil
+	}
+	return in.Clone()
+}
+
 // createTestService creates a test service with typed context resolution rules
 func createTestService() *Service {
 	// Create resolver with typed context rules
-	resolver := cp.NewResolver[storage.Provider]()
+	resolver := cp.NewResolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]()
 
 	// Trust Center Module → R2 Provider
-	trustCenterRule := cp.NewRule[storage.Provider]().
+	trustCenterRule := cp.NewRule[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]().
 		WhenFunc(func(ctx context.Context) bool {
 			return cp.GetValueEquals(ctx, models.CatalogTrustCenterModule)
 		}).
-		Resolve(func(ctx context.Context) (*cp.ResolvedProvider, error) {
-			return &cp.ResolvedProvider{
-				Type: "r2",
-				Credentials: map[string]string{
-					"integration_id": "r2-integration",
-					"hush_id":        "r2-hush",
-					"system_org_id":  ulids.New().String(), // Generate valid ULID
-				},
-				Config: map[string]any{
-					"region": "us-east-1",
-				},
+		Resolve(func(context.Context) (*cp.ResolvedProvider[storage.ProviderCredentials, *storage.ProviderOptions], error) {
+			return &cp.ResolvedProvider[storage.ProviderCredentials, *storage.ProviderOptions]{
+				Type:        "r2",
+				Credentials: storage.ProviderCredentials{},
+				Config:      storage.NewProviderOptions(storage.WithBucket("trust-center"), storage.WithRegion("us-east-1")),
 			}, nil
 		})
 
 	// Compliance Module → S3 Provider
-	complianceRule := cp.NewRule[storage.Provider]().
+	complianceRule := cp.NewRule[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]().
 		WhenFunc(func(ctx context.Context) bool {
 			return cp.GetValueEquals(ctx, models.CatalogComplianceModule)
 		}).
-		Resolve(func(ctx context.Context) (*cp.ResolvedProvider, error) {
-			return &cp.ResolvedProvider{
-				Type: "s3",
-				Credentials: map[string]string{
-					"integration_id": "s3-integration",
-					"hush_id":        "s3-hush",
-					"system_org_id":  ulids.New().String(), // Generate valid ULID
-				},
-				Config: map[string]any{
-					"region": "us-west-2",
-				},
+		Resolve(func(context.Context) (*cp.ResolvedProvider[storage.ProviderCredentials, *storage.ProviderOptions], error) {
+			return &cp.ResolvedProvider[storage.ProviderCredentials, *storage.ProviderOptions]{
+				Type:        "s3",
+				Credentials: storage.ProviderCredentials{},
+				Config:      storage.NewProviderOptions(storage.WithBucket("compliance"), storage.WithRegion("us-west-2")),
 			}, nil
 		})
 
 	// Default rule for fallback
-	defaultRule := cp.DefaultRule[storage.Provider](cp.Resolution{
-		ClientType: "disk",
-		Credentials: map[string]string{
-			"integration_id": "disk-integration",
-			"hush_id":        "disk-hush",
-			"system_org_id":  ulids.New().String(), // Generate valid ULID
-		},
-		Config: map[string]any{
-			"base_path": "/tmp",
-		},
+	defaultRule := cp.DefaultRule[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions](cp.Resolution[storage.ProviderCredentials, *storage.ProviderOptions]{
+		ClientType:  "disk",
+		Credentials: storage.ProviderCredentials{},
+		Config:      storage.NewProviderOptions(storage.WithBasePath("/tmp"), storage.WithBucket("/tmp")),
 	})
 
 	resolver.AddRule(trustCenterRule)
@@ -173,14 +162,25 @@ func createTestService() *Service {
 
 	// Create client service with mock builders
 	pool := cp.NewClientPool[storage.Provider](5 * time.Minute)
-	clientService := cp.NewClientService(pool)
+	clientService := cp.NewClientService[
+		storage.Provider,
+		storage.ProviderCredentials,
+		*storage.ProviderOptions,
+	](pool, cp.WithConfigClone[
+		storage.Provider,
+		storage.ProviderCredentials,
+		*storage.ProviderOptions,
+	](cloneProviderOptions))
 
 	// Register mock builders
 	clientService.RegisterBuilder("r2", &mockBuilder{provider: &mockProvider{name: "r2"}})
 	clientService.RegisterBuilder("s3", &mockBuilder{provider: &mockProvider{name: "s3"}})
 	clientService.RegisterBuilder("disk", &mockBuilder{provider: &mockProvider{name: "disk"}})
 
-	return NewService(resolver, clientService)
+	return NewService(Config{
+		Resolver:      resolver,
+		ClientService: clientService,
+	})
 }
 
 func TestService_Upload_TypedContextResolution(t *testing.T) {
@@ -399,10 +399,21 @@ func TestService_BuildResolutionContextForFile(t *testing.T) {
 
 func TestService_ResolveProvider_ErrorHandling(t *testing.T) {
 	// Create resolver with no rules (should fail resolution)
-	resolver := cp.NewResolver[storage.Provider]()
+	resolver := cp.NewResolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]()
 	pool := cp.NewClientPool[storage.Provider](5 * time.Minute)
-	clientService := cp.NewClientService(pool)
-	service := NewService(resolver, clientService)
+	clientService := cp.NewClientService[
+		storage.Provider,
+		storage.ProviderCredentials,
+		*storage.ProviderOptions,
+	](pool, cp.WithConfigClone[
+		storage.Provider,
+		storage.ProviderCredentials,
+		*storage.ProviderOptions,
+	](cloneProviderOptions))
+	service := NewService(Config{
+		Resolver:      resolver,
+		ClientService: clientService,
+	})
 
 	ctx := auth.NewTestContextWithOrgID(ulids.New().String(), ulids.New().String())
 
@@ -422,10 +433,21 @@ func TestService_ResolveProvider_ErrorHandling(t *testing.T) {
 
 func TestService_ResolveProviderForFile_ErrorHandling(t *testing.T) {
 	// Create resolver with no rules
-	resolver := cp.NewResolver[storage.Provider]()
+	resolver := cp.NewResolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]()
 	pool := cp.NewClientPool[storage.Provider](5 * time.Minute)
-	clientService := cp.NewClientService(pool)
-	service := NewService(resolver, clientService)
+	clientService := cp.NewClientService[
+		storage.Provider,
+		storage.ProviderCredentials,
+		*storage.ProviderOptions,
+	](pool, cp.WithConfigClone[
+		storage.Provider,
+		storage.ProviderCredentials,
+		*storage.ProviderOptions,
+	](cloneProviderOptions))
+	service := NewService(Config{
+		Resolver:      resolver,
+		ClientService: clientService,
+	})
 
 	ctx := auth.NewTestContextWithOrgID(ulids.New().String(), ulids.New().String())
 

@@ -10,9 +10,9 @@ import (
 type ProviderType string
 
 // ClientBuilder builds client instances with credentials and configuration
-type ClientBuilder[T any] interface {
-	WithCredentials(credentials map[string]string) ClientBuilder[T]
-	WithConfig(config map[string]any) ClientBuilder[T]
+type ClientBuilder[T any, Creds any, Conf any] interface {
+	WithCredentials(credentials Creds) ClientBuilder[T, Creds, Conf]
+	WithConfig(config Conf) ClientBuilder[T, Creds, Conf]
 	Build(ctx context.Context) (T, error)
 	ClientType() ProviderType
 }
@@ -39,8 +39,12 @@ type ClientPool[T any] struct {
 }
 
 // ClientService manages client builders and provides cached client instances
-type ClientService[T any] struct {
-	pool     *ClientPool[T]
-	builders map[ProviderType]ClientBuilder[T]
-	mu       sync.RWMutex
+type ClientService[T any, Creds any, Conf any] struct {
+	pool           *ClientPool[T]
+	builders       map[ProviderType]ClientBuilder[T, Creds, Conf]
+	mu             sync.RWMutex
+	credentialCopy func(Creds) Creds
+	configCopy     func(Conf) Conf
 }
+
+type ClientOption[T any, Creds any, Conf any] func(*ClientService[T, Creds, Conf])

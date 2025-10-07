@@ -1,0 +1,3 @@
+This is a sample payload for the simple S3 example.
+It will be uploaded to MinIO (or any S3-compatible storage)
+and then downloaded back to verify the round trip.

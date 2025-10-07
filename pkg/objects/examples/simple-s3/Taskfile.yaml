@@ -1,0 +1,29 @@
+version: '3'
+
+vars:
+  BIN: bin/simple-s3
+
+tasks:
+  default:
+    desc: Build and run the simple S3 example
+    cmds:
+      - task: run
+
+  build:
+    desc: Build the example binary (requires S3-compatible endpoint)
+    cmds:
+      - mkdir -p bin
+      - go build -tags examples -o {{.BIN}} .
+
+  run:
+    desc: Execute the example against the configured endpoint
+    deps:
+      - build
+    cmds:
+      - ./{{.BIN}}
+
+  clean:
+    desc: Remove build artifacts and downloaded files
+    cmds:
+      - rm -rf bin
+      - rm -rf output

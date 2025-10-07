@@ -7,56 +7,54 @@ import (
 )
 
 // NewRule creates a rule builder for static resolution
-func NewRule[T any]() *RuleBuilder[T] {
-	return &RuleBuilder[T]{}
+func NewRule[T any, Creds any, Conf any]() *RuleBuilder[T, Creds, Conf] {
+	return &RuleBuilder[T, Creds, Conf]{}
 }
 
 // RuleBuilder provides an interface for creating static resolution rules
-type RuleBuilder[T any] struct {
+type RuleBuilder[T any, Creds any, Conf any] struct {
 	conditions []func(context.Context) bool
 }
 
 // DefaultRule creates a rule that always matches (for fallbacks)
-func DefaultRule[T any](resolution Resolution) ResolutionRule[T] {
-	return ResolutionRule[T]{
-		Evaluate: func(_ context.Context) mo.Option[Resolution] {
+func DefaultRule[T any, Creds any, Conf any](resolution Resolution[Creds, Conf]) ResolutionRule[T, Creds, Conf] {
+	return ResolutionRule[T, Creds, Conf]{
+		Evaluate: func(_ context.Context) mo.Option[Resolution[Creds, Conf]] {
 			return mo.Some(resolution)
 		},
 	}
 }
 
 // WhenFunc adds a custom condition function
-func (b *RuleBuilder[T]) WhenFunc(condition func(context.Context) bool) *RuleBuilder[T] {
+func (b *RuleBuilder[T, Creds, Conf]) WhenFunc(condition func(context.Context) bool) *RuleBuilder[T, Creds, Conf] {
 	b.conditions = append(b.conditions, condition)
 	return b
 }
 
 // ResolvedProvider represents a resolved provider configuration
-type ResolvedProvider struct {
+type ResolvedProvider[Creds any, Conf any] struct {
 	Type        ProviderType
-	Credentials map[string]string
-	Config      map[string]any
+	Credentials Creds
+	Config      Conf
 }
 
 // Resolve creates a rule that uses a function to resolve the provider
-func (b *RuleBuilder[T]) Resolve(resolver func(context.Context) (*ResolvedProvider, error)) ResolutionRule[T] {
-	conditions := b.conditions // Capture conditions
-	return ResolutionRule[T]{
-		Evaluate: func(ctx context.Context) mo.Option[Resolution] {
-			// Check all conditions
+func (b *RuleBuilder[T, Creds, Conf]) Resolve(resolver func(context.Context) (*ResolvedProvider[Creds, Conf], error)) ResolutionRule[T, Creds, Conf] {
+	conditions := b.conditions
+	return ResolutionRule[T, Creds, Conf]{
+		Evaluate: func(ctx context.Context) mo.Option[Resolution[Creds, Conf]] {
 			for _, condition := range conditions {
 				if !condition(ctx) {
-					return mo.None[Resolution]()
+					return mo.None[Resolution[Creds, Conf]]()
 				}
 			}
 
-			// All conditions match, call the resolver
 			provider, err := resolver(ctx)
 			if err != nil || provider == nil {
-				return mo.None[Resolution]()
+				return mo.None[Resolution[Creds, Conf]]()
 			}
 
-			return mo.Some(Resolution{
+			return mo.Some(Resolution[Creds, Conf]{
 				ClientType:  provider.Type,
 				Credentials: provider.Credentials,
 				Config:      provider.Config,

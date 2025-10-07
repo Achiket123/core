@@ -101,10 +101,18 @@ Config contains the configuration for the core server
     "ratelimit": {},
     "objectStorage": {
         "providers": {
-            "s3": {},
-            "cloudflareR2": {},
-            "gcs": {},
-            "disk": {}
+            "s3": {
+                "credentials": {}
+            },
+            "cloudflareR2": {
+                "credentials": {}
+            },
+            "gcs": {
+                "credentials": {}
+            },
+            "disk": {
+                "credentials": {}
+            }
         }
     },
     "subscription": {},
@@ -1166,10 +1174,10 @@ ProviderConfig contains configuration for object storage providers
 |----|----|-----------|--------|
 |**enabled**|`boolean`|Enabled indicates if object storage is enabled<br/>||
 |[**keys**](#objectstoragekeys)|`string[]`|||
-|**maxSizeMB**|`integer`|MaxUploadSizeMB is the maximum size of file uploads to accept in megabytes<br/>||
-|**maxMemoryMB**|`integer`|MaxUploadMemoryMB is the maximum memory in megabytes to use when parsing a multipart form<br/>||
-|**endpoint**|`string`|Endpoint is used for other s3 compatible storage systems e.g minio, digial ocean spaces .<br/>they do not use the same s3 endpoint<br/>||
-|**usePathStyle**|`boolean`|UsePathStyle is useful for other s3 compatible systems that use path styles not bucket.host path<br/>minio is a popular example here<br/>||
+|**maxSizeMB**|`integer`|MaxSizeMB is the maximum file size allowed in MB<br/>||
+|**maxMemoryMB**|`integer`|MaxMemoryMB is the maximum memory to use for file uploads in MB<br/>||
+|**devMode**|`boolean`|DevMode enables simple file upload handling for local development and testing<br/>||
+|[**providers**](#objectstorageproviders)|`object`|||
 
 **Additional Properties:** not allowed  
 **Example**
@@ -1177,10 +1185,18 @@ ProviderConfig contains configuration for object storage providers
 ```json
 {
     "providers": {
-        "s3": {},
-        "cloudflareR2": {},
-        "gcs": {},
-        "disk": {}
+        "s3": {
+            "credentials": {}
+        },
+        "cloudflareR2": {
+            "credentials": {}
+        },
+        "gcs": {
+            "credentials": {}
+        },
+        "disk": {
+            "credentials": {}
+        }
     }
 }
 ```
@@ -1194,6 +1210,38 @@ ProviderConfig contains configuration for object storage providers
 <a name="objectstorageproviders"></a>
 ### objectStorage\.providers: object
 
+**Properties**
+
+|Name|Type|Description|Required|
+|----|----|-----------|--------|
+|[**s3**](#objectstorageproviderss3)|`object`|ProviderConfigs contains configuration for all storage providers This is structured to allow easy extension for additional providers in the future<br/>||
+|[**cloudflareR2**](#objectstorageproviderscloudflarer2)|`object`|ProviderConfigs contains configuration for all storage providers This is structured to allow easy extension for additional providers in the future<br/>||
+|[**gcs**](#objectstorageprovidersgcs)|`object`|ProviderConfigs contains configuration for all storage providers This is structured to allow easy extension for additional providers in the future<br/>||
+|[**disk**](#objectstorageprovidersdisk)|`object`|ProviderConfigs contains configuration for all storage providers This is structured to allow easy extension for additional providers in the future<br/>||
+
+**Additional Properties:** not allowed  
+**Example**
+
+```json
+{
+    "s3": {
+        "credentials": {}
+    },
+    "cloudflareR2": {
+        "credentials": {}
+    },
+    "gcs": {
+        "credentials": {}
+    },
+    "disk": {
+        "credentials": {}
+    }
+}
+```
+
+<a name="objectstorageproviderss3"></a>
+#### objectStorage\.providers\.s3: object
+
 ProviderConfigs contains configuration for all storage providers This is structured to allow easy extension for additional providers in the future
 
 
@@ -1201,41 +1249,35 @@ ProviderConfigs contains configuration for all storage providers This is structu
 
 |Name|Type|Description|Required|
 |----|----|-----------|--------|
-|[**s3**](#objectstorageproviderss3)|`object`|ProviderCredentials contains credentials and configuration for a storage provider Given most provides had a smiliar set of credentials and only some minor exceptions we consolidated into a single struct to make it easier to manage and extend<br/>||
-|[**cloudflareR2**](#objectstorageproviderscloudflarer2)|`object`|ProviderCredentials contains credentials and configuration for a storage provider Given most provides had a smiliar set of credentials and only some minor exceptions we consolidated into a single struct to make it easier to manage and extend<br/>||
-|[**gcs**](#objectstorageprovidersgcs)|`object`|ProviderCredentials contains credentials and configuration for a storage provider Given most provides had a smiliar set of credentials and only some minor exceptions we consolidated into a single struct to make it easier to manage and extend<br/>||
-|[**disk**](#objectstorageprovidersdisk)|`object`|ProviderCredentials contains credentials and configuration for a storage provider Given most provides had a smiliar set of credentials and only some minor exceptions we consolidated into a single struct to make it easier to manage and extend<br/>||
+|**enabled**|`boolean`|Enabled indicates if this provider is enabled<br/>||
+|**region**|`string`|Region for cloud providers<br/>||
+|**bucket**|`string`|Bucket name for cloud providers<br/>||
+|**endpoint**|`string`|Endpoint for custom endpoints<br/>||
+|[**credentials**](#objectstorageproviderss3credentials)|`object`|ProviderCredentials contains credentials for a storage provider<br/>||
 
 **Additional Properties:** not allowed  
 **Example**
 
 ```json
 {
-    "s3": {},
-    "cloudflareR2": {},
-    "gcs": {},
-    "disk": {}
+    "credentials": {}
 }
 ```
 
-<a name="objectstorageproviderss3"></a>
-#### objectStorage\.providers\.s3: object
+<a name="objectstorageproviderss3credentials"></a>
+##### objectStorage\.providers\.s3\.credentials: object
 
-ProviderCredentials contains credentials and configuration for a storage provider Given most provides had a smiliar set of credentials and only some minor exceptions we consolidated into a single struct to make it easier to manage and extend
+ProviderCredentials contains credentials for a storage provider
 
 
 **Properties**
 
 |Name|Type|Description|Required|
 |----|----|-----------|--------|
-|**enabled**|`boolean`|Enabled indicates if this provider is enabled<br/>||
 |**accessKeyID**|`string`|AccessKeyID for cloud providers<br/>||
-|**secretAccessKey**|`string`|SecretAccessKey for cloud providers<br/>||
-|**region**|`string`|Region for cloud providers<br/>||
-|**bucket**|`string`|Bucket name for cloud providers<br/>||
+|**accessKeySecret**|`string`|SecretAccessKey for cloud providers<br/>||
 |**endpoint**|`string`|Endpoint for custom endpoints<br/>||
 |**projectID**|`string`|ProjectID for GCS<br/>||
-|**credentialsJSON**|`string`|CredentialsJSON for GCS<br/>||
 |**accountID**|`string`|AccountID for Cloudflare R2<br/>||
 |**apiToken**|`string`|APIToken for Cloudflare R2<br/>||
 
@@ -1243,7 +1285,7 @@ ProviderCredentials contains credentials and configuration for a storage provide
 <a name="objectstorageproviderscloudflarer2"></a>
 #### objectStorage\.providers\.cloudflareR2: object
 
-ProviderCredentials contains credentials and configuration for a storage provider Given most provides had a smiliar set of credentials and only some minor exceptions we consolidated into a single struct to make it easier to manage and extend
+ProviderConfigs contains configuration for all storage providers This is structured to allow easy extension for additional providers in the future
 
 
 **Properties**
@@ -1251,13 +1293,34 @@ ProviderCredentials contains credentials and configuration for a storage provide
 |Name|Type|Description|Required|
 |----|----|-----------|--------|
 |**enabled**|`boolean`|Enabled indicates if this provider is enabled<br/>||
-|**accessKeyID**|`string`|AccessKeyID for cloud providers<br/>||
-|**secretAccessKey**|`string`|SecretAccessKey for cloud providers<br/>||
 |**region**|`string`|Region for cloud providers<br/>||
 |**bucket**|`string`|Bucket name for cloud providers<br/>||
 |**endpoint**|`string`|Endpoint for custom endpoints<br/>||
+|[**credentials**](#objectstorageproviderscloudflarer2credentials)|`object`|ProviderCredentials contains credentials for a storage provider<br/>||
+
+**Additional Properties:** not allowed  
+**Example**
+
+```json
+{
+    "credentials": {}
+}
+```
+
+<a name="objectstorageproviderscloudflarer2credentials"></a>
+##### objectStorage\.providers\.cloudflareR2\.credentials: object
+
+ProviderCredentials contains credentials for a storage provider
+
+
+**Properties**
+
+|Name|Type|Description|Required|
+|----|----|-----------|--------|
+|**accessKeyID**|`string`|AccessKeyID for cloud providers<br/>||
+|**accessKeySecret**|`string`|SecretAccessKey for cloud providers<br/>||
+|**endpoint**|`string`|Endpoint for custom endpoints<br/>||
 |**projectID**|`string`|ProjectID for GCS<br/>||
-|**credentialsJSON**|`string`|CredentialsJSON for GCS<br/>||
 |**accountID**|`string`|AccountID for Cloudflare R2<br/>||
 |**apiToken**|`string`|APIToken for Cloudflare R2<br/>||
 
@@ -1265,7 +1328,7 @@ ProviderCredentials contains credentials and configuration for a storage provide
 <a name="objectstorageprovidersgcs"></a>
 #### objectStorage\.providers\.gcs: object
 
-ProviderCredentials contains credentials and configuration for a storage provider Given most provides had a smiliar set of credentials and only some minor exceptions we consolidated into a single struct to make it easier to manage and extend
+ProviderConfigs contains configuration for all storage providers This is structured to allow easy extension for additional providers in the future
 
 
 **Properties**
@@ -1273,13 +1336,34 @@ ProviderCredentials contains credentials and configuration for a storage provide
 |Name|Type|Description|Required|
 |----|----|-----------|--------|
 |**enabled**|`boolean`|Enabled indicates if this provider is enabled<br/>||
-|**accessKeyID**|`string`|AccessKeyID for cloud providers<br/>||
-|**secretAccessKey**|`string`|SecretAccessKey for cloud providers<br/>||
 |**region**|`string`|Region for cloud providers<br/>||
 |**bucket**|`string`|Bucket name for cloud providers<br/>||
 |**endpoint**|`string`|Endpoint for custom endpoints<br/>||
+|[**credentials**](#objectstorageprovidersgcscredentials)|`object`|ProviderCredentials contains credentials for a storage provider<br/>||
+
+**Additional Properties:** not allowed  
+**Example**
+
+```json
+{
+    "credentials": {}
+}
+```
+
+<a name="objectstorageprovidersgcscredentials"></a>
+##### objectStorage\.providers\.gcs\.credentials: object
+
+ProviderCredentials contains credentials for a storage provider
+
+
+**Properties**
+
+|Name|Type|Description|Required|
+|----|----|-----------|--------|
+|**accessKeyID**|`string`|AccessKeyID for cloud providers<br/>||
+|**accessKeySecret**|`string`|SecretAccessKey for cloud providers<br/>||
+|**endpoint**|`string`|Endpoint for custom endpoints<br/>||
 |**projectID**|`string`|ProjectID for GCS<br/>||
-|**credentialsJSON**|`string`|CredentialsJSON for GCS<br/>||
 |**accountID**|`string`|AccountID for Cloudflare R2<br/>||
 |**apiToken**|`string`|APIToken for Cloudflare R2<br/>||
 
@@ -1287,7 +1371,7 @@ ProviderCredentials contains credentials and configuration for a storage provide
 <a name="objectstorageprovidersdisk"></a>
 #### objectStorage\.providers\.disk: object
 
-ProviderCredentials contains credentials and configuration for a storage provider Given most provides had a smiliar set of credentials and only some minor exceptions we consolidated into a single struct to make it easier to manage and extend
+ProviderConfigs contains configuration for all storage providers This is structured to allow easy extension for additional providers in the future
 
 
 **Properties**
@@ -1295,13 +1379,34 @@ ProviderCredentials contains credentials and configuration for a storage provide
 |Name|Type|Description|Required|
 |----|----|-----------|--------|
 |**enabled**|`boolean`|Enabled indicates if this provider is enabled<br/>||
-|**accessKeyID**|`string`|AccessKeyID for cloud providers<br/>||
-|**secretAccessKey**|`string`|SecretAccessKey for cloud providers<br/>||
 |**region**|`string`|Region for cloud providers<br/>||
 |**bucket**|`string`|Bucket name for cloud providers<br/>||
 |**endpoint**|`string`|Endpoint for custom endpoints<br/>||
+|[**credentials**](#objectstorageprovidersdiskcredentials)|`object`|ProviderCredentials contains credentials for a storage provider<br/>||
+
+**Additional Properties:** not allowed  
+**Example**
+
+```json
+{
+    "credentials": {}
+}
+```
+
+<a name="objectstorageprovidersdiskcredentials"></a>
+##### objectStorage\.providers\.disk\.credentials: object
+
+ProviderCredentials contains credentials for a storage provider
+
+
+**Properties**
+
+|Name|Type|Description|Required|
+|----|----|-----------|--------|
+|**accessKeyID**|`string`|AccessKeyID for cloud providers<br/>||
+|**accessKeySecret**|`string`|SecretAccessKey for cloud providers<br/>||
+|**endpoint**|`string`|Endpoint for custom endpoints<br/>||
 |**projectID**|`string`|ProjectID for GCS<br/>||
-|**credentialsJSON**|`string`|CredentialsJSON for GCS<br/>||
 |**accountID**|`string`|AccountID for Cloudflare R2<br/>||
 |**apiToken**|`string`|APIToken for Cloudflare R2<br/>||
 

@@ -1,0 +1,136 @@
+version: '3'
+
+vars:
+  BIN_DIR: bin
+  MAIN_BIN: bin/multi-tenant
+  SETUP_BIN: bin/setup
+  TEARDOWN_BIN: bin/teardown
+  TAGS: examples
+
+tasks:
+  default:
+    desc: Run the multi-tenant scenario with default settings
+    cmds:
+      - task: run
+
+  build:
+    desc: Build binaries for setup, teardown, and the main example
+    cmds:
+      - mkdir -p {{.BIN_DIR}}
+      - go build -tags {{.TAGS}} -o {{.SETUP_BIN}} ./setup
+      - go build -tags {{.TAGS}} -o {{.TEARDOWN_BIN}} ./teardown
+      - go build -tags {{.TAGS}} -o {{.MAIN_BIN}} .
+
+  setup:
+    desc: Provision tenants and supporting resources
+    deps:
+      - build
+    cmds:
+      - ./{{.SETUP_BIN}} {{.CLI_ARGS}}
+
+  setup-1000:
+    desc: Provision 1000 tenants for large-scale workloads
+    deps:
+      - build
+    cmds:
+      - ./{{.SETUP_BIN}} -tenants=1000 -parallel=20
+
+  run:
+    desc: Execute the multi-tenant workflow (includes setup if needed)
+    deps:
+      - setup
+    cmds:
+      - ./{{.MAIN_BIN}} {{.CLI_ARGS}}
+
+  run-small:
+    desc: Run with 100 operations and 10 workers
+    deps:
+      - setup
+    cmds:
+      - ./{{.MAIN_BIN}} -ops=100 -concurrent=10
+
+  run-medium:
+    desc: Run with 500 operations and 50 workers
+    deps:
+      - setup
+    cmds:
+      - ./{{.MAIN_BIN}} -ops=500 -concurrent=50
+
+  run-large:
+    desc: Run with 1000 operations and 100 workers
+    deps:
+      - setup
+    cmds:
+      - ./{{.MAIN_BIN}} -ops=1000 -concurrent=100
+
+  benchmark:
+    desc: Run all benchmarks
+    cmds:
+      - go test -tags {{.TAGS}} -bench=. -benchmem -benchtime=10s .
+
+  benchmark-pooling:
+    desc: Benchmark client pooling performance
+    cmds:
+      - go test -tags {{.TAGS}} -bench=BenchmarkClientPooling -benchmem -benchtime=30s .
+
+  benchmark-multitenant:
+    desc: Benchmark multi-tenant concurrency
+    cmds:
+      - go test -tags {{.TAGS}} -bench=BenchmarkMultiTenantConcurrency -benchmem -benchtime=30s .
+
+  benchmark-memory:
+    desc: Benchmark memory allocation characteristics
+    cmds:
+      - go test -tags {{.TAGS}} -bench=BenchmarkMemoryAllocation -benchmem -benchtime=30s .
+
+  benchmark-resolver:
+    desc: Benchmark the resolver with 1000 tenants
+    cmds:
+      - go test -tags {{.TAGS}} -bench=BenchmarkResolverPerformance -benchmem -benchtime=30s .
+
+  benchmark-3000:
+    desc: Benchmark 3000 clients across providers
+    cmds:
+      - go test -tags {{.TAGS}} -bench=BenchmarkMultiProvider3000Clients -benchmem -benchtime=30s .
+
+  profile-cpu:
+    desc: Capture CPU profile for concurrency benchmark
+    deps:
+      - setup
+    cmds:
+      - go test -tags {{.TAGS}} -bench=BenchmarkMultiTenantConcurrency -cpuprofile=cpu.prof -benchtime=30s .
+      - go tool pprof -http=:8080 cpu.prof
+
+  profile-mem:
+    desc: Capture heap profile for memory benchmark
+    deps:
+      - setup
+    cmds:
+      - go test -tags {{.TAGS}} -bench=BenchmarkMemoryAllocation -memprofile=mem.prof -benchtime=30s .
+      - go tool pprof -http=:8080 mem.prof
+
+  teardown:
+    desc: Tear down infrastructure and generated tenants
+    deps:
+      - build
+    cmds:
+      - ./{{.TEARDOWN_BIN}} || true
+      - docker-compose down --remove-orphans || true
+
+  logs:
+    desc: Tail Docker service logs
+    cmds:
+      - docker-compose logs -f
+
+  status:
+    desc: Display Docker service status
+    cmds:
+      - docker-compose ps
+
+  clean:
+    desc: Remove generated data and build artifacts
+    cmds:
+      - task: teardown
+      - rm -f tenants.json cpu.prof mem.prof
+      - rm -rf tmp
+      - rm -rf {{.BIN_DIR}}
