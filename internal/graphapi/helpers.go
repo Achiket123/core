@@ -118,7 +118,12 @@ func injectFileUploader(u *objects.Service) graphql.FieldMiddleware {
 		// Clean up any temporary files created by multipart form parser
 		ec, err := echocontext.EchoContextFromContext(ctx)
 		if err == nil && ec.Request().MultipartForm != nil {
-			defer ec.Request().MultipartForm.RemoveAll()
+			multipartForm := ec.Request().MultipartForm
+			defer func() {
+				if removeErr := multipartForm.RemoveAll(); removeErr != nil {
+					log.Ctx(ctx).Warn().Err(removeErr).Msg("failed to clean multipart form")
+				}
+			}()
 		}
 
 		// Process uploads using consolidated functions
@@ -477,9 +482,8 @@ func stripOperation(field string) string {
 }
 
 func buildUploadOptionsFromFile(f storage.File, orgID string) *storage.UploadOptions {
-	hints := f.ProviderHints
-	if hints == nil {
-		hints = &storage.ProviderHints{}
+	if f.ProviderHints == nil {
+		f.ProviderHints = &storage.ProviderHints{}
 	}
 
 	objects.PopulateProviderHints(&f, orgID)

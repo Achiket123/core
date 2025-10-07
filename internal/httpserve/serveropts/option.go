@@ -476,10 +476,10 @@ func WithStorageCredentialSync() ServerOption {
 			return
 		}
 
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		ctx, cancel := context.WithTimeout(context.Background(), storageCredentialSyncTimeout)
 		defer cancel()
 
-	credentialSync := NewCredentialSyncService(s.Config.Handler.DBClient, nil, &s.Config.Settings.ObjectStorage.Providers)
+		credentialSync := NewCredentialSyncService(s.Config.Handler.DBClient, nil, &s.Config.Settings.ObjectStorage.Providers)
 		if err := credentialSync.SyncConfigCredentials(ctx); err != nil {
 			log.Error().Err(err).Msg("failed to sync storage credentials to database")
 		}
@@ -578,9 +578,16 @@ func WithCrypto() ServerOption {
 
 const (
 	// DefaultClientPoolTTL is the default TTL for client pool entries
-	DefaultClientPoolTTL = 15 * time.Minute
-	defaultDevBucket     = "/tmp/dev-storage"
-	defaultS3Region      = "us-east-1"
+	DefaultClientPoolTTL         = 15 * time.Minute
+	defaultDevBucket             = "/tmp/dev-storage"
+	defaultS3Region              = "us-east-1"
+	storageValidationTimeout     = 10 * time.Second
+	storageCredentialSyncTimeout = 10 * time.Second
+)
+
+var (
+	errUnsupportedProvider = errors.New("unsupported storage provider")
+	errProviderDisabled    = errors.New("storage provider disabled")
 )
 
 func validateConfiguredStorageProviders(cfg storage.ProviderConfig) {
@@ -589,7 +596,7 @@ func validateConfiguredStorageProviders(cfg storage.ProviderConfig) {
 		return
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), storageValidationTimeout)
 	defer cancel()
 
 	if cfg.DevMode {
@@ -866,7 +873,7 @@ func addProviderRules(resolver *cp.Resolver[storage.Provider, storage.ProviderCr
 		}
 
 		fallbackRule := cp.NewRule[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]().
-			WhenFunc(func(ctx context.Context) bool {
+			WhenFunc(func(_ context.Context) bool {
 				return true
 			}).
 			Resolve(func(ctx context.Context) (*cp.ResolvedProvider[storage.ProviderCredentials, *storage.ProviderOptions], error) {
@@ -1007,11 +1014,11 @@ func providerOptionsFromConfig(provider storage.ProviderType, config storage.Pro
 	case storage.DiskProvider:
 		providerCfg = config.Providers.Disk
 	default:
-		return nil, storage.ProviderCredentials{}, fmt.Errorf("unsupported provider: %s", provider)
+		return nil, storage.ProviderCredentials{}, fmt.Errorf("%w: %s", errUnsupportedProvider, provider)
 	}
 
 	if !providerCfg.Enabled {
-		return nil, storage.ProviderCredentials{}, fmt.Errorf("provider %s is disabled", provider)
+		return nil, storage.ProviderCredentials{}, fmt.Errorf("%w: %s", errProviderDisabled, provider)
 	}
 
 	options := storage.NewProviderOptions(storage.WithCredentials(providerCfg.Credentials))

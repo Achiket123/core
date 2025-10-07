@@ -68,7 +68,7 @@ func PopulateProviderHints(file *storage.File, orgID string) {
 		hints.Metadata["object_type"] = file.CorrelatedObjectType
 	}
 
-	if size := file.FileMetadata.Size; size > 0 {
+	if size := file.Size; size > 0 {
 		hints.Metadata["size_bytes"] = strconv.FormatInt(size, 10)
 	}
 
