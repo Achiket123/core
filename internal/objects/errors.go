@@ -21,4 +21,8 @@ var (
 	ErrSystemIntegrationMissingOrgID = errors.New("system integration missing organization ID")
 	// ErrNoIntegrationOrCredentials is returned when no integration or credentials are available
 	ErrNoIntegrationOrCredentials = errors.New("no integration or credentials available")
+	// ErrNoSystemIntegration is returned when no system integration is found for a provider
+	ErrNoSystemIntegration = errors.New("no system integration found")
+	// ErrNoIntegrationWithSecrets is returned when an integration lacks associated secrets
+	ErrNoIntegrationWithSecrets = errors.New("no active integration with secrets found")
 )

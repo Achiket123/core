@@ -27,12 +27,6 @@ import (
 // ErrNoActiveIntegration is returned when no active system integration is found for a provider
 var ErrNoActiveIntegration = errors.New("no active system integration found")
 
-// ErrNoSystemIntegration is returned when no system integration is found for a provider
-var ErrNoSystemIntegration = errors.New("no system integration found")
-
-// ErrNoIntegrationWithSecrets is returned when no active integration with secrets is found for a provider
-var ErrNoIntegrationWithSecrets = errors.New("no active integration with secrets found")
-
 // CredentialSyncService manages synchronization between config file credentials and database records
 type CredentialSyncService struct {
 	entClient     *generated.Client

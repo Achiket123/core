@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"strings"
-	"time"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/gocarina/gocsv"
@@ -23,10 +22,10 @@ import (
 	ent "github.com/theopenlane/core/internal/ent/generated"
 	"github.com/theopenlane/core/internal/ent/privacy/rule"
 	"github.com/theopenlane/core/internal/graphapi/gqlerrors"
-	objmw "github.com/theopenlane/core/internal/middleware/objects"
 	"github.com/theopenlane/core/internal/objects"
+	"github.com/theopenlane/core/internal/objects/store"
+	"github.com/theopenlane/core/internal/objects/upload"
 	"github.com/theopenlane/core/pkg/events/soiree"
-	"github.com/theopenlane/core/pkg/metrics"
 	pkgobjects "github.com/theopenlane/core/pkg/objects"
 	"github.com/theopenlane/core/pkg/objects/storage"
 )
@@ -93,10 +92,6 @@ func injectFileUploader(u *objects.Service) graphql.FieldMiddleware {
 					buffered, err := pkgobjects.NewBufferedReaderFromReader(fileUpload.RawFile)
 					if err == nil {
 						fileUpload.RawFile = buffered
-						metrics.RecordFileBufferingStrategy("memory")
-					} else {
-						// File too large or memory pressure - will use disk buffering in provider
-						metrics.RecordFileBufferingStrategy("disk")
 					}
 				}
 
@@ -119,6 +114,7 @@ func injectFileUploader(u *objects.Service) graphql.FieldMiddleware {
 		ec, err := echocontext.EchoContextFromContext(ctx)
 		if err == nil && ec.Request().MultipartForm != nil {
 			multipartForm := ec.Request().MultipartForm
+
 			defer func() {
 				if removeErr := multipartForm.RemoveAll(); removeErr != nil {
 					log.Ctx(ctx).Warn().Err(removeErr).Msg("failed to clean multipart form")
@@ -126,76 +122,10 @@ func injectFileUploader(u *objects.Service) graphql.FieldMiddleware {
 			}()
 		}
 
-		// Process uploads using consolidated functions
-		// First, create database records for all uploads
-		var uploadedFiles []storage.File
-		for _, f := range uploads {
-			// Track upload for metrics and graceful shutdown
-			pkgobjects.AddUpload()
-			metrics.StartFileUpload()
-			startTime := time.Now()
-
-			// Get organization ID from context for provider hints
-			orgID, _ := auth.GetOrganizationIDFromContext(ctx)
-			// Only set organization as correlated object if there's no parent already set
-			// The CorrelatedObject fields are used for provider resolution, but Parent fields are for permissions
-			if orgID != "" && f.Parent.ID == "" {
-				f.CorrelatedObjectID = orgID
-				f.CorrelatedObjectType = "organization"
-			}
-
-			// Create the file in the database using the existing helper
-			entFile, err := objmw.CreateFileRecord(ctx, f)
-			if err != nil {
-				log.Error().Err(err).Str("file", f.OriginalName).Msg("failed to create file")
-				metrics.FinishFileUpload("error", time.Since(startTime).Seconds())
-				pkgobjects.DoneUpload()
-				return nil, err
-			}
-
-			uploadOpts := buildUploadOptionsFromFile(f, orgID)
-
-			// Upload to storage using consolidated function
-			uploadedFile, err := u.Upload(ctx, f.RawFile, uploadOpts)
-			if err != nil {
-				log.Error().Err(err).Str("file", f.OriginalName).Msg("failed to upload file")
-				metrics.FinishFileUpload("error", time.Since(startTime).Seconds())
-				pkgobjects.DoneUpload()
-				return nil, err
-			}
-
-			if closer, ok := f.RawFile.(io.Closer); ok {
-				_ = closer.Close()
-			}
-
-			// Use database entity ID and update with storage metadata
-			mergeUploadedFileMetadata(uploadedFile, entFile.ID, f)
-			// Update database with storage metadata using existing helper
-			if err := objmw.UpdateFileWithStorageMetadata(ctx, entFile, *uploadedFile); err != nil {
-				log.Error().Err(err).Msg("failed to update file with storage metadata")
-				metrics.FinishFileUpload("error", time.Since(startTime).Seconds())
-				pkgobjects.DoneUpload()
-				return nil, err
-			}
-
-			uploadedFiles = append(uploadedFiles, *uploadedFile)
-			metrics.FinishFileUpload("success", time.Since(startTime).Seconds())
-			pkgobjects.DoneUpload()
+		ctx, _, err = upload.HandleUploads(ctx, u, uploads)
+		if err != nil {
+			return nil, err
 		}
-
-		// Store files in context using consolidated helper, grouped by field name
-		contextFilesMap := make(storage.Files)
-		for _, file := range uploadedFiles {
-			// Use the field name from the file metadata, or "uploads" as default
-			fieldName := file.FieldName
-			if fieldName == "" {
-				fieldName = "uploads"
-			}
-			contextFilesMap[fieldName] = append(contextFilesMap[fieldName], file)
-		}
-
-		// Add files to context using consolidated helper
-		ctx = pkgobjects.WriteFilesToContext(ctx, contextFilesMap)
 
 		// add the uploaded files to the echo context if there are any
 		// this is useful for using other middleware that depends on the echo context
@@ -211,7 +141,7 @@ func injectFileUploader(u *objects.Service) graphql.FieldMiddleware {
 		}
 
 		// add the file permissions before returning the field
-		if err := objmw.AddFilePermissions(ctx); err != nil {
+		if ctx, err = store.AddFilePermissions(ctx); err != nil {
 			return nil, err
 		}
 
@@ -479,44 +409,4 @@ func stripOperation(field string) string {
 	}
 
 	return lo.SnakeCase(field)
-}
-
-func buildUploadOptionsFromFile(f storage.File, orgID string) *storage.UploadOptions {
-	if f.ProviderHints == nil {
-		f.ProviderHints = &storage.ProviderHints{}
-	}
-
-	objects.PopulateProviderHints(&f, orgID)
-
-	contentType := f.ContentType
-	if contentType == "" || strings.EqualFold(contentType, "application/octet-stream") {
-		if f.RawFile != nil {
-			if detected, err := storage.DetectContentType(f.RawFile); err == nil && detected != "" {
-				contentType = detected
-				f.ContentType = detected
-			}
-		}
-	}
-
-	return &storage.UploadOptions{
-		FileName:          f.OriginalName,
-		ContentType:       contentType,
-		Bucket:            f.Bucket,
-		FolderDestination: f.Folder,
-		FileMetadata: storage.FileMetadata{
-			Key:           f.FieldName,
-			ProviderHints: f.ProviderHints,
-		},
-	}
-}
-
-func mergeUploadedFileMetadata(dest *storage.File, entFileID string, src storage.File) {
-	dest.ID = entFileID
-	dest.FieldName = src.FieldName
-	dest.Parent = src.Parent
-	dest.CorrelatedObjectID = src.CorrelatedObjectID
-	dest.CorrelatedObjectType = src.CorrelatedObjectType
-	if len(dest.Metadata) == 0 && len(src.Metadata) > 0 {
-		dest.Metadata = src.Metadata
-	}
 }

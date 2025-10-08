@@ -226,7 +226,7 @@ func (suite *HandlerTestSuite) SetupTest() {
 	require.NoError(t, err)
 
 	// setup handler
-	suite.h = handlerSetup(suite.db)
+	suite.h = handlerSetup(suite.db, suite.objectStore)
 
 	// use shared OTP manager
 	suite.h.OTPManager = suite.sharedOTPManager
@@ -296,7 +296,7 @@ func setupRouter() (*route.Router, error) {
 }
 
 // handlerSetup to be used for required references in the handler tests
-func handlerSetup(db *ent.Client) *handlers.Handler {
+func handlerSetup(db *ent.Client, objectStore *objects.Service) *handlers.Handler {
 	as := authmanager.New(db)
 
 	h := &handlers.Handler{
@@ -311,6 +311,7 @@ func handlerSetup(db *ent.Client) *handlers.Handler {
 			RedirectURL: "http://localhost",
 		},
 		DefaultTrustCenterDomain: "trust.openlane.com",
+		ObjectStore:            objectStore,
 	}
 
 	return h

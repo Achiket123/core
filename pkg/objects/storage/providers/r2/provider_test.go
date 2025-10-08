@@ -111,3 +111,90 @@ func TestNewR2ProviderFromCredentials(t *testing.T) {
 
 	assert.NotNil(t, result.MustGet())
 }
+
+func TestR2Provider_Upload_Errors(t *testing.T) {
+	t.Run("empty file name", func(t *testing.T) {
+		opts := r2Options()
+		provider, err := r2provider.NewR2Provider(opts)
+		if err != nil {
+			t.Skip("Skipping test due to missing R2 credentials or environment")
+		}
+
+		reader := strings.NewReader("test content")
+		uploadOpts := &storagetypes.UploadFileOptions{
+			FileName: "",
+		}
+		_, err = provider.Upload(context.Background(), reader, uploadOpts)
+		assert.Error(t, err)
+	})
+}
+
+func TestR2Provider_Download_Errors(t *testing.T) {
+	t.Run("empty file key", func(t *testing.T) {
+		opts := r2Options()
+		provider, err := r2provider.NewR2Provider(opts)
+		if err != nil {
+			t.Skip("Skipping test due to missing R2 credentials or environment")
+		}
+
+		file := &storagetypes.File{
+			FileMetadata: storagetypes.FileMetadata{
+				Key: "",
+			},
+		}
+		downloadOpts := &storagetypes.DownloadFileOptions{
+			FileName: "test.txt",
+		}
+		_, err = provider.Download(context.Background(), file, downloadOpts)
+		assert.Error(t, err)
+	})
+}
+
+func TestR2Provider_Delete_Errors(t *testing.T) {
+	t.Run("empty file key", func(t *testing.T) {
+		opts := r2Options()
+		provider, err := r2provider.NewR2Provider(opts)
+		if err != nil {
+			t.Skip("Skipping test due to missing R2 credentials or environment")
+		}
+
+		file := &storagetypes.File{
+			FileMetadata: storagetypes.FileMetadata{
+				Key: "",
+			},
+		}
+		err = provider.Delete(context.Background(), file, nil)
+		assert.Error(t, err)
+	})
+}
+
+func TestR2Provider_Exists_Errors(t *testing.T) {
+	t.Run("empty file key", func(t *testing.T) {
+		opts := r2Options()
+		provider, err := r2provider.NewR2Provider(opts)
+		if err != nil {
+			t.Skip("Skipping test due to missing R2 credentials or environment")
+		}
+
+		file := &storagetypes.File{
+			FileMetadata: storagetypes.FileMetadata{
+				Key: "",
+			},
+		}
+		_, err = provider.Exists(context.Background(), file)
+		assert.Error(t, err)
+	})
+}
+
+func TestR2Provider_ListBuckets(t *testing.T) {
+	t.Run("list buckets", func(t *testing.T) {
+		opts := r2Options()
+		provider, err := r2provider.NewR2Provider(opts)
+		if err != nil {
+			t.Skip("Skipping test due to missing R2 credentials or environment")
+		}
+
+		_, err = provider.ListBuckets()
+		assert.Error(t, err)
+	})
+}

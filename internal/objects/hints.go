@@ -78,7 +78,7 @@ func PopulateProviderHints(file *storage.File, orgID string) {
 	}
 }
 
-// ResolveModuleFromFile attempts to determine the module associated with the upload.
+// ResolveModuleFromFile attempts to determine the module associated with the upload
 func ResolveModuleFromFile(f storage.File) (models.OrgModule, bool) {
 	if module, ok := moduleFromHints(f.ProviderHints); ok {
 		return module, true
@@ -94,7 +94,7 @@ func ResolveModuleFromFile(f storage.File) (models.OrgModule, bool) {
 	return "", false
 }
 
-// ApplyProviderHints injects hint values into the resolution context.
+// ApplyProviderHints injects hint values into the resolution context
 func ApplyProviderHints(ctx context.Context, hints *storagetypes.ProviderHints) context.Context {
 	if hints == nil {
 		return ctx

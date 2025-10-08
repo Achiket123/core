@@ -148,3 +148,142 @@ func TestS3ProviderUploadDownloadFlow(t *testing.T) {
 
 	assert.Equal(t, []byte(testContent), downloaded.File)
 }
+
+func TestWithACL(t *testing.T) {
+	t.Run("set ACL option", func(t *testing.T) {
+		opts := providerOptions()
+		provider, err := s3provider.NewS3Provider(opts, s3provider.WithACL("public-read"))
+		if err != nil {
+			t.Skip("Skipping test due to missing AWS credentials or environment")
+		}
+
+		assert.NotNil(t, provider)
+	})
+
+	t.Run("private ACL", func(t *testing.T) {
+		opts := providerOptions()
+		provider, err := s3provider.NewS3Provider(opts, s3provider.WithACL("private"))
+		if err != nil {
+			t.Skip("Skipping test due to missing AWS credentials or environment")
+		}
+
+		assert.NotNil(t, provider)
+	})
+}
+
+func TestS3Provider_Upload_Errors(t *testing.T) {
+	t.Run("empty file name", func(t *testing.T) {
+		opts := providerOptions()
+		provider, err := s3provider.NewS3Provider(opts)
+		if err != nil {
+			t.Skip("Skipping test due to missing AWS credentials or environment")
+		}
+
+		reader := strings.NewReader("test content")
+		uploadOpts := &storagetypes.UploadFileOptions{
+			FileName: "",
+		}
+		_, err = provider.Upload(context.Background(), reader, uploadOpts)
+		assert.Error(t, err)
+	})
+}
+
+func TestS3Provider_Download_Errors(t *testing.T) {
+	t.Run("empty file key", func(t *testing.T) {
+		opts := providerOptions()
+		provider, err := s3provider.NewS3Provider(opts)
+		if err != nil {
+			t.Skip("Skipping test due to missing AWS credentials or environment")
+		}
+
+		file := &storagetypes.File{
+			FileMetadata: storagetypes.FileMetadata{
+				Key: "",
+			},
+		}
+		downloadOpts := &storagetypes.DownloadFileOptions{
+			FileName: "test.txt",
+		}
+		_, err = provider.Download(context.Background(), file, downloadOpts)
+		assert.Error(t, err)
+	})
+}
+
+func TestS3Provider_Delete_Errors(t *testing.T) {
+	t.Run("empty file key", func(t *testing.T) {
+		opts := providerOptions()
+		provider, err := s3provider.NewS3Provider(opts)
+		if err != nil {
+			t.Skip("Skipping test due to missing AWS credentials or environment")
+		}
+
+		file := &storagetypes.File{
+			FileMetadata: storagetypes.FileMetadata{
+				Key: "",
+			},
+		}
+		err = provider.Delete(context.Background(), file, nil)
+		assert.Error(t, err)
+	})
+}
+
+func TestS3Provider_GetPresignedURL_Errors(t *testing.T) {
+	t.Run("empty file key", func(t *testing.T) {
+		opts := providerOptions()
+		provider, err := s3provider.NewS3Provider(opts)
+		if err != nil {
+			t.Skip("Skipping test due to missing AWS credentials or environment")
+		}
+
+		file := &storagetypes.File{
+			FileMetadata: storagetypes.FileMetadata{
+				Key: "",
+			},
+		}
+		urlOpts := &storagetypes.PresignedURLOptions{
+			Duration: 15 * time.Minute,
+		}
+		_, err = provider.GetPresignedURL(context.Background(), file, urlOpts)
+		assert.Error(t, err)
+	})
+}
+
+func TestS3Provider_Exists_Errors(t *testing.T) {
+	t.Run("empty file key", func(t *testing.T) {
+		opts := providerOptions()
+		provider, err := s3provider.NewS3Provider(opts)
+		if err != nil {
+			t.Skip("Skipping test due to missing AWS credentials or environment")
+		}
+
+		file := &storagetypes.File{
+			FileMetadata: storagetypes.FileMetadata{
+				Key: "",
+			},
+		}
+		_, err = provider.Exists(context.Background(), file)
+		assert.Error(t, err)
+	})
+}
+
+func TestS3Provider_ListBuckets(t *testing.T) {
+	t.Run("list buckets", func(t *testing.T) {
+		opts := providerOptions()
+		provider, err := s3provider.NewS3Provider(opts)
+		if err != nil {
+			t.Skip("Skipping test due to missing AWS credentials or environment")
+		}
+
+		_, err = provider.ListBuckets()
+		assert.Error(t, err)
+	})
+}
+
+func TestWithOptions_Builder(t *testing.T) {
+	t.Run("apply provider options", func(t *testing.T) {
+		builder := s3provider.NewS3Builder()
+
+		builder = builder.WithOptions(s3provider.WithACL("private"), s3provider.WithUsePathStyle(true), s3provider.WithDebugMode(false))
+		assert.NotNil(t, builder)
+	})
+}

@@ -30,7 +30,6 @@ import (
 	ent "github.com/theopenlane/core/internal/ent/generated"
 	"github.com/theopenlane/core/internal/entdb"
 	"github.com/theopenlane/core/internal/graphapi/testclient"
-	objmw "github.com/theopenlane/core/internal/middleware/objects"
 	"github.com/theopenlane/core/internal/objects"
 	"github.com/theopenlane/core/pkg/entitlements"
 	"github.com/theopenlane/core/pkg/entitlements/mocks"
@@ -202,7 +201,7 @@ func (suite *GraphTestSuite) SetupSuite(t *testing.T) {
 	db, err := entdb.NewTestClient(ctx, suite.tf, jobOpts, opts)
 	requireNoError(err)
 
-	c.objectStore, c.mockProvider, err = coreutils.MockStorageServiceWithValidationAndProvider(t, nil, objmw.MimeTypeValidator)
+	c.objectStore, c.mockProvider, err = coreutils.MockStorageServiceWithValidationAndProvider(t, nil, objects.MimeTypeValidator)
 	requireNoError(err)
 
 	// assign values

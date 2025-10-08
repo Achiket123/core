@@ -1,4 +1,4 @@
-package objects
+package store
 
 import (
 	"context"
@@ -14,24 +14,26 @@ import (
 	pkgobjects "github.com/theopenlane/core/pkg/objects"
 )
 
-// ErrMissingParent is returned when the parent id or type is missing for file uploads
-var ErrMissingParent = errors.New("parent id or type is missing")
+var (
+	// ErrMissingParent is returned when the parent id or type is missing for file uploads
+	ErrMissingParent = errors.New("parent id or type is missing")
+	// ErrMissingOrganizationID is returned when organization ID cannot be determined for file upload
+	ErrMissingOrganizationID = errors.New("organization ID is required for file upload")
+)
 
-// AddFilePermissions adds file permissions to the object store
-func AddFilePermissions(ctx context.Context) error {
+// AddFilePermissions writes authorization tuples for uploaded files and removes them from the request context.
+func AddFilePermissions(ctx context.Context) (context.Context, error) {
 	filesUpload, err := pkgobjects.FilesFromContext(ctx)
 	if err != nil {
-		// this is not an error, just means we are not uploading files
-		return nil
+		return ctx, nil
 	}
 
 	for _, file := range filesUpload {
 		for _, f := range file {
 			if f.Parent.ID == "" || f.Parent.Type == "" {
-				return ErrMissingParent
+				return ctx, ErrMissingParent
 			}
 
-			// trust center doc has special parent relation
 			parentRelation := fgax.ParentRelation
 			if f.Parent.Type == "trust_center_doc" {
 				parentRelation = "tc_doc_parent"
@@ -40,19 +42,18 @@ func AddFilePermissions(ctx context.Context) error {
 			req := fgax.GetTupleKey(fgax.TupleRequest{
 				SubjectID:   f.Parent.ID,
 				SubjectType: f.Parent.Type,
-				ObjectID:    f.ID,               // this is the object id (file id in this case) being created
-				ObjectType:  generated.TypeFile, // this is the object type (file in this case) being created
-				Relation:    parentRelation,     // this will always be parent in an object owned permission setup
+				ObjectID:    f.ID,
+				ObjectType:  generated.TypeFile,
+				Relation:    parentRelation,
 			})
 
 			tuples := []fgax.TupleKey{req}
 
-			// if the file is an avatar, explicitly add view permissions for org members
 			const avatarFileKey = "avatarFile"
 			if f.FieldName == avatarFileKey {
 				orgID, err := auth.GetOrganizationIDFromContext(ctx)
 				if err != nil {
-					return err
+					return ctx, err
 				}
 
 				orgReq := fgax.GetTupleKey(fgax.TupleRequest{
@@ -69,12 +70,11 @@ func AddFilePermissions(ctx context.Context) error {
 			log.Debug().Interface("req", req).Msg("adding file permissions")
 
 			if _, err := utils.AuthzClientFromContext(ctx).WriteTupleKeys(ctx, tuples, nil); err != nil {
-				return err
+				return ctx, err
 			}
 
 			log.Debug().Interface("req", req).Msg("added file permissions")
 
-			// remove file from context, we are done with it
 			ctx = pkgobjects.RemoveFileFromContext(ctx, f)
 
 			ec, err := echocontext.EchoContextFromContext(ctx)
@@ -84,5 +84,5 @@ func AddFilePermissions(ctx context.Context) error {
 		}
 	}
 
-	return nil
+	return ctx, nil
 }

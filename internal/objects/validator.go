@@ -11,27 +11,23 @@ var importSchemaMimeTypes = []string{
 	"application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 }
 
-// sharedMimeTypes contains mime types that are shared between different file types
 var sharedMimeTypes = []string{
 	"image/jpeg", "image/png",
 	"application/pdf",
 	"text/plain",
 	"text/plain; charset=utf-8",
 	"application/zip",
-	"application/rtf", // rich text format
-	"application/vnd.openxmlformats-officedocument.wordprocessingml.document", // docx
-	"application/vnd.oasis.opendocument.text",                                 // open document text
+	"application/rtf",
+	"application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+	"application/vnd.oasis.opendocument.text",
 	"text/markdown",
-	"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // xlsx
-	"application/x-vnd.oasis.opendocument.spreadsheet",                  // open document spreadsheet
+	"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+	"application/x-vnd.oasis.opendocument.spreadsheet",
 	"text/csv",
 	"application/x-yaml", "application/x-yaml; charset=utf-8", "text/yaml",
 	"application/json", "application/json; charset=utf-8",
 }
 
-// validMimeTypes is a map of valid mime types for the given key
-// to be used in the validation function
-// add the key and the valid mime types to the map
 var validMimeTypes = map[string][]string{
 	"avatarFile":         {"image/jpeg", "image/png"},
 	"logoFile":           {"image/jpeg", "image/png", "image/svg+xml"},
@@ -45,12 +41,11 @@ var validMimeTypes = map[string][]string{
 	"templateFiles":      sharedMimeTypes,
 }
 
-// MimeTypeValidator returns a validation function for the given key
+// MimeTypeValidator returns a storage.ValidationFunc enforcing the configured mime-type set per form field.
 var MimeTypeValidator storage.ValidationFunc = func(f storage.File) error {
 	if mimes, ok := validMimeTypes[f.FieldName]; ok {
 		return pkgobjects.MimeTypeValidator(mimes...)(f)
 	}
 
-	// Default to sharedMimeTypes if the type isn't in the map
 	return pkgobjects.MimeTypeValidator(sharedMimeTypes...)(f)
 }
