@@ -100,6 +100,7 @@ Config contains the configuration for the core server
     "totp": {},
     "ratelimit": {},
     "objectStorage": {
+        "credentialSync": {},
         "providers": {
             "s3": {
                 "credentials": {}
@@ -111,6 +112,9 @@ Config contains the configuration for the core server
                 "credentials": {}
             },
             "disk": {
+                "credentials": {}
+            },
+            "database": {
                 "credentials": {}
             }
         }
@@ -1177,6 +1181,8 @@ ProviderConfig contains configuration for object storage providers
 |**maxSizeMB**|`integer`|MaxSizeMB is the maximum file size allowed in MB<br/>||
 |**maxMemoryMB**|`integer`|MaxMemoryMB is the maximum memory to use for file uploads in MB<br/>||
 |**devMode**|`boolean`|DevMode enables simple file upload handling for local development and testing<br/>||
+|**ensureAvailable**|`boolean`|EnsureAvailable enforces provider availability before completing server startup<br/>||
+|[**credentialSync**](#objectstoragecredentialsync)|`object`|CredentialSyncConfig controls whether provider credentials are synchronized into the database<br/>||
 |[**providers**](#objectstorageproviders)|`object`|||
 
 **Additional Properties:** not allowed  
@@ -1184,6 +1190,7 @@ ProviderConfig contains configuration for object storage providers
 
 ```json
 {
+    "credentialSync": {},
     "providers": {
         "s3": {
             "credentials": {}
@@ -1196,6 +1203,9 @@ ProviderConfig contains configuration for object storage providers
         },
         "disk": {
             "credentials": {}
+        },
+        "database": {
+            "credentials": {}
         }
     }
 }
@@ -1207,6 +1217,19 @@ ProviderConfig contains configuration for object storage providers
 **Items**
 
 **Item Type:** `string`  
+<a name="objectstoragecredentialsync"></a>
+### objectStorage\.credentialSync: object
+
+CredentialSyncConfig controls whether provider credentials are synchronized into the database
+
+
+**Properties**
+
+|Name|Type|Description|Required|
+|----|----|-----------|--------|
+|**enabled**|`boolean`|Enabled indicates whether credential synchronization runs on startup<br/>||
+
+**Additional Properties:** not allowed  
 <a name="objectstorageproviders"></a>
 ### objectStorage\.providers: object
 
@@ -1218,6 +1241,7 @@ ProviderConfig contains configuration for object storage providers
 |[**cloudflareR2**](#objectstorageproviderscloudflarer2)|`object`|ProviderConfigs contains configuration for all storage providers This is structured to allow easy extension for additional providers in the future<br/>||
 |[**gcs**](#objectstorageprovidersgcs)|`object`|ProviderConfigs contains configuration for all storage providers This is structured to allow easy extension for additional providers in the future<br/>||
 |[**disk**](#objectstorageprovidersdisk)|`object`|ProviderConfigs contains configuration for all storage providers This is structured to allow easy extension for additional providers in the future<br/>||
+|[**database**](#objectstorageprovidersdatabase)|`object`|ProviderConfigs contains configuration for all storage providers This is structured to allow easy extension for additional providers in the future<br/>||
 
 **Additional Properties:** not allowed  
 **Example**
@@ -1234,6 +1258,9 @@ ProviderConfig contains configuration for object storage providers
         "credentials": {}
     },
     "disk": {
+        "credentials": {}
+    },
+    "database": {
         "credentials": {}
     }
 }
@@ -1395,6 +1422,49 @@ ProviderConfigs contains configuration for all storage providers This is structu
 
 <a name="objectstorageprovidersdiskcredentials"></a>
 ##### objectStorage\.providers\.disk\.credentials: object
+
+ProviderCredentials contains credentials for a storage provider
+
+
+**Properties**
+
+|Name|Type|Description|Required|
+|----|----|-----------|--------|
+|**accessKeyID**|`string`|AccessKeyID for cloud providers<br/>||
+|**accessKeySecret**|`string`|SecretAccessKey for cloud providers<br/>||
+|**endpoint**|`string`|Endpoint for custom endpoints<br/>||
+|**projectID**|`string`|ProjectID for GCS<br/>||
+|**accountID**|`string`|AccountID for Cloudflare R2<br/>||
+|**apiToken**|`string`|APIToken for Cloudflare R2<br/>||
+
+**Additional Properties:** not allowed  
+<a name="objectstorageprovidersdatabase"></a>
+#### objectStorage\.providers\.database: object
+
+ProviderConfigs contains configuration for all storage providers This is structured to allow easy extension for additional providers in the future
+
+
+**Properties**
+
+|Name|Type|Description|Required|
+|----|----|-----------|--------|
+|**enabled**|`boolean`|Enabled indicates if this provider is enabled<br/>||
+|**region**|`string`|Region for cloud providers<br/>||
+|**bucket**|`string`|Bucket name for cloud providers<br/>||
+|**endpoint**|`string`|Endpoint for custom endpoints<br/>||
+|[**credentials**](#objectstorageprovidersdatabasecredentials)|`object`|ProviderCredentials contains credentials for a storage provider<br/>||
+
+**Additional Properties:** not allowed  
+**Example**
+
+```json
+{
+    "credentials": {}
+}
+```
+
+<a name="objectstorageprovidersdatabasecredentials"></a>
+##### objectStorage\.providers\.database\.credentials: object
 
 ProviderCredentials contains credentials for a storage provider
 

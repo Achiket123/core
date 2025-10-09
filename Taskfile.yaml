@@ -604,3 +604,27 @@ tasks:
     cmds:
       - task: setup
       - go test -bench=. -benchmem -benchtime=10s
+
+  e2e:database-provider:serve:
+    desc: Start server with database-backed object storage provider (run in terminal 1)
+    dotenv: ["{{.ENV}}/.env-dev"]
+    vars:
+      BASE_CONFIG: "{{.ENV}}/.config.yaml"
+      DATABASE_CONFIG: "config/config.e2e.database.yaml"
+      CONFIG_SOURCES: "{{.BASE_CONFIG}},{{.DATABASE_CONFIG}}"
+    preconditions:
+      - sh: test -f {{.BASE_CONFIG}}
+        msg: "base config {{.BASE_CONFIG}} not found; ensure your local configuration is in place"
+      - sh: test -f {{.DATABASE_CONFIG}}
+        msg: "database provider overlay config missing at {{.DATABASE_CONFIG}}"
+    cmds:
+      - task: compose:redis
+      - task: compose:fga
+      - task: compose:riverboat
+      - go run main.go serve --debug --pretty --config {{.CONFIG_SOURCES}}
+
+  e2e:database-provider:test:
+    desc: Run database storage e2e test (requires :serve running in another terminal)
+    cmds:
+      - scripts/e2e_test.sh export
+      - go test -tags examples -run TestDatabaseProviderEvidenceRoundTrip -v ./pkg/objects/examples/e2e-openlane

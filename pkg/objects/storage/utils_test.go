@@ -15,11 +15,11 @@ import (
 
 func TestDetectContentType(t *testing.T) {
 	tests := []struct {
-		name            string
-		data            []byte
-		expectedMIME    string
-		expectContains  string
-		expectError     bool
+		name           string
+		data           []byte
+		expectedMIME   string
+		expectContains string
+		expectError    bool
 	}{
 		{
 			name:           "JSON file",
@@ -124,9 +124,9 @@ func TestParseDocument(t *testing.T) {
 			},
 		},
 		{
-			name:     "invalid JSON",
-			data:     `{invalid json}`,
-			mimeType: "application/json",
+			name:        "invalid JSON",
+			data:        `{invalid json}`,
+			mimeType:    "application/json",
 			expectError: ErrJSONParseFailed,
 		},
 		{

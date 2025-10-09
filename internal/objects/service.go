@@ -2,21 +2,38 @@ package objects
 
 import (
 	"context"
+	"encoding/base64"
+	"fmt"
 	"io"
+	"net/url"
+	"sync"
 	"time"
 
+	"github.com/oklog/ulid/v2"
 	"github.com/rs/zerolog"
 	"github.com/theopenlane/core/pkg/cp"
 	"github.com/theopenlane/core/pkg/objects/storage"
 	storagetypes "github.com/theopenlane/core/pkg/objects/storage/types"
 	"github.com/theopenlane/iam/auth"
+	"github.com/theopenlane/iam/tokens"
+	"github.com/theopenlane/utils/ulids"
+	"github.com/vmihailenco/msgpack/v5"
+)
+
+const (
+	defaultPresignedURLDuration = 10 * time.Minute
+	defaultDatabaseBucket       = "default"
 )
 
 // Service orchestrates storage operations using cp provider resolution
 type Service struct {
-	resolver      *cp.Resolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]
-	clientService *cp.ClientService[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]
-	objectService *storage.ObjectService
+	resolver        *cp.Resolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]
+	clientService   *cp.ClientService[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]
+	objectService   *storage.ObjectService
+	tokenProvider   func() *tokens.TokenManager
+	tokenIssuer     string
+	tokenAudience   string
+	downloadSecrets sync.Map
 }
 
 // Config holds configuration for creating a new Service
@@ -24,6 +41,9 @@ type Config struct {
 	Resolver       *cp.Resolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]
 	ClientService  *cp.ClientService[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]
 	ValidationFunc storage.ValidationFunc
+	TokenManager   func() *tokens.TokenManager
+	TokenIssuer    string
+	TokenAudience  string
 }
 
 // NewService creates a new storage orchestration service
@@ -39,6 +59,9 @@ func NewService(cfg Config) *Service {
 		resolver:      cfg.Resolver,
 		clientService: cfg.ClientService,
 		objectService: objectService,
+		tokenProvider: cfg.TokenManager,
+		tokenIssuer:   cfg.TokenIssuer,
+		tokenAudience: cfg.TokenAudience,
 	}
 }
 
@@ -78,16 +101,72 @@ func (s *Service) Download(ctx context.Context, provider storage.Provider, file 
 
 // GetPresignedURL gets a presigned URL for a file using provider resolution
 func (s *Service) GetPresignedURL(ctx context.Context, file *storagetypes.File, duration time.Duration) (string, error) {
-	provider, err := s.resolveDownloadProvider(ctx, file)
+	if s.tokenProvider == nil {
+		provider, err := s.resolveDownloadProvider(ctx, file)
+		if err != nil {
+			return "", err
+		}
+
+		opts := &storagetypes.PresignedURLOptions{Duration: duration}
+		return s.objectService.GetPresignedURL(ctx, provider, file, opts)
+	}
+
+	if file == nil || file.ID == "" {
+		return "", ErrMissingFileID
+	}
+
+	// ensure provider resolution succeeds before issuing token
+	if _, err := s.resolveDownloadProvider(ctx, file); err != nil {
+		return "", err
+	}
+
+	if duration <= 0 {
+		duration = defaultPresignedURLDuration
+	}
+
+	objectURI := buildDownloadObjectURI(file.FileMetadata.ProviderType, file.FileMetadata.Bucket, file.FileMetadata.Key)
+	options := []tokens.DownloadTokenOption{
+		tokens.WithDownloadTokenExpiresIn(duration),
+		tokens.WithDownloadTokenContentType(file.FileMetadata.ContentType),
+	}
+
+	if file.OriginalName != "" {
+		options = append(options, tokens.WithDownloadTokenFileName(file.OriginalName))
+	}
+
+	if authUser, ok := auth.AuthenticatedUserFromContext(ctx); ok && authUser != nil {
+		if userID, err := ulid.Parse(authUser.SubjectID); err == nil {
+			options = append(options, tokens.WithDownloadTokenUserID(userID))
+		}
+		if authUser.OrganizationID != "" {
+			if orgID, err := ulid.Parse(authUser.OrganizationID); err == nil {
+				options = append(options, tokens.WithDownloadTokenOrgID(orgID))
+			}
+		}
+	}
+
+	downloadToken, err := tokens.NewDownloadToken(objectURI, options...)
 	if err != nil {
 		return "", err
 	}
 
-	opts := &storagetypes.PresignedURLOptions{
-		Duration: duration,
+	signature, secret, err := downloadToken.Sign()
+	if err != nil {
+		return "", err
 	}
 
-	return s.objectService.GetPresignedURL(ctx, provider, file, opts)
+	s.storeDownloadSecret(downloadToken.TokenID, secret, downloadToken.ExpiresAt)
+
+	payload, err := msgpack.Marshal(downloadToken)
+	if err != nil {
+		return "", err
+	}
+
+	encodedPayload := base64.RawURLEncoding.EncodeToString(payload)
+	combined := fmt.Sprintf("%s.%s", signature, encodedPayload)
+	escaped := url.QueryEscape(combined)
+
+	return fmt.Sprintf("/v1/files/%s/download?token=%s", url.PathEscape(file.ID), escaped), nil
 }
 
 // Delete deletes a file using provider resolution
@@ -108,6 +187,52 @@ func (s *Service) Exists(ctx context.Context, file *storagetypes.File) (bool, er
 	}
 
 	return provider.Exists(ctx, file)
+}
+
+type downloadSecret struct {
+	secret    []byte
+	expiresAt time.Time
+}
+
+func (s *Service) storeDownloadSecret(tokenID ulid.ULID, secret []byte, expiresAt time.Time) {
+	if ulids.IsZero(tokenID) || len(secret) == 0 {
+		return
+	}
+
+	copySecret := make([]byte, len(secret))
+	copy(copySecret, secret)
+
+	key := tokenID.String()
+	s.downloadSecrets.Store(key, downloadSecret{secret: copySecret, expiresAt: expiresAt})
+
+	if ttl := time.Until(expiresAt); ttl > 0 {
+		time.AfterFunc(ttl, func() {
+			s.downloadSecrets.Delete(key)
+		})
+	}
+}
+
+func (s *Service) LookupDownloadSecret(tokenID ulid.ULID) ([]byte, bool) {
+	if ulids.IsZero(tokenID) {
+		return nil, false
+	}
+
+	value, ok := s.downloadSecrets.Load(tokenID.String())
+	if !ok {
+		return nil, false
+	}
+
+	ds := value.(downloadSecret)
+	if time.Now().After(ds.expiresAt) {
+		s.downloadSecrets.Delete(tokenID.String())
+		return nil, false
+	}
+
+	return ds.secret, true
+}
+
+func buildDownloadObjectURI(provider storagetypes.ProviderType, bucket, key string) string {
+	return fmt.Sprintf("%s:%s:%s", string(provider), bucket, key)
 }
 
 // Skipper returns the configured skipper function

@@ -318,6 +318,8 @@ data:
   CORE_OBJECTSTORAGE_MAXSIZEMB: {{ .Values.openlane.coreConfiguration.objectStorage.maxSizeMB | quote }}
   CORE_OBJECTSTORAGE_MAXMEMORYMB: {{ .Values.openlane.coreConfiguration.objectStorage.maxMemoryMB | quote }}
   CORE_OBJECTSTORAGE_DEVMODE: {{ .Values.openlane.coreConfiguration.objectStorage.devMode | quote | default "false" }}
+  CORE_OBJECTSTORAGE_ENSUREAVAILABLE: {{ .Values.openlane.coreConfiguration.objectStorage.ensureAvailable | quote | default "false" }}
+  CORE_OBJECTSTORAGE_CREDENTIALSYNC_ENABLED: {{ .Values.openlane.coreConfiguration.objectStorage.credentialSync.enabled | quote | default "true" }}
   CORE_OBJECTSTORAGE_PROVIDERS_S3_ENABLED: {{ .Values.openlane.coreConfiguration.objectStorage.providers.s3.enabled | quote }}
   CORE_OBJECTSTORAGE_PROVIDERS_S3_REGION: {{ .Values.openlane.coreConfiguration.objectStorage.providers.s3.region | quote }}
   CORE_OBJECTSTORAGE_PROVIDERS_S3_BUCKET: {{ .Values.openlane.coreConfiguration.objectStorage.providers.s3.bucket | quote }}
@@ -358,6 +360,16 @@ data:
   CORE_OBJECTSTORAGE_PROVIDERS_DISK_CREDENTIALS_PROJECTID: {{ .Values.openlane.coreConfiguration.objectStorage.providers.disk.credentials.projectID | quote }}
   CORE_OBJECTSTORAGE_PROVIDERS_DISK_CREDENTIALS_ACCOUNTID: {{ .Values.openlane.coreConfiguration.objectStorage.providers.disk.credentials.accountID | quote }}
   CORE_OBJECTSTORAGE_PROVIDERS_DISK_CREDENTIALS_APITOKEN: {{ .Values.openlane.coreConfiguration.objectStorage.providers.disk.credentials.apiToken | quote }}
+  CORE_OBJECTSTORAGE_PROVIDERS_DATABASE_ENABLED: {{ .Values.openlane.coreConfiguration.objectStorage.providers.database.enabled | quote }}
+  CORE_OBJECTSTORAGE_PROVIDERS_DATABASE_REGION: {{ .Values.openlane.coreConfiguration.objectStorage.providers.database.region | quote }}
+  CORE_OBJECTSTORAGE_PROVIDERS_DATABASE_BUCKET: {{ .Values.openlane.coreConfiguration.objectStorage.providers.database.bucket | quote }}
+  CORE_OBJECTSTORAGE_PROVIDERS_DATABASE_ENDPOINT: {{ .Values.openlane.coreConfiguration.objectStorage.providers.database.endpoint | quote }}
+  CORE_OBJECTSTORAGE_PROVIDERS_DATABASE_CREDENTIALS_ACCESSKEYID: {{ .Values.openlane.coreConfiguration.objectStorage.providers.database.credentials.accessKeyID | quote }}
+  CORE_OBJECTSTORAGE_PROVIDERS_DATABASE_CREDENTIALS_ACCESSKEYSECRET: {{ .Values.openlane.coreConfiguration.objectStorage.providers.database.credentials.accessKeySecret | quote }}
+  CORE_OBJECTSTORAGE_PROVIDERS_DATABASE_CREDENTIALS_ENDPOINT: {{ .Values.openlane.coreConfiguration.objectStorage.providers.database.credentials.endpoint | quote }}
+  CORE_OBJECTSTORAGE_PROVIDERS_DATABASE_CREDENTIALS_PROJECTID: {{ .Values.openlane.coreConfiguration.objectStorage.providers.database.credentials.projectID | quote }}
+  CORE_OBJECTSTORAGE_PROVIDERS_DATABASE_CREDENTIALS_ACCOUNTID: {{ .Values.openlane.coreConfiguration.objectStorage.providers.database.credentials.accountID | quote }}
+  CORE_OBJECTSTORAGE_PROVIDERS_DATABASE_CREDENTIALS_APITOKEN: {{ .Values.openlane.coreConfiguration.objectStorage.providers.database.credentials.apiToken | quote }}
   CORE_SUBSCRIPTION_ENABLED: {{ .Values.openlane.coreConfiguration.subscription.enabled | quote | default "false" }}
   CORE_SUBSCRIPTION_PUBLICSTRIPEKEY: {{ .Values.openlane.coreConfiguration.subscription.publicStripeKey | quote }}
 {{- if .Values.openlane.coreConfiguration.subscription.stripeWebhookURL }}

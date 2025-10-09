@@ -1,4 +1,4 @@
-package serveropts
+package credsync
 
 import (
 	"context"

@@ -311,7 +311,7 @@ func handlerSetup(db *ent.Client, objectStore *objects.Service) *handlers.Handle
 			RedirectURL: "http://localhost",
 		},
 		DefaultTrustCenterDomain: "trust.openlane.com",
-		ObjectStore:            objectStore,
+		ObjectStore:              objectStore,
 	}
 
 	return h

@@ -49,12 +49,12 @@ func TestObjectServiceAccessors(t *testing.T) {
 }
 
 type mockProvider struct {
-	uploadFunc        func(ctx context.Context, reader io.Reader, opts *storagetypes.UploadFileOptions) (*storagetypes.UploadedFileMetadata, error)
-	downloadFunc      func(ctx context.Context, file *storagetypes.File, opts *storagetypes.DownloadFileOptions) (*storagetypes.DownloadedFileMetadata, error)
-	deleteFunc        func(ctx context.Context, file *storagetypes.File, opts *storagetypes.DeleteFileOptions) error
-	getPresignedFunc  func(ctx context.Context, file *storagetypes.File, opts *storagetypes.PresignedURLOptions) (string, error)
-	existsFunc        func(ctx context.Context, file *storagetypes.File) (bool, error)
-	providerType      storagetypes.ProviderType
+	uploadFunc       func(ctx context.Context, reader io.Reader, opts *storagetypes.UploadFileOptions) (*storagetypes.UploadedFileMetadata, error)
+	downloadFunc     func(ctx context.Context, file *storagetypes.File, opts *storagetypes.DownloadFileOptions) (*storagetypes.DownloadedFileMetadata, error)
+	deleteFunc       func(ctx context.Context, file *storagetypes.File, opts *storagetypes.DeleteFileOptions) error
+	getPresignedFunc func(ctx context.Context, file *storagetypes.File, opts *storagetypes.PresignedURLOptions) (string, error)
+	existsFunc       func(ctx context.Context, file *storagetypes.File) (bool, error)
+	providerType     storagetypes.ProviderType
 }
 
 func (m *mockProvider) Upload(ctx context.Context, reader io.Reader, opts *storagetypes.UploadFileOptions) (*storagetypes.UploadedFileMetadata, error) {

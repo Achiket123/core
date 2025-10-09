@@ -33,10 +33,11 @@ type Provider interface {
 type ProviderType string
 
 const (
-	S3Provider   ProviderType = "s3"
-	R2Provider   ProviderType = "r2"
-	GCSProvider  ProviderType = "gcs"
-	DiskProvider ProviderType = "disk"
+	S3Provider       ProviderType = "s3"
+	R2Provider       ProviderType = "r2"
+	GCSProvider      ProviderType = "gcs"
+	DiskProvider     ProviderType = "disk"
+	DatabaseProvider ProviderType = "database"
 )
 
 // File represents a consolidated file object in the system that combines upload, storage, and metadata information

@@ -1,4 +1,4 @@
-package serveropts_test
+package credsync_test
 
 import (
 	"context"
@@ -50,7 +50,7 @@ func cloneProviderOptions(in *storage.ProviderOptions) *storage.ProviderOptions 
 }
 
 const (
-	fgaModelFile = "../../../fga/model/model.fga"
+	fgaModelFile = "../../fga/model/model.fga"
 )
 
 // CredentialSyncTestSuite handles the setup and teardown between tests

@@ -70,6 +70,15 @@ func (s *ObjectService) Upload(ctx context.Context, provider Provider, reader io
 		FileName:    fileName,
 		ContentType: contentType,
 		Bucket:      opts.Bucket,
+		FileMetadata: FileMetadata{
+			Key:           opts.Key,
+			Bucket:        opts.Bucket,
+			ProviderHints: opts.ProviderHints,
+		},
+	}
+
+	if opts.ProviderHints != nil {
+		storageOpts.ProviderHints = opts.ProviderHints
 	}
 
 	// Upload using provided storage provider

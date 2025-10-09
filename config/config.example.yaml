@@ -183,14 +183,29 @@ keywatcher:
     keyDir: ./keys
     secretManager: ""
 objectStorage:
+    credentialSync:
+        enabled: true
     devMode: false
     enabled: true
+    ensureAvailable: false
     keys:
         - '"uploadFile"'
     maxMemoryMB: 0
     maxSizeMB: 0
     providers:
         cloudflareR2:
+            bucket: ""
+            credentials:
+                accessKeyID: ""
+                accountID: ""
+                apiToken: ""
+                endpoint: ""
+                projectID: ""
+                secretAccessKey: ""
+            enabled: false
+            endpoint: ""
+            region: ""
+        database:
             bucket: ""
             credentials:
                 accessKeyID: ""

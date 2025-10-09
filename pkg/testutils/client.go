@@ -287,6 +287,9 @@ func MockStorageServiceWithValidationAndProvider(t *testing.T, uploader storage.
 		Resolver:       resolver,
 		ClientService:  clientService,
 		ValidationFunc: validationFunc,
+		TokenManager:   nil,
+		TokenIssuer:    "",
+		TokenAudience:  "",
 	})
 
 	// Return service and provider for test setup

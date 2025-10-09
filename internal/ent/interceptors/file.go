@@ -64,8 +64,6 @@ func InterceptorFile() ent.Interceptor {
 func InterceptorPresignedURL() ent.Interceptor {
 	return ent.InterceptFunc(func(next ent.Querier) ent.Querier {
 		return intercept.FileFunc(func(ctx context.Context, q *generated.FileQuery) (generated.Value, error) {
-			zerolog.Ctx(ctx).Debug().Msg("InterceptorPresignedURL")
-
 			// get the fields that were queried and check for the presignedURL field
 			fields := graphutils.CheckForRequestedField(ctx, "presignedURL")
 
@@ -127,9 +125,14 @@ func setPresignedURL(ctx context.Context, file *generated.File, q *generated.Fil
 		ID:           file.ID,
 		OriginalName: file.ProvidedFileName,
 		FileMetadata: storagetypes.FileMetadata{
-			Key:         file.StoragePath,
-			ContentType: file.DetectedContentType,
-			Size:        file.PersistedFileSize,
+			Key:          file.StoragePath,
+			Bucket:       file.StorageVolume,
+			ContentType:  file.DetectedContentType,
+			Size:         file.PersistedFileSize,
+			ProviderType: storagetypes.ProviderType(file.StorageProvider),
+			ProviderHints: &storagetypes.ProviderHints{
+				KnownProvider: storagetypes.ProviderType(file.StorageProvider),
+			},
 		},
 	}
 
@@ -141,12 +144,8 @@ func setPresignedURL(ctx context.Context, file *generated.File, q *generated.Fil
 				metadata[k] = str
 			}
 		}
-		storageFile.Metadata = metadata
-	}
 
-	// Set provider-specific fields if available
-	if file.StorageProvider != "" {
-		storageFile.ProviderType = storagetypes.ProviderType(file.StorageProvider)
+		storageFile.Metadata = metadata
 	}
 
 	url, err := q.ObjectManager.GetPresignedURL(ctx, storageFile, presignedURLDuration)

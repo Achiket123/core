@@ -20,7 +20,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 
 	"github.com/theopenlane/core/pkg/objects/storage"
-	"github.com/theopenlane/core/pkg/objects/storage/providers/s3"
+	s3local "github.com/theopenlane/core/pkg/objects/storage/providers/s3"
 	storagetypes "github.com/theopenlane/core/pkg/objects/storage/types"
 )
 
@@ -59,7 +59,7 @@ func main() {
 		}),
 	)
 
-	provider, err := s3.NewS3Provider(providerOptions, s3.WithUsePathStyle(true))
+	provider, err := s3local.NewS3Provider(providerOptions, s3local.WithUsePathStyle(true))
 	if err != nil {
 		panicf("failed to create S3 provider: %v", err)
 	}

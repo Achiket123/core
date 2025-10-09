@@ -25,4 +25,6 @@ var (
 	ErrNoSystemIntegration = errors.New("no system integration found")
 	// ErrNoIntegrationWithSecrets is returned when an integration lacks associated secrets
 	ErrNoIntegrationWithSecrets = errors.New("no active integration with secrets found")
+	// ErrMissingFileID is returned when file ID is required but missing
+	ErrMissingFileID = errors.New("file id required for presigned URL")
 )

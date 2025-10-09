@@ -1,4 +1,4 @@
-package serveropts_test
+package credsync_test
 
 import (
 	"testing"
@@ -7,10 +7,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/theopenlane/core/internal/credsync"
 	ent "github.com/theopenlane/core/internal/ent/generated"
 	"github.com/theopenlane/core/internal/ent/generated/hush"
 	"github.com/theopenlane/core/internal/ent/generated/integration"
-	"github.com/theopenlane/core/internal/httpserve/serveropts"
 	"github.com/theopenlane/core/pkg/cp"
 	"github.com/theopenlane/core/pkg/models"
 	"github.com/theopenlane/core/pkg/objects/storage"
@@ -221,7 +221,7 @@ func (suite *CredentialSyncTestSuite) TestSyncConfigCredentials() {
 			storage.ProviderCredentials,
 			*storage.ProviderOptions,
 		](cloneProviderOptions))
-		service := serveropts.NewCredentialSyncService(suite.db, clientService, config)
+		service := credsync.NewCredentialSyncService(suite.db, clientService, config)
 
 		// Run sync
 		err := service.SyncConfigCredentials(ctx)
@@ -273,7 +273,7 @@ func (suite *CredentialSyncTestSuite) TestSyncConfigCredentials() {
 			storage.ProviderCredentials,
 			*storage.ProviderOptions,
 		](cloneProviderOptions))
-		service := serveropts.NewCredentialSyncService(suite.db, clientService, config)
+		service := credsync.NewCredentialSyncService(suite.db, clientService, config)
 
 		// Run sync twice
 		err := service.SyncConfigCredentials(ctx)
@@ -334,7 +334,7 @@ func (suite *CredentialSyncTestSuite) TestSyncConfigCredentials() {
 			storage.ProviderCredentials,
 			*storage.ProviderOptions,
 		](cloneProviderOptions))
-		service := serveropts.NewCredentialSyncService(suite.db, clientService, config)
+		service := credsync.NewCredentialSyncService(suite.db, clientService, config)
 
 		// Initial sync
 		err := service.SyncConfigCredentials(ctx)
@@ -382,7 +382,7 @@ func (suite *CredentialSyncTestSuite) TestGetActiveSystemProvider() {
 		ctx := suite.systemContext()
 
 		_, err := suite.service.GetActiveSystemProvider(ctx, storage.ProviderType("nonexistent"))
-		assert.ErrorIs(t, err, serveropts.ErrNoActiveIntegration)
+		assert.ErrorIs(t, err, credsync.ErrNoActiveIntegration)
 	})
 
 	t.Run("returns most recent integration by synchronized_at", func(t *testing.T) {
@@ -419,7 +419,7 @@ func (suite *CredentialSyncTestSuite) TestGetActiveSystemProvider() {
 			storage.ProviderCredentials,
 			*storage.ProviderOptions,
 		](cloneProviderOptions))
-		service := serveropts.NewCredentialSyncService(suite.db, clientService, config)
+		service := credsync.NewCredentialSyncService(suite.db, clientService, config)
 
 		// Run sync to create first integration
 		err := service.SyncConfigCredentials(ctx)

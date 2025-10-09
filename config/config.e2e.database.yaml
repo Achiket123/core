@@ -2,10 +2,11 @@ authz:
   enabled: true
   hostUrl: http://localhost:8080
   createNewModel: true
-  storeName: openlane-e2e
+  storeName: openlane-e2e-database
   ignoreDuplicateKeyError: true
   credentials:
     apiToken: QKwHEmWX99RnFh28eSRJ3GWlfb2FQkL7toh1GJpzch1mMkVeMg
+
 objectStorage:
   enabled: true
   devMode: false
@@ -18,29 +19,32 @@ objectStorage:
     - "uploadFile"
   providers:
     s3:
-      enabled: true
-      bucket: "provider1-bucket"
-      endpoint: "http://localhost:9000"
-      region: "us-east-1"
-      credentials:
-        accessKeyID: "provider1"
-        accessKeySecret: "provider1secret"
-    disk:
-      enabled: true
-      bucket: "./tmp/file_uploads"
+      enabled: false
+      bucket: ""
+      endpoint: ""
+      region: ""
+      credentials: {}
+    cloudflareR2:
+      enabled: false
+      bucket: ""
       endpoint: ""
       region: ""
       credentials: {}
     gcs:
-      enabled: true
-      bucket: "gcs-provider1-bucket"
-      endpoint: "http://localhost:4443/storage/v1/"
-      region: ""
-      credentials:
-        projectID: "test-project"
-    database:
       enabled: false
       bucket: ""
+      endpoint: ""
+      region: ""
+      credentials: {}
+    disk:
+      enabled: false
+      bucket: ""
+      endpoint: ""
+      region: ""
+      credentials: {}
+    database:
+      enabled: true
+      bucket: database-provider
       endpoint: ""
       region: ""
       credentials: {}

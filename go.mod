@@ -29,7 +29,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/credentials v1.18.12
 	github.com/aws/aws-sdk-go-v2/feature/s3/manager v1.19.6
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.88.1
-	github.com/brianvoe/gofakeit/v7 v7.7.1
+	github.com/brianvoe/gofakeit/v7 v7.7.3
 	github.com/cenkalti/backoff/v5 v5.0.3
 	github.com/cloudflare/cloudflare-go/v6 v6.0.1
 	github.com/fatih/camelcase v1.0.0
@@ -94,7 +94,7 @@ require (
 	github.com/theopenlane/entx v0.15.0
 	github.com/theopenlane/gqlgen-plugins v0.9.1
 	github.com/theopenlane/httpsling v0.2.2
-	github.com/theopenlane/iam v0.17.3
+	github.com/theopenlane/iam v0.17.4
 	github.com/theopenlane/newman v0.2.1
 	github.com/theopenlane/riverboat v0.4.0
 	github.com/theopenlane/utils v0.5.0
@@ -209,8 +209,8 @@ require (
 	github.com/power-devops/perfstat v0.0.0-20240221224432-82ca36839d55 // indirect
 	github.com/sergi/go-diff v1.4.0 // indirect
 	github.com/shirou/gopsutil/v4 v4.25.8 // indirect
-	github.com/testcontainers/testcontainers-go v0.38.0 // indirect
-	github.com/testcontainers/testcontainers-go/modules/openfga v0.38.0 // indirect
+	github.com/testcontainers/testcontainers-go v0.39.0 // indirect
+	github.com/testcontainers/testcontainers-go/modules/openfga v0.39.0 // indirect
 	github.com/tklauser/go-sysconf v0.3.15 // indirect
 	github.com/tklauser/numcpus v0.10.0 // indirect
 	github.com/ugorji/go/codec v1.2.12 // indirect

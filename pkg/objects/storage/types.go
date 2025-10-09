@@ -25,10 +25,11 @@ type (
 
 // Provider type constants so we can range, switch, etc
 const (
-	S3Provider   = storagetypes.S3Provider
-	R2Provider   = storagetypes.R2Provider
-	GCSProvider  = storagetypes.GCSProvider
-	DiskProvider = storagetypes.DiskProvider
+	S3Provider       = storagetypes.S3Provider
+	R2Provider       = storagetypes.R2Provider
+	GCSProvider      = storagetypes.GCSProvider
+	DiskProvider     = storagetypes.DiskProvider
+	DatabaseProvider = storagetypes.DatabaseProvider
 )
 
 // Configuration constants
@@ -128,8 +129,18 @@ type ProviderConfig struct {
 	MaxMemoryMB int64 `json:"maxMemoryMB" koanf:"maxMemoryMB"`
 	// DevMode enables simple file upload handling for local development and testing
 	DevMode bool `json:"devMode" koanf:"devMode" default:"false"`
+	// EnsureAvailable enforces provider availability before completing server startup
+	EnsureAvailable bool `json:"ensureAvailable" koanf:"ensureAvailable" default:"false"`
+	// CredentialSync contains options for synchronizing provider credentials into the database
+	CredentialSync CredentialSyncConfig `json:"credentialSync" koanf:"credentialSync"`
 	// Providers contains configuration for each storage provider
 	Providers Providers `json:"providers" koanf:"providers"`
+}
+
+// CredentialSyncConfig controls whether provider credentials are synchronized into the database
+type CredentialSyncConfig struct {
+	// Enabled indicates whether credential synchronization runs on startup
+	Enabled bool `json:"enabled" koanf:"enabled" default:"true"`
 }
 
 type Providers struct {
@@ -141,6 +152,8 @@ type Providers struct {
 	GCS ProviderConfigs `json:"gcs" koanf:"gcs"`
 	// Disk provider configuration
 	Disk ProviderConfigs `json:"disk" koanf:"disk"`
+	// Database provider configuration
+	Database ProviderConfigs `json:"database" koanf:"database"`
 }
 
 // ProviderConfigs contains configuration for all storage providers

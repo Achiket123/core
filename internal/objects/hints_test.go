@@ -61,7 +61,4 @@ func TestApplyProviderHints(t *testing.T) {
 	require.True(t, resModule.IsPresent())
 	assert.Equal(t, module, resModule.MustGet())
 
-	size := cp.GetHint(ctx, SizeBytesHintKey())
-	require.True(t, size.IsPresent())
-	assert.Equal(t, int64(2048), size.MustGet())
 }

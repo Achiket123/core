@@ -40,19 +40,32 @@ func HandleUploads(ctx context.Context, svc *objects.Service, files []storage.Fi
 			file.CorrelatedObjectType = "organization"
 		}
 
+		// Normalize metadata (content type, hints) before we persist the file record so
+		// downstream storage providers see consistent values.
+		uploadOpts := BuildUploadOptions(ctx, &file)
+
 		entFile, err := store.CreateFileRecord(ctx, file)
 		if err != nil {
 			log.Error().Err(err).Str("file", file.OriginalName).Msg("failed to create file record")
 			finish("error")
+
 			return ctx, nil, err
 		}
+		if uploadOpts.ProviderHints == nil {
+			uploadOpts.ProviderHints = &storage.ProviderHints{}
+		}
 
-		uploadOpts := BuildUploadOptions(ctx, file)
+		if uploadOpts.ProviderHints.Metadata == nil {
+			uploadOpts.ProviderHints.Metadata = map[string]string{}
+		}
+
+		uploadOpts.ProviderHints.Metadata["file_id"] = entFile.ID
 
 		uploadedFile, err := svc.Upload(ctx, file.RawFile, uploadOpts)
 		if err != nil {
 			log.Error().Err(err).Str("file", file.OriginalName).Msg("failed to upload file")
 			finish("error")
+
 			return ctx, nil, err
 		}
 
@@ -64,6 +77,7 @@ func HandleUploads(ctx context.Context, svc *objects.Service, files []storage.Fi
 		if err := store.UpdateFileWithStorageMetadata(ctx, entFile, *uploadedFile); err != nil {
 			log.Error().Err(err).Msg("failed to update file metadata")
 			finish("error")
+
 			return ctx, nil, err
 		}
 
@@ -81,6 +95,7 @@ func HandleUploads(ctx context.Context, svc *objects.Service, files []storage.Fi
 		if fieldName == "" {
 			fieldName = "uploads"
 		}
+
 		contextFilesMap[fieldName] = append(contextFilesMap[fieldName], file)
 	}
 
@@ -88,22 +103,38 @@ func HandleUploads(ctx context.Context, svc *objects.Service, files []storage.Fi
 	return ctx, uploadedFiles, nil
 }
 
-// BuildUploadOptions prepares upload options enriched with provider hints.
-func BuildUploadOptions(ctx context.Context, f storage.File) *storage.UploadOptions {
+// BuildUploadOptions prepares upload options enriched with provider hints and ensures
+// the file has a detected content type when one was not provided by the client.
+func BuildUploadOptions(ctx context.Context, f *storage.File) *storage.UploadOptions {
+	if f == nil {
+		return &storage.UploadOptions{}
+	}
+
 	if f.ProviderHints == nil {
 		f.ProviderHints = &storage.ProviderHints{}
 	}
 
 	orgID, _ := auth.GetOrganizationIDFromContext(ctx)
-	objects.PopulateProviderHints(&f, orgID)
+	objects.PopulateProviderHints(f, orgID)
 
 	contentType := f.ContentType
 	if contentType == "" || strings.EqualFold(contentType, "application/octet-stream") {
+		// When we buffer the upload we lose any stream-specific metadata, so detect the MIME now
+		// and swap in the buffered reader so the downstream provider still has access to the data.
 		if f.RawFile != nil {
 			if detected, err := storage.DetectContentType(f.RawFile); err == nil && detected != "" {
 				contentType = detected
-				f.ContentType = detected
+			} else if buffered, err := pkgobjects.NewBufferedReaderFromReader(f.RawFile); err == nil {
+				if detected, err := storage.DetectContentType(buffered); err == nil && detected != "" {
+					contentType = detected
+				}
+				// Replace the original reader so the upload pipeline can still stream the contents.
+				f.RawFile = buffered
 			}
+		}
+
+		if contentType != "" {
+			f.ContentType = contentType
 		}
 	}
 

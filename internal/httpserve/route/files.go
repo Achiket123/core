@@ -36,3 +36,19 @@ func registerUploadsHandler(router *Router) (err error) {
 
 	return router.AddUnversionedHandlerRoute(config)
 }
+
+func registerDatabaseFileDownloadHandler(router *Router) error {
+	config := Config{
+		Path:        "/files/:id/download",
+		Method:      http.MethodGet,
+		Name:        "File Download",
+		Description: handlers.AuthEndpointDesc("Download", "files via proxy-signed URLs"),
+		Tags:        []string{"files"},
+		OperationID: "FileDownload",
+		Security:    handlers.AuthenticatedSecurity,
+		Middlewares: *authenticatedEndpoint,
+		Handler:     router.Handler.DatabaseFileDownloadHandler,
+	}
+
+	return router.AddV1HandlerRoute(config)
+}

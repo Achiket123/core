@@ -611,6 +611,7 @@ func RegisterRoutes(router *Router) error {
 		registerAppleMerchantHandler,
 		register2faHandler,
 		registerExampleCSVHandler,
+		registerDatabaseFileDownloadHandler,
 		registerWebAuthnWellKnownHandler,
 		registerAcmeSolverHandler,
 		registerCSRFHandler,
