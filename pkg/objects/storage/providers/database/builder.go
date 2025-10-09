@@ -5,7 +5,6 @@ import (
 
 	"github.com/theopenlane/iam/tokens"
 
-	"github.com/theopenlane/core/pkg/cp"
 	storage "github.com/theopenlane/core/pkg/objects/storage"
 	storagetypes "github.com/theopenlane/core/pkg/objects/storage/types"
 )
@@ -30,8 +29,6 @@ func WithTokenClaims(issuer, audience string) Option {
 
 // Builder creates database providers for the client pool.
 type Builder struct {
-	credentials   storage.ProviderCredentials
-	options       *storage.ProviderOptions
 	tokenManager  *tokens.TokenManager
 	tokenAudience string
 	tokenIssuer   string
@@ -40,23 +37,6 @@ type Builder struct {
 // NewBuilder returns a new database provider builder.
 func NewBuilder() *Builder {
 	return &Builder{}
-}
-
-// WithCredentials implements cp.ClientBuilder.
-func (b *Builder) WithCredentials(credentials storage.ProviderCredentials) cp.ClientBuilder[storagetypes.Provider, storage.ProviderCredentials, *storage.ProviderOptions] {
-	b.credentials = credentials
-	return b
-}
-
-// WithConfig implements cp.ClientBuilder.
-func (b *Builder) WithConfig(config *storage.ProviderOptions) cp.ClientBuilder[storagetypes.Provider, storage.ProviderCredentials, *storage.ProviderOptions] {
-	if config == nil {
-		b.options = storage.NewProviderOptions()
-	} else {
-		b.options = config.Clone()
-	}
-
-	return b
 }
 
 // WithOptions allows applying builder-specific options.
@@ -70,14 +50,14 @@ func (b *Builder) WithOptions(opts ...Option) *Builder {
 	return b
 }
 
-// Build implements cp.ClientBuilder.
-func (b *Builder) Build(_ context.Context) (storagetypes.Provider, error) {
-	if b.options == nil {
-		b.options = storage.NewProviderOptions()
+// Build implements eddy.Builder.
+func (b *Builder) Build(ctx context.Context, credentials storage.ProviderCredentials, config *storage.ProviderOptions) (storagetypes.Provider, error) {
+	if config == nil {
+		config = storage.NewProviderOptions()
 	}
 
 	provider := &Provider{
-		options:       b.options.Clone(),
+		options:       config.Clone(),
 		tokenManager:  b.tokenManager,
 		tokenAudience: b.tokenAudience,
 		tokenIssuer:   b.tokenIssuer,
@@ -86,7 +66,7 @@ func (b *Builder) Build(_ context.Context) (storagetypes.Provider, error) {
 	return provider, nil
 }
 
-// ClientType implements cp.ClientBuilder.
-func (b *Builder) ClientType() cp.ProviderType {
-	return cp.ProviderType(storage.DatabaseProvider)
+// ProviderType implements eddy.Builder.
+func (b *Builder) ProviderType() string {
+	return string(storage.DatabaseProvider)
 }

@@ -2,497 +2,325 @@ package objects
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"io"
-	"strings"
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-	"github.com/theopenlane/core/pkg/cp"
-	"github.com/theopenlane/core/pkg/models"
+	"github.com/oklog/ulid/v2"
+	"github.com/samber/mo"
+
+	"github.com/theopenlane/core/pkg/eddy"
 	"github.com/theopenlane/core/pkg/objects/storage"
 	storagetypes "github.com/theopenlane/core/pkg/objects/storage/types"
 	"github.com/theopenlane/iam/auth"
-	"github.com/theopenlane/utils/ulids"
+	"github.com/theopenlane/utils/contextx"
 )
 
-// mockProvider implements storagetypes.Provider for testing
-type mockProvider struct {
-	name string
+type fakeProvider struct {
+	id string
 }
 
-// ProviderType implements storagetypes.Provider.
-func (m *mockProvider) ProviderType() storagetypes.ProviderType {
-	return storagetypes.ProviderType(m.name)
+func (f *fakeProvider) Upload(context.Context, io.Reader, *storagetypes.UploadFileOptions) (*storagetypes.UploadedFileMetadata, error) {
+	return nil, nil
 }
 
-func (m *mockProvider) Upload(ctx context.Context, reader io.Reader, opts *storagetypes.UploadFileOptions) (*storagetypes.UploadedFileMetadata, error) {
-	return &storagetypes.UploadedFileMetadata{
-		FileMetadata: storagetypes.FileMetadata{
-			Key:          "test-file-key",
-			Size:         100,
-			ContentType:  opts.ContentType,
-			ProviderType: storagetypes.ProviderType(m.name),
-			ProviderHints: &storagetypes.ProviderHints{
-				IntegrationID:  "hint-integration",
-				HushID:         "hint-hush",
-				OrganizationID: "hint-org",
-			},
-		},
-	}, nil
+func (f *fakeProvider) Download(context.Context, *storagetypes.File, *storagetypes.DownloadFileOptions) (*storagetypes.DownloadedFileMetadata, error) {
+	return nil, nil
 }
 
-func (m *mockProvider) Download(ctx context.Context, file *storagetypes.File, opts *storagetypes.DownloadFileOptions) (*storagetypes.DownloadedFileMetadata, error) {
-	// Return a fixed size download to match test expectations
-	content := make([]byte, 100) // 100 bytes to match test
-	for i := range content {
-		content[i] = byte('A' + (i % 26)) // Fill with letters
-	}
-	return &storagetypes.DownloadedFileMetadata{
-		File: content,
-		Size: 100,
-	}, nil
-}
-
-func (m *mockProvider) Delete(ctx context.Context, file *storagetypes.File, opts *storagetypes.DeleteFileOptions) error {
+func (f *fakeProvider) Delete(context.Context, *storagetypes.File, *storagetypes.DeleteFileOptions) error {
 	return nil
 }
 
-func (m *mockProvider) GetPresignedURL(ctx context.Context, file *storagetypes.File, opts *storagetypes.PresignedURLOptions) (string, error) {
-	key := ""
-	expires := time.Hour
-	if file != nil {
-		key = file.ID
-	}
-	if opts != nil && opts.Duration > 0 {
-		expires = opts.Duration
-	}
-	return fmt.Sprintf("https://%s.example.com/presigned/%s?expires=%d", m.name, key, int64(expires.Seconds())), nil
+func (f *fakeProvider) GetPresignedURL(context.Context, *storagetypes.File, *storagetypes.PresignedURLOptions) (string, error) {
+	return "", nil
 }
 
-func (m *mockProvider) Exists(ctx context.Context, file *storagetypes.File) (bool, error) {
+func (f *fakeProvider) Exists(context.Context, *storagetypes.File) (bool, error) {
 	return true, nil
 }
 
-func (m *mockProvider) GetScheme() *string {
-	scheme := fmt.Sprintf("%s://", m.name)
-	return &scheme
-}
-
-func (m *mockProvider) ListBuckets() ([]string, error) {
-	// Return a mock list of buckets for testing
-	return []string{"bucket1", "bucket2"}, nil
-}
-
-func (m *mockProvider) Close() error {
+func (f *fakeProvider) GetScheme() *string {
 	return nil
 }
 
-// mockBuilder implements cp.ClientBuilder for testing
-type mockBuilder struct {
-	provider *mockProvider
+func (f *fakeProvider) ListBuckets() ([]string, error) {
+	return nil, nil
 }
 
-func (m *mockBuilder) WithCredentials(storage.ProviderCredentials) cp.ClientBuilder[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions] {
-	return m
+func (f *fakeProvider) ProviderType() storagetypes.ProviderType {
+	return storagetypes.ProviderType(f.id)
 }
 
-func (m *mockBuilder) WithConfig(*storage.ProviderOptions) cp.ClientBuilder[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions] {
-	return m
+func (f *fakeProvider) Close() error {
+	return nil
 }
 
-func (m *mockBuilder) Build(ctx context.Context) (storage.Provider, error) {
-	return m.provider, nil
-}
-
-func (m *mockBuilder) ClientType() cp.ProviderType {
-	return cp.ProviderType(m.provider.name)
-}
-
-func cloneProviderOptions(in *storage.ProviderOptions) *storage.ProviderOptions {
-	if in == nil {
-		return nil
+func TestProviderCacheKeyString(t *testing.T) {
+	key := ProviderCacheKey{TenantID: "tenant", IntegrationType: "s3"}
+	if got := key.String(); got != "tenant:s3" {
+		t.Fatalf("expected cache key to be %q, got %q", "tenant:s3", got)
 	}
-	return in.Clone()
 }
 
-// createTestService creates a test service with typed context resolution rules
-func createTestService() *Service {
-	// Create resolver with typed context rules
-	resolver := cp.NewResolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]()
+func TestBuildDownloadObjectURI(t *testing.T) {
+	got := buildDownloadObjectURI(storagetypes.S3Provider, "bucket", "key")
+	if got != "s3:bucket:key" {
+		t.Fatalf("expected URI %q, got %q", "s3:bucket:key", got)
+	}
+}
 
-	// Trust Center Module → R2 Provider
-	trustCenterRule := cp.NewRule[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]().
-		WhenFunc(func(ctx context.Context) bool {
-			return cp.GetValueEquals(ctx, models.CatalogTrustCenterModule)
-		}).
-		Resolve(func(context.Context) (*cp.ResolvedProvider[storage.ProviderCredentials, *storage.ProviderOptions], error) {
-			return &cp.ResolvedProvider[storage.ProviderCredentials, *storage.ProviderOptions]{
-				Type:        "r2",
-				Credentials: storage.ProviderCredentials{},
-				Config:      storage.NewProviderOptions(storage.WithBucket("trust-center"), storage.WithRegion("us-east-1")),
-			}, nil
-		})
+func TestServiceStoreAndLookupDownloadSecret(t *testing.T) {
+	svc := &Service{}
+	tokenID := ulid.Make()
+	secret := []byte("super-secret")
 
-	// Compliance Module → S3 Provider
-	complianceRule := cp.NewRule[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]().
-		WhenFunc(func(ctx context.Context) bool {
-			return cp.GetValueEquals(ctx, models.CatalogComplianceModule)
-		}).
-		Resolve(func(context.Context) (*cp.ResolvedProvider[storage.ProviderCredentials, *storage.ProviderOptions], error) {
-			return &cp.ResolvedProvider[storage.ProviderCredentials, *storage.ProviderOptions]{
-				Type:        "s3",
-				Credentials: storage.ProviderCredentials{},
-				Config:      storage.NewProviderOptions(storage.WithBucket("compliance"), storage.WithRegion("us-west-2")),
-			}, nil
-		})
+	svc.storeDownloadSecret(tokenID, secret, time.Now().Add(time.Minute))
 
-	// Default rule for fallback
-	defaultRule := cp.DefaultRule[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions](cp.Resolution[storage.ProviderCredentials, *storage.ProviderOptions]{
-		ClientType:  "disk",
-		Credentials: storage.ProviderCredentials{},
-		Config:      storage.NewProviderOptions(storage.WithBasePath("/tmp"), storage.WithBucket("/tmp")),
+	retrieved, ok := svc.LookupDownloadSecret(tokenID)
+	if !ok {
+		t.Fatal("expected secret to be found")
+	}
+
+	if string(retrieved) != string(secret) {
+		t.Fatalf("expected secret %q, got %q", string(secret), string(retrieved))
+	}
+
+	// original slice mutation should not affect stored secret
+	secret[0] = 'x'
+	retrievedAgain, ok := svc.LookupDownloadSecret(tokenID)
+	if !ok || string(retrievedAgain) != "super-secret" {
+		t.Fatal("expected stored secret to be independent of original slice")
+	}
+}
+
+func TestServiceStoreDownloadSecretExpires(t *testing.T) {
+	svc := &Service{}
+	tokenID := ulid.Make()
+	svc.storeDownloadSecret(tokenID, []byte("secret"), time.Now().Add(30*time.Millisecond))
+
+	if _, ok := svc.LookupDownloadSecret(tokenID); !ok {
+		t.Fatal("expected secret to be present immediately after storing")
+	}
+
+	time.Sleep(60 * time.Millisecond)
+
+	if _, ok := svc.LookupDownloadSecret(tokenID); ok {
+		t.Fatal("expected secret to be purged after expiration")
+	}
+}
+
+func TestServiceStoreDownloadSecretIgnoresInvalidInput(t *testing.T) {
+	svc := &Service{}
+	svc.storeDownloadSecret(ulid.ULID{}, []byte("secret"), time.Now().Add(time.Minute))
+	svc.storeDownloadSecret(ulid.Make(), nil, time.Now().Add(time.Minute))
+
+	stored := false
+	svc.downloadSecrets.Range(func(key, value any) bool {
+		stored = true
+		return false
 	})
 
-	resolver.AddRule(trustCenterRule)
-	resolver.AddRule(complianceRule)
-	resolver.AddRule(defaultRule)
-
-	// Create client service with mock builders
-	pool := cp.NewClientPool[storage.Provider](5 * time.Minute)
-	clientService := cp.NewClientService[
-		storage.Provider,
-		storage.ProviderCredentials,
-		*storage.ProviderOptions,
-	](pool, cp.WithConfigClone[
-		storage.Provider,
-		storage.ProviderCredentials,
-		*storage.ProviderOptions,
-	](cloneProviderOptions))
-
-	// Register mock builders
-	clientService.RegisterBuilder("r2", &mockBuilder{provider: &mockProvider{name: "r2"}})
-	clientService.RegisterBuilder("s3", &mockBuilder{provider: &mockProvider{name: "s3"}})
-	clientService.RegisterBuilder("disk", &mockBuilder{provider: &mockProvider{name: "disk"}})
-
-	return NewService(Config{
-		Resolver:      resolver,
-		ClientService: clientService,
-	})
-}
-
-func TestService_Upload_TypedContextResolution(t *testing.T) {
-	service := createTestService()
-
-	tests := []struct {
-		name             string
-		setupContext     func() context.Context
-		expectedProvider string
-	}{
-		{
-			name: "TrustCenter module resolves to R2",
-			setupContext: func() context.Context {
-				// Create authenticated user context with organization ID
-				ctx := auth.NewTestContextWithOrgID(ulids.New().String(), ulids.New().String())
-				// Add module information for provider resolution
-				ctx = cp.WithValue(ctx, models.CatalogTrustCenterModule)
-				return ctx
-			},
-			expectedProvider: "r2",
-		},
-		{
-			name: "Compliance module resolves to S3",
-			setupContext: func() context.Context {
-				ctx := auth.NewTestContextWithOrgID(ulids.New().String(), ulids.New().String())
-				ctx = cp.WithValue(ctx, models.CatalogComplianceModule)
-				return ctx
-			},
-			expectedProvider: "s3",
-		},
-		{
-			name: "Unknown module falls back to disk",
-			setupContext: func() context.Context {
-				ctx := auth.NewTestContextWithOrgID(ulids.New().String(), ulids.New().String())
-				ctx = cp.WithValue(ctx, "unknown-module")
-				return ctx
-			},
-			expectedProvider: "disk",
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			ctx := tt.setupContext()
-			reader := strings.NewReader("test content")
-			opts := &storage.UploadOptions{
-				FileName:    "test-file.txt",
-				ContentType: "text/plain",
-				FileMetadata: storagetypes.FileMetadata{
-					ProviderHints: &storagetypes.ProviderHints{},
-				},
-			}
-
-			file, err := service.Upload(ctx, reader, opts)
-			require.NoError(t, err)
-			assert.Equal(t, "test-file.txt", file.OriginalName)
-			assert.Equal(t, tt.expectedProvider, string(file.ProviderType))
-		})
+	if stored {
+		t.Fatal("expected invalid inputs to be ignored and not stored")
 	}
 }
 
-func TestService_Download_TypedContextResolution(t *testing.T) {
-	service := createTestService()
-
-	// Create a test file with metadata
-	testFile := &storagetypes.File{
-		ID:           "test-file-id",
-		OriginalName: "test-file.txt",
-		FileMetadata: storagetypes.FileMetadata{
-			Key:         "test-file-id", // Use same value as ID for testing
-			Size:        100,
-			ContentType: "text/plain",
-		},
-	}
-
-	ctx := auth.NewTestContextWithOrgID(ulids.New().String(), ulids.New().String())
-
-	downloadOpts := &storage.DownloadOptions{}
-	result, err := service.Download(ctx, nil, testFile, downloadOpts)
-	require.NoError(t, err)
-	require.NotNil(t, result)
-
-	// Verify the download result
-	assert.Equal(t, int64(100), result.Size)
-	assert.NotNil(t, result.File)
-}
-
-func TestService_GetPresignedURL_TypedContextResolution(t *testing.T) {
-	service := createTestService()
-
-	testFile := &storagetypes.File{
-		ID:           "test-file-id",
-		OriginalName: "test-file.txt",
-		FileMetadata: storagetypes.FileMetadata{
-			Key:         "test-file-id", // Use same value as ID for testing
-			Size:        100,
-			ContentType: "text/plain",
-			ProviderHints: &storagetypes.ProviderHints{
-				IntegrationID:  "test-integration",
-				HushID:         "test-hush",
-				OrganizationID: "test-org",
-			},
-		},
-	}
-
-	ctx := auth.NewTestContextWithOrgID(ulids.New().String(), ulids.New().String())
-
-	url, err := service.GetPresignedURL(ctx, testFile, time.Hour)
-	require.NoError(t, err)
-	assert.Contains(t, url, "presigned")
-	assert.Contains(t, url, testFile.ID)
-}
-
-func TestService_Delete_TypedContextResolution(t *testing.T) {
-	service := createTestService()
-
-	testFile := &storagetypes.File{
-		ID:           "test-file-id",
-		OriginalName: "test-file.txt",
-		FileMetadata: storagetypes.FileMetadata{
-			Key:         "test-file-id", // Use same value as ID for testing
-			Size:        100,
-			ContentType: "text/plain",
-			ProviderHints: &storagetypes.ProviderHints{
-				IntegrationID:  "test-integration",
-				HushID:         "test-hush",
-				OrganizationID: "test-org",
-			},
-		},
-	}
-
-	ctx := auth.NewTestContextWithOrgID(ulids.New().String(), ulids.New().String())
-
-	err := service.Delete(ctx, testFile, &storagetypes.DeleteFileOptions{})
-	require.NoError(t, err)
-}
-
-func TestService_Exists_TypedContextResolution(t *testing.T) {
-	service := createTestService()
-
-	testFile := &storagetypes.File{
-		ID:           "test-file-id",
-		OriginalName: "test-file.txt",
-		FileMetadata: storagetypes.FileMetadata{
-			Key:         "test-file-id", // Use same value as ID for testing
-			Size:        100,
-			ContentType: "text/plain",
-			ProviderHints: &storagetypes.ProviderHints{
-				IntegrationID:  "test-integration",
-				HushID:         "test-hush",
-				OrganizationID: "test-org",
-			},
-		},
-	}
-
-	ctx := auth.NewTestContextWithOrgID(ulids.New().String(), ulids.New().String())
-
-	exists, err := service.Exists(ctx, testFile)
-	require.NoError(t, err)
-	assert.True(t, exists)
-}
-
-func TestService_BuildResolutionContext(t *testing.T) {
-	service := createTestService()
-
-	ctx := auth.NewTestContextWithOrgID(ulids.New().String(), ulids.New().String())
+func TestServiceBuildResolutionContextAppliesHints(t *testing.T) {
+	svc := &Service{}
+	ctx := context.Background()
 
 	opts := &storage.UploadOptions{
-		FileName:    "test-file.txt",
-		ContentType: "text/plain",
-		FileMetadata: storagetypes.FileMetadata{
-			ProviderHints: &storagetypes.ProviderHints{
-				IntegrationID:  "hint-integration",
-				HushID:         "hint-hush",
-				OrganizationID: "hint-org",
-				Module:         models.CatalogComplianceModule,
+		FileMetadata: storage.FileMetadata{
+			ProviderHints: &storage.ProviderHints{
+				PreferredProvider: storage.S3Provider,
 				Metadata: map[string]string{
-					"size_bytes": "256",
+					"size_bytes": "1024",
 				},
 			},
 		},
 	}
 
-	enrichedCtx := service.buildResolutionContext(ctx, opts)
+	ctx = svc.buildResolutionContext(ctx, opts)
 
-	// Verify context contains expected values
-	uploadOpts := cp.GetValue[*storage.UploadOptions](enrichedCtx)
-	assert.True(t, uploadOpts.IsPresent())
-	assert.Equal(t, opts, uploadOpts.MustGet())
-
-	hints := cp.GetValue[*storagetypes.ProviderHints](enrichedCtx)
-	assert.True(t, hints.IsPresent())
-	assert.Equal(t, "hint-integration", hints.MustGet().IntegrationID)
-
-	moduleHint := cp.GetHint(enrichedCtx, ModuleHintKey())
-	assert.True(t, moduleHint.IsPresent())
-	assert.Equal(t, models.CatalogComplianceModule, moduleHint.MustGet())
+	if pref, ok := contextx.From[PreferredProviderHint](ctx); !ok || storagetypes.ProviderType(pref) != storage.S3Provider {
+		t.Fatal("expected preferred provider hint to be applied to context")
+	}
+	if size, ok := contextx.From[SizeBytesHint](ctx); !ok || int64(size) != 1024 {
+		t.Fatalf("expected size hint to be applied")
+	}
 }
 
-func TestService_BuildResolutionContextForFile(t *testing.T) {
-	service := createTestService()
+func TestServiceResolveUploadProviderSuccess(t *testing.T) {
+	orgID := ulid.Make().String()
+	ctx := auth.WithAuthenticatedUser(context.Background(), &auth.AuthenticatedUser{
+		SubjectID:          ulid.Make().String(),
+		OrganizationID:     orgID,
+		AuthenticationType: auth.APITokenAuthentication,
+	})
 
-	ctx := auth.NewTestContextWithOrgID(ulids.New().String(), ulids.New().String())
+	pool := eddy.NewClientPool[storage.Provider](time.Minute)
+	clientService := eddy.NewClientService[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions](pool)
 
-	file := &storagetypes.File{
-		ID:           "test-file-id",
-		OriginalName: "test-file.txt",
-		FileMetadata: storagetypes.FileMetadata{
-			ProviderHints: &storagetypes.ProviderHints{
-				IntegrationID:  "file-integration",
-				HushID:         "file-hush",
-				OrganizationID: "file-org",
-				Module:         models.CatalogTrustCenterModule,
-			},
+	expectedProvider := &fakeProvider{id: "fake"}
+	var buildCalls int
+
+	builder := &eddy.BuilderFunc[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]{
+		Type: "fake",
+		Func: func(context.Context, storage.ProviderCredentials, *storage.ProviderOptions) (storage.Provider, error) {
+			buildCalls++
+			return expectedProvider, nil
 		},
 	}
 
-	enrichedCtx := service.buildResolutionContextForFile(ctx, file)
+	resolver := eddy.NewResolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]()
+	resolver.AddRule(&eddy.RuleFunc[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]{
+		EvaluateFunc: func(context.Context) mo.Option[eddy.Result[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]] {
+			return mo.Some(eddy.Result[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]{
+				Builder: builder,
+				Output:  storage.ProviderCredentials{AccessKeyID: "id"},
+				Config:  storage.NewProviderOptions(),
+			})
+		},
+	})
 
-	// Verify context contains expected values
-	contextFile := cp.GetValue[*storagetypes.File](enrichedCtx)
-	assert.True(t, contextFile.IsPresent())
-	assert.Equal(t, file, contextFile.MustGet())
-
-	moduleHint := cp.GetHint(enrichedCtx, ModuleHintKey())
-	assert.True(t, moduleHint.IsPresent())
-	assert.Equal(t, models.CatalogTrustCenterModule, moduleHint.MustGet())
-}
-
-func TestService_ResolveProvider_ErrorHandling(t *testing.T) {
-	// Create resolver with no rules (should fail resolution)
-	resolver := cp.NewResolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]()
-	pool := cp.NewClientPool[storage.Provider](5 * time.Minute)
-	clientService := cp.NewClientService[
-		storage.Provider,
-		storage.ProviderCredentials,
-		*storage.ProviderOptions,
-	](pool, cp.WithConfigClone[
-		storage.Provider,
-		storage.ProviderCredentials,
-		*storage.ProviderOptions,
-	](cloneProviderOptions))
 	service := NewService(Config{
 		Resolver:      resolver,
 		ClientService: clientService,
 	})
 
-	ctx := auth.NewTestContextWithOrgID(ulids.New().String(), ulids.New().String())
+	provider, err := service.resolveUploadProvider(ctx, &storage.UploadOptions{})
+	if err != nil {
+		t.Fatalf("expected no error resolving provider, got %v", err)
+	}
 
-	opts := &storage.UploadOptions{
-		FileName:    "test-file.txt",
-		ContentType: "text/plain",
+	if provider != expectedProvider {
+		t.Fatalf("expected provider %v, got %v", expectedProvider, provider)
+	}
+
+	// second call should use cache
+	provider2, err := service.resolveUploadProvider(ctx, &storage.UploadOptions{})
+	if err != nil {
+		t.Fatalf("expected cached provider, got error %v", err)
+	}
+
+	if provider2 != expectedProvider {
+		t.Fatal("expected cached provider to be returned")
+	}
+
+	if buildCalls != 1 {
+		t.Fatalf("expected builder to be called once, got %d", buildCalls)
+	}
+}
+
+func TestServiceResolveUploadProviderErrors(t *testing.T) {
+	ctx := context.Background()
+	clientService := eddy.NewClientService[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions](eddy.NewClientPool[storage.Provider](time.Minute))
+
+	service := NewService(Config{
+		Resolver:      eddy.NewResolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions](),
+		ClientService: clientService,
+	})
+
+	if _, err := service.resolveUploadProvider(ctx, &storage.UploadOptions{}); !errors.Is(err, ErrProviderResolutionFailed) {
+		t.Fatalf("expected ErrProviderResolutionFailed, got %v", err)
+	}
+
+	resolverMissingBuilder := eddy.NewResolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]()
+	resolverMissingBuilder.AddRule(&eddy.RuleFunc[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]{
+		EvaluateFunc: func(context.Context) mo.Option[eddy.Result[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]] {
+			return mo.Some(eddy.Result[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]{})
+		},
+	})
+
+	service.resolver = resolverMissingBuilder
+
+	if _, err := service.resolveUploadProvider(ctx, &storage.UploadOptions{}); !errors.Is(err, ErrProviderResolutionFailed) {
+		t.Fatalf("expected ErrProviderResolutionFailed when builder missing, got %v", err)
+	}
+
+	builder := &eddy.BuilderFunc[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]{
+		Type: "fake",
+		Func: func(context.Context, storage.ProviderCredentials, *storage.ProviderOptions) (storage.Provider, error) {
+			return &fakeProvider{id: "fake"}, nil
+		},
+	}
+
+	resolverNoOrg := eddy.NewResolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]()
+	resolverNoOrg.AddRule(&eddy.RuleFunc[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]{
+		EvaluateFunc: func(context.Context) mo.Option[eddy.Result[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]] {
+			return mo.Some(eddy.Result[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]{
+				Builder: builder,
+				Output:  storage.ProviderCredentials{},
+				Config:  storage.NewProviderOptions(),
+			})
+		},
+	})
+
+	service.resolver = resolverNoOrg
+
+	if _, err := service.resolveUploadProvider(context.Background(), &storage.UploadOptions{}); !errors.Is(err, ErrNoOrganizationID) {
+		t.Fatalf("expected ErrNoOrganizationID, got %v", err)
+	}
+}
+
+func TestServiceResolveDownloadProvider(t *testing.T) {
+	pool := eddy.NewClientPool[storage.Provider](time.Minute)
+	clientService := eddy.NewClientService[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions](pool)
+
+	expectedProvider := &fakeProvider{id: "fake"}
+	builder := &eddy.BuilderFunc[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]{
+		Type: "fake",
+		Func: func(context.Context, storage.ProviderCredentials, *storage.ProviderOptions) (storage.Provider, error) {
+			return expectedProvider, nil
+		},
+	}
+
+	resolver := eddy.NewResolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]()
+	resolver.AddRule(&eddy.RuleFunc[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]{
+		EvaluateFunc: func(context.Context) mo.Option[eddy.Result[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]] {
+			return mo.Some(eddy.Result[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]{
+				Builder: builder,
+				Output:  storage.ProviderCredentials{},
+				Config:  storage.NewProviderOptions(storage.WithBucket("bucket")),
+			})
+		},
+	})
+
+	service := NewService(Config{
+		Resolver:      resolver,
+		ClientService: clientService,
+	})
+
+	file := &storagetypes.File{
+		ID: "file",
 		FileMetadata: storagetypes.FileMetadata{
+			ProviderType:  storagetypes.ProviderType(builder.Type),
+			Bucket:        "bucket",
+			Key:           "key",
 			ProviderHints: &storagetypes.ProviderHints{},
 		},
 	}
 
-	reader := strings.NewReader("test content")
-	_, err := service.Upload(ctx, reader, opts)
-	assert.Error(t, err)
-	assert.ErrorIs(t, err, ErrProviderResolutionFailed)
-}
-
-func TestService_ResolveProviderForFile_ErrorHandling(t *testing.T) {
-	// Create resolver with no rules
-	resolver := cp.NewResolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]()
-	pool := cp.NewClientPool[storage.Provider](5 * time.Minute)
-	clientService := cp.NewClientService[
-		storage.Provider,
-		storage.ProviderCredentials,
-		*storage.ProviderOptions,
-	](pool, cp.WithConfigClone[
-		storage.Provider,
-		storage.ProviderCredentials,
-		*storage.ProviderOptions,
-	](cloneProviderOptions))
-	service := NewService(Config{
-		Resolver:      resolver,
-		ClientService: clientService,
-	})
-
-	ctx := auth.NewTestContextWithOrgID(ulids.New().String(), ulids.New().String())
-
-	testFile := &storagetypes.File{
-		ID: "test-file-id",
-		FileMetadata: storagetypes.FileMetadata{
-			Key: "test-file-id", // Use same value as ID for testing
-			ProviderHints: &storagetypes.ProviderHints{
-				IntegrationID:  "test-integration",
-				HushID:         "test-hush",
-				OrganizationID: "test-org",
-			},
-		},
+	provider, err := service.resolveDownloadProvider(context.Background(), file)
+	if err != nil {
+		t.Fatalf("expected no error, got %v", err)
 	}
 
-	_, err := service.Download(ctx, nil, testFile, &storage.DownloadOptions{})
-	assert.Error(t, err)
-	assert.ErrorIs(t, err, ErrProviderResolutionFailed)
+	if provider != expectedProvider {
+		t.Fatal("expected resolved provider to match builder result")
+	}
 }
 
-func TestAuthContext_Verification(t *testing.T) {
-	// Test that auth context functions work as expected - use generated ULIDs
-	testUserID := ulids.New().String()
-	testOrgID := ulids.New().String()
+func TestServiceResolveDownloadProviderNoResult(t *testing.T) {
+	service := NewService(Config{
+		Resolver:      eddy.NewResolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions](),
+		ClientService: eddy.NewClientService[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions](eddy.NewClientPool[storage.Provider](time.Minute)),
+	})
 
-	ctx := auth.NewTestContextWithOrgID(testUserID, testOrgID)
-
-	orgID, err := auth.GetOrganizationIDFromContext(ctx)
-	require.NoError(t, err, "Should be able to get organization ID from test context")
-	assert.Equal(t, testOrgID, orgID)
-
-	subjectID, err := auth.GetSubjectIDFromContext(ctx)
-	require.NoError(t, err, "Should be able to get subject ID from test context")
-	assert.Equal(t, testUserID, subjectID)
+	file := &storagetypes.File{ID: "file"}
+	if _, err := service.resolveDownloadProvider(context.Background(), file); !errors.Is(err, ErrProviderResolutionFailed) {
+		t.Fatalf("expected ErrProviderResolutionFailed, got %v", err)
+	}
 }

@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/manderson/openlane/utils/contextx/**)",
+      "Bash(go build:*)",
+      "Bash(go test:*)",
+      "Read(//Users/manderson/openlane/iam/auth/**)",
+      "Bash(go list:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

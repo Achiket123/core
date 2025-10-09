@@ -7,10 +7,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/theopenlane/core/pkg/cp"
 	"github.com/theopenlane/core/pkg/models"
 	"github.com/theopenlane/core/pkg/objects/storage"
 	storagetypes "github.com/theopenlane/core/pkg/objects/storage/types"
+	"github.com/theopenlane/utils/contextx"
 )
 
 func TestPopulateProviderHints(t *testing.T) {
@@ -49,16 +49,19 @@ func TestApplyProviderHints(t *testing.T) {
 
 	ctx := ApplyProviderHints(context.Background(), hints)
 
-	pref := cp.GetHint(ctx, PreferredProviderHintKey())
-	require.True(t, pref.IsPresent())
-	assert.Equal(t, storagetypes.ProviderType("s3"), pref.MustGet())
+	pref, ok := contextx.From[PreferredProviderHint](ctx)
+	require.True(t, ok)
+	assert.Equal(t, storagetypes.ProviderType(pref), storagetypes.ProviderType("s3"))
 
-	known := cp.GetHint(ctx, KnownProviderHintKey())
-	require.True(t, known.IsPresent())
-	assert.Equal(t, storagetypes.ProviderType("disk"), known.MustGet())
+	known, ok := contextx.From[KnownProviderHint](ctx)
+	require.True(t, ok)
+	assert.Equal(t, storagetypes.ProviderType(known), storagetypes.ProviderType("disk"))
 
-	resModule := cp.GetHint(ctx, ModuleHintKey())
-	require.True(t, resModule.IsPresent())
-	assert.Equal(t, module, resModule.MustGet())
+	resModule, ok := contextx.From[ModuleHint](ctx)
+	require.True(t, ok)
+	assert.Equal(t, models.OrgModule(resModule), module)
 
+	size, ok := contextx.From[SizeBytesHint](ctx)
+	require.True(t, ok)
+	assert.Equal(t, int64(size), int64(2048))
 }

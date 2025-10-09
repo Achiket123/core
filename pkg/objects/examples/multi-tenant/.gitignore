@@ -1,6 +1,0 @@
-bin/
-tmp/
-tenants.json
-cpu.prof
-mem.prof
-multi-tenant

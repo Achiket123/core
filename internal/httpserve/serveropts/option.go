@@ -670,7 +670,7 @@ func validateDiskProvider(ctx context.Context, cfg storage.ProviderConfigs) erro
 		options.Apply(storage.WithLocalURL(cfg.Endpoint))
 	}
 
-	provider, err := disk.NewDiskBuilder().WithCredentials(cfg.Credentials).WithConfig(options).Build(ctx)
+	provider, err := disk.NewDiskBuilder().Build(ctx, cfg.Credentials, options)
 	if err != nil {
 		return fmt.Errorf("disk provider initialization: %w", err)
 	}
@@ -697,7 +697,7 @@ func validateS3Provider(ctx context.Context, cfg storage.ProviderConfigs) error 
 		options.Apply(storage.WithEndpoint(cfg.Endpoint))
 	}
 
-	provider, err := s3provider.NewS3Builder().WithCredentials(cfg.Credentials).WithConfig(options).Build(ctx)
+	provider, err := s3provider.NewS3Builder().Build(ctx, cfg.Credentials, options)
 	if err != nil {
 		return fmt.Errorf("s3 provider initialization: %w", err)
 	}
@@ -719,7 +719,7 @@ func validateR2Provider(ctx context.Context, cfg storage.ProviderConfigs) error 
 		options.Apply(storage.WithEndpoint(cfg.Endpoint))
 	}
 
-	provider, err := r2provider.NewR2Builder().WithCredentials(cfg.Credentials).WithConfig(options).Build(ctx)
+	provider, err := r2provider.NewR2Builder().Build(ctx, cfg.Credentials, options)
 	if err != nil {
 		return fmt.Errorf("r2 provider initialization: %w", err)
 	}

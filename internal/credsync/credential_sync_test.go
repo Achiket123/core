@@ -11,7 +11,7 @@ import (
 	ent "github.com/theopenlane/core/internal/ent/generated"
 	"github.com/theopenlane/core/internal/ent/generated/hush"
 	"github.com/theopenlane/core/internal/ent/generated/integration"
-	"github.com/theopenlane/core/pkg/cp"
+	"github.com/theopenlane/core/pkg/eddy"
 	"github.com/theopenlane/core/pkg/models"
 	"github.com/theopenlane/core/pkg/objects/storage"
 
@@ -211,12 +211,12 @@ func (suite *CredentialSyncTestSuite) TestSyncConfigCredentials() {
 			},
 		}
 
-		clientPool := cp.NewClientPool[storage.Provider](time.Hour)
-		clientService := cp.NewClientService[
+		clientPool := eddy.NewClientPool[storage.Provider](time.Hour)
+		clientService := eddy.NewClientService[
 			storage.Provider,
 			storage.ProviderCredentials,
 			*storage.ProviderOptions,
-		](clientPool, cp.WithConfigClone[
+		](clientPool, eddy.WithConfigClone[
 			storage.Provider,
 			storage.ProviderCredentials,
 			*storage.ProviderOptions,
@@ -263,12 +263,12 @@ func (suite *CredentialSyncTestSuite) TestSyncConfigCredentials() {
 			},
 		}
 
-		clientPool := cp.NewClientPool[storage.Provider](time.Hour)
-		clientService := cp.NewClientService[
+		clientPool := eddy.NewClientPool[storage.Provider](time.Hour)
+		clientService := eddy.NewClientService[
 			storage.Provider,
 			storage.ProviderCredentials,
 			*storage.ProviderOptions,
-		](clientPool, cp.WithConfigClone[
+		](clientPool, eddy.WithConfigClone[
 			storage.Provider,
 			storage.ProviderCredentials,
 			*storage.ProviderOptions,
@@ -324,12 +324,12 @@ func (suite *CredentialSyncTestSuite) TestSyncConfigCredentials() {
 			},
 		}
 
-		clientPool := cp.NewClientPool[storage.Provider](time.Hour)
-		clientService := cp.NewClientService[
+		clientPool := eddy.NewClientPool[storage.Provider](time.Hour)
+		clientService := eddy.NewClientService[
 			storage.Provider,
 			storage.ProviderCredentials,
 			*storage.ProviderOptions,
-		](clientPool, cp.WithConfigClone[
+		](clientPool, eddy.WithConfigClone[
 			storage.Provider,
 			storage.ProviderCredentials,
 			*storage.ProviderOptions,
@@ -409,12 +409,12 @@ func (suite *CredentialSyncTestSuite) TestGetActiveSystemProvider() {
 			},
 		}
 
-		clientPool := cp.NewClientPool[storage.Provider](time.Hour)
-		clientService := cp.NewClientService[
+		clientPool := eddy.NewClientPool[storage.Provider](time.Hour)
+		clientService := eddy.NewClientService[
 			storage.Provider,
 			storage.ProviderCredentials,
 			*storage.ProviderOptions,
-		](clientPool, cp.WithConfigClone[
+		](clientPool, eddy.WithConfigClone[
 			storage.Provider,
 			storage.ProviderCredentials,
 			*storage.ProviderOptions,

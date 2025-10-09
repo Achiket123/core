@@ -6,7 +6,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/theopenlane/core/pkg/cp"
 	"github.com/theopenlane/core/pkg/objects/storage"
 	r2provider "github.com/theopenlane/core/pkg/objects/storage/providers/r2"
 	storagetypes "github.com/theopenlane/core/pkg/objects/storage/types"
@@ -15,24 +14,6 @@ import (
 func TestNewR2Builder(t *testing.T) {
 	builder := r2provider.NewR2Builder()
 	assert.NotNil(t, builder)
-
-	var _ cp.ClientBuilder[storagetypes.Provider, storage.ProviderCredentials, *storage.ProviderOptions] = builder
-}
-
-func TestR2BuilderWithCredentials(t *testing.T) {
-	builder := r2provider.NewR2Builder()
-	creds := storage.ProviderCredentials{AccountID: "account", AccessKeyID: "access", SecretAccessKey: "secret"}
-
-	result := builder.WithCredentials(creds)
-	assert.Equal(t, builder, result)
-}
-
-func TestR2BuilderWithConfig(t *testing.T) {
-	builder := r2provider.NewR2Builder()
-	options := r2Options()
-
-	result := builder.WithConfig(options)
-	assert.Equal(t, builder, result)
 }
 
 func TestR2BuilderBuild(t *testing.T) {
@@ -68,8 +49,8 @@ func TestR2BuilderBuild(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			builder := r2provider.NewR2Builder().WithCredentials(tt.credentials).WithConfig(tt.options)
-			provider, err := builder.Build(context.Background())
+			builder := r2provider.NewR2Builder()
+			provider, err := builder.Build(context.Background(), tt.credentials, tt.options)
 
 			if tt.expectError {
 				assert.Error(t, err)
@@ -85,7 +66,7 @@ func TestR2BuilderBuild(t *testing.T) {
 	}
 }
 
-func TestR2BuilderClientType(t *testing.T) {
+func TestR2BuilderProviderType(t *testing.T) {
 	builder := r2provider.NewR2Builder()
-	assert.Equal(t, cp.ProviderType(storagetypes.R2Provider), builder.ClientType())
+	assert.Equal(t, string(storagetypes.R2Provider), builder.ProviderType())
 }

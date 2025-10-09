@@ -6,7 +6,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/theopenlane/core/pkg/cp"
 	"github.com/theopenlane/core/pkg/objects/storage"
 	diskprovider "github.com/theopenlane/core/pkg/objects/storage/providers/disk"
 	storagetypes "github.com/theopenlane/core/pkg/objects/storage/types"
@@ -15,24 +14,6 @@ import (
 func TestNewDiskBuilder(t *testing.T) {
 	builder := diskprovider.NewDiskBuilder()
 	assert.NotNil(t, builder)
-
-	var _ cp.ClientBuilder[storagetypes.Provider, storage.ProviderCredentials, *storage.ProviderOptions] = builder
-}
-
-func TestDiskBuilderWithCredentials(t *testing.T) {
-	builder := diskprovider.NewDiskBuilder()
-	creds := storage.ProviderCredentials{Endpoint: "http://localhost:8080/files"}
-
-	result := builder.WithCredentials(creds)
-	assert.Equal(t, builder, result)
-}
-
-func TestDiskBuilderWithConfig(t *testing.T) {
-	builder := diskprovider.NewDiskBuilder()
-	options := storage.NewProviderOptions(storage.WithBucket("/tmp/test-storage"))
-
-	result := builder.WithConfig(options)
-	assert.Equal(t, builder, result)
 }
 
 func TestDiskBuilderBuild(t *testing.T) {
@@ -56,8 +37,8 @@ func TestDiskBuilderBuild(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			builder := diskprovider.NewDiskBuilder().WithCredentials(tt.credentials).WithConfig(tt.options)
-			provider, err := builder.Build(context.Background())
+			builder := diskprovider.NewDiskBuilder()
+			provider, err := builder.Build(context.Background(), tt.credentials, tt.options)
 
 			if tt.expectError {
 				assert.Error(t, err)
@@ -70,7 +51,7 @@ func TestDiskBuilderBuild(t *testing.T) {
 	}
 }
 
-func TestDiskBuilderClientType(t *testing.T) {
+func TestDiskBuilderProviderType(t *testing.T) {
 	builder := diskprovider.NewDiskBuilder()
-	assert.Equal(t, cp.ProviderType(storagetypes.DiskProvider), builder.ClientType())
+	assert.Equal(t, string(storagetypes.DiskProvider), builder.ProviderType())
 }

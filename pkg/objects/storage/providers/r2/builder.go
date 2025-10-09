@@ -4,46 +4,26 @@ import (
 	"context"
 
 	"github.com/samber/mo"
-	"github.com/theopenlane/core/pkg/cp"
 	storage "github.com/theopenlane/core/pkg/objects/storage"
 	storagetypes "github.com/theopenlane/core/pkg/objects/storage/types"
 )
 
 // Builder creates R2 providers for the client pool
-type Builder struct {
-	credentials storage.ProviderCredentials
-	options     *storage.ProviderOptions
-}
+type Builder struct{}
 
 // NewR2Builder creates a new R2Builder
 func NewR2Builder() *Builder {
 	return &Builder{}
 }
 
-// WithCredentials implements cp.ClientBuilder
-func (b *Builder) WithCredentials(credentials storage.ProviderCredentials) cp.ClientBuilder[storagetypes.Provider, storage.ProviderCredentials, *storage.ProviderOptions] {
-	b.credentials = credentials
-	return b
-}
-
-// WithConfig implements cp.ClientBuilder
-func (b *Builder) WithConfig(config *storage.ProviderOptions) cp.ClientBuilder[storagetypes.Provider, storage.ProviderCredentials, *storage.ProviderOptions] {
+// Build implements eddy.Builder
+func (b *Builder) Build(ctx context.Context, credentials storage.ProviderCredentials, config *storage.ProviderOptions) (storagetypes.Provider, error) {
 	if config == nil {
-		b.options = storage.NewProviderOptions()
-	} else {
-		b.options = config.Clone()
-	}
-	return b
-}
-
-// Build implements cp.ClientBuilder
-func (b *Builder) Build(_ context.Context) (storagetypes.Provider, error) {
-	if b.options == nil {
-		b.options = storage.NewProviderOptions()
+		config = storage.NewProviderOptions()
 	}
 
-	cfg := b.options.Clone()
-	cfg.Credentials = b.credentials
+	cfg := config.Clone()
+	cfg.Credentials = credentials
 
 	if cfg.Bucket == "" || cfg.Credentials.AccountID == "" || cfg.Credentials.AccessKeyID == "" || cfg.Credentials.SecretAccessKey == "" {
 		return nil, ErrR2CredentialsRequired
@@ -52,9 +32,9 @@ func (b *Builder) Build(_ context.Context) (storagetypes.Provider, error) {
 	return NewR2Provider(cfg)
 }
 
-// ClientType implements cp.ClientBuilder
-func (b *Builder) ClientType() cp.ProviderType {
-	return cp.ProviderType(storagetypes.R2Provider)
+// ProviderType implements eddy.Builder
+func (b *Builder) ProviderType() string {
+	return string(storagetypes.R2Provider)
 }
 
 // NewR2ProviderFromCredentials creates an R2 provider using the supplied credentials and options

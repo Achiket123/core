@@ -19,7 +19,7 @@ import (
 	"github.com/theopenlane/core/internal/ent/generated/hush"
 	"github.com/theopenlane/core/internal/ent/generated/integration"
 	"github.com/theopenlane/core/internal/ent/generated/privacy"
-	"github.com/theopenlane/core/pkg/cp"
+	"github.com/theopenlane/core/pkg/eddy"
 	"github.com/theopenlane/core/pkg/models"
 	"github.com/theopenlane/core/pkg/objects/storage"
 )
@@ -30,7 +30,7 @@ var ErrNoActiveIntegration = errors.New("no active system integration found")
 // CredentialSyncService manages synchronization between config file credentials and database records
 type CredentialSyncService struct {
 	entClient     *generated.Client
-	clientService *cp.ClientService[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]
+	clientService *eddy.ClientService[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]
 	config        *storage.Providers
 }
 
@@ -54,7 +54,7 @@ func (css *CredentialSyncService) systemOperationContext(ctx context.Context) co
 }
 
 // NewCredentialSyncService creates a new credential synchronization service
-func NewCredentialSyncService(entClient *generated.Client, clientService *cp.ClientService[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions], config *storage.Providers) *CredentialSyncService {
+func NewCredentialSyncService(entClient *generated.Client, clientService *eddy.ClientService[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions], config *storage.Providers) *CredentialSyncService {
 	return &CredentialSyncService{
 		entClient:     entClient,
 		clientService: clientService,

@@ -11,7 +11,7 @@ import (
 
 	"github.com/oklog/ulid/v2"
 	"github.com/rs/zerolog"
-	"github.com/theopenlane/core/pkg/cp"
+	"github.com/theopenlane/core/pkg/eddy"
 	"github.com/theopenlane/core/pkg/objects/storage"
 	storagetypes "github.com/theopenlane/core/pkg/objects/storage/types"
 	"github.com/theopenlane/iam/auth"
@@ -22,13 +22,23 @@ import (
 
 const (
 	defaultPresignedURLDuration = 10 * time.Minute
-	defaultDatabaseBucket       = "default"
 )
 
-// Service orchestrates storage operations using cp provider resolution
+// ProviderCacheKey implements eddy.CacheKey for provider caching
+type ProviderCacheKey struct {
+	TenantID        string
+	IntegrationType string
+}
+
+// String returns the cache key as a string
+func (k ProviderCacheKey) String() string {
+	return fmt.Sprintf("%s:%s", k.TenantID, k.IntegrationType)
+}
+
+// Service orchestrates storage operations using eddy provider resolution
 type Service struct {
-	resolver        *cp.Resolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]
-	clientService   *cp.ClientService[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]
+	resolver        *eddy.Resolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]
+	clientService   *eddy.ClientService[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]
 	objectService   *storage.ObjectService
 	tokenProvider   func() *tokens.TokenManager
 	tokenIssuer     string
@@ -38,8 +48,8 @@ type Service struct {
 
 // Config holds configuration for creating a new Service
 type Config struct {
-	Resolver       *cp.Resolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]
-	ClientService  *cp.ClientService[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]
+	Resolver       *eddy.Resolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]
+	ClientService  *eddy.ClientService[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]
 	ValidationFunc storage.ValidationFunc
 	TokenManager   func() *tokens.TokenManager
 	TokenIssuer    string
@@ -263,16 +273,16 @@ func (s *Service) IgnoreNonExistentKeys() bool {
 // resolveProvider resolves a storage provider for upload operations
 func (s *Service) resolveUploadProvider(ctx context.Context, opts *storage.UploadOptions) (storage.Provider, error) {
 	enrichedCtx := s.buildResolutionContext(ctx, opts)
-	resolution := s.resolver.Resolve(enrichedCtx)
+	result := s.resolver.Resolve(enrichedCtx)
 
-	if !resolution.IsPresent() {
+	if !result.IsPresent() {
 		zerolog.Ctx(ctx).Error().Msg("storage provider resolution failed: no provider resolved")
 		return nil, ErrProviderResolutionFailed
 	}
 
-	res := resolution.MustGet()
-	if res.ClientType == "" {
-		zerolog.Ctx(ctx).Error().Msg("storage provider resolution failed: resolved provider missing client type")
+	res := result.MustGet()
+	if res.Builder == nil {
+		zerolog.Ctx(ctx).Error().Msg("storage provider resolution failed: resolved provider missing builder")
 		return nil, ErrProviderResolutionFailed
 	}
 
@@ -282,16 +292,14 @@ func (s *Service) resolveUploadProvider(ctx context.Context, opts *storage.Uploa
 		return nil, ErrNoOrganizationID
 	}
 
-	cacheKey := cp.ClientCacheKey{
+	cacheKey := ProviderCacheKey{
 		TenantID:        orgID,
-		IntegrationType: string(res.ClientType),
-		//		IntegrationID:   integrationID,
-		//		HushID:          hushID,
+		IntegrationType: res.Builder.ProviderType(),
 	}
 
-	client := s.clientService.GetClient(ctx, cacheKey, res.ClientType, res.Credentials, res.Config)
+	client := s.clientService.GetClient(ctx, cacheKey, res.Builder, res.Output, res.Config)
 	if !client.IsPresent() {
-		zerolog.Ctx(ctx).Error().Str("integration_type", string(res.ClientType)).Msg("storage provider resolution failed: provider client unavailable")
+		zerolog.Ctx(ctx).Error().Str("integration_type", res.Builder.ProviderType()).Msg("storage provider resolution failed: provider client unavailable")
 		return nil, ErrProviderResolutionFailed
 	}
 
@@ -301,43 +309,30 @@ func (s *Service) resolveUploadProvider(ctx context.Context, opts *storage.Uploa
 // resolveProviderForFile resolves a storage provider for file operations (download, delete, presigned URL)
 func (s *Service) resolveDownloadProvider(ctx context.Context, file *storagetypes.File) (storage.Provider, error) {
 	enrichedCtx := s.buildResolutionContextForFile(ctx, file)
-	resolution := s.resolver.Resolve(enrichedCtx)
+	result := s.resolver.Resolve(enrichedCtx)
 
-	providerType, hasResolution := resolution.Get()
-	if !hasResolution {
+	res, hasResult := result.Get()
+	if !hasResult {
 		zerolog.Ctx(ctx).Error().Msgf("storage provider resolution failed for file %s", file.ID)
 		return nil, ErrProviderResolutionFailed
 	}
 
-	// Build ClientCacheKey using file metadata with auth context as backup
+	// Build ProviderCacheKey using file metadata with auth context as backup
 	orgID, _ := auth.GetOrganizationIDFromContext(ctx)
 
-	cacheKey := cp.ClientCacheKey{
+	cacheKey := ProviderCacheKey{
 		TenantID:        orgID,
-		IntegrationType: string(providerType.ClientType),
-		//		IntegrationID:   file.IntegrationID,
-		//		HushID:          file.HushID,
+		IntegrationType: res.Builder.ProviderType(),
 	}
 
-	return s.clientService.GetClient(ctx, cacheKey, providerType.ClientType, providerType.Credentials, providerType.Config).
+	return s.clientService.GetClient(ctx, cacheKey, res.Builder, res.Output, res.Config).
 		OrElse(nil), nil
 }
 
 // buildResolutionContext builds context for provider resolution from upload options
 func (s *Service) buildResolutionContext(ctx context.Context, opts *storage.UploadOptions) context.Context {
-	// Add organization and user information from auth context
-	orgID, _ := auth.GetOrganizationIDFromContext(ctx)
-	ctx = cp.WithValue(ctx, orgID)
-
-	subjectID, _ := auth.GetSubjectIDFromContext(ctx)
-	ctx = cp.WithValue(ctx, subjectID)
-
-	// Add upload options
-	ctx = cp.WithValue(ctx, opts)
-
 	// Add provider hints if present
 	if opts.ProviderHints != nil {
-		ctx = cp.WithValue(ctx, opts.ProviderHints)
 		ctx = ApplyProviderHints(ctx, opts.ProviderHints)
 	}
 
@@ -346,15 +341,7 @@ func (s *Service) buildResolutionContext(ctx context.Context, opts *storage.Uplo
 
 // buildResolutionContextForFile builds context for provider resolution from file metadata
 func (s *Service) buildResolutionContextForFile(ctx context.Context, file *storagetypes.File) context.Context {
-	// Add organization and user information from auth context
-	orgID, _ := auth.GetOrganizationIDFromContext(ctx)
-	ctx = cp.WithValue(ctx, orgID)
-
-	subjectID, _ := auth.GetSubjectIDFromContext(ctx)
-	ctx = cp.WithValue(ctx, subjectID)
-
-	// Add the entire file
-	ctx = cp.WithValue(ctx, file)
+	// Add provider hints from file
 	ctx = ApplyProviderHints(ctx, file.ProviderHints)
 
 	return ctx

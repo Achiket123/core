@@ -4,39 +4,18 @@ import (
 	"context"
 
 	"github.com/samber/mo"
-	"github.com/theopenlane/core/pkg/cp"
 	storage "github.com/theopenlane/core/pkg/objects/storage"
 	storagetypes "github.com/theopenlane/core/pkg/objects/storage/types"
 )
 
 // Builder creates S3 providers for the client pool
 type Builder struct {
-	credentials storage.ProviderCredentials
-	options     *storage.ProviderOptions
-	opts        []Option
+	opts []Option
 }
 
 // NewS3Builder creates a new S3Builder
 func NewS3Builder() *Builder {
 	return &Builder{}
-}
-
-// WithCredentials implements cp.ClientBuilder
-func (b *Builder) WithCredentials(credentials storage.ProviderCredentials) cp.ClientBuilder[storagetypes.Provider, storage.ProviderCredentials, *storage.ProviderOptions] {
-	b.credentials = credentials
-
-	return b
-}
-
-// WithConfig implements cp.ClientBuilder
-func (b *Builder) WithConfig(config *storage.ProviderOptions) cp.ClientBuilder[storagetypes.Provider, storage.ProviderCredentials, *storage.ProviderOptions] {
-	if config == nil {
-		b.options = storage.NewProviderOptions()
-	} else {
-		b.options = config.Clone()
-	}
-
-	return b
 }
 
 // WithOptions allows configuring provider-specific options
@@ -45,14 +24,14 @@ func (b *Builder) WithOptions(opts ...Option) *Builder {
 	return b
 }
 
-// Build implements cp.ClientBuilder
-func (b *Builder) Build(_ context.Context) (storagetypes.Provider, error) {
-	if b.options == nil {
-		b.options = storage.NewProviderOptions()
+// Build implements eddy.Builder
+func (b *Builder) Build(ctx context.Context, credentials storage.ProviderCredentials, config *storage.ProviderOptions) (storagetypes.Provider, error) {
+	if config == nil {
+		config = storage.NewProviderOptions()
 	}
 
-	cfg := b.options.Clone()
-	cfg.Credentials = b.credentials
+	cfg := config.Clone()
+	cfg.Credentials = credentials
 
 	if cfg.Bucket == "" || cfg.Region == "" {
 		return nil, ErrS3CredentialsRequired
@@ -66,9 +45,9 @@ func (b *Builder) Build(_ context.Context) (storagetypes.Provider, error) {
 	return provider, nil
 }
 
-// ClientType implements cp.ClientBuilder
-func (b *Builder) ClientType() cp.ProviderType {
-	return cp.ProviderType(storagetypes.S3Provider)
+// ProviderType implements eddy.Builder
+func (b *Builder) ProviderType() string {
+	return string(storagetypes.S3Provider)
 }
 
 // NewS3ProviderFromCredentials creates an S3 provider from provider credentials and optional configuration

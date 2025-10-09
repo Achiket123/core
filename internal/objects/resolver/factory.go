@@ -7,7 +7,7 @@ import (
 	ent "github.com/theopenlane/core/internal/ent/generated"
 	"github.com/theopenlane/core/internal/ent/generated/privacy"
 	"github.com/theopenlane/core/internal/objects"
-	"github.com/theopenlane/core/pkg/cp"
+	"github.com/theopenlane/core/pkg/eddy"
 	"github.com/theopenlane/core/pkg/objects/storage"
 	dbprovider "github.com/theopenlane/core/pkg/objects/storage/providers/database"
 	"github.com/theopenlane/core/pkg/objects/storage/providers/disk"
@@ -26,11 +26,11 @@ type serviceOptions struct {
 	tokenIssuer      string
 }
 
-// providerResolver simplifies references to the cp resolver used for object providers.
-type providerResolver = cp.Resolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]
+// providerResolver simplifies references to the eddy resolver used for object providers
+type providerResolver = eddy.Resolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]
 
-// providerClientService simplifies references to the cp client service used for object providers.
-type providerClientService = cp.ClientService[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]
+// providerClientService simplifies references to the eddy client service used for object providers
+type providerClientService = eddy.ClientService[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]
 
 // WithPresignConfig configures presigned URL token generation for providers that support it.
 func WithPresignConfig(tokenManager func() *tokens.TokenManager, issuer, audience string) Option {
@@ -70,14 +70,15 @@ func Build(config storage.ProviderConfig) (*providerClientService, *providerReso
 }
 
 func buildWithRuntime(config storage.ProviderConfig, runtime serviceOptions) (*providerClientService, *providerResolver) {
-	pool := cp.NewClientPool[storage.Provider](objects.DefaultClientPoolTTL)
-	clientService := cp.NewClientService(pool, cp.WithConfigClone[
+	pool := eddy.NewClientPool[storage.Provider](objects.DefaultClientPoolTTL)
+	clientService := eddy.NewClientService(pool, eddy.WithConfigClone[
 		storage.Provider,
 		storage.ProviderCredentials](cloneProviderOptions))
 
-	clientService.RegisterBuilder(cp.ProviderType(storage.S3Provider), s3provider.NewS3Builder())
-	clientService.RegisterBuilder(cp.ProviderType(storage.R2Provider), r2provider.NewR2Builder())
-	clientService.RegisterBuilder(cp.ProviderType(storage.DiskProvider), disk.NewDiskBuilder())
+	// Create builder instances
+	s3Builder := s3provider.NewS3Builder()
+	r2Builder := r2provider.NewR2Builder()
+	diskBuilder := disk.NewDiskBuilder()
 	dbBuilder := dbprovider.NewBuilder()
 	if runtime.tokenManagerFunc != nil {
 		if tm := runtime.tokenManagerFunc(); tm != nil {
@@ -88,10 +89,9 @@ func buildWithRuntime(config storage.ProviderConfig, runtime serviceOptions) (*p
 		}
 	}
 
-	clientService.RegisterBuilder(cp.ProviderType(storage.DatabaseProvider), dbBuilder)
-
-	resolver := cp.NewResolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]()
-	configureProviderRules(resolver, config)
+	// Create resolver and configure rules with builders
+	resolver := eddy.NewResolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]()
+	configureProviderRules(resolver, config, s3Builder, r2Builder, diskBuilder, dbBuilder)
 
 	return clientService, resolver
 }

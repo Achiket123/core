@@ -18,7 +18,8 @@ import (
 	"github.com/theopenlane/core/internal/graphapi/gqlerrors"
 	"github.com/theopenlane/core/internal/graphapi/testclient"
 	"github.com/theopenlane/core/internal/objects"
-	"github.com/theopenlane/core/pkg/cp"
+	"github.com/theopenlane/core/pkg/eddy"
+	"github.com/theopenlane/core/pkg/eddy/helpers"
 	"github.com/theopenlane/core/pkg/logx"
 	"github.com/theopenlane/core/pkg/middleware/auth"
 	mock_shared "github.com/theopenlane/core/pkg/objects/mocks"
@@ -254,9 +255,9 @@ func MockStorageServiceWithValidationAndProvider(t *testing.T, uploader storage.
 		mockProvider = &mock_shared.MockProvider{}
 	}
 
-	// Create cp components
-	pool := cp.NewClientPool[storage.Provider](time.Minute)
-	clientService := cp.NewClientService(pool, cp.WithConfigClone[
+	// Create eddy components
+	pool := eddy.NewClientPool[storage.Provider](time.Minute)
+	clientService := eddy.NewClientService(pool, eddy.WithConfigClone[
 		storage.Provider,
 		storage.ProviderCredentials](func(in *storage.ProviderOptions) *storage.ProviderOptions {
 		if in == nil {
@@ -265,22 +266,28 @@ func MockStorageServiceWithValidationAndProvider(t *testing.T, uploader storage.
 		return in.Clone()
 	}))
 
-	// Register mock provider builder
+	// Create mock provider builder
 	mockBuilder := &testProviderBuilder{
 		provider: mockProvider,
 	}
-	clientService.RegisterBuilder(cp.ProviderType("mock"), mockBuilder)
 
 	// Create resolver with default rule that selects mock provider
-	resolver := cp.NewResolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]()
+	resolver := eddy.NewResolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]()
 
-	// Add default rule that always returns mock provider
-	defaultRule := cp.DefaultRule[storage.Provider](cp.Resolution[storage.ProviderCredentials, *storage.ProviderOptions]{
-		ClientType:  cp.ProviderType("mock"),
-		Credentials: storage.ProviderCredentials{},
-		Config:      storage.NewProviderOptions(storage.WithExtra("validation", validationFunc != nil)),
-	})
-	resolver.SetDefaultRule(defaultRule)
+	// Add default rule that always returns mock provider with builder
+	defaultRule := &helpers.ConditionalRule[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]{
+		Predicate: func(_ context.Context) bool {
+			return true
+		},
+		Resolver: func(_ context.Context) (*eddy.ResolvedProvider[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions], error) {
+			return &eddy.ResolvedProvider[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]{
+				Builder: mockBuilder,
+				Output:  storage.ProviderCredentials{},
+				Config:  storage.NewProviderOptions(storage.WithExtra("validation", validationFunc != nil)),
+			}, nil
+		},
+	}
+	resolver.AddRule(defaultRule)
 
 	// Create objects.Service - simplified for tests
 	service := objects.NewService(objects.Config{
@@ -296,23 +303,15 @@ func MockStorageServiceWithValidationAndProvider(t *testing.T, uploader storage.
 	return service, mockProvider, nil
 }
 
-// testProviderBuilder implements ClientBuilder for mock providers
+// testProviderBuilder implements eddy.Builder for mock providers
 type testProviderBuilder struct {
 	provider *mock_shared.MockProvider
 }
 
-func (b *testProviderBuilder) WithCredentials(storage.ProviderCredentials) cp.ClientBuilder[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions] {
-	return b
-}
-
-func (b *testProviderBuilder) WithConfig(*storage.ProviderOptions) cp.ClientBuilder[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions] {
-	return b
-}
-
-func (b *testProviderBuilder) Build(ctx context.Context) (storage.Provider, error) {
+func (b *testProviderBuilder) Build(ctx context.Context, creds storage.ProviderCredentials, config *storage.ProviderOptions) (storage.Provider, error) {
 	return b.provider, nil
 }
 
-func (b *testProviderBuilder) ClientType() cp.ProviderType {
-	return cp.ProviderType("mock")
+func (b *testProviderBuilder) ProviderType() string {
+	return "mock"
 }

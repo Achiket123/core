@@ -10,7 +10,6 @@ import (
 	"github.com/theopenlane/core/internal/ent/generated/hush"
 	"github.com/theopenlane/core/internal/ent/generated/integration"
 	"github.com/theopenlane/core/internal/objects"
-	"github.com/theopenlane/core/pkg/cp"
 	"github.com/theopenlane/core/pkg/objects/storage"
 )
 
@@ -30,8 +29,14 @@ func (rc *ruleCoordinator) providerEnabled(provider storage.ProviderType) bool {
 	}
 }
 
-// resolveProvider returns provider credentials from system integrations or config fallback.
-func (rc *ruleCoordinator) resolveProvider(ctx context.Context, provider storage.ProviderType) (*cp.ResolvedProvider[storage.ProviderCredentials, *storage.ProviderOptions], error) {
+// providerResolution is an internal type for credential resolution before adding builder
+type providerResolution struct {
+	Output storage.ProviderCredentials
+	Config *storage.ProviderOptions
+}
+
+// resolveProvider returns provider credentials from system integrations or config fallback
+func (rc *ruleCoordinator) resolveProvider(ctx context.Context, provider storage.ProviderType) (*providerResolution, error) {
 	if rc.config.CredentialSync.Enabled {
 		if resolved, err := querySystemProvider(ctx, provider); err == nil {
 			return resolved, nil
@@ -41,7 +46,7 @@ func (rc *ruleCoordinator) resolveProvider(ctx context.Context, provider storage
 	return resolveProviderFromConfig(provider, rc.config)
 }
 
-func querySystemProvider(ctx context.Context, providerType storage.ProviderType) (*cp.ResolvedProvider[storage.ProviderCredentials, *storage.ProviderOptions], error) {
+func querySystemProvider(ctx context.Context, providerType storage.ProviderType) (*providerResolution, error) {
 	entClient := ent.FromContext(ctx)
 	if entClient == nil {
 		return nil, objects.ErrNoSystemIntegration
@@ -137,23 +142,21 @@ func querySystemProvider(ctx context.Context, providerType storage.ProviderType)
 		}
 	}
 
-	return &cp.ResolvedProvider[storage.ProviderCredentials, *storage.ProviderOptions]{
-		Type:        cp.ProviderType(providerType),
-		Credentials: credentials,
-		Config:      options,
+	return &providerResolution{
+		Output: credentials,
+		Config: options,
 	}, nil
 }
 
-func resolveProviderFromConfig(provider storage.ProviderType, config storage.ProviderConfig) (*cp.ResolvedProvider[storage.ProviderCredentials, *storage.ProviderOptions], error) {
+func resolveProviderFromConfig(provider storage.ProviderType, config storage.ProviderConfig) (*providerResolution, error) {
 	options, creds, err := providerOptionsFromConfig(provider, config)
 	if err != nil {
 		return nil, err
 	}
 
-	return &cp.ResolvedProvider[storage.ProviderCredentials, *storage.ProviderOptions]{
-		Type:        cp.ProviderType(provider),
-		Credentials: creds,
-		Config:      options,
+	return &providerResolution{
+		Output: creds,
+		Config: options,
 	}, nil
 }
 

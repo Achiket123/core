@@ -30,7 +30,7 @@ import (
 	"github.com/theopenlane/core/internal/httpserve/handlers"
 	"github.com/theopenlane/core/internal/httpserve/route"
 	"github.com/theopenlane/core/internal/objects"
-	"github.com/theopenlane/core/pkg/cp"
+	"github.com/theopenlane/core/pkg/eddy"
 	"github.com/theopenlane/core/pkg/entitlements/mocks"
 	"github.com/theopenlane/core/pkg/enums"
 	"github.com/theopenlane/core/pkg/events/soiree"
@@ -203,10 +203,16 @@ func (suite *CredentialSyncTestSuite) SetupTest() {
 	suite.testOrgID = personalOrg.ID
 
 	// Create credential sync service after database is ready
-	clientPool := cp.NewClientPool[storage.Provider](time.Hour)
-	clientService := cp.NewClientService(clientPool, cp.WithConfigClone[
+	clientPool := eddy.NewClientPool[storage.Provider](time.Hour)
+	clientService := eddy.NewClientService[
 		storage.Provider,
-		storage.ProviderCredentials](cloneProviderOptions))
+		storage.ProviderCredentials,
+		*storage.ProviderOptions,
+	](clientPool, eddy.WithConfigClone[
+		storage.Provider,
+		storage.ProviderCredentials,
+		*storage.ProviderOptions,
+	](cloneProviderOptions))
 
 	suite.service = credsync.NewCredentialSyncService(
 		suite.db,

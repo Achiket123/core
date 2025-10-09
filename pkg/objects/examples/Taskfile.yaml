@@ -1,0 +1,57 @@
+version: '3'
+
+tasks:
+  default:
+    desc: List available example commands
+    cmds:
+      - task --list
+
+  simple:
+    desc: Run the disk-based example (CLI_ARGS="--flag=value" for overrides)
+    cmds:
+      - go run -tags examples . -- simple{{if .CLI_ARGS}} {{.CLI_ARGS}}{{end}}
+
+  simple-s3:
+    desc: Run the S3 example against a MinIO or S3-compatible endpoint
+    cmds:
+      - go run -tags examples . -- simple-s3{{if .CLI_ARGS}} {{.CLI_ARGS}}{{end}}
+
+  multi-provider:setup:
+    desc: Start shared services and seed provider credentials
+    cmds:
+      - go run -tags examples . -- multi-provider setup
+
+  multi-provider:run:
+    desc: Run the multi-provider workflow (includes setup unless skipped)
+    cmds:
+      - go run -tags examples . -- multi-provider{{if .CLI_ARGS}} {{.CLI_ARGS}}{{end}}
+
+  multi-provider:teardown:
+    desc: Stop services and remove containers
+    cmds:
+      - go run -tags examples . -- multi-provider teardown
+
+  multi-tenant:setup:
+    desc: Provision tenants (CLI_ARGS="--tenants=100" etc)
+    cmds:
+      - go run -tags examples . -- multi-tenant setup{{if .CLI_ARGS}} {{.CLI_ARGS}}{{end}}
+
+  multi-tenant:setup-1000:
+    desc: Provision 1000 tenants for large-scale tests
+    cmds:
+      - go run -tags examples . -- multi-tenant setup-1000
+
+  multi-tenant:run:
+    desc: Execute the multi-tenant workflow (requires tenants.json)
+    cmds:
+      - go run -tags examples . -- multi-tenant{{if .CLI_ARGS}} {{.CLI_ARGS}}{{end}}
+
+  multi-tenant:teardown:
+    desc: Tear down tenants and stop services
+    cmds:
+      - go run -tags examples . -- multi-tenant teardown
+
+  openlane:run:
+    desc: Execute the Openlane integration example
+    cmds:
+      - go run -tags examples . -- openlane{{if .CLI_ARGS}} {{.CLI_ARGS}}{{end}}
