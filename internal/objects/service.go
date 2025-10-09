@@ -266,13 +266,13 @@ func (s *Service) resolveUploadProvider(ctx context.Context, opts *storage.Uploa
 	resolution := s.resolver.Resolve(enrichedCtx)
 
 	if !resolution.IsPresent() {
-		logStorageResolutionFailure(ctx, opts)
+		zerolog.Ctx(ctx).Error().Msg("storage provider resolution failed: no provider resolved")
 		return nil, ErrProviderResolutionFailed
 	}
 
 	res := resolution.MustGet()
 	if res.ClientType == "" {
-		logStorageResolutionFailure(ctx, opts)
+		zerolog.Ctx(ctx).Error().Msg("storage provider resolution failed: resolved provider missing client type")
 		return nil, ErrProviderResolutionFailed
 	}
 
@@ -291,7 +291,7 @@ func (s *Service) resolveUploadProvider(ctx context.Context, opts *storage.Uploa
 
 	client := s.clientService.GetClient(ctx, cacheKey, res.ClientType, res.Credentials, res.Config)
 	if !client.IsPresent() {
-		logStorageResolutionFailure(ctx, opts)
+		zerolog.Ctx(ctx).Error().Str("integration_type", string(res.ClientType)).Msg("storage provider resolution failed: provider client unavailable")
 		return nil, ErrProviderResolutionFailed
 	}
 
@@ -342,32 +342,6 @@ func (s *Service) buildResolutionContext(ctx context.Context, opts *storage.Uplo
 	}
 
 	return ctx
-}
-
-func logStorageResolutionFailure(ctx context.Context, opts *storage.UploadOptions) {
-	event := zerolog.Ctx(ctx).Error()
-
-	if orgID, err := auth.GetOrganizationIDFromContext(ctx); err == nil && orgID != "" {
-		event = event.Str("org_id", orgID)
-	}
-
-	if opts != nil {
-		event = event.Str("bucket_hint", opts.Bucket).Str("upload_key", opts.Key)
-		if hints := opts.ProviderHints; hints != nil {
-			event = event.
-				Str("known_provider", string(hints.KnownProvider)).
-				Str("preferred_provider", string(hints.PreferredProvider)).
-				Str("hint_org_id", hints.OrganizationID).
-				Str("hint_integration_id", hints.IntegrationID).
-				Str("hint_hush_id", hints.HushID)
-
-			if len(hints.Metadata) > 0 {
-				event = event.Interface("hint_metadata", hints.Metadata)
-			}
-		}
-	}
-
-	event.Msg("storage provider resolution failed")
 }
 
 // buildResolutionContextForFile builds context for provider resolution from file metadata

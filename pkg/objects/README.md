@@ -39,10 +39,10 @@ pkg/objects
 
 Key exported packages:
 
-- `objects` – request/context helpers, validation, ent mutation adapters.
-- `objects/storage` – high-level service plus convenience aliases.
-- `objects/storage/types` – canonical provider interfaces and DTOs.
-- `objects/storage/providers/*` – concrete provider implementations.
+- `objects` – request/context helpers, validation, ent mutation adapters
+- `objects/storage` – high-level service plus convenience aliases
+- `objects/storage/types` – canonical provider interfaces and DTOs
+- `objects/storage/providers/*` – concrete provider implementations
 
 ---
 
@@ -70,17 +70,11 @@ Key exported packages:
 └────────────────────────────┴───────────────┘
 ```
 
-When combined with `pkg/cp`, provider resolution happens before the
-`ObjectService` call. See [`internal/objects/service.go`](../../internal/objects/service.go)
-for a full orchestration example that powers the production API.
-
 ---
 
 ## Working with Uploads
 
-### Parse Incoming Files
-
-`ParseFilesFromSource` normalises uploads regardless of the transport you are
+`ParseFilesFromSource` normalizes uploads regardless of the transport you are
 using (GraphQL multipart requests, `*http.Request`, or pre-parsed
 `map[string]any` payloads):
 
@@ -95,14 +89,6 @@ for field, uploads := range files {
     }
 }
 ```
-
-Common tasks:
-
-- `objects.ProcessFilesForMutation` – decorate parsed files with parent IDs in
-  ent mutations.
-- `storage.DetectContentType` – robust MIME detection for `io.ReadSeeker`s.
-- `objects.NewUploadFile` – load local files (CLI, tests) into
-  `storage.File` instances.
 
 ### Validation & Naming
 
@@ -170,7 +156,7 @@ from the `disk` provider for a concise example. Provider builders typically use
 `storage.ProviderOptions` for runtime configuration and must report their
 `ProviderType`.
 
----
+The most recent provider added after this README was originally created is the database provider - check it out!
 
 ## Resolving Providers Dynamically
 
@@ -179,66 +165,10 @@ approach is to pair it with [`pkg/cp`](../cp):
 
 1. Define a `cp.Resolver` that looks at context (tenant ID, feature flags, etc.)
    and returns `storage.ProviderCredentials` + `storage.ProviderOptions`.
-2. Register builders with `cp.ClientService` for each supported provider type.
-3. Use `internal/objects.Service` (or your own orchestrator) to connect the
+1. Register builders with `cp.ClientService` for each supported provider type.
+1. Use `internal/objects.Service` (or your own orchestrator) to connect the
    resolver + client pool with `storage.ObjectService`.
 
 See `pkg/objects/examples/multi-tenant` and
 `pkg/objects/examples/multi-provider` for full examples. Each directory ships
-with a `Taskfile.yml`; run them via:
-
-```bash
-# from repository root
-cd pkg/objects/examples
-task multi-provider:run
-```
-
----
-
-## Utilities & Helpers
-
-- `storage.ParseDocument` – JSON/YAML/plain-text parsing into native Go values.
-- `storage.NewUploadFile` – turn a filesystem path into an uploadable file.
-- `objects.FileContextKey` – store/retrieve uploads from request contexts.
-- `objects.GenericMutationAdapter` – adapt generated ent mutations to the
-  simplified `objects.Mutation` interface used by the helper functions.
-
-Mocks for provider interfaces live in `pkg/objects/mocks`, generated via
-`mockery` to make integration tests straightforward.
-
----
-
-## Testing & Examples
-
-- `pkg/objects/storage/service_test.go` covers the service API basics.
-- Provider packages include focused unit tests exercising edge cases.
-- Five runnable examples (`simple`, `simple-s3`, `multi-provider`,
-  `multi-tenant`, `e2e-openlane`) demonstrate everything from a local disk flow
-  to full GraphQL integration with Openlane. Each example has a detailed README
-  and Taskfile to handle setup/build/run/cleanup.
-
----
-
-## Migrating / Embedding in Other Projects
-
-The package has no hard dependency on the rest of this repository beyond the
-`pkg/cp` integration and optional ent helpers. To embed it elsewhere:
-
-1. Copy `pkg/objects` (and optionally `pkg/cp` if you need runtime resolution).
-2. Adjust import paths to your module.
-3. Wire a resolver + client service (or pass providers directly) when calling
-   `storage.ObjectService`.
-
-Because the providers only interact through `storagetypes.Provider`, you can add
-custom implementations without modifying any other package files.
-
----
-
-## Further Reading
-
-- [`internal/objects/service.go`](../../internal/objects/service.go) – example
-  of orchestrating resolver + client pool + object service.
-- [`pkg/objects/examples`](./examples) – curated tasks demonstrating common
-  deployment models.
-- [`pkg/cp`](../cp) – resolver and client pooling mechanics used throughout the
-  system.
+with a `Taskfile.yaml`

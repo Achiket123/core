@@ -62,6 +62,7 @@ func (s *ObjectService) Upload(ctx context.Context, provider Provider, reader io
 			ContentType: contentType,
 		},
 	}
+
 	if err := s.validationFunc(tempFile); err != nil {
 		return nil, err
 	}
