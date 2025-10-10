@@ -12,6 +12,7 @@ import (
 	"github.com/oklog/ulid/v2"
 	"github.com/rs/zerolog"
 	"github.com/theopenlane/core/pkg/eddy"
+	pkgobjects "github.com/theopenlane/core/pkg/objects"
 	"github.com/theopenlane/core/pkg/objects/storage"
 	storagetypes "github.com/theopenlane/core/pkg/objects/storage/types"
 	"github.com/theopenlane/iam/auth"
@@ -75,13 +76,8 @@ func NewService(cfg Config) *Service {
 	}
 }
 
-// SetObjectService allows overriding the internal object service (useful for dev mode)
-func (s *Service) SetObjectService(objectService *storage.ObjectService) {
-	s.objectService = objectService
-}
-
 // Upload uploads a file using provider resolution
-func (s *Service) Upload(ctx context.Context, reader io.Reader, opts *storage.UploadOptions) (*storage.File, error) {
+func (s *Service) Upload(ctx context.Context, reader io.Reader, opts *storage.UploadOptions) (*pkgobjects.File, error) {
 	provider, err := s.resolveUploadProvider(ctx, opts)
 	if err != nil {
 		return nil, err

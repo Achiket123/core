@@ -10,7 +10,6 @@ import (
 	"github.com/theopenlane/core/internal/objects/store"
 	"github.com/theopenlane/core/internal/objects/upload"
 	pkgobjects "github.com/theopenlane/core/pkg/objects"
-	"github.com/theopenlane/core/pkg/objects/storage"
 	models "github.com/theopenlane/core/pkg/openapi"
 )
 
@@ -79,8 +78,8 @@ func (h *Handler) FileUploadHandler(ctx echo.Context, openapi *OpenAPIContext) e
 }
 
 // flattenFileMap combines multiple field-specific file slices into a single collection.
-func flattenFileMap(fileMap map[string][]storage.File) []storage.File {
-	var uploads []storage.File
+func flattenFileMap(fileMap map[string][]pkgobjects.File) []pkgobjects.File {
+	var uploads []pkgobjects.File
 	for _, files := range fileMap {
 		uploads = append(uploads, files...)
 	}

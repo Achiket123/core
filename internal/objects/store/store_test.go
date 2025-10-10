@@ -8,19 +8,18 @@ import (
 
 	ent "github.com/theopenlane/core/internal/ent/generated"
 	pkgobjects "github.com/theopenlane/core/pkg/objects"
-	"github.com/theopenlane/core/pkg/objects/storage"
 	"github.com/theopenlane/iam/auth"
 )
 
 func TestAddFilePermissionsMissingParent(t *testing.T) {
 	ctx := context.Background()
 
-	file := storage.File{
+	file := pkgobjects.File{
 		ID:     "file-1",
-		Parent: storage.ParentObject{},
+		Parent: pkgobjects.ParentObject{},
 	}
 
-	ctx = pkgobjects.WriteFilesToContext(ctx, storage.Files{
+	ctx = pkgobjects.WriteFilesToContext(ctx, pkgobjects.Files{
 		"default": {file},
 	})
 
@@ -32,16 +31,16 @@ func TestAddFilePermissionsMissingParent(t *testing.T) {
 func TestAddFilePermissionsAvatarMissingOrg(t *testing.T) {
 	ctx := context.Background()
 
-	file := storage.File{
+	file := pkgobjects.File{
 		ID: "file-2",
-		Parent: storage.ParentObject{
+		Parent: pkgobjects.ParentObject{
 			ID:   "parent-id",
 			Type: "evidence",
 		},
 		FieldName: "avatarFile",
 	}
 
-	ctx = pkgobjects.WriteFilesToContext(ctx, storage.Files{
+	ctx = pkgobjects.WriteFilesToContext(ctx, pkgobjects.Files{
 		"avatarFile": {file},
 	})
 
@@ -51,7 +50,7 @@ func TestAddFilePermissionsAvatarMissingOrg(t *testing.T) {
 }
 
 func TestGetOrgOwnerIDWithUserType(t *testing.T) {
-	orgID, err := getOrgOwnerID(context.Background(), storage.File{
+	orgID, err := getOrgOwnerID(context.Background(), pkgobjects.File{
 		CorrelatedObjectType: "user",
 	})
 
@@ -65,7 +64,7 @@ func TestGetOrgOwnerIDUsesAuthContext(t *testing.T) {
 	}
 
 	ctx := auth.WithAuthenticatedUser(context.Background(), user)
-	orgID, err := getOrgOwnerID(ctx, storage.File{
+	orgID, err := getOrgOwnerID(ctx, pkgobjects.File{
 		CorrelatedObjectType: "program",
 	})
 

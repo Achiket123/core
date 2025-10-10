@@ -8,7 +8,6 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 
 	storage "github.com/theopenlane/core/pkg/objects/storage"
 	s3provider "github.com/theopenlane/core/pkg/objects/storage/providers/s3"
@@ -120,33 +119,6 @@ func TestNewS3ProviderFromCredentials(t *testing.T) {
 		errResult := s3provider.NewS3ProviderFromCredentials(creds, nil)
 		assert.True(t, errResult.IsError())
 	})
-}
-
-func TestS3ProviderUploadDownloadFlow(t *testing.T) {
-	t.Skip("Integration test - requires real S3 environment or LocalStack")
-
-	provider, err := s3provider.NewS3Provider(providerOptions())
-	require.NoError(t, err)
-
-	ctx := context.Background()
-	testContent := "This is test file content"
-	fileName := "test-file.txt"
-
-	uploadOpts := &storagetypes.UploadFileOptions{
-		FileName:    fileName,
-		ContentType: "text/plain",
-	}
-
-	metadata, err := provider.Upload(ctx, strings.NewReader(testContent), uploadOpts)
-	require.NoError(t, err)
-	require.NotNil(t, metadata)
-
-	downloadOpts := &storagetypes.DownloadFileOptions{}
-	downloaded, err := provider.Download(ctx, &storagetypes.File{FileMetadata: storagetypes.FileMetadata{Key: fileName}}, downloadOpts)
-	require.NoError(t, err)
-	require.NotNil(t, downloaded)
-
-	assert.Equal(t, []byte(testContent), downloaded.File)
 }
 
 func TestWithACL(t *testing.T) {

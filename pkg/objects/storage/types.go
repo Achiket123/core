@@ -2,10 +2,8 @@ package storage
 
 import (
 	"context"
-	"io"
 	"maps"
 	"net/http"
-	"time"
 
 	storagetypes "github.com/theopenlane/core/pkg/objects/storage/types"
 )
@@ -15,12 +13,14 @@ import (
 type (
 	Provider           = storagetypes.Provider
 	ProviderType       = storagetypes.ProviderType
+	File               = storagetypes.File
 	UploadOptions      = storagetypes.UploadFileOptions
 	UploadedMetadata   = storagetypes.UploadedFileMetadata
 	DownloadOptions    = storagetypes.DownloadFileOptions
 	DownloadedMetadata = storagetypes.DownloadedFileMetadata
 	ProviderHints      = storagetypes.ProviderHints
 	FileMetadata       = storagetypes.FileMetadata
+	ParentObject       = storagetypes.ParentObject
 )
 
 // Provider type constants so we can range, switch, etc
@@ -59,45 +59,6 @@ var (
 		}
 	}
 )
-
-// File represents a consolidated file object in the system that combines upload, storage, and metadata information
-// This is the objects package representation of the file schema we use in ent
-type File struct {
-	// File is the file to be uploaded
-	RawFile io.ReadSeeker
-	// ID is the unique identifier for the file
-	ID string `json:"id"`
-	// OriginalName is the original filename that was provided by the client on submission
-	OriginalName string `json:"original_name,omitempty"`
-	// MD5 hash of the file for integrity checking
-	MD5 []byte `json:"md5,omitempty"`
-	// ProvidedExtension is the extension provided by the client
-	ProvidedExtension string `json:"provided_extension,omitempty"`
-	// CreatedAt is the time the file was created
-	CreatedAt time.Time `json:"created_at"`
-	// UpdatedAt is the time the file was last updated
-	UpdatedAt time.Time `json:"updated_at"`
-	// Parent is the parent object of the file, if any
-	Parent ParentObject `json:"parent"`
-	// FieldName denotes the field from the multipart form
-	FieldName string `json:"field_name,omitempty"`
-	// Metadata contains additional file metadata
-	Metadata map[string]string `json:"metadata,omitempty"`
-	// CorrelatedObjectID is the ID of the object this file belongs to
-	CorrelatedObjectID string
-	// CorrelatedObjectType is the type of object this file belongs to
-	CorrelatedObjectType string
-	ProviderType         ProviderType `json:"provider_type,omitempty"`
-	FileMetadata
-}
-
-// ParentObject represents the parent object of a file
-type ParentObject struct {
-	// ID is the unique identifier of the parent object
-	ID string `json:"id"`
-	// Type is the type of the parent object
-	Type string `json:"type"`
-}
 
 // ValidationFunc is a type that can be used to dynamically validate a file
 type ValidationFunc func(f File) error

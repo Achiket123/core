@@ -8,6 +8,7 @@ import (
 
 	"github.com/theopenlane/core/internal/entitlements/features"
 	"github.com/theopenlane/core/pkg/models"
+	pkgobjects "github.com/theopenlane/core/pkg/objects"
 	"github.com/theopenlane/core/pkg/objects/storage"
 	storagetypes "github.com/theopenlane/core/pkg/objects/storage/types"
 	"github.com/theopenlane/utils/contextx"
@@ -20,7 +21,7 @@ type KnownProviderHint storagetypes.ProviderType
 type SizeBytesHint int64
 
 // PopulateProviderHints ensures standard metadata is present on the file's provider hints
-func PopulateProviderHints(file *storage.File, orgID string) {
+func PopulateProviderHints(file *pkgobjects.File, orgID string) {
 	if file == nil {
 		return
 	}
@@ -58,7 +59,7 @@ func PopulateProviderHints(file *storage.File, orgID string) {
 }
 
 // ResolveModuleFromFile attempts to determine the module associated with the upload
-func ResolveModuleFromFile(f storage.File) (models.OrgModule, bool) {
+func ResolveModuleFromFile(f pkgobjects.File) (models.OrgModule, bool) {
 	if module, ok := moduleFromHints(f.ProviderHints); ok {
 		return module, true
 	}

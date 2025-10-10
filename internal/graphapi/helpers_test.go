@@ -13,7 +13,6 @@ import (
 
 	"github.com/theopenlane/core/internal/ent/generated"
 	pkgobjects "github.com/theopenlane/core/pkg/objects"
-	"github.com/theopenlane/core/pkg/objects/storage"
 )
 
 func TestStripOperation(t *testing.T) {
@@ -72,7 +71,7 @@ func TestRetrieveObjectDetails(t *testing.T) {
 		fieldName   string
 		key         string
 		arguments   ast.ArgumentList
-		expected    *storage.File
+		expected    *pkgobjects.File
 		expectedErr error
 	}{
 		{
@@ -89,9 +88,9 @@ func TestRetrieveObjectDetails(t *testing.T) {
 					},
 				},
 			},
-			expected: &storage.File{
+			expected: &pkgobjects.File{
 				CorrelatedObjectType: "user",
-				FileMetadata: storage.FileMetadata{
+				FileMetadata: pkgobjects.FileMetadata{
 					Key: "file",
 				},
 			},
@@ -111,7 +110,7 @@ func TestRetrieveObjectDetails(t *testing.T) {
 					},
 				},
 			},
-			expected:    &storage.File{},
+			expected:    &pkgobjects.File{},
 			expectedErr: ErrUnableToDetermineObjectType,
 		},
 		{
@@ -119,7 +118,7 @@ func TestRetrieveObjectDetails(t *testing.T) {
 			fieldName:   "createUser",
 			key:         "file",
 			arguments:   ast.ArgumentList{},
-			expected:    &storage.File{},
+			expected:    &pkgobjects.File{},
 			expectedErr: ErrUnableToDetermineObjectType,
 		},
 		{
@@ -136,7 +135,7 @@ func TestRetrieveObjectDetails(t *testing.T) {
 					},
 				},
 			},
-			expected:    &storage.File{},
+			expected:    &pkgobjects.File{},
 			expectedErr: ErrUnableToDetermineObjectType,
 		},
 	}
@@ -152,7 +151,7 @@ func TestRetrieveObjectDetails(t *testing.T) {
 				},
 			}
 
-			upload := &storage.File{
+			upload := &pkgobjects.File{
 				OriginalName: "meow.txt",
 			}
 
@@ -334,7 +333,7 @@ func TestFileBuffering(t *testing.T) {
 			data := strings.Repeat("a", tt.fileSize)
 			reader := strings.NewReader(data)
 
-			file := storage.File{
+			file := pkgobjects.File{
 				RawFile: reader,
 			}
 
@@ -369,7 +368,7 @@ func TestFileBufferingWithReadSeeker(t *testing.T) {
 	data := []byte("test data")
 	bufferedReader := pkgobjects.NewBufferedReader(data)
 
-	file := storage.File{
+	file := pkgobjects.File{
 		RawFile:      bufferedReader,
 		OriginalName: "test.txt",
 	}
@@ -392,7 +391,7 @@ func TestFileBufferingWithReadSeeker(t *testing.T) {
 func TestFileBufferingNilReader(t *testing.T) {
 	t.Parallel()
 
-	file := storage.File{
+	file := pkgobjects.File{
 		RawFile:      nil,
 		OriginalName: "test.txt",
 	}

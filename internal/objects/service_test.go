@@ -11,6 +11,7 @@ import (
 	"github.com/samber/mo"
 
 	"github.com/theopenlane/core/pkg/eddy"
+	pkgobjects "github.com/theopenlane/core/pkg/objects"
 	"github.com/theopenlane/core/pkg/objects/storage"
 	storagetypes "github.com/theopenlane/core/pkg/objects/storage/types"
 	"github.com/theopenlane/iam/auth"
@@ -132,7 +133,7 @@ func TestServiceBuildResolutionContextAppliesHints(t *testing.T) {
 	ctx := context.Background()
 
 	opts := &storage.UploadOptions{
-		FileMetadata: storage.FileMetadata{
+		FileMetadata: pkgobjects.FileMetadata{
 			ProviderHints: &storage.ProviderHints{
 				PreferredProvider: storage.S3Provider,
 				Metadata: map[string]string{

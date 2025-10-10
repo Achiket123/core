@@ -14,17 +14,18 @@ import (
 	ent "github.com/theopenlane/core/internal/ent/generated"
 	"github.com/theopenlane/core/internal/ent/generated/privacy"
 	"github.com/theopenlane/core/pkg/middleware/transaction"
+	pkgobjects "github.com/theopenlane/core/pkg/objects"
 	"github.com/theopenlane/core/pkg/objects/storage"
 	"github.com/theopenlane/iam/auth"
 )
 
 // CreateFileRecord creates a file record in the database and returns the resulting ent.File entity.
-func CreateFileRecord(ctx context.Context, f storage.File) (*ent.File, error) {
+func CreateFileRecord(ctx context.Context, f pkgobjects.File) (*ent.File, error) {
 	return createFile(ctx, f)
 }
 
 // UpdateFileWithStorageMetadata updates a file entity with metadata returned from the storage provider.
-func UpdateFileWithStorageMetadata(ctx context.Context, entFile *ent.File, fileData storage.File) error {
+func UpdateFileWithStorageMetadata(ctx context.Context, entFile *ent.File, fileData pkgobjects.File) error {
 	allowCtx := privacy.DecisionContext(ctx, privacy.Allow)
 
 	update := txFileClientFromContext(ctx).
@@ -55,7 +56,7 @@ func UpdateFileWithStorageMetadata(ctx context.Context, entFile *ent.File, fileD
 	return nil
 }
 
-func createFile(ctx context.Context, f storage.File) (*ent.File, error) {
+func createFile(ctx context.Context, f pkgobjects.File) (*ent.File, error) {
 	contentType := f.ContentType
 	if contentType == "" {
 		if detectedType, err := storage.DetectContentType(f.RawFile); err == nil {
@@ -97,7 +98,7 @@ func createFile(ctx context.Context, f storage.File) (*ent.File, error) {
 	return entFile, nil
 }
 
-func getOrgOwnerID(ctx context.Context, f storage.File) (string, error) {
+func getOrgOwnerID(ctx context.Context, f pkgobjects.File) (string, error) {
 	if strings.EqualFold(f.CorrelatedObjectType, "user") {
 		return "", nil
 	}

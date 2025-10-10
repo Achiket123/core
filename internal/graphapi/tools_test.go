@@ -35,6 +35,7 @@ import (
 	"github.com/theopenlane/core/pkg/entitlements"
 	"github.com/theopenlane/core/pkg/entitlements/mocks"
 	"github.com/theopenlane/core/pkg/events/soiree"
+	pkgobjects "github.com/theopenlane/core/pkg/objects"
 	mock_shared "github.com/theopenlane/core/pkg/objects/mocks"
 	"github.com/theopenlane/core/pkg/objects/storage"
 	"github.com/theopenlane/core/pkg/openlaneclient"
@@ -236,7 +237,7 @@ func expectUpload(t *testing.T, mockProvider *mock_shared.MockProvider, expected
 		mockProvider.On("GetScheme").Return(&mockScheme).Once()
 		mockProvider.On("ProviderType").Return(storage.DiskProvider).Maybe()
 		mockProvider.On("Upload", mock.Anything, mock.Anything, mock.Anything).Return(&storage.UploadedMetadata{
-			FileMetadata: storage.FileMetadata{
+			FileMetadata: pkgobjects.FileMetadata{
 				Key:          "test-key",
 				Size:         upload.Size,
 				ProviderType: storage.DiskProvider,
@@ -256,7 +257,7 @@ func expectUploadNillable(t *testing.T, mockProvider *mock_shared.MockProvider, 
 			mockProvider.On("GetScheme").Return(&mockScheme).Once()
 			mockProvider.On("ProviderType").Return(storage.DiskProvider).Maybe()
 			mockProvider.On("Upload", mock.Anything, mock.Anything, mock.Anything).Return(&storage.UploadedMetadata{
-				FileMetadata: storage.FileMetadata{
+				FileMetadata: pkgobjects.FileMetadata{
 					Key:          "test-key",
 					Size:         upload.Size,
 					ProviderType: storage.DiskProvider,

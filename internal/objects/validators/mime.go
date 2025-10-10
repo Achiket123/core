@@ -42,10 +42,12 @@ var validMimeTypes = map[string][]string{
 }
 
 // MimeTypeValidator returns a storage.ValidationFunc enforcing the configured mime-type set per form field.
-var MimeTypeValidator storage.ValidationFunc = func(f storage.File) error {
+func mimeTypeValidator(f storage.File) error {
 	if mimes, ok := validMimeTypes[f.FieldName]; ok {
 		return pkgobjects.MimeTypeValidator(mimes...)(f)
 	}
 
 	return pkgobjects.MimeTypeValidator(sharedMimeTypes...)(f)
 }
+
+var MimeTypeValidator storage.ValidationFunc = mimeTypeValidator

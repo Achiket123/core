@@ -49,6 +49,8 @@ type File struct {
 	ID string `json:"id"`
 	// OriginalName is the original filename that was provided by the client on submission
 	OriginalName string `json:"original_name,omitempty"`
+	// FieldName denotes the field from the multipart form
+	FieldName string `json:"field_name,omitempty"`
 	// MD5 hash of the file for integrity checking
 	MD5 []byte `json:"md5,omitempty"`
 	// ProvidedExtension is the extension provided by the client

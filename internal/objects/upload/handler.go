@@ -17,12 +17,12 @@ import (
 )
 
 // HandleUploads persists metadata, uploads files to storage, and enriches the request context with uploaded file details.
-func HandleUploads(ctx context.Context, svc *objects.Service, files []storage.File) (context.Context, []storage.File, error) {
+func HandleUploads(ctx context.Context, svc *objects.Service, files []pkgobjects.File) (context.Context, []pkgobjects.File, error) {
 	if len(files) == 0 {
 		return ctx, nil, nil
 	}
 
-	var uploadedFiles []storage.File
+	var uploadedFiles []pkgobjects.File
 
 	for _, file := range files {
 		pkgobjects.AddUpload()
@@ -52,7 +52,7 @@ func HandleUploads(ctx context.Context, svc *objects.Service, files []storage.Fi
 			return ctx, nil, err
 		}
 		if uploadOpts.ProviderHints == nil {
-			uploadOpts.ProviderHints = &storage.ProviderHints{}
+			uploadOpts.ProviderHints = &pkgobjects.ProviderHints{}
 		}
 
 		if uploadOpts.ProviderHints.Metadata == nil {
@@ -89,7 +89,7 @@ func HandleUploads(ctx context.Context, svc *objects.Service, files []storage.Fi
 		return ctx, nil, nil
 	}
 
-	contextFilesMap := make(storage.Files)
+	contextFilesMap := make(pkgobjects.Files)
 	for _, file := range uploadedFiles {
 		fieldName := file.FieldName
 		if fieldName == "" {
@@ -105,13 +105,13 @@ func HandleUploads(ctx context.Context, svc *objects.Service, files []storage.Fi
 
 // BuildUploadOptions prepares upload options enriched with provider hints and ensures
 // the file has a detected content type when one was not provided by the client.
-func BuildUploadOptions(ctx context.Context, f *storage.File) *storage.UploadOptions {
+func BuildUploadOptions(ctx context.Context, f *pkgobjects.File) *pkgobjects.UploadOptions {
 	if f == nil {
-		return &storage.UploadOptions{}
+		return &pkgobjects.UploadOptions{}
 	}
 
 	if f.ProviderHints == nil {
-		f.ProviderHints = &storage.ProviderHints{}
+		f.ProviderHints = &pkgobjects.ProviderHints{}
 	}
 
 	orgID, _ := auth.GetOrganizationIDFromContext(ctx)
@@ -138,19 +138,19 @@ func BuildUploadOptions(ctx context.Context, f *storage.File) *storage.UploadOpt
 		}
 	}
 
-	return &storage.UploadOptions{
+	return &pkgobjects.UploadOptions{
 		FileName:          f.OriginalName,
 		ContentType:       contentType,
 		Bucket:            f.Bucket,
 		FolderDestination: f.Folder,
-		FileMetadata: storage.FileMetadata{
+		FileMetadata: pkgobjects.FileMetadata{
 			Key:           f.FieldName,
 			ProviderHints: f.ProviderHints,
 		},
 	}
 }
 
-func mergeUploadedFileMetadata(dest *storage.File, entFileID string, src storage.File) {
+func mergeUploadedFileMetadata(dest *pkgobjects.File, entFileID string, src pkgobjects.File) {
 	dest.ID = entFileID
 	dest.FieldName = src.FieldName
 	dest.Parent = src.Parent

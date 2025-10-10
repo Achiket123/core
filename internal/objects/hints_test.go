@@ -8,17 +8,17 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/theopenlane/core/pkg/models"
-	"github.com/theopenlane/core/pkg/objects/storage"
+	pkgobjects "github.com/theopenlane/core/pkg/objects"
 	storagetypes "github.com/theopenlane/core/pkg/objects/storage/types"
 	"github.com/theopenlane/utils/contextx"
 )
 
 func TestPopulateProviderHints(t *testing.T) {
-	file := storage.File{
+	file := pkgobjects.File{
 		OriginalName:         "evidence.json",
 		FieldName:            "uploadFile",
 		CorrelatedObjectType: "evidence",
-		FileMetadata: storage.FileMetadata{
+		FileMetadata: pkgobjects.FileMetadata{
 			Size:        1024,
 			ContentType: "application/json",
 		},

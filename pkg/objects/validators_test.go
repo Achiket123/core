@@ -6,23 +6,21 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/theopenlane/core/pkg/objects/storage"
 )
 
 func TestMimeTypeValidator(t *testing.T) {
 	tests := []struct {
 		name           string
 		validMimeTypes []string
-		file           storage.File
+		file           File
 		expectError    bool
 		errorContains  string
 	}{
 		{
 			name:           "valid mime type - exact match",
 			validMimeTypes: []string{"image/png", "image/jpeg"},
-			file: storage.File{
-				FileMetadata: storage.FileMetadata{
+			file: File{
+				FileMetadata: FileMetadata{
 					ContentType: "image/png",
 				},
 			},
@@ -31,8 +29,8 @@ func TestMimeTypeValidator(t *testing.T) {
 		{
 			name:           "valid mime type - case insensitive",
 			validMimeTypes: []string{"image/PNG", "image/JPEG"},
-			file: storage.File{
-				FileMetadata: storage.FileMetadata{
+			file: File{
+				FileMetadata: FileMetadata{
 					ContentType: "image/png",
 				},
 			},
@@ -41,8 +39,8 @@ func TestMimeTypeValidator(t *testing.T) {
 		{
 			name:           "valid mime type - multiple types",
 			validMimeTypes: []string{"application/pdf", "image/png", "text/plain"},
-			file: storage.File{
-				FileMetadata: storage.FileMetadata{
+			file: File{
+				FileMetadata: FileMetadata{
 					ContentType: "text/plain",
 				},
 			},
@@ -51,8 +49,8 @@ func TestMimeTypeValidator(t *testing.T) {
 		{
 			name:           "invalid mime type",
 			validMimeTypes: []string{"image/png", "image/jpeg"},
-			file: storage.File{
-				FileMetadata: storage.FileMetadata{
+			file: File{
+				FileMetadata: FileMetadata{
 					ContentType: "application/pdf",
 				},
 			},
@@ -62,8 +60,8 @@ func TestMimeTypeValidator(t *testing.T) {
 		{
 			name:           "empty mime type list",
 			validMimeTypes: []string{},
-			file: storage.File{
-				FileMetadata: storage.FileMetadata{
+			file: File{
+				FileMetadata: FileMetadata{
 					ContentType: "image/png",
 				},
 			},
@@ -73,8 +71,8 @@ func TestMimeTypeValidator(t *testing.T) {
 		{
 			name:           "empty content type in file",
 			validMimeTypes: []string{"image/png"},
-			file: storage.File{
-				FileMetadata: storage.FileMetadata{
+			file: File{
+				FileMetadata: FileMetadata{
 					ContentType: "",
 				},
 			},
@@ -84,8 +82,8 @@ func TestMimeTypeValidator(t *testing.T) {
 		{
 			name:           "case insensitive validation",
 			validMimeTypes: []string{"Image/PNG"},
-			file: storage.File{
-				FileMetadata: storage.FileMetadata{
+			file: File{
+				FileMetadata: FileMetadata{
 					ContentType: "IMAGE/png",
 				},
 			},
@@ -113,15 +111,15 @@ func TestMimeTypeValidator(t *testing.T) {
 
 func TestChainValidators(t *testing.T) {
 	t.Run("all validators pass", func(t *testing.T) {
-		file := storage.File{
-			FileMetadata: storage.FileMetadata{
+		file := File{
+			FileMetadata: FileMetadata{
 				ContentType: "image/png",
 				Size:        1024,
 			},
 		}
 
 		validator1 := MimeTypeValidator("image/png", "image/jpeg")
-		validator2 := func(f storage.File) error {
+		validator2 := func(f File) error {
 			if f.Size > 2048 {
 				return errors.New("file too large")
 			}
@@ -135,15 +133,15 @@ func TestChainValidators(t *testing.T) {
 	})
 
 	t.Run("first validator fails", func(t *testing.T) {
-		file := storage.File{
-			FileMetadata: storage.FileMetadata{
+		file := File{
+			FileMetadata: FileMetadata{
 				ContentType: "application/pdf",
 				Size:        1024,
 			},
 		}
 
 		validator1 := MimeTypeValidator("image/png", "image/jpeg")
-		validator2 := func(f storage.File) error {
+		validator2 := func(f File) error {
 			return nil
 		}
 
@@ -155,15 +153,15 @@ func TestChainValidators(t *testing.T) {
 	})
 
 	t.Run("second validator fails", func(t *testing.T) {
-		file := storage.File{
-			FileMetadata: storage.FileMetadata{
+		file := File{
+			FileMetadata: FileMetadata{
 				ContentType: "image/png",
 				Size:        3000,
 			},
 		}
 
 		validator1 := MimeTypeValidator("image/png", "image/jpeg")
-		validator2 := func(f storage.File) error {
+		validator2 := func(f File) error {
 			if f.Size > 2048 {
 				return errors.New("file too large")
 			}
@@ -178,8 +176,8 @@ func TestChainValidators(t *testing.T) {
 	})
 
 	t.Run("empty validator chain", func(t *testing.T) {
-		file := storage.File{
-			FileMetadata: storage.FileMetadata{
+		file := File{
+			FileMetadata: FileMetadata{
 				ContentType: "image/png",
 			},
 		}
@@ -191,8 +189,8 @@ func TestChainValidators(t *testing.T) {
 	})
 
 	t.Run("single validator", func(t *testing.T) {
-		file := storage.File{
-			FileMetadata: storage.FileMetadata{
+		file := File{
+			FileMetadata: FileMetadata{
 				ContentType: "image/png",
 			},
 		}
@@ -205,8 +203,8 @@ func TestChainValidators(t *testing.T) {
 	})
 
 	t.Run("multiple validators with custom logic", func(t *testing.T) {
-		file := storage.File{
-			FileMetadata: storage.FileMetadata{
+		file := File{
+			FileMetadata: FileMetadata{
 				ContentType: "image/png",
 				Size:        1024,
 			},
@@ -214,13 +212,13 @@ func TestChainValidators(t *testing.T) {
 		}
 
 		validator1 := MimeTypeValidator("image/png")
-		validator2 := func(f storage.File) error {
+		validator2 := func(f File) error {
 			if f.Size == 0 {
 				return errors.New("file size cannot be zero")
 			}
 			return nil
 		}
-		validator3 := func(f storage.File) error {
+		validator3 := func(f File) error {
 			if f.OriginalName == "" {
 				return errors.New("file name cannot be empty")
 			}
@@ -234,8 +232,8 @@ func TestChainValidators(t *testing.T) {
 	})
 
 	t.Run("stops at first error", func(t *testing.T) {
-		file := storage.File{
-			FileMetadata: storage.FileMetadata{
+		file := File{
+			FileMetadata: FileMetadata{
 				ContentType: "application/pdf",
 				Size:        0,
 			},
@@ -243,11 +241,11 @@ func TestChainValidators(t *testing.T) {
 
 		validationOrder := []string{}
 
-		validator1 := func(f storage.File) error {
+		validator1 := func(f File) error {
 			validationOrder = append(validationOrder, "validator1")
 			return errors.New("first error")
 		}
-		validator2 := func(f storage.File) error {
+		validator2 := func(f File) error {
 			validationOrder = append(validationOrder, "validator2")
 			return errors.New("second error")
 		}

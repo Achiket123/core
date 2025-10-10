@@ -355,8 +355,8 @@ func TestParseFilesFromSource(t *testing.T) {
 func TestWriteFilesToContext(t *testing.T) {
 	t.Run("new context", func(t *testing.T) {
 		ctx := context.Background()
-		files := storage.Files{
-			"file1": []storage.File{
+		files := Files{
+			"file1": []File{
 				{ID: "1", FieldName: "file1"},
 			},
 		}
@@ -371,16 +371,16 @@ func TestWriteFilesToContext(t *testing.T) {
 
 	t.Run("append to existing context", func(t *testing.T) {
 		ctx := context.Background()
-		files1 := storage.Files{
-			"file1": []storage.File{
+		files1 := Files{
+			"file1": []File{
 				{ID: "1", FieldName: "file1"},
 			},
 		}
 
 		ctx = WriteFilesToContext(ctx, files1)
 
-		files2 := storage.Files{
-			"file1": []storage.File{
+		files2 := Files{
+			"file1": []File{
 				{ID: "2", FieldName: "file1"},
 			},
 		}
@@ -394,11 +394,11 @@ func TestWriteFilesToContext(t *testing.T) {
 
 	t.Run("multiple keys", func(t *testing.T) {
 		ctx := context.Background()
-		files := storage.Files{
-			"file1": []storage.File{
+		files := Files{
+			"file1": []File{
 				{ID: "1", FieldName: "file1"},
 			},
-			"file2": []storage.File{
+			"file2": []File{
 				{ID: "2", FieldName: "file2"},
 			},
 		}
@@ -414,15 +414,15 @@ func TestWriteFilesToContext(t *testing.T) {
 func TestUpdateFileInContextByKey(t *testing.T) {
 	t.Run("update existing file", func(t *testing.T) {
 		ctx := context.Background()
-		files := storage.Files{
-			"file1": []storage.File{
+		files := Files{
+			"file1": []File{
 				{ID: "1", FieldName: "file1", OriginalName: "old.txt"},
 			},
 		}
 
 		ctx = WriteFilesToContext(ctx, files)
 
-		updatedFile := storage.File{
+		updatedFile := File{
 			ID:           "1",
 			FieldName:    "file1",
 			OriginalName: "new.txt",
@@ -437,15 +437,15 @@ func TestUpdateFileInContextByKey(t *testing.T) {
 
 	t.Run("file not found", func(t *testing.T) {
 		ctx := context.Background()
-		files := storage.Files{
-			"file1": []storage.File{
+		files := Files{
+			"file1": []File{
 				{ID: "1", FieldName: "file1"},
 			},
 		}
 
 		ctx = WriteFilesToContext(ctx, files)
 
-		updatedFile := storage.File{
+		updatedFile := File{
 			ID:        "999",
 			FieldName: "file1",
 		}
@@ -461,7 +461,7 @@ func TestUpdateFileInContextByKey(t *testing.T) {
 	t.Run("empty context", func(t *testing.T) {
 		ctx := context.Background()
 
-		updatedFile := storage.File{
+		updatedFile := File{
 			ID:        "1",
 			FieldName: "file1",
 		}
@@ -477,15 +477,15 @@ func TestUpdateFileInContextByKey(t *testing.T) {
 func TestRemoveFileFromContext(t *testing.T) {
 	t.Run("remove single file", func(t *testing.T) {
 		ctx := context.Background()
-		files := storage.Files{
-			"file1": []storage.File{
+		files := Files{
+			"file1": []File{
 				{ID: "1", FieldName: "file1"},
 			},
 		}
 
 		ctx = WriteFilesToContext(ctx, files)
 
-		fileToRemove := storage.File{ID: "1"}
+		fileToRemove := File{ID: "1"}
 		ctx = RemoveFileFromContext(ctx, fileToRemove)
 
 		result, err := FilesFromContext(ctx)
@@ -495,8 +495,8 @@ func TestRemoveFileFromContext(t *testing.T) {
 
 	t.Run("remove one of multiple files", func(t *testing.T) {
 		ctx := context.Background()
-		files := storage.Files{
-			"file1": []storage.File{
+		files := Files{
+			"file1": []File{
 				{ID: "1", FieldName: "file1"},
 				{ID: "2", FieldName: "file1"},
 			},
@@ -504,7 +504,7 @@ func TestRemoveFileFromContext(t *testing.T) {
 
 		ctx = WriteFilesToContext(ctx, files)
 
-		fileToRemove := storage.File{ID: "1"}
+		fileToRemove := File{ID: "1"}
 		ctx = RemoveFileFromContext(ctx, fileToRemove)
 
 		result, err := FilesFromContextWithKey(ctx, "file1")
@@ -515,15 +515,15 @@ func TestRemoveFileFromContext(t *testing.T) {
 
 	t.Run("remove non-existent file", func(t *testing.T) {
 		ctx := context.Background()
-		files := storage.Files{
-			"file1": []storage.File{
+		files := Files{
+			"file1": []File{
 				{ID: "1", FieldName: "file1"},
 			},
 		}
 
 		ctx = WriteFilesToContext(ctx, files)
 
-		fileToRemove := storage.File{ID: "999"}
+		fileToRemove := File{ID: "999"}
 		ctx = RemoveFileFromContext(ctx, fileToRemove)
 
 		result, err := FilesFromContext(ctx)
@@ -534,7 +534,7 @@ func TestRemoveFileFromContext(t *testing.T) {
 	t.Run("empty context", func(t *testing.T) {
 		ctx := context.Background()
 
-		fileToRemove := storage.File{ID: "1"}
+		fileToRemove := File{ID: "1"}
 		ctx = RemoveFileFromContext(ctx, fileToRemove)
 
 		result, err := FilesFromContext(ctx)
@@ -546,8 +546,8 @@ func TestRemoveFileFromContext(t *testing.T) {
 func TestFilesFromContext(t *testing.T) {
 	t.Run("retrieve files", func(t *testing.T) {
 		ctx := context.Background()
-		files := storage.Files{
-			"file1": []storage.File{
+		files := Files{
+			"file1": []File{
 				{ID: "1", FieldName: "file1"},
 			},
 		}
@@ -570,11 +570,11 @@ func TestFilesFromContext(t *testing.T) {
 func TestFilesFromContextWithKey(t *testing.T) {
 	t.Run("retrieve files by key", func(t *testing.T) {
 		ctx := context.Background()
-		files := storage.Files{
-			"file1": []storage.File{
+		files := Files{
+			"file1": []File{
 				{ID: "1", FieldName: "file1"},
 			},
-			"file2": []storage.File{
+			"file2": []File{
 				{ID: "2", FieldName: "file2"},
 			},
 		}
@@ -589,8 +589,8 @@ func TestFilesFromContextWithKey(t *testing.T) {
 
 	t.Run("key not found", func(t *testing.T) {
 		ctx := context.Background()
-		files := storage.Files{
-			"file1": []storage.File{
+		files := Files{
+			"file1": []File{
 				{ID: "1", FieldName: "file1"},
 			},
 		}
@@ -613,12 +613,12 @@ func TestFilesFromContextWithKey(t *testing.T) {
 func TestGetFileIDsFromContext(t *testing.T) {
 	t.Run("retrieve file IDs", func(t *testing.T) {
 		ctx := context.Background()
-		files := storage.Files{
-			"file1": []storage.File{
+		files := Files{
+			"file1": []File{
 				{ID: "1", FieldName: "file1"},
 				{ID: "2", FieldName: "file1"},
 			},
-			"file2": []storage.File{
+			"file2": []File{
 				{ID: "3", FieldName: "file2"},
 			},
 		}
@@ -643,8 +643,8 @@ func TestGetFileIDsFromContext(t *testing.T) {
 func TestProcessFilesForMutation(t *testing.T) {
 	t.Run("process files with mutation", func(t *testing.T) {
 		ctx := context.Background()
-		files := storage.Files{
-			"file1": []storage.File{
+		files := Files{
+			"file1": []File{
 				{ID: "1", FieldName: "file1"},
 			},
 		}
@@ -666,8 +666,8 @@ func TestProcessFilesForMutation(t *testing.T) {
 
 	t.Run("process files with parent type override", func(t *testing.T) {
 		ctx := context.Background()
-		files := storage.Files{
-			"file1": []storage.File{
+		files := Files{
+			"file1": []File{
 				{ID: "1", FieldName: "file1"},
 			},
 		}
@@ -699,8 +699,8 @@ func TestProcessFilesForMutation(t *testing.T) {
 
 	t.Run("different field name", func(t *testing.T) {
 		ctx := context.Background()
-		files := storage.Files{
-			"file1": []storage.File{
+		files := Files{
+			"file1": []File{
 				{ID: "1", FieldName: "file1"},
 			},
 		}

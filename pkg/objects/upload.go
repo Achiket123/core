@@ -22,7 +22,7 @@ import (
 // in subsequent parts of the request
 // this is different than the `key` in the multipart form, which is the form field name that the file was uploaded with
 type FileContextKey struct {
-	Files storage.Files
+	Files Files
 }
 
 // FileSource represents any source that can provide file uploads.
@@ -32,8 +32,8 @@ type FileSource interface {
 }
 
 // ParseFilesFromSource extracts files from any source using generics
-func ParseFilesFromSource[T FileSource](source T, keys ...string) (map[string][]storage.File, error) {
-	result := make(map[string][]storage.File)
+func ParseFilesFromSource[T FileSource](source T, keys ...string) (map[string][]File, error) {
+	result := make(map[string][]File)
 	// Type switch on any(source) is required because Go does not allow type switches directly on generic type parameters
 	switch s := any(source).(type) {
 	case map[string]any:
@@ -52,8 +52,8 @@ func ParseFilesFromSource[T FileSource](source T, keys ...string) (map[string][]
 }
 
 // parseVariablesMap extracts files from a variables map (e.g., GraphQL variables)
-func parseVariablesMap(variables map[string]any, keys ...string) (map[string][]storage.File, error) {
-	result := make(map[string][]storage.File)
+func parseVariablesMap(variables map[string]any, keys ...string) (map[string][]File, error) {
+	result := make(map[string][]File)
 
 	for key, value := range variables {
 		// Skip if this key isn't in our filter list (if provided)
@@ -66,13 +66,13 @@ func parseVariablesMap(variables map[string]any, keys ...string) (map[string][]s
 
 		uploads := extractUploads(value)
 		if len(uploads) > 0 {
-			var files []storage.File
+			var files []File
 			for _, upload := range uploads {
-				files = append(files, storage.File{
+				files = append(files, File{
 					RawFile:      upload.File,
 					OriginalName: upload.Filename,
 					FieldName:    key,
-					FileMetadata: storage.FileMetadata{
+					FileMetadata: FileMetadata{
 						Size:        upload.Size,
 						ContentType: upload.ContentType,
 						Key:         key,
@@ -146,8 +146,8 @@ func ProcessFilesForMutation[T Mutation](ctx context.Context, mutation T, key st
 }
 
 // parseMultipartForm extracts files from multipart.Form
-func parseMultipartForm(form *multipart.Form, keys ...string) (map[string][]storage.File, error) {
-	result := make(map[string][]storage.File)
+func parseMultipartForm(form *multipart.Form, keys ...string) (map[string][]File, error) {
+	result := make(map[string][]File)
 
 	// If no keys specified, use all available keys
 	if len(keys) == 0 {
@@ -162,7 +162,7 @@ func parseMultipartForm(form *multipart.Form, keys ...string) (map[string][]stor
 			continue
 		}
 
-		var files []storage.File
+		var files []File
 		for _, header := range fileHeaders {
 			file, err := header.Open()
 			if err != nil {
@@ -171,11 +171,11 @@ func parseMultipartForm(form *multipart.Form, keys ...string) (map[string][]stor
 				continue
 			}
 
-			files = append(files, storage.File{
+			files = append(files, File{
 				RawFile:      file,
 				OriginalName: header.Filename,
 				FieldName:    key,
-				FileMetadata: storage.FileMetadata{
+				FileMetadata: FileMetadata{
 					Size:        header.Size,
 					ContentType: header.Header.Get("Content-Type"),
 					Key:         key,
@@ -193,10 +193,10 @@ func parseMultipartForm(form *multipart.Form, keys ...string) (map[string][]stor
 
 // WriteFilesToContext retrieves any existing files from the context, appends the new files to the existing files map
 // based on the form field name, then returns a new context with the updated files map stored in it
-func WriteFilesToContext(ctx context.Context, f storage.Files) context.Context {
+func WriteFilesToContext(ctx context.Context, f Files) context.Context {
 	fileCtx, ok := contextx.From[FileContextKey](ctx)
 	if !ok {
-		fileCtx = FileContextKey{Files: storage.Files{}}
+		fileCtx = FileContextKey{Files: Files{}}
 	}
 
 	for _, v := range f {
@@ -209,10 +209,10 @@ func WriteFilesToContext(ctx context.Context, f storage.Files) context.Context {
 }
 
 // UpdateFileInContextByKey updates the file in the context based on the key and the file ID
-func UpdateFileInContextByKey(ctx context.Context, key string, f storage.File) context.Context {
+func UpdateFileInContextByKey(ctx context.Context, key string, f File) context.Context {
 	fileCtx, ok := contextx.From[FileContextKey](ctx)
 	if !ok {
-		fileCtx = FileContextKey{Files: storage.Files{}}
+		fileCtx = FileContextKey{Files: Files{}}
 	}
 
 	for i, v := range fileCtx.Files[key] {
@@ -225,14 +225,14 @@ func UpdateFileInContextByKey(ctx context.Context, key string, f storage.File) c
 }
 
 // RemoveFileFromContext removes the file from the context based on the file ID
-func RemoveFileFromContext(ctx context.Context, f storage.File) context.Context {
+func RemoveFileFromContext(ctx context.Context, f File) context.Context {
 	fileCtx, ok := contextx.From[FileContextKey](ctx)
 	if !ok {
-		fileCtx = FileContextKey{Files: storage.Files{}}
+		fileCtx = FileContextKey{Files: Files{}}
 	}
 
 	for key, fileList := range fileCtx.Files {
-		filteredFiles := lo.Filter(fileList, func(file storage.File, _ int) bool {
+		filteredFiles := lo.Filter(fileList, func(file File, _ int) bool {
 			return file.ID != f.ID
 		})
 
@@ -247,7 +247,7 @@ func RemoveFileFromContext(ctx context.Context, f storage.File) context.Context 
 }
 
 // FilesFromContext returns all files that have been uploaded during the request
-func FilesFromContext(ctx context.Context) (storage.Files, error) {
+func FilesFromContext(ctx context.Context) (Files, error) {
 	fileCtx, ok := contextx.From[FileContextKey](ctx)
 	if !ok || fileCtx.Files == nil {
 		return nil, storage.ErrNoFilesUploaded
@@ -258,7 +258,7 @@ func FilesFromContext(ctx context.Context) (storage.Files, error) {
 
 // FilesFromContextWithKey returns all files that have been uploaded during the request
 // and sorts by the provided form field
-func FilesFromContextWithKey(ctx context.Context, key string) ([]storage.File, error) {
+func FilesFromContextWithKey(ctx context.Context, key string) ([]File, error) {
 	fileCtx, ok := contextx.From[FileContextKey](ctx)
 	if !ok || fileCtx.Files == nil {
 		return nil, storage.ErrNoFilesUploaded
@@ -275,8 +275,8 @@ func GetFileIDsFromContext(ctx context.Context) []string {
 		return []string{}
 	}
 
-	return lo.FlatMap(lo.Values(files), func(fileList []storage.File, _ int) []string {
-		return lo.Map(fileList, func(file storage.File, _ int) string {
+	return lo.FlatMap(lo.Values(files), func(fileList []File, _ int) []string {
+		return lo.Map(fileList, func(file File, _ int) string {
 			return file.ID
 		})
 	})

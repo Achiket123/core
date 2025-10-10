@@ -27,7 +27,6 @@ import (
 	"github.com/theopenlane/core/internal/objects/upload"
 	"github.com/theopenlane/core/pkg/events/soiree"
 	pkgobjects "github.com/theopenlane/core/pkg/objects"
-	"github.com/theopenlane/core/pkg/objects/storage"
 )
 
 const (
@@ -36,7 +35,7 @@ const (
 )
 
 // withTransactionalMutation automatically wrap the GraphQL mutations with a database transaction.
-// This allows the ent.Client to commit at the end, or rollback the transaction in case of a GraphQL error.
+// This allows the ent.Client to commit at the end, or rollbacsk the transaction in case of a GraphQL error.
 func withTransactionalMutation(ctx context.Context) *ent.Client {
 	return ent.FromContext(ctx)
 }
@@ -79,7 +78,7 @@ func injectFileUploader(u *objects.Service) graphql.FieldMiddleware {
 		}
 
 		// Convert to flat list, filtering out input key and adding object details
-		uploads := []storage.File{}
+		uploads := []pkgobjects.File{}
 		for k, files := range filesMap {
 			// skip the input key
 			if k == inputKey {
@@ -348,7 +347,7 @@ func checkAllowedAuthType(ctx context.Context) error {
 }
 
 // retrieveObjectDetails retrieves the object details from the field context
-func retrieveObjectDetails(rctx *graphql.FieldContext, key string, upload *storage.File) (*storage.File, error) {
+func retrieveObjectDetails(rctx *graphql.FieldContext, key string, upload *pkgobjects.File) (*pkgobjects.File, error) {
 	// loop through the arguments in the request
 	for _, arg := range rctx.Field.Arguments {
 		// check if the argument is an upload

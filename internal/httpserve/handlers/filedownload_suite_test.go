@@ -17,6 +17,7 @@ import (
 	handlerpkg "github.com/theopenlane/core/internal/httpserve/handlers"
 	"github.com/theopenlane/core/internal/objects/resolver"
 	"github.com/theopenlane/core/internal/objects/upload"
+	pkgobjects "github.com/theopenlane/core/pkg/objects"
 	"github.com/theopenlane/core/pkg/objects/storage"
 	storagetypes "github.com/theopenlane/core/pkg/objects/storage/types"
 	"github.com/theopenlane/iam/auth"
@@ -39,14 +40,14 @@ func (suite *HandlerTestSuite) TestDatabaseFileDownloadHandler_Success() {
 
 	fileContent := []byte("database provider payload")
 
-	uploadCtx, uploadedFiles, err := upload.HandleUploads(uploadCtx, suite.objectStore, []storage.File{
+	uploadCtx, uploadedFiles, err := upload.HandleUploads(uploadCtx, suite.objectStore, []pkgobjects.File{
 		{
 			RawFile:              bytes.NewReader(fileContent),
 			OriginalName:         "example.txt",
 			FieldName:            "uploadFile",
 			CorrelatedObjectID:   user.PersonalOrgID,
 			CorrelatedObjectType: "organization",
-			FileMetadata: storage.FileMetadata{
+			FileMetadata: pkgobjects.FileMetadata{
 				ContentType: "text/plain",
 			},
 		},
@@ -109,14 +110,14 @@ func (suite *HandlerTestSuite) TestDatabaseFileDownloadHandler_InvalidToken() {
 
 	fileContent := []byte("invalid token test")
 
-	uploadCtx, uploadedFiles, err := upload.HandleUploads(uploadCtx, suite.objectStore, []storage.File{
+	uploadCtx, uploadedFiles, err := upload.HandleUploads(uploadCtx, suite.objectStore, []pkgobjects.File{
 		{
 			RawFile:              bytes.NewReader(fileContent),
 			OriginalName:         "invalid.txt",
 			FieldName:            "uploadFile",
 			CorrelatedObjectID:   user.PersonalOrgID,
 			CorrelatedObjectType: "organization",
-			FileMetadata: storage.FileMetadata{
+			FileMetadata: pkgobjects.FileMetadata{
 				ContentType: "text/plain",
 			},
 		},
