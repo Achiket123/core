@@ -62,7 +62,7 @@ func TestQueryPersonalAccessToken(t *testing.T) {
 	}
 
 	// cleanup
-	(*&Cleanup[*generated.PersonalAccessTokenDeleteOne]{
+	(&Cleanup[*generated.PersonalAccessTokenDeleteOne]{
 		client: suite.client.db.PersonalAccessToken,
 		ID:     token.ID,
 	}).MustDelete(testUser1.UserCtx, t)
@@ -200,7 +200,7 @@ func TestMutationCreatePersonalAccessToken(t *testing.T) {
 			assert.Check(t, is.Contains(resp.CreatePersonalAccessToken.PersonalAccessToken.Token, "tolp_"))
 
 			// cleanup
-			(*&Cleanup[*generated.PersonalAccessTokenDeleteOne]{
+			(&Cleanup[*generated.PersonalAccessTokenDeleteOne]{
 				client: suite.client.db.PersonalAccessToken,
 				ID:     resp.CreatePersonalAccessToken.PersonalAccessToken.ID,
 			}).MustDelete(testUser1.UserCtx, t)
@@ -319,11 +319,11 @@ func TestMutationUpdatePersonalAccessToken(t *testing.T) {
 	}
 
 	// cleanup
-	(*&Cleanup[*generated.PersonalAccessTokenDeleteOne]{
+	(&Cleanup[*generated.PersonalAccessTokenDeleteOne]{
 		client: suite.client.db.PersonalAccessToken,
 		ID:     token.ID,
 	}).MustDelete(testUser1.UserCtx, t)
-	(*&Cleanup[*generated.PersonalAccessTokenDeleteOne]{
+	(&Cleanup[*generated.PersonalAccessTokenDeleteOne]{
 		client: suite.client.db.PersonalAccessToken,
 		ID:     tokenOther.ID,
 	}).MustDelete(testUser2.UserCtx, t)
@@ -368,7 +368,7 @@ func TestMutationDeletePersonalAccessToken(t *testing.T) {
 	}
 
 	// cleanup
-	(*&Cleanup[*generated.PersonalAccessTokenDeleteOne]{
+	(&Cleanup[*generated.PersonalAccessTokenDeleteOne]{
 		client: suite.client.db.PersonalAccessToken,
 		ID:     tokenOther.ID,
 	}).MustDelete(testUser2.UserCtx, t)
@@ -397,7 +397,7 @@ func TestLastUsedPersonalAccessToken(t *testing.T) {
 	assert.Check(t, !out.PersonalAccessToken.LastUsedAt.IsZero())
 
 	// cleanup
-	(*&Cleanup[*generated.PersonalAccessTokenDeleteOne]{
+	(&Cleanup[*generated.PersonalAccessTokenDeleteOne]{
 		client: suite.client.db.PersonalAccessToken,
 		ID:     token.ID,
 	}).MustDelete(testUser1.UserCtx, t)

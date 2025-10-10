@@ -1,4 +1,4 @@
-package objects
+package validators
 
 import (
 	pkgobjects "github.com/theopenlane/core/pkg/objects"

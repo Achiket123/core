@@ -47,11 +47,13 @@ func TestConfigureProviderRulesDevMode(t *testing.T) {
 
 	configureProviderRules(
 		resolver,
-		config,
-		&stubBuilder{providerType: "s3"},
-		&stubBuilder{providerType: "r2"},
-		diskBuilder,
-		&stubBuilder{providerType: "db"},
+		WithProviderConfig(config),
+		WithProviderBuilders(providerBuilders{
+			s3:   &stubBuilder{providerType: "s3"},
+			r2:   &stubBuilder{providerType: "r2"},
+			disk: diskBuilder,
+			db:   &stubBuilder{providerType: "db"},
+		}),
 	)
 
 	option := resolver.Resolve(context.Background())
@@ -84,11 +86,13 @@ func TestKnownProviderRule(t *testing.T) {
 
 	configureProviderRules(
 		resolver,
-		config,
-		&stubBuilder{providerType: "s3"},
-		&stubBuilder{providerType: "r2"},
-		diskBuilder,
-		&stubBuilder{providerType: "db"},
+		WithProviderConfig(config),
+		WithProviderBuilders(providerBuilders{
+			s3:   &stubBuilder{providerType: "s3"},
+			r2:   &stubBuilder{providerType: "r2"},
+			disk: diskBuilder,
+			db:   &stubBuilder{providerType: "db"},
+		}),
 	)
 
 	option := resolver.Resolve(ctx)
@@ -117,11 +121,13 @@ func TestModuleRules(t *testing.T) {
 
 	configureProviderRules(
 		resolver,
-		config,
-		&stubBuilder{providerType: "s3"},
-		r2Builder,
-		&stubBuilder{providerType: "disk"},
-		&stubBuilder{providerType: "db"},
+		WithProviderConfig(config),
+		WithProviderBuilders(providerBuilders{
+			s3:   &stubBuilder{providerType: "s3"},
+			r2:   r2Builder,
+			disk: &stubBuilder{providerType: "disk"},
+			db:   &stubBuilder{providerType: "db"},
+		}),
 	)
 
 	option := resolver.Resolve(ctx)
@@ -132,40 +138,7 @@ func TestModuleRules(t *testing.T) {
 	require.Equal(t, "tc-bucket", result.Config.Bucket)
 }
 
-func TestPreferredProviderRule(t *testing.T) {
-	ctx := contextx.With(context.Background(), objects.PreferredProviderHint(storage.S3Provider))
-	resolver := eddy.NewResolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]()
-
-	s3Builder := &stubBuilder{providerType: "s3"}
-	config := storage.ProviderConfig{
-		Providers: storage.Providers{
-			S3: storage.ProviderConfigs{
-				Enabled: true,
-				Bucket:  "preferred-bucket",
-				Region:  "us-west-1",
-			},
-		},
-	}
-
-	configureProviderRules(
-		resolver,
-		config,
-		s3Builder,
-		&stubBuilder{providerType: "r2"},
-		&stubBuilder{providerType: "disk"},
-		&stubBuilder{providerType: "db"},
-	)
-
-	option := resolver.Resolve(ctx)
-	require.True(t, option.IsPresent(), "expected preferred provider rule to resolve")
-
-	result := option.MustGet()
-	require.Equal(t, s3Builder, result.Builder)
-	require.Equal(t, "preferred-bucket", result.Config.Bucket)
-	require.Equal(t, "us-west-1", result.Config.Region)
-}
-
-func TestFallbackRuleSelectsFirstEnabledProvider(t *testing.T) {
+func TestDefaultRuleSelectsFirstEnabledProvider(t *testing.T) {
 	resolver := eddy.NewResolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]()
 
 	s3Builder := &stubBuilder{providerType: "s3"}
@@ -185,19 +158,53 @@ func TestFallbackRuleSelectsFirstEnabledProvider(t *testing.T) {
 
 	configureProviderRules(
 		resolver,
-		config,
-		s3Builder,
-		r2Builder,
-		&stubBuilder{providerType: "disk"},
-		&stubBuilder{providerType: "db"},
+		WithProviderConfig(config),
+		WithProviderBuilders(providerBuilders{
+			s3:   s3Builder,
+			r2:   r2Builder,
+			disk: &stubBuilder{providerType: "disk"},
+			db:   &stubBuilder{providerType: "db"},
+		}),
 	)
 
 	option := resolver.Resolve(context.Background())
-	require.True(t, option.IsPresent(), "expected fallback rule to resolve")
+	require.True(t, option.IsPresent(), "expected default rule to resolve")
 
 	result := option.MustGet()
 	require.Equal(t, r2Builder, result.Builder, "expected first enabled provider to be used")
 	require.Equal(t, "r2-bucket", result.Config.Bucket)
+}
+
+func TestDefaultRuleUsesS3WhenEnabled(t *testing.T) {
+	resolver := eddy.NewResolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]()
+
+	s3Builder := &stubBuilder{providerType: "s3"}
+	config := storage.ProviderConfig{
+		Providers: storage.Providers{
+			S3: storage.ProviderConfigs{
+				Enabled: true,
+				Bucket:  "default-bucket",
+			},
+		},
+	}
+
+	configureProviderRules(
+		resolver,
+		WithProviderConfig(config),
+		WithProviderBuilders(providerBuilders{
+			s3:   s3Builder,
+			r2:   &stubBuilder{providerType: "r2"},
+			disk: &stubBuilder{providerType: "disk"},
+			db:   &stubBuilder{providerType: "db"},
+		}),
+	)
+
+	option := resolver.Resolve(context.Background())
+	require.True(t, option.IsPresent(), "expected default rule to resolve")
+
+	result := option.MustGet()
+	require.Equal(t, s3Builder, result.Builder)
+	require.Equal(t, "default-bucket", result.Config.Bucket)
 }
 
 func TestProviderEnabledChecksConfig(t *testing.T) {
@@ -218,11 +225,8 @@ func TestResolveProviderWithUnsupportedBuilder(t *testing.T) {
 	resolver := eddy.NewResolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]()
 	rc := newRuleCoordinator(
 		resolver,
-		storage.ProviderConfig{},
-		nil,
-		nil,
-		nil,
-		nil,
+		WithProviderConfig(storage.ProviderConfig{}),
+		WithProviderBuilders(providerBuilders{}),
 	)
 
 	_, err := rc.resolveProviderWithBuilder(context.Background(), storage.ProviderType("unsupported"))
@@ -234,7 +238,7 @@ func TestResolveProviderFromConfigCopiesOptions(t *testing.T) {
 	resolver := eddy.NewResolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]()
 	rc := newRuleCoordinator(
 		resolver,
-		storage.ProviderConfig{
+		WithProviderConfig(storage.ProviderConfig{
 			Providers: storage.Providers{
 				S3: storage.ProviderConfigs{
 					Enabled: true,
@@ -242,11 +246,10 @@ func TestResolveProviderFromConfigCopiesOptions(t *testing.T) {
 					Region:  "us-east-1",
 				},
 			},
-		},
-		&stubBuilder{providerType: "s3"},
-		nil,
-		nil,
-		nil,
+		}),
+		WithProviderBuilders(providerBuilders{
+			s3: &stubBuilder{providerType: "s3"},
+		}),
 	)
 
 	resolved, err := rc.resolveProvider(context.Background(), storage.S3Provider)
@@ -269,15 +272,15 @@ func TestHandleDevModeOptionClone(t *testing.T) {
 	diskBuilder := &stubBuilder{providerType: "disk"}
 	rc := newRuleCoordinator(
 		resolver,
-		storage.ProviderConfig{
+		WithProviderConfig(storage.ProviderConfig{
 			DevMode: true,
 			Providers: storage.Providers{
 				Disk: storage.ProviderConfigs{Enabled: true},
 			},
-		},
-		nil, nil,
-		diskBuilder,
-		nil,
+		}),
+		WithProviderBuilders(providerBuilders{
+			disk: diskBuilder,
+		}),
 	)
 
 	require.True(t, rc.handleDevMode())
@@ -296,23 +299,23 @@ func TestHandleDevModeOptionClone(t *testing.T) {
 	require.False(t, ok)
 }
 
-func TestAddFallbackRuleSkipsDisabledProviders(t *testing.T) {
+func TestDefaultRuleSkipsDisabledProviders(t *testing.T) {
 	resolver := eddy.NewResolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]()
 	rc := newRuleCoordinator(
 		resolver,
-		storage.ProviderConfig{
+		WithProviderConfig(storage.ProviderConfig{
 			Providers: storage.Providers{
 				S3:           storage.ProviderConfigs{Enabled: false},
 				CloudflareR2: storage.ProviderConfigs{Enabled: true},
 			},
-		},
-		&stubBuilder{providerType: "s3"},
-		&stubBuilder{providerType: "r2"},
-		nil,
-		nil,
+		}),
+		WithProviderBuilders(providerBuilders{
+			s3: &stubBuilder{providerType: "s3"},
+			r2: &stubBuilder{providerType: "r2"},
+		}),
 	)
 
-	rc.addFallbackRule([]storage.ProviderType{storage.S3Provider, storage.R2Provider})
+	rc.addDefaultProviderRule()
 
 	option := resolver.Resolve(context.Background())
 	require.True(t, option.IsPresent())

@@ -31,6 +31,7 @@ import (
 	"github.com/theopenlane/core/internal/entdb"
 	"github.com/theopenlane/core/internal/graphapi/testclient"
 	"github.com/theopenlane/core/internal/objects"
+	"github.com/theopenlane/core/internal/objects/validators"
 	"github.com/theopenlane/core/pkg/entitlements"
 	"github.com/theopenlane/core/pkg/entitlements/mocks"
 	"github.com/theopenlane/core/pkg/events/soiree"
@@ -201,7 +202,7 @@ func (suite *GraphTestSuite) SetupSuite(t *testing.T) {
 	db, err := entdb.NewTestClient(ctx, suite.tf, jobOpts, opts)
 	requireNoError(err)
 
-	c.objectStore, c.mockProvider, err = coreutils.MockStorageServiceWithValidationAndProvider(t, nil, objects.MimeTypeValidator)
+	c.objectStore, c.mockProvider, err = coreutils.MockStorageServiceWithValidationAndProvider(t, nil, validators.MimeTypeValidator)
 	requireNoError(err)
 
 	// assign values
@@ -333,7 +334,7 @@ func (suite *GraphTestSuite) mockStripeClient() (*entitlements.StripeClient, err
 
 	suite.orgSubscriptionMocks()
 
-	return entitlements.NewStripeClient(entitlements.WithAPIKey("sk_test_testing"),
+	return entitlements.NewStripeClient(entitlements.WithAPIKey("definitlynotastripekey"),
 		entitlements.WithConfig(entitlements.Config{
 			Enabled:             true,
 			StripeWebhookSecret: webhookSecret,

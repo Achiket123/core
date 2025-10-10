@@ -10,9 +10,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"slices"
 	"strings"
-	"time"
 
 	"github.com/redis/go-redis/v9"
 
@@ -34,14 +32,12 @@ import (
 
 	"github.com/theopenlane/core/internal/credsync"
 	ent "github.com/theopenlane/core/internal/ent/generated"
-	"github.com/theopenlane/core/internal/ent/generated/privacy"
 	"github.com/theopenlane/core/internal/ent/hush/crypto"
 	"github.com/theopenlane/core/internal/graphapi"
 	"github.com/theopenlane/core/internal/httpserve/config"
-	"github.com/theopenlane/core/internal/httpserve/handlers"
 	"github.com/theopenlane/core/internal/httpserve/server"
-	"github.com/theopenlane/core/internal/objects"
 	"github.com/theopenlane/core/internal/objects/resolver"
+	"github.com/theopenlane/core/internal/objects/validators"
 	"github.com/theopenlane/core/pkg/entitlements"
 	authmw "github.com/theopenlane/core/pkg/middleware/auth"
 	"github.com/theopenlane/core/pkg/middleware/cachecontrol"
@@ -52,10 +48,6 @@ import (
 	"github.com/theopenlane/core/pkg/middleware/redirect"
 	"github.com/theopenlane/core/pkg/middleware/secure"
 	"github.com/theopenlane/core/pkg/objects/storage"
-	disk "github.com/theopenlane/core/pkg/objects/storage/providers/disk"
-	r2provider "github.com/theopenlane/core/pkg/objects/storage/providers/r2"
-	s3provider "github.com/theopenlane/core/pkg/objects/storage/providers/s3"
-	storagetypes "github.com/theopenlane/core/pkg/objects/storage/types"
 	"github.com/theopenlane/core/pkg/summarizer"
 	"github.com/theopenlane/core/pkg/windmill"
 )
@@ -461,7 +453,7 @@ func WithObjectStorage() ServerOption {
 		s.Config.StorageService = storageService
 		s.Config.Handler.ObjectStore = storageService
 
-		errs := validateConfiguredStorageProviders(context.Background(), cfg)
+		errs := validators.ValidateConfiguredStorageProviders(context.Background(), cfg)
 		if len(errs) > 0 {
 			for _, err := range errs {
 				log.Warn().Err(err).Msg("object storage validation warning")
@@ -473,7 +465,7 @@ func WithObjectStorage() ServerOption {
 		}
 
 		// expose readiness check so storage availability can be monitored continuously
-		s.Config.Handler.AddReadinessCheck("object_storage", storageAvailabilityCheck(func() storage.ProviderConfig {
+		s.Config.Handler.AddReadinessCheck("object_storage", validators.StorageAvailabilityCheck(func() storage.ProviderConfig {
 			return s.Config.Settings.ObjectStorage
 		}))
 
@@ -498,7 +490,7 @@ func WithStorageCredentialSync() ServerOption {
 			return
 		}
 
-		ctx, cancel := context.WithTimeout(context.Background(), storageCredentialSyncTimeout)
+		ctx, cancel := context.WithTimeout(context.Background(), validators.StorageCredentialSyncTimeout)
 		defer cancel()
 
 		credentialSync := credsync.NewCredentialSyncService(s.Config.Handler.DBClient, nil, &s.Config.Settings.ObjectStorage.Providers)
@@ -596,187 +588,4 @@ func WithCrypto() ServerOption {
 
 		log.Info().Bool("enabled", s.Config.Settings.Server.FieldLevelEncryption.Enabled).Msg("Crypto initialized")
 	})
-}
-
-const (
-	storageValidationTimeout     = 10 * time.Second
-	storageCredentialSyncTimeout = 10 * time.Second
-)
-
-func validateConfiguredStorageProviders(ctx context.Context, cfg storage.ProviderConfig) []error {
-	if !cfg.Enabled {
-		log.Info().Msg("object storage disabled; skipping validation")
-		return nil
-	}
-
-	if deadline, ok := ctx.Deadline(); !ok || time.Until(deadline) <= 0 {
-		var cancel context.CancelFunc
-		ctx, cancel = context.WithTimeout(ctx, storageValidationTimeout)
-		defer cancel()
-	}
-
-	if cfg.DevMode {
-		if cfg.Providers.Disk.Enabled {
-			bucket := cfg.Providers.Disk.Bucket
-			if bucket == "" {
-				bucket = objects.DefaultDevStorageBucket
-			}
-
-			if err := ensureDirectoryExists(bucket); err != nil {
-				return []error{fmt.Errorf("ensure dev storage directory %s: %w", bucket, err)}
-			}
-		}
-
-		return nil
-	}
-
-	var errs []error
-
-	if err := validateDiskProvider(ctx, cfg.Providers.Disk); err != nil {
-		errs = append(errs, err)
-	}
-	if err := validateS3Provider(ctx, cfg.Providers.S3); err != nil {
-		errs = append(errs, err)
-	}
-	if err := validateR2Provider(ctx, cfg.Providers.CloudflareR2); err != nil {
-		errs = append(errs, err)
-	}
-	if err := validateDatabaseProvider(ctx, cfg.Providers.Database); err != nil {
-		errs = append(errs, err)
-	}
-
-	if cfg.Providers.GCS.Enabled {
-		log.Warn().Msg("skipping GCS provider validation (not implemented)")
-	}
-
-	return errs
-}
-
-func validateDiskProvider(ctx context.Context, cfg storage.ProviderConfigs) error {
-	if !cfg.Enabled {
-		return nil
-	}
-
-	bucket := cfg.Bucket
-	if bucket == "" {
-		bucket = objects.DefaultDevStorageBucket
-	}
-
-	options := storage.NewProviderOptions(
-		storage.WithBucket(bucket),
-		storage.WithBasePath(bucket),
-	)
-	if cfg.Endpoint != "" {
-		options.Apply(storage.WithLocalURL(cfg.Endpoint))
-	}
-
-	provider, err := disk.NewDiskBuilder().Build(ctx, cfg.Credentials, options)
-	if err != nil {
-		return fmt.Errorf("disk provider initialization: %w", err)
-	}
-	defer provider.Close()
-
-	return validateBuckets("disk", provider, bucket)
-}
-
-func validateS3Provider(ctx context.Context, cfg storage.ProviderConfigs) error {
-	if !cfg.Enabled {
-		return nil
-	}
-
-	options := storage.NewProviderOptions()
-	if cfg.Bucket != "" {
-		options.Apply(storage.WithBucket(cfg.Bucket))
-	}
-	region := cfg.Region
-	if region == "" {
-		region = objects.DefaultS3Region
-	}
-	options.Apply(storage.WithRegion(region))
-	if cfg.Endpoint != "" {
-		options.Apply(storage.WithEndpoint(cfg.Endpoint))
-	}
-
-	provider, err := s3provider.NewS3Builder().Build(ctx, cfg.Credentials, options)
-	if err != nil {
-		return fmt.Errorf("s3 provider initialization: %w", err)
-	}
-	defer provider.Close()
-
-	return validateBuckets("s3", provider, cfg.Bucket)
-}
-
-func validateR2Provider(ctx context.Context, cfg storage.ProviderConfigs) error {
-	if !cfg.Enabled {
-		return nil
-	}
-
-	options := storage.NewProviderOptions()
-	if cfg.Bucket != "" {
-		options.Apply(storage.WithBucket(cfg.Bucket))
-	}
-	if cfg.Endpoint != "" {
-		options.Apply(storage.WithEndpoint(cfg.Endpoint))
-	}
-
-	provider, err := r2provider.NewR2Builder().Build(ctx, cfg.Credentials, options)
-	if err != nil {
-		return fmt.Errorf("r2 provider initialization: %w", err)
-	}
-	defer provider.Close()
-
-	return validateBuckets("r2", provider, cfg.Bucket)
-}
-
-func validateDatabaseProvider(ctx context.Context, cfg storage.ProviderConfigs) error {
-	if !cfg.Enabled {
-		return nil
-	}
-
-	entClient := ent.FromContext(ctx)
-	if entClient == nil {
-		// When no ent client is available (e.g. during early startup), skip validation.
-		return nil
-	}
-
-	allowCtx := privacy.DecisionContext(ctx, privacy.Allow)
-	if _, err := entClient.File.Query().Limit(1).Exist(allowCtx); err != nil {
-		return fmt.Errorf("database provider validation: %w", err)
-	}
-
-	return nil
-}
-
-func validateBuckets(providerName string, provider storagetypes.Provider, expectedBucket string) error {
-	buckets, err := provider.ListBuckets()
-	if err != nil {
-		return fmt.Errorf("%s list buckets: %w", providerName, err)
-	}
-
-	log.Info().Str("provider", providerName).Strs("available_buckets", buckets).Msg("storage provider connectivity verified")
-
-	if expectedBucket != "" && !slices.Contains(buckets, expectedBucket) {
-		return fmt.Errorf("%s bucket %s not found", providerName, expectedBucket)
-	}
-
-	return nil
-}
-
-func ensureDirectoryExists(path string) error {
-	if path == "" {
-		return nil
-	}
-
-	return os.MkdirAll(path, os.ModePerm)
-}
-
-func storageAvailabilityCheck(cfgProvider func() storage.ProviderConfig) handlers.CheckFunc {
-	return func(ctx context.Context) error {
-		errs := validateConfiguredStorageProviders(ctx, cfgProvider())
-		if len(errs) == 0 {
-			return nil
-		}
-
-		return errors.Join(errs...)
-	}
 }

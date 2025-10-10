@@ -496,7 +496,7 @@ func TestMutationCreateEvidence(t *testing.T) {
 				assert.Check(t, is.Len(resp.CreateEvidence.Evidence.Tasks.Edges, 0))
 			}
 
-			if tc.files != nil && len(tc.files) > 0 {
+			if len(tc.files) > 0 {
 				assert.Check(t, is.Len(resp.CreateEvidence.Evidence.Files.Edges, len(tc.files)))
 			} else {
 				assert.Check(t, is.Len(resp.CreateEvidence.Evidence.Files.Edges, 0))

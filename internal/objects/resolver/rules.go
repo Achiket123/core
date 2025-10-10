@@ -11,67 +11,85 @@ import (
 	"github.com/theopenlane/utils/contextx"
 )
 
-// configureProviderRules adds the resolver rules that determine which provider to use for a request
-func configureProviderRules(
-	resolver *providerResolver,
-	config storage.ProviderConfig,
-	s3Builder eddy.Builder[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions],
-	r2Builder eddy.Builder[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions],
-	diskBuilder eddy.Builder[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions],
-	dbBuilder eddy.Builder[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions],
-) {
-	coordinator := newRuleCoordinator(resolver, config, s3Builder, r2Builder, diskBuilder, dbBuilder)
-	if coordinator.handleDevMode() {
-		return
-	}
+// providerBuilder is a type alias for readability
+type providerBuilder = eddy.Builder[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]
 
-	coordinator.addKnownProviderRule()
-	coordinator.addModuleRule(models.CatalogTrustCenterModule, storage.R2Provider)
-	coordinator.addModuleRule(models.CatalogComplianceModule, storage.S3Provider)
-	coordinator.addPreferredProviderRule()
-	coordinator.addFallbackRule([]storage.ProviderType{storage.S3Provider, storage.R2Provider, storage.DiskProvider, storage.DatabaseProvider})
+// providerBuilders groups the provider builders required to assemble resolver rules
+type providerBuilders struct {
+	s3   providerBuilder
+	r2   providerBuilder
+	disk providerBuilder
+	db   providerBuilder
+}
+
+// ruleOption configures aspects of ruleCoordinator
+type ruleOption func(*ruleCoordinator)
+
+// configureProviderRules adds the resolver rules that determine which provider to use for a request
+func configureProviderRules(resolver *providerResolver, opts ...ruleOption) {
+	coordinator := newRuleCoordinator(resolver, opts...)
+	coordinator.configure()
 }
 
 // ruleCoordinator groups state required to add resolver rules in a readable way
 type ruleCoordinator struct {
-	resolver    *providerResolver
-	config      storage.ProviderConfig
-	s3Builder   eddy.Builder[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]
-	r2Builder   eddy.Builder[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]
-	diskBuilder eddy.Builder[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]
-	dbBuilder   eddy.Builder[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]
+	resolver *providerResolver
+	config   storage.ProviderConfig
+	builders providerBuilders
 }
 
 // newRuleCoordinator returns a helper for building provider rules
-func newRuleCoordinator(
-	resolver *providerResolver,
-	config storage.ProviderConfig,
-	s3Builder eddy.Builder[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions],
-	r2Builder eddy.Builder[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions],
-	diskBuilder eddy.Builder[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions],
-	dbBuilder eddy.Builder[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions],
-) *ruleCoordinator {
-	return &ruleCoordinator{
-		resolver:    resolver,
-		config:      config,
-		s3Builder:   s3Builder,
-		r2Builder:   r2Builder,
-		diskBuilder: diskBuilder,
-		dbBuilder:   dbBuilder,
+func newRuleCoordinator(resolver *providerResolver, opts ...ruleOption) *ruleCoordinator {
+	rc := &ruleCoordinator{resolver: resolver}
+
+	for _, opt := range opts {
+		if opt == nil {
+			continue
+		}
+
+		opt(rc)
+	}
+
+	return rc
+}
+
+// configure wires together the configured set of provider rules.
+func (rc *ruleCoordinator) configure() {
+	if rc.handleDevMode() {
+		return
+	}
+
+	rc.addKnownProviderRule()
+	rc.addModuleRule(models.CatalogTrustCenterModule, storage.R2Provider)
+	rc.addModuleRule(models.CatalogComplianceModule, storage.S3Provider)
+	rc.addDefaultProviderRule()
+}
+
+// WithProviderConfig supplies the provider configuration used when resolving options.
+func WithProviderConfig(config storage.ProviderConfig) ruleOption {
+	return func(rc *ruleCoordinator) {
+		rc.config = config
+	}
+}
+
+// WithProviderBuilders supplies the provider builders used for rule resolution.
+func WithProviderBuilders(builders providerBuilders) ruleOption {
+	return func(rc *ruleCoordinator) {
+		rc.builders = builders
 	}
 }
 
 // getBuilder returns the appropriate builder for a provider type
-func (rc *ruleCoordinator) getBuilder(provider storage.ProviderType) eddy.Builder[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions] {
+func (rc *ruleCoordinator) getBuilder(provider storage.ProviderType) providerBuilder {
 	switch provider {
 	case storage.S3Provider:
-		return rc.s3Builder
+		return rc.builders.s3
 	case storage.R2Provider:
-		return rc.r2Builder
+		return rc.builders.r2
 	case storage.DiskProvider:
-		return rc.diskBuilder
+		return rc.builders.disk
 	case storage.DatabaseProvider:
-		return rc.dbBuilder
+		return rc.builders.db
 	default:
 		return nil
 	}
@@ -95,7 +113,7 @@ func (rc *ruleCoordinator) handleDevMode() bool {
 		},
 		Resolver: func(_ context.Context) (*eddy.ResolvedProvider[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions], error) {
 			return &eddy.ResolvedProvider[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]{
-				Builder: rc.diskBuilder,
+				Builder: rc.builders.disk,
 				Output:  storage.ProviderCredentials{},
 				Config:  options.Clone(),
 			}, nil
@@ -103,6 +121,7 @@ func (rc *ruleCoordinator) handleDevMode() bool {
 	}
 
 	rc.resolver.AddRule(devRule)
+
 	return true
 }
 
@@ -143,43 +162,37 @@ func (rc *ruleCoordinator) addModuleRule(module models.OrgModule, provider stora
 	rc.resolver.AddRule(rule)
 }
 
-// addPreferredProviderRule respects preferred provider hints when available
-func (rc *ruleCoordinator) addPreferredProviderRule() {
+// addDefaultProviderRule resolves to the first enabled provider when no other rule applies.
+func (rc *ruleCoordinator) addDefaultProviderRule() {
+	defaultProvider, ok := rc.defaultProvider()
+	if !ok {
+		return
+	}
+
 	rule := &helpers.ConditionalRule[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]{
-		Predicate: func(ctx context.Context) bool {
-			preferred, ok := contextx.From[objects.PreferredProviderHint](ctx)
-			return ok && rc.providerEnabled(storage.ProviderType(preferred))
-		},
+		Predicate: func(_ context.Context) bool { return true },
 		Resolver: func(ctx context.Context) (*eddy.ResolvedProvider[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions], error) {
-			preferred, _ := contextx.From[objects.PreferredProviderHint](ctx)
-			provider := storage.ProviderType(preferred)
-			return rc.resolveProviderWithBuilder(ctx, provider)
+			return rc.resolveProviderWithBuilder(ctx, defaultProvider)
 		},
 	}
 
 	rc.resolver.AddRule(rule)
 }
 
-// addFallbackRule registers the default provider order when no other hint applies
-func (rc *ruleCoordinator) addFallbackRule(order []storage.ProviderType) {
-	for _, provider := range order {
-		if !rc.providerEnabled(provider) {
-			continue
+// defaultProvider determines the provider to use when no other rule applies.
+func (rc *ruleCoordinator) defaultProvider() (storage.ProviderType, bool) {
+	for _, provider := range []storage.ProviderType{
+		storage.S3Provider,
+		storage.R2Provider,
+		storage.DiskProvider,
+		storage.DatabaseProvider,
+	} {
+		if rc.providerEnabled(provider) {
+			return provider, true
 		}
-
-		fallbackProvider := provider
-		rule := &helpers.ConditionalRule[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]{
-			Predicate: func(_ context.Context) bool {
-				return true
-			},
-			Resolver: func(ctx context.Context) (*eddy.ResolvedProvider[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions], error) {
-				return rc.resolveProviderWithBuilder(ctx, fallbackProvider)
-			},
-		}
-
-		rc.resolver.AddRule(rule)
-		break
 	}
+
+	return "", false
 }
 
 // resolveProviderWithBuilder resolves provider credentials and returns them with the appropriate builder

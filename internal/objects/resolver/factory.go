@@ -1,21 +1,15 @@
 package resolver
 
 import (
-	"context"
-	"fmt"
-
-	ent "github.com/theopenlane/core/internal/ent/generated"
-	"github.com/theopenlane/core/internal/ent/generated/privacy"
 	"github.com/theopenlane/core/internal/objects"
+	"github.com/theopenlane/core/internal/objects/validators"
 	"github.com/theopenlane/core/pkg/eddy"
 	"github.com/theopenlane/core/pkg/objects/storage"
 	dbprovider "github.com/theopenlane/core/pkg/objects/storage/providers/database"
 	"github.com/theopenlane/core/pkg/objects/storage/providers/disk"
 	r2provider "github.com/theopenlane/core/pkg/objects/storage/providers/r2"
 	s3provider "github.com/theopenlane/core/pkg/objects/storage/providers/s3"
-	"github.com/theopenlane/iam/auth"
 	"github.com/theopenlane/iam/tokens"
-	"github.com/theopenlane/utils/contextx"
 )
 
 type Option func(*serviceOptions)
@@ -55,7 +49,7 @@ func NewServiceFromConfig(config storage.ProviderConfig, opts ...Option) *object
 	service := objects.NewService(objects.Config{
 		Resolver:       resolver,
 		ClientService:  clientService,
-		ValidationFunc: objects.MimeTypeValidator,
+		ValidationFunc: validators.MimeTypeValidator,
 		TokenManager:   runtime.tokenManagerFunc,
 		TokenIssuer:    runtime.tokenIssuer,
 		TokenAudience:  runtime.tokenAudience,
@@ -91,40 +85,19 @@ func buildWithRuntime(config storage.ProviderConfig, runtime serviceOptions) (*p
 
 	// Create resolver and configure rules with builders
 	resolver := eddy.NewResolver[storage.Provider, storage.ProviderCredentials, *storage.ProviderOptions]()
-	configureProviderRules(resolver, config, s3Builder, r2Builder, diskBuilder, dbBuilder)
+	builderSet := providerBuilders{
+		s3:   s3Builder,
+		r2:   r2Builder,
+		disk: diskBuilder,
+		db:   dbBuilder,
+	}
+	configureProviderRules(
+		resolver,
+		WithProviderConfig(config),
+		WithProviderBuilders(builderSet),
+	)
 
 	return clientService, resolver
-}
-
-func systemOwnedQueryContext(ctx context.Context, entClient *ent.Client) context.Context {
-	user := &auth.AuthenticatedUser{
-		SubjectID:          "system-storage-resolver",
-		SubjectName:        "System Storage Resolver",
-		AuthenticationType: auth.APITokenAuthentication,
-		IsSystemAdmin:      true,
-	}
-
-	ctx = auth.WithAuthenticatedUser(ctx, user)
-	ctx = auth.WithSystemAdminContext(ctx, user)
-	ctx = contextx.With(ctx, auth.OrganizationCreationContextKey{})
-	ctx = privacy.DecisionContext(ctx, privacy.Allow)
-	return ent.NewContext(ctx, entClient)
-}
-
-func stringValue(value any) (string, bool) {
-	switch v := value.(type) {
-	case string:
-		return v, true
-	case fmt.Stringer:
-		return v.String(), true
-	case []byte:
-		return string(v), true
-	default:
-		if v == nil {
-			return "", false
-		}
-		return fmt.Sprintf("%v", v), true
-	}
 }
 
 func cloneProviderOptions(in *storage.ProviderOptions) *storage.ProviderOptions {
