@@ -134,7 +134,7 @@ func runSimpleS3(ctx context.Context, out io.Writer, cfg simpleS3Config) error {
 			if err := os.WriteFile(abs, downloaded.File, 0o644); err != nil {
 				return fmt.Errorf("write downloaded file: %w", err)
 			}
-			fmt.Fprintf(out, "   ✓ Wrote %d bytes to %s\n", len(downloaded.File), abs)
+			fmt.Fprintf(out, "Wrote %d bytes to %s\n", len(downloaded.File), abs)
 			return nil
 		},
 	})

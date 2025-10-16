@@ -51,7 +51,7 @@ func runLifecycle(ctx context.Context, out io.Writer, svc *storage.ObjectService
 		return nil, fmt.Errorf("upload failed: %w", err)
 	}
 
-	fmt.Fprintf(out, "   ✓ Uploaded: %s (size: %d bytes)\n", uploadedFile.Key, uploadedFile.Size)
+	fmt.Fprintf(out, "Uploaded: %s (size: %d bytes)\n", uploadedFile.Key, uploadedFile.Size)
 
 	fmt.Fprintln(out, "\n2. Downloading file...")
 	storageFile := &storagetypes.File{
@@ -68,7 +68,7 @@ func runLifecycle(ctx context.Context, out io.Writer, svc *storage.ObjectService
 		return nil, fmt.Errorf("download failed: %w", err)
 	}
 
-	fmt.Fprintf(out, "   ✓ Downloaded: %s (%d bytes)\n", uploadedFile.Key, len(downloaded.File))
+	fmt.Fprintf(out, "Downloaded: %s (%d bytes)\n", uploadedFile.Key, len(downloaded.File))
 	if cfg.AfterDownload != nil {
 		if err := cfg.AfterDownload(downloaded); err != nil {
 			return nil, fmt.Errorf("post-download handler failed: %w", err)
@@ -80,26 +80,26 @@ func runLifecycle(ctx context.Context, out io.Writer, svc *storage.ObjectService
 	if err != nil {
 		return nil, fmt.Errorf("failed to get presigned URL: %w", err)
 	}
-	fmt.Fprintf(out, "   ✓ URL: %s\n", presignedURL)
+	fmt.Fprintf(out, "URL: %s\n", presignedURL)
 
 	fmt.Fprintf(out, "\n4. Checking %s file existence...\n", cfg.ProviderLabel)
 	exists, err := provider.Exists(ctx, storageFile)
 	if err != nil {
 		return nil, fmt.Errorf("exists check failed: %w", err)
 	}
-	fmt.Fprintf(out, "   ✓ File exists: %v\n", exists)
+	fmt.Fprintf(out, "File exists: %v\n", exists)
 
 	fmt.Fprintln(out, "\n5. Deleting file...")
 	if err := svc.Delete(ctx, provider, storageFile, &storagetypes.DeleteFileOptions{}); err != nil {
 		return nil, fmt.Errorf("delete failed: %w", err)
 	}
-	fmt.Fprintf(out, "   ✓ File deleted successfully from %s\n", cfg.ProviderLabel)
+	fmt.Fprintf(out, "File deleted successfully from %s\n", cfg.ProviderLabel)
 
 	exists, err = provider.Exists(ctx, storageFile)
 	if err != nil {
 		return nil, fmt.Errorf("post-delete exists check failed: %w", err)
 	}
-	fmt.Fprintf(out, "   ✓ File exists after deletion: %v\n", exists)
+	fmt.Fprintf(out, "File exists after deletion: %v\n", exists)
 
 	return uploadedFile, nil
 }

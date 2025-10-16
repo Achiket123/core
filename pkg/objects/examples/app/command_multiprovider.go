@@ -239,7 +239,7 @@ func exerciseProvider(ctx context.Context, out io.Writer, service *eddy.ClientSe
 	if err != nil {
 		return fmt.Errorf("upload failed for %s: %w", providerType, err)
 	}
-	fmt.Fprintf(out, "   ✓ Uploaded to %s: %s\n", providerType, uploaded.Key)
+	fmt.Fprintf(out, "Uploaded to %s: %s\n", providerType, uploaded.Key)
 
 	storageFile := &storagetypes.File{FileMetadata: storagetypes.FileMetadata{Key: uploaded.Key, Size: uploaded.Size, ContentType: uploaded.ContentType}}
 
@@ -247,12 +247,12 @@ func exerciseProvider(ctx context.Context, out io.Writer, service *eddy.ClientSe
 	if err != nil {
 		return fmt.Errorf("download failed for %s: %w", providerType, err)
 	}
-	fmt.Fprintf(out, "   ✓ Downloaded from %s: %d bytes\n", providerType, len(downloaded.File))
+	fmt.Fprintf(out, "Downloaded from %s: %d bytes\n", providerType, len(downloaded.File))
 
 	if err := objService.Delete(ctx, client.Provider, storageFile, &storagetypes.DeleteFileOptions{}); err != nil {
 		return fmt.Errorf("delete failed for %s: %w", providerType, err)
 	}
-	fmt.Fprintf(out, "   ✓ Deleted from %s\n", providerType)
+	fmt.Fprintf(out, "Deleted from %s\n", providerType)
 
 	return nil
 }
@@ -304,7 +304,7 @@ func multiProviderConcurrent(ctx context.Context, out io.Writer, service *eddy.C
 			}
 
 			mu.Lock()
-			fmt.Fprintf(out, "   ✓ Concurrent upload to %s completed\n", prov)
+			fmt.Fprintf(out, "Concurrent upload to %s completed\n", prov)
 			mu.Unlock()
 		}(i, provider)
 	}
@@ -318,7 +318,7 @@ func multiProviderConcurrent(ctx context.Context, out io.Writer, service *eddy.C
 		}
 	}
 
-	fmt.Fprintln(out, "   ✓ All concurrent operations completed")
+	fmt.Fprintln(out, "All concurrent operations completed")
 	return nil
 }
 
