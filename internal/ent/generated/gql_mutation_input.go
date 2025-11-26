@@ -14708,6 +14708,7 @@ type CreateStandardInput struct {
 	ControlIDs               []string
 	TrustCenterComplianceIDs []string
 	TrustCenterDocIDs        []string
+	LogoFileID               *string
 }
 
 // Mutate applies the CreateStandardInput on the StandardMutation builder.
@@ -14773,6 +14774,9 @@ func (i *CreateStandardInput) Mutate(m *StandardMutation) {
 	if v := i.TrustCenterDocIDs; len(v) > 0 {
 		m.AddTrustCenterDocIDs(v...)
 	}
+	if v := i.LogoFileID; v != nil {
+		m.SetLogoFileID(*v)
+	}
 }
 
 // SetInput applies the change-set in the CreateStandardInput on the StandardCreate builder.
@@ -14829,6 +14833,8 @@ type UpdateStandardInput struct {
 	ClearTrustCenterDocs           bool
 	AddTrustCenterDocIDs           []string
 	RemoveTrustCenterDocIDs        []string
+	ClearLogoFile                  bool
+	LogoFileID                     *string
 }
 
 // Mutate applies the UpdateStandardInput on the StandardMutation builder.
@@ -14970,6 +14976,12 @@ func (i *UpdateStandardInput) Mutate(m *StandardMutation) {
 	}
 	if v := i.RemoveTrustCenterDocIDs; len(v) > 0 {
 		m.RemoveTrustCenterDocIDs(v...)
+	}
+	if i.ClearLogoFile {
+		m.ClearLogoFile()
+	}
+	if v := i.LogoFileID; v != nil {
+		m.SetLogoFileID(*v)
 	}
 }
 
