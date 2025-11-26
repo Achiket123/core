@@ -10359,6 +10359,10 @@ input CreateCustomTypeEnumInput {
   The color of the tag definition in hex format
   """
   color: String
+  """
+  The icon of the custom type enum in SVG format
+  """
+  icon: String
   ownerID: ID
   taskIDs: [ID!]
   controlIDs: [ID!]
@@ -14356,6 +14360,10 @@ type CustomTypeEnum implements Node {
   The color of the tag definition in hex format
   """
   color: String
+  """
+  The icon of the custom type enum in SVG format
+  """
+  icon: String
   owner: Organization
   tasks(
     """
@@ -14915,6 +14923,24 @@ input CustomTypeEnumWhereInput {
   colorNotNil: Boolean
   colorEqualFold: String
   colorContainsFold: String
+  """
+  icon field predicates
+  """
+  icon: String
+  iconNEQ: String
+  iconIn: [String!]
+  iconNotIn: [String!]
+  iconGT: String
+  iconGTE: String
+  iconLT: String
+  iconLTE: String
+  iconContains: String
+  iconHasPrefix: String
+  iconHasSuffix: String
+  iconIsNil: Boolean
+  iconNotNil: Boolean
+  iconEqualFold: String
+  iconContainsFold: String
   """
   owner edge predicates
   """
@@ -73029,10 +73055,6 @@ input UpdateCustomTypeEnumInput {
   systemInternalID: String @readOnly
   clearSystemInternalID: Boolean
   """
-  The name of the enum value, for example evidence request
-  """
-  name: String
-  """
   The description of the custom type
   """
   description: String
@@ -73042,6 +73064,11 @@ input UpdateCustomTypeEnumInput {
   """
   color: String
   clearColor: Boolean
+  """
+  The icon of the custom type enum in SVG format
+  """
+  icon: String
+  clearIcon: Boolean
   ownerID: ID
   clearOwner: Boolean
   addTaskIDs: [ID!]
@@ -76549,10 +76576,6 @@ input UpdateTagDefinitionInput {
   """
   systemInternalID: String @readOnly
   clearSystemInternalID: Boolean
-  """
-  The name of the tag definition
-  """
-  name: String
   """
   common aliases or misspellings for the tag definition
   """

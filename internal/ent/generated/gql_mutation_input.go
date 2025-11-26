@@ -2878,6 +2878,7 @@ type CreateCustomTypeEnumInput struct {
 	Name              string
 	Description       *string
 	Color             *string
+	Icon              *string
 	OwnerID           *string
 	TaskIDs           []string
 	ControlIDs        []string
@@ -2908,6 +2909,9 @@ func (i *CreateCustomTypeEnumInput) Mutate(m *CustomTypeEnumMutation) {
 	}
 	if v := i.Color; v != nil {
 		m.SetColor(*v)
+	}
+	if v := i.Icon; v != nil {
+		m.SetIcon(*v)
 	}
 	if v := i.OwnerID; v != nil {
 		m.SetOwnerID(*v)
@@ -2953,11 +2957,12 @@ type UpdateCustomTypeEnumInput struct {
 	InternalNotes           *string
 	ClearSystemInternalID   bool
 	SystemInternalID        *string
-	Name                    *string
 	ClearDescription        bool
 	Description             *string
 	ClearColor              bool
 	Color                   *string
+	ClearIcon               bool
+	Icon                    *string
 	ClearOwner              bool
 	OwnerID                 *string
 	ClearTasks              bool
@@ -3003,9 +3008,6 @@ func (i *UpdateCustomTypeEnumInput) Mutate(m *CustomTypeEnumMutation) {
 	if v := i.SystemInternalID; v != nil {
 		m.SetSystemInternalID(*v)
 	}
-	if v := i.Name; v != nil {
-		m.SetName(*v)
-	}
 	if i.ClearDescription {
 		m.ClearDescription()
 	}
@@ -3017,6 +3019,12 @@ func (i *UpdateCustomTypeEnumInput) Mutate(m *CustomTypeEnumMutation) {
 	}
 	if v := i.Color; v != nil {
 		m.SetColor(*v)
+	}
+	if i.ClearIcon {
+		m.ClearIcon()
+	}
+	if v := i.Icon; v != nil {
+		m.SetIcon(*v)
 	}
 	if i.ClearOwner {
 		m.ClearOwner()
@@ -15891,7 +15899,6 @@ type UpdateTagDefinitionInput struct {
 	InternalNotes         *string
 	ClearSystemInternalID bool
 	SystemInternalID      *string
-	Name                  *string
 	ClearAliases          bool
 	Aliases               []string
 	AppendAliases         []string
@@ -15916,9 +15923,6 @@ func (i *UpdateTagDefinitionInput) Mutate(m *TagDefinitionMutation) {
 	}
 	if v := i.SystemInternalID; v != nil {
 		m.SetSystemInternalID(*v)
-	}
-	if v := i.Name; v != nil {
-		m.SetName(*v)
 	}
 	if i.ClearAliases {
 		m.ClearAliases()

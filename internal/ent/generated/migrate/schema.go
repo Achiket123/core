@@ -1199,6 +1199,7 @@ var (
 		{Name: "name", Type: field.TypeString, SchemaType: map[string]string{"postgres": "citext"}},
 		{Name: "description", Type: field.TypeString, Nullable: true},
 		{Name: "color", Type: field.TypeString, Nullable: true},
+		{Name: "icon", Type: field.TypeString, Nullable: true},
 		{Name: "owner_id", Type: field.TypeString, Nullable: true},
 	}
 	// CustomTypeEnumsTable holds the schema information for the "custom_type_enums" table.
@@ -1209,7 +1210,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "custom_type_enums_organizations_custom_type_enums",
-				Columns:    []*schema.Column{CustomTypeEnumsColumns[15]},
+				Columns:    []*schema.Column{CustomTypeEnumsColumns[16]},
 				RefColumns: []*schema.Column{OrganizationsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -1218,7 +1219,7 @@ var (
 			{
 				Name:    "customtypeenum_owner_id",
 				Unique:  false,
-				Columns: []*schema.Column{CustomTypeEnumsColumns[15]},
+				Columns: []*schema.Column{CustomTypeEnumsColumns[16]},
 				Annotation: &entsql.IndexAnnotation{
 					Where: "deleted_at is NULL",
 				},
@@ -1226,7 +1227,7 @@ var (
 			{
 				Name:    "customtypeenum_name_owner_id",
 				Unique:  true,
-				Columns: []*schema.Column{CustomTypeEnumsColumns[12], CustomTypeEnumsColumns[15]},
+				Columns: []*schema.Column{CustomTypeEnumsColumns[12], CustomTypeEnumsColumns[16]},
 				Annotation: &entsql.IndexAnnotation{
 					Where: "deleted_at is NULL",
 				},
