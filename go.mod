@@ -128,8 +128,11 @@ require (
 	github.com/clipperhouse/uax29/v2 v2.3.0 // indirect
 	github.com/di-wu/parser v0.2.2 // indirect
 	github.com/di-wu/xsd-datetime v1.0.0 // indirect
+	github.com/gomutex/godocx v0.1.5 // indirect
 	github.com/google/go-github/v79 v79.0.0 // indirect
+	github.com/phpdave11/gofpdi v1.0.14-0.20211212211723-1f10f9844311 // indirect
 	github.com/scim2/filter-parser/v2 v2.2.0 // indirect
+	github.com/signintech/gopdf v0.33.0 // indirect
 	github.com/slack-go/slack v0.17.3 // indirect
 	github.com/spf13/cast v1.10.0 // indirect
 	golang.org/x/image v0.33.0 // indirect

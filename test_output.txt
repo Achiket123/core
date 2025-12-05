@@ -1,0 +1,60 @@
+=== RUN   TestMarshalToMarkdownFormat
+=== RUN   TestMarshalToMarkdownFormat/Empty_nodes
+=== RUN   TestMarshalToMarkdownFormat/Single_node_with_name_and_details
+=== RUN   TestMarshalToMarkdownFormat/Multiple_nodes
+--- PASS: TestMarshalToMarkdownFormat (0.00s)
+    --- PASS: TestMarshalToMarkdownFormat/Empty_nodes (0.00s)
+    --- PASS: TestMarshalToMarkdownFormat/Single_node_with_name_and_details (0.00s)
+    --- PASS: TestMarshalToMarkdownFormat/Multiple_nodes (0.00s)
+=== RUN   TestExportContentWorker
+=== PAUSE TestExportContentWorker
+=== RUN   TestExportContentWorker_GraphQLErrorResponse
+=== PAUSE TestExportContentWorker_GraphQLErrorResponse
+=== RUN   TestExportContentWorker_WithOpenlaneClient
+=== PAUSE TestExportContentWorker_WithOpenlaneClient
+=== CONT  TestExportContentWorker
+=== CONT  TestExportContentWorker_WithOpenlaneClient
+=== RUN   TestExportContentWorker/happy_path_-_export_controls
+--- PASS: TestExportContentWorker_WithOpenlaneClient (0.00s)
+=== CONT  TestExportContentWorker_GraphQLErrorResponse
+{"level":"error","error":"GraphQL error: Field 'controls' not found","time":"2025-12-05T18:02:06+05:30","message":"failed to execute GraphQL query"}
+{"level":"info","export_id":"export123","time":"2025-12-05T18:02:06+05:30","message":"export status updated"}
+=== NAME  TestExportContentWorker/happy_path_-_export_controls
+    mocks.go:25: FAIL:	UpdateExport(mock.argumentMatcher,string,mock.argumentMatcher,mock.argumentMatcher,string)
+        		at: [/home/achiket/Documents/work/openlane/core/pkg/corejobs/internal/olclient/mocks/mocks.go:56074 /home/achiket/Documents/work/openlane/core/pkg/corejobs/export_test.go:257]
+    mocks.go:25: FAIL: 1 out of 2 expectation(s) were met.
+--- PASS: TestExportContentWorker_GraphQLErrorResponse (0.00s)
+=== NAME  TestExportContentWorker/happy_path_-_export_controls
+        	The code you are testing needs to make 1 more call(s).
+        	at: [/home/achiket/Documents/work/openlane/core/pkg/corejobs/internal/olclient/mocks/mocks.go:25 /home/achiket/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.25.4.linux-amd64/src/testing/testing.go:1308 /home/achiket/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.25.4.linux-amd64/src/testing/testing.go:1572 /home/achiket/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.25.4.linux-amd64/src/testing/testing.go:1928 /home/achiket/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.25.4.linux-amd64/src/runtime/panic.go:783 /home/achiket/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.25.4.linux-amd64/src/runtime/panic.go:262 /home/achiket/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.25.4.linux-amd64/src/runtime/signal_unix.go:925 /home/achiket/Documents/work/openlane/core/pkg/corejobs/export.go:203 /home/achiket/Documents/work/openlane/core/pkg/corejobs/export_test.go:304]
+--- FAIL: TestExportContentWorker (0.00s)
+    --- FAIL: TestExportContentWorker/happy_path_-_export_controls (0.00s)
+panic: runtime error: invalid memory address or nil pointer dereference [recovered, repanicked]
+[signal SIGSEGV: segmentation violation code=0x1 addr=0x0 pc=0x2527715]
+
+goroutine 49 [running]:
+testing.tRunner.func1.2({0x32333e0, 0x78b4d30})
+	/home/achiket/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.25.4.linux-amd64/src/testing/testing.go:1872 +0x237
+testing.tRunner.func1()
+	/home/achiket/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.25.4.linux-amd64/src/testing/testing.go:1875 +0x35b
+panic({0x32333e0?, 0x78b4d30?})
+	/home/achiket/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.25.4.linux-amd64/src/runtime/panic.go:783 +0x132
+github.com/theopenlane/core/pkg/corejobs.(*ExportContentWorker).Work(0xc00006fed0, {0x503d6f8, 0x7a619a0}, 0xc00006fe98)
+	/home/achiket/Documents/work/openlane/core/pkg/corejobs/export.go:203 +0xc15
+github.com/theopenlane/core/pkg/corejobs_test.TestExportContentWorker.func1(0xc000552e00)
+	/home/achiket/Documents/work/openlane/core/pkg/corejobs/export_test.go:304 +0xe26
+testing.tRunner(0xc000552e00, 0xc002720b70)
+	/home/achiket/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.25.4.linux-amd64/src/testing/testing.go:1934 +0xea
+created by testing.(*T).Run in goroutine 46
+	/home/achiket/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.25.4.linux-amd64/src/testing/testing.go:1997 +0x465
+FAIL	github.com/theopenlane/core/pkg/corejobs	0.065s
+?   	github.com/theopenlane/core/pkg/corejobs/internal	[no test files]
+?   	github.com/theopenlane/core/pkg/corejobs/internal/cloudflare	[no test files]
+?   	github.com/theopenlane/core/pkg/corejobs/internal/cloudflare/mocks	[no test files]
+?   	github.com/theopenlane/core/pkg/corejobs/internal/olclient	[no test files]
+?   	github.com/theopenlane/core/pkg/corejobs/internal/olclient/mocks	[no test files]
+?   	github.com/theopenlane/core/pkg/corejobs/internal/pirsch	[no test files]
+?   	github.com/theopenlane/core/pkg/corejobs/internal/pirsch/mocks	[no test files]
+?   	github.com/theopenlane/core/pkg/corejobs/test/common	[no test files]
+?   	github.com/theopenlane/core/pkg/corejobs/test/export	[no test files]
+FAIL
